@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import path from 'node:path';
+
 import type { CacheStatus, SnapshotResult } from '../cache/index.js';
 import { ExportError } from '../errors/index.js';
 import type { DiffResult } from '../format/index.js';
@@ -7,6 +8,10 @@ import { gitRevParse, shortSha, type SourceRef } from '../git/index.js';
 import type { InventorySnapshot, SubpathRollup, TierCounts } from '../inventory/index.js';
 import { sumSdkTierCounts } from '../inventory/index.js';
 import { cacheDirForSha, getRepoRoot, getRootIndexRepoPath, WORKTREE_CACHE_KEY } from '../paths.js';
+import { emitLog } from '../runtime/emitter.js';
+import { getRunOptions } from '../runtime/runOptions.js';
+import { canPrintPrimary, canPrintVerbose } from '../runtime/policy.js';
+import type { CommandStatus } from '../runtime/types.js';
 import {
   compactCoreSourcePath,
   formatInventoryCategory,
@@ -17,9 +22,20 @@ import {
   formatVerboseInventoryHeader,
 } from './format.js';
 
-const BRAND = chalk.bold.cyan('expgov');
+export type { CommandStatus } from '../runtime/types.js';
 
-export type CommandStatus = 'ok' | 'fail' | 'error';
+function canEmitReport(): boolean {
+  return canPrintPrimary(getRunOptions());
+}
+
+function canEmitVerboseReport(): boolean {
+  return canPrintVerbose(getRunOptions()) && !getRunOptions().quiet;
+}
+
+function logLine(message: string): void {
+  if (!canEmitReport()) return;
+  emitLog({ type: 'report', command: '', body: message });
+}
 
 function padLabel(label: string, width = 10): string {
   return chalk.dim(label.padEnd(width));
@@ -82,26 +98,17 @@ function tierColor(tier: string, value: number): string {
 }
 
 export function printCommandLine(command: string, status: CommandStatus, ms: number): void {
-  const statusText =
-    status === 'ok'
-      ? chalk.green(status)
-      : status === 'fail'
-        ? chalk.red(status)
-        : chalk.red(status);
-  console.log(
-    `${BRAND}  ${chalk.bold(command)} ${chalk.dim('·')} ${statusText} ${chalk.dim('·')} ${chalk.white(`${ms}ms`)}`,
-  );
+  emitLog({ type: 'command-line', command, status, durationMs: ms });
 }
 
 export function printHeader(command: string, subtitle: string): void {
-  console.log(`${BRAND}  ${chalk.bold(command)} ${chalk.dim('·')} ${subtitle}`);
+  if (!canEmitReport()) return;
+  emitLog({ type: 'header', command, subtitle });
 }
 
 export function printMeta(rows: Record<string, string | undefined>): void {
-  for (const [key, value] of Object.entries(rows)) {
-    if (!value) continue;
-    console.log(`       ${padLabel(key)} ${value}`);
-  }
+  if (!canEmitReport()) return;
+  emitLog({ type: 'meta', rows });
 }
 
 export function printInventoryReport(input: {
@@ -123,15 +130,15 @@ export function printInventoryReport(input: {
     git: input.gitStats ? chalk.dim(input.gitStats) : undefined,
   });
 
-  console.log('');
-  console.log(chalk.bold.dim('       Root barrel tiers'));
+  logLine('');
+  logLine(chalk.bold.dim('       Root barrel tiers'));
   const r = snapshot.summary.root;
-  console.log(`       ${padLabel('root flat')} ${chalk.white(String(r.flat))}`);
-  console.log(`       ${padLabel('namespace')} ${chalk.white(String(r.namespace))}`);
-  console.log(`       ${padLabel('stable')} ${tierColor('stable', r.stable)}`);
-  console.log(`       ${padLabel('advanced')} ${tierColor('advanced', r.advanced)}`);
-  console.log(`       ${padLabel('internal')} ${tierColor('internal', r.internal)}`);
-  console.log(`       ${padLabel('unclassified')} ${tierColor('unclassified', r.unclassified)}`);
+  logLine(`       ${padLabel('root flat')} ${chalk.white(String(r.flat))}`);
+  logLine(`       ${padLabel('namespace')} ${chalk.white(String(r.namespace))}`);
+  logLine(`       ${padLabel('stable')} ${tierColor('stable', r.stable)}`);
+  logLine(`       ${padLabel('advanced')} ${tierColor('advanced', r.advanced)}`);
+  logLine(`       ${padLabel('internal')} ${tierColor('internal', r.internal)}`);
+  logLine(`       ${padLabel('unclassified')} ${tierColor('unclassified', r.unclassified)}`);
 
   printSdkWideTiers(sumSdkTierCounts(snapshot));
   printPublishedSubpathRollups(snapshot.summary.subpaths);
@@ -140,10 +147,10 @@ export function printInventoryReport(input: {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4);
   if (topCategories.length) {
-    console.log('');
-    console.log(chalk.bold.dim('       Top categories'));
+    logLine('');
+    logLine(chalk.bold.dim('       Top categories'));
     for (const [cat, count] of topCategories) {
-      console.log(`       ${padLabel(cat, 14)} ${chalk.white(String(count))}`);
+      logLine(`       ${padLabel(cat, 14)} ${chalk.white(String(count))}`);
     }
   }
 }
@@ -162,27 +169,28 @@ function formatSubpathRollupLine(sp: SubpathRollup): string {
 }
 
 function printSdkWideTiers(tiers: TierCounts): void {
-  console.log('');
-  console.log(chalk.bold.dim('       SDK-wide tiers (root + published subpaths)'));
-  console.log(`       ${padLabel('stable')} ${tierColor('stable', tiers.stable)}`);
-  console.log(`       ${padLabel('advanced')} ${tierColor('advanced', tiers.advanced)}`);
-  console.log(`       ${padLabel('internal')} ${tierColor('internal', tiers.internal)}`);
-  console.log(`       ${padLabel('unclassified')} ${tierColor('unclassified', tiers.unclassified)}`);
+  logLine('');
+  logLine(chalk.bold.dim('       SDK-wide tiers (root + published subpaths)'));
+  logLine(`       ${padLabel('stable')} ${tierColor('stable', tiers.stable)}`);
+  logLine(`       ${padLabel('advanced')} ${tierColor('advanced', tiers.advanced)}`);
+  logLine(`       ${padLabel('internal')} ${tierColor('internal', tiers.internal)}`);
+  logLine(`       ${padLabel('unclassified')} ${tierColor('unclassified', tiers.unclassified)}`);
 }
 
 function printPublishedSubpathRollups(subpaths: SubpathRollup[], title = 'Published subpaths (rollup)'): void {
   if (!subpaths.length) return;
-  console.log('');
-  console.log(chalk.bold.dim(`       ${title}`));
-  for (const sp of subpaths) console.log(formatSubpathRollupLine(sp));
+  logLine('');
+  logLine(chalk.bold.dim(`       ${title}`));
+  for (const sp of subpaths) logLine(formatSubpathRollupLine(sp));
 }
 
 export function printVerboseInventory(snapshot: InventorySnapshot): void {
+  if (!canEmitVerboseReport()) return;
   const flat = [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name));
 
-  console.log('');
-  console.log(chalk.bold.dim('       Symbols (root flat)'));
-  console.log(chalk.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
+  logLine('');
+  logLine(chalk.bold.dim('       Symbols (root flat)'));
+  logLine(chalk.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
   for (const sym of flat) {
     const tierPlain = formatInventoryTier(sym.tier);
     const tier =
@@ -196,17 +204,17 @@ export function printVerboseInventory(snapshot: InventorySnapshot): void {
     const category = chalk.cyan(formatInventoryCategory(sym.category));
     const symbolKind = chalk.white(formatInventorySymbolKind(sym.symbolKind));
     const tierSource = sym.tierSource === 'tag' ? chalk.cyan('tag') : chalk.dim('fallback');
-    console.log(
+    logLine(
       `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${chalk.dim(sym.targetSubpath)} ${chalk.dim('[')}${tierSource}${chalk.dim(']')}`,
     );
   }
 
   if (snapshot.namespaces.length) {
-    console.log('');
-    console.log(chalk.bold.dim('       Namespaces (root)'));
+    logLine('');
+    logLine(chalk.bold.dim('       Namespaces (root)'));
     for (const ns of snapshot.namespaces.sort((a, b) => a.name.localeCompare(b.name))) {
       const src = chalk.dim(compactCoreSourcePath(ns.sourceModule));
-      console.log(
+      logLine(
         `       ${chalk.dim('·')} ${ns.name.padEnd(20)} ${chalk.dim('→')} ${src} ${chalk.dim('·')} ${chalk.dim(ns.targetSubpath)}`,
       );
     }
@@ -232,37 +240,37 @@ export function printDiffReport(input: {
     cache: `${cacheLabel(left.cache)} / ${cacheLabel(right.cache)}`,
   });
 
-  console.log('');
+  logLine('');
   const dl = diff.summaryDelta.left.root;
   const dr = diff.summaryDelta.right.root;
-  console.log(`       ${padLabel('root flat')} ${formatDelta(dl.flat, dr.flat)}`);
-  console.log(`       ${padLabel('stable')} ${formatDelta(dl.stable, dr.stable)}`);
-  console.log(`       ${padLabel('advanced')} ${formatDelta(dl.advanced, dr.advanced)}`);
-  console.log(`       ${padLabel('internal')} ${formatDelta(dl.internal, dr.internal)}`);
+  logLine(`       ${padLabel('root flat')} ${formatDelta(dl.flat, dr.flat)}`);
+  logLine(`       ${padLabel('stable')} ${formatDelta(dl.stable, dr.stable)}`);
+  logLine(`       ${padLabel('advanced')} ${formatDelta(dl.advanced, dr.advanced)}`);
+  logLine(`       ${padLabel('internal')} ${formatDelta(dl.internal, dr.internal)}`);
 
-  console.log('');
+  logLine('');
   if (diff.added.length) {
-    console.log(chalk.green.bold('       Added'));
-    for (const name of diff.added) console.log(`       ${chalk.green('+')} ${name}`);
-    console.log('');
+    logLine(chalk.green.bold('       Added'));
+    for (const name of diff.added) logLine(`       ${chalk.green('+')} ${name}`);
+    logLine('');
   }
 
   if (diff.removed.length) {
-    console.log(chalk.red.bold('       Removed'));
-    for (const name of diff.removed) console.log(`       ${chalk.red('-')} ${name}`);
-    console.log('');
+    logLine(chalk.red.bold('       Removed'));
+    for (const name of diff.removed) logLine(`       ${chalk.red('-')} ${name}`);
+    logLine('');
   }
 
   if (!diff.added.length && !diff.removed.length) {
-    console.log(chalk.dim('       No flat export additions or removals.'));
-    console.log('');
+    logLine(chalk.dim('       No flat export additions or removals.'));
+    logLine('');
   }
 
   if (diff.tierViolations.length) {
-    console.log(chalk.yellow.bold('       Tier violations'));
-    for (const v of diff.tierViolations) console.log(`       ${chalk.yellow('!')} ${v}`);
+    logLine(chalk.yellow.bold('       Tier violations'));
+    for (const v of diff.tierViolations) logLine(`       ${chalk.yellow('!')} ${v}`);
   } else {
-    console.log(`       ${chalk.green('✓')} ${chalk.dim('No tier violations')}`);
+    logLine(`       ${chalk.green('✓')} ${chalk.dim('No tier violations')}`);
   }
 }
 
@@ -271,26 +279,27 @@ export function printDiffVerbose(input: {
   left: InventorySnapshot;
   right: InventorySnapshot;
 }): void {
+  if (!canEmitVerboseReport()) return;
   const { diff, left, right } = input;
   if (diff.added.length) {
-    console.log('');
-    console.log(chalk.bold.dim('       Added detail'));
+    logLine('');
+    logLine(chalk.bold.dim('       Added detail'));
     for (const name of diff.added) {
       const sym = right.symbols.find((s) => s.name === name);
       if (sym) {
-        console.log(
+        logLine(
           `       ${chalk.dim('·')} ${name} → ${sym.tier} · ${sym.category} · ${sym.symbolKind} → ${sym.targetSubpath}`,
         );
       }
     }
   }
   if (diff.removed.length) {
-    console.log('');
-    console.log(chalk.bold.dim('       Removed detail'));
+    logLine('');
+    logLine(chalk.bold.dim('       Removed detail'));
     for (const name of diff.removed) {
       const sym = left.symbols.find((s) => s.name === name);
       if (sym) {
-        console.log(
+        logLine(
           `       ${chalk.dim('·')} ${name} → ${sym.tier} · ${sym.category} · ${sym.symbolKind} → ${sym.targetSubpath}`,
         );
       }
@@ -299,11 +308,12 @@ export function printDiffVerbose(input: {
 }
 
 export function printDiffCacheDetail(input: { left: SnapshotResult; right: SnapshotResult }): void {
+  if (!canEmitVerboseReport()) return;
   const { left, right } = input;
-  console.log('');
-  console.log(chalk.bold.dim('       Cache detail'));
-  console.log(`       ${padLabel('from')} ${left.snapshot.sha} ${chalk.dim(`(${left.cache})`)}`);
-  console.log(`       ${padLabel('to')} ${right.snapshot.sha} ${chalk.dim(`(${right.cache})`)}`);
+  logLine('');
+  logLine(chalk.bold.dim('       Cache detail'));
+  logLine(`       ${padLabel('from')} ${left.snapshot.sha} ${chalk.dim(`(${left.cache})`)}`);
+  logLine(`       ${padLabel('to')} ${right.snapshot.sha} ${chalk.dim(`(${right.cache})`)}`);
 }
 
 export function printValidateReport(input: {
@@ -318,34 +328,34 @@ export function printValidateReport(input: {
   const noteLimit = verbose ? notes.length : 5;
 
   if (!passed) {
-    console.log('');
-    for (const v of violations) console.log(`       ${chalk.red('✗')} ${v}`);
+    logLine('');
+    for (const v of violations) logLine(`       ${chalk.red('✗')} ${v}`);
     if (verbose && notes.length) {
-      console.log('');
-      console.log(chalk.bold.dim('       Notes'));
-      for (const note of notes) console.log(`       ${chalk.dim('·')} ${note}`);
+      logLine('');
+      logLine(chalk.bold.dim('       Notes'));
+      for (const note of notes) logLine(`       ${chalk.dim('·')} ${note}`);
     }
     return;
   }
 
-  console.log('');
-  console.log(`       ${chalk.green('✓')} tsconfig paths ⊆ npm exports (wildcard flagged separately)`);
-  console.log(`       ${chalk.green('✓')} no unclassified root flat exports`);
-  for (const note of notes.slice(0, noteLimit)) console.log(`       ${chalk.dim('·')} ${note}`);
+  logLine('');
+  logLine(`       ${chalk.green('✓')} tsconfig paths ⊆ npm exports (wildcard flagged separately)`);
+  logLine(`       ${chalk.green('✓')} no unclassified root flat exports`);
+  for (const note of notes.slice(0, noteLimit)) logLine(`       ${chalk.dim('·')} ${note}`);
   if (!verbose && notes.length > 5) {
-    console.log(`       ${chalk.dim(`…and ${notes.length - 5} more notes (use -v)`)}`);
+    logLine(`       ${chalk.dim(`…and ${notes.length - 5} more notes (use -v)`)}`);
   }
 
   if (verbose && internalFlatSymbols.length) {
-    console.log('');
-    console.log(chalk.bold.dim('       Internal-tier flat on root'));
-    for (const name of internalFlatSymbols.sort()) console.log(`       ${chalk.magenta('·')} ${name}`);
+    logLine('');
+    logLine(chalk.bold.dim('       Internal-tier flat on root'));
+    for (const name of internalFlatSymbols.sort()) logLine(`       ${chalk.magenta('·')} ${name}`);
   }
 
   if (verbose && advancedFlatSymbols.length) {
-    console.log('');
-    console.log(chalk.bold.dim('       Advanced-tier flat on root'));
-    for (const name of advancedFlatSymbols.sort()) console.log(`       ${chalk.yellow('·')} ${name}`);
+    logLine('');
+    logLine(chalk.bold.dim('       Advanced-tier flat on root'));
+    for (const name of advancedFlatSymbols.sort()) logLine(`       ${chalk.yellow('·')} ${name}`);
   }
 }
 
@@ -371,19 +381,19 @@ export function printTrendReport(input: {
   });
 
   if (!input.rows.length) {
-    console.log('');
-    console.log(chalk.dim('       No version tags found (git tag -l v*).'));
+    logLine('');
+    logLine(chalk.dim('       No version tags found (git tag -l v*).'));
     return;
   }
 
-  console.log('');
-  console.log(
+  logLine('');
+  logLine(
     chalk.dim(
       `       ${'tag'.padEnd(10)} ${'flat'.padStart(6)} ${'stable'.padStart(6)} ${'adv'.padStart(5)} ${'int'.padStart(4)}`,
     ),
   );
   for (const row of input.rows) {
-    console.log(
+    logLine(
       `       ${row.tag.padEnd(10)} ${String(row.rollup.rootFlat).padStart(6)} ${String(row.rollup.stable).padStart(6)} ${String(row.rollup.advanced).padStart(5)} ${String(row.rollup.internal).padStart(4)} ${chalk.dim(`(${row.cache})`)}`,
     );
   }
@@ -392,20 +402,20 @@ export function printTrendReport(input: {
   const last = input.rows[input.rows.length - 1]!;
   const delta = last.rollup.rootFlat - first.rollup.rootFlat;
   const pct = first.rollup.rootFlat ? ((delta / first.rollup.rootFlat) * 100).toFixed(1) : '0.0';
-  console.log('');
+  logLine('');
   if (delta === 0) {
-    console.log(`       ${chalk.dim(`Δ ${first.tag} → ${last.tag}: flat unchanged`)}`);
+    logLine(`       ${chalk.dim(`Δ ${first.tag} → ${last.tag}: flat unchanged`)}`);
   } else if (delta > 0) {
-    console.log(`       ${chalk.yellow(`Δ ${first.tag} → ${last.tag}: +${delta} flat (+${pct}%)`)}`);
+    logLine(`       ${chalk.yellow(`Δ ${first.tag} → ${last.tag}: +${delta} flat (+${pct}%)`)}`);
   } else {
-    console.log(`       ${chalk.green(`Δ ${first.tag} → ${last.tag}: ${delta} flat (${pct}%)`)}`);
+    logLine(`       ${chalk.green(`Δ ${first.tag} → ${last.tag}: ${delta} flat (${pct}%)`)}`);
   }
 
   if (input.verbose) {
-    console.log('');
-    console.log(chalk.bold.dim('       Categories (latest tag)'));
+    logLine('');
+    logLine(chalk.bold.dim('       Categories (latest tag)'));
     for (const [cat, count] of Object.entries(last.rollup.byCategory).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))) {
-      console.log(`       ${padLabel(cat, 14)} ${count ?? 0}`);
+      logLine(`       ${padLabel(cat, 14)} ${count ?? 0}`);
     }
   }
 }
@@ -439,18 +449,18 @@ export function printTimelineReport(input: {
   });
 
   if (!input.rows.length) {
-    console.log('');
-    console.log(chalk.dim('       No commits touching the root barrel in this range.'));
+    logLine('');
+    logLine(chalk.dim('       No commits touching the root barrel in this range.'));
     return;
   }
-  console.log(
+  logLine(
     chalk.dim(
       '       Δ = flat change vs row above (newest first); — = first row; +N/−N flat exports vs newer barrel edit',
     ),
   );
 
-  console.log('');
-  console.log(chalk.dim(`       ${'date'.padEnd(12)} ${'sha'.padEnd(9)} ${'flat'.padStart(5)} ${'Δ'.padStart(5)}  subject`));
+  logLine('');
+  logLine(chalk.dim(`       ${'date'.padEnd(12)} ${'sha'.padEnd(9)} ${'flat'.padStart(5)} ${'Δ'.padStart(5)}  subject`));
   for (const row of input.rows) {
     let deltaStr: string;
     if (row.delta === null) deltaStr = chalk.dim('    —');
@@ -459,7 +469,7 @@ export function printTimelineReport(input: {
     else deltaStr = chalk.green(` ${row.delta}`.padStart(4));
 
     const subject = formatSubject(row.subject, 48, input.verbose);
-    console.log(
+    logLine(
       `       ${row.date.padEnd(12)} ${row.sha.slice(0, 7).padEnd(9)} ${String(row.rollup.rootFlat).padStart(5)} ${deltaStr}  ${subject}`,
     );
   }
@@ -482,32 +492,32 @@ export function printGraphReport(input: {
     subpaths: chalk.dim(String(input.snapshot.summary.subpaths.length)),
   });
 
-  console.log('');
-  console.log(chalk.bold.dim('       Root re-export targets (governance map)'));
-  console.log(chalk.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
+  logLine('');
+  logLine(chalk.bold.dim('       Root re-export targets (governance map)'));
+  logLine(chalk.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
   for (const group of input.targetGroups.slice(0, input.verbose ? undefined : 12)) {
-    console.log(
+    logLine(
       `       ${group.targetSubpath.padEnd(22)} ${String(group.flat).padStart(6)} ${String(group.namespace).padStart(4)}`,
     );
   }
 
   printPublishedSubpathRollups(input.snapshot.summary.subpaths, 'Published npm subpaths');
 
-  console.log('');
-  console.log(chalk.bold.dim('       Root namespaces'));
+  logLine('');
+  logLine(chalk.bold.dim('       Root namespaces'));
   for (const ns of input.namespaces.slice(0, input.verbose ? undefined : 15)) {
     const src = compactCoreSourcePath(ns.module);
-    console.log(
+    logLine(
       `       ${chalk.dim('·')} ${ns.name.padEnd(18)} ${chalk.dim('→')} ${chalk.dim(src)} ${chalk.dim('·')} ${ns.targetSubpath}`,
     );
   }
 
-  console.log('');
-  console.log(chalk.bold.dim('       Top source modules (edge count)'));
+  logLine('');
+  logLine(chalk.bold.dim('       Top source modules (edge count)'));
   for (const mod of input.topModules) {
-    console.log(`       ${chalk.dim('·')} ${mod.edges.toString().padStart(4)}  ${mod.module}`);
+    logLine(`       ${chalk.dim('·')} ${mod.edges.toString().padStart(4)}  ${mod.module}`);
     if (input.verbose && mod.symbols.length) {
-      console.log(`       ${chalk.dim('     e.g.')} ${mod.symbols.join(', ')}`);
+      logLine(`       ${chalk.dim('     e.g.')} ${mod.symbols.join(', ')}`);
     }
   }
 }

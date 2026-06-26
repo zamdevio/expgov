@@ -1,0 +1,68 @@
+import type { InitDetection } from './detect.js';
+import { detectionToConfig } from './detect.js';
+
+export const DEFAULT_INIT_CONFIG_IMPORT = 'expgov/core';
+
+function quote(s: string): string {
+  return `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+}
+
+function formatSubpaths(subpaths: Record<string, string>): string {
+  const lines = Object.entries(subpaths).map(([key, value]) => `      ${quote(key)}: ${quote(value)},`);
+  return `{\n${lines.join('\n')}\n    }`;
+}
+
+function formatStringList(items: string[], indent: string): string {
+  if (!items.length) return '[]';
+  return `[\n${items.map((item) => `${indent}  ${quote(item)},`).join('\n')}\n${indent}]`;
+}
+
+/** Generate expgov.config.ts source from detection (safe defaults, optional rich comments). */
+export function buildInitConfigTemplate(
+  detection: InitDetection,
+  options: { rich?: boolean; importSpecifier?: string } = {},
+): string {
+  const config = detectionToConfig(detection);
+  const imp = options.importSpecifier ?? DEFAULT_INIT_CONFIG_IMPORT;
+  const rich = Boolean(options.rich);
+
+  const stableExactBlock =
+    config.tiers?.stableExact?.length
+      ? formatStringList(config.tiers.stableExact, '    ')
+      : rich
+        ? `[
+      // 'PingResult',
+      // 'stringifyEnvelope',
+    ]`
+        : '[]';
+
+  const notes = detection.notes.map((n) => `// ${n}`).join('\n');
+
+  return `import { defineConfig, type ExpgovConfig } from '${imp}';
+
+${notes}
+
+export default defineConfig({
+  packageName: ${quote(config.packageName)},
+  core: {
+    dir: ${quote(config.core.dir)},
+    rootBarrel: ${quote(config.core.rootBarrel)},
+    subpaths: ${formatSubpaths(config.core.subpaths)},
+  },
+  tsconfig: ${quote(config.tsconfig ?? 'tsconfig.json')},
+  cacheDir: ${quote(config.cacheDir ?? '.exports/cache')},
+  git: {
+    tagPattern: ${quote(config.git?.tagPattern ?? 'v*')},
+    timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},
+  },
+  tiers: {
+    stableExact: ${stableExactBlock},
+    stablePrefixes: ${formatStringList(config.tiers?.stablePrefixes ?? [], '    ')},
+    internalPatterns: ${formatStringList(config.tiers?.internalPatterns ?? [], '    ')},
+    advancedPatterns: ${formatStringList(config.tiers?.advancedPatterns ?? [], '    ')},
+  },
+} satisfies ExpgovConfig);
+`;
+}
+
+export const INIT_CONFIG_FILE_NAME = 'expgov.config.ts';

@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const cliRoot = path.join(root, 'packages', 'cli');
 const coreSrc = path.join(root, 'packages/core/src');
 
 export default defineConfig({
@@ -22,7 +21,7 @@ export default defineConfig({
   },
   splitting: false,
   treeshake: true,
-  external: ['commander', 'chalk', 'jiti', 'typescript'],
+  external: ['commander', 'chalk', 'jiti', 'typescript', '@inquirer/prompts'],
   esbuildOptions(options) {
     options.alias = {
       '@expgov/core': coreSrc,

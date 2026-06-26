@@ -1,7 +1,9 @@
 import type { GraphEdge, InventoryNamespace, InventorySnapshot } from '../inventory/index.js';
 import { getSnapshot } from '../cache/index.js';
 import { resolveSourceRef } from '../git/index.js';
-import { printCommandLine, printGraphReport } from '../logger/index.js';
+import { printGraphReport } from '../logger/index.js';
+import { beginCommand, finishCommand } from '../runtime/command.js';
+import { getRunOptions } from '../runtime/runOptions.js';
 
 export interface GraphCliOptions {
   ref?: string;
@@ -66,7 +68,7 @@ function namespaceRows(namespaces: InventoryNamespace[]): { name: string; target
 }
 
 export function runExportsGraph(options: GraphCliOptions = {}): void {
-  const t0 = performance.now();
+  const timer = beginCommand('graph');
   const ref = resolveSourceRef(options.ref);
   const { snapshot, cache } = getSnapshot(ref, {
     noCache: options.noCache,
@@ -74,14 +76,38 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
     profile: 'full',
   });
 
-  printCommandLine('graph', 'ok', Math.round(performance.now() - t0));
+  const targetGroups = groupByTargetSubpath(snapshot);
+  const top = topModules(snapshot.edges, options.verbose ? 20 : 8);
+  const namespaces = namespaceRows(snapshot.namespaces);
+
+  finishCommand({
+    command: 'graph',
+    timer,
+    status: 'ok',
+    json: {
+      kind: 'graph',
+      ok: true,
+      data: {
+        ref: ref.label,
+        edgeCount: snapshot.edges.length,
+        targetGroups: targetGroups.map((g) => ({
+          targetSubpath: g.targetSubpath,
+          flat: g.flat,
+          namespace: g.namespace,
+        })),
+      },
+    },
+  });
+
+  if (getRunOptions().json) return;
+
   printGraphReport({
     ref,
     snapshot,
     cache,
-    targetGroups: groupByTargetSubpath(snapshot),
-    topModules: topModules(snapshot.edges, options.verbose ? 20 : 8),
-    namespaces: namespaceRows(snapshot.namespaces),
+    targetGroups,
+    topModules: top,
+    namespaces,
     verbose: options.verbose,
   });
 }

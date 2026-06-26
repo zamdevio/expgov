@@ -1,14 +1,15 @@
-import chalk from 'chalk';
 import { ExportError } from '../errors/index.js';
 import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
-import { formatGitRunStats, listBarrelCommits, resetGitRunStats, shortSha } from '../git/index.js';
-import { printCommandLine, printTimelineReport } from '../logger/index.js';
-import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
 import type { CacheStatus } from '../cache/index.js';
+import { formatGitRunStats, listBarrelCommits, resetGitRunStats, shortSha } from '../git/index.js';
+import { printTimelineReport } from '../logger/index.js';
+import { beginCommand, finishCommand } from '../runtime/command.js';
+import { getRunOptions } from '../runtime/runOptions.js';
+import { CLI_NAME, style } from '../runtime/style.js';
+import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
 
 export interface TimelineCliOptions {
   range?: string;
-  /** `0` means no limit; omitted defaults to 20. */
   limit?: number;
   noCache?: boolean;
   force?: boolean;
@@ -17,7 +18,7 @@ export interface TimelineCliOptions {
 
 export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   resetGitRunStats();
-  const t0 = performance.now();
+  const timer = beginCommand('timeline');
   const rangeToken = options.range ?? '@4w';
   const limit = options.limit ?? 20;
   const range = parseTimelineRange(rangeToken);
@@ -66,7 +67,19 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     rows[i]!.delta = rows[i]!.rollup.rootFlat - rows[i - 1]!.rollup.rootFlat;
   }
 
-  printCommandLine('timeline', 'ok', Math.round(performance.now() - t0));
+  finishCommand({
+    command: 'timeline',
+    timer,
+    status: 'ok',
+    json: {
+      kind: 'timeline',
+      ok: true,
+      data: { range, limit, rows, warmStats },
+    },
+  });
+
+  if (getRunOptions().json) return;
+
   printTimelineReport({
     range,
     limit,
@@ -91,26 +104,26 @@ export class TimelineWarmer {
     this.totalMs += ms;
     if (this.verbose) {
       console.error(
-        chalk.dim(
-          `exports  timeline · warm ${this.warmed}/${this.total} · ${shortSha(sha)} · ${cache} · ${ms}ms`,
+        style.dim(
+          `${CLI_NAME}  timeline · warm ${this.warmed}/${this.total} · ${shortSha(sha)} · ${cache} · ${ms}ms`,
         ),
       );
       return;
     }
     process.stderr.write(
-      `\r\x1b[Kexports  timeline · warming ${this.warmed}/${this.total} · ${this.totalMs}ms …`,
+      `\r\x1b[K${CLI_NAME}  timeline · warming ${this.warmed}/${this.total} · ${this.totalMs}ms …`,
     );
   }
 
   finish(): { warmed: number; totalMs: number } {
     if (this.verbose) {
       console.error(
-        chalk.dim(`exports  timeline · warmed ${this.warmed}/${this.total} · ${this.totalMs}ms total`),
+        style.dim(`${CLI_NAME}  timeline · warmed ${this.warmed}/${this.total} · ${this.totalMs}ms total`),
       );
     } else if (this.total > 0) {
-    process.stderr.write(
-      `\r\x1b[Kexports  timeline · warmed ${this.warmed}/${this.total} · ${this.totalMs}ms\n`,
-    );
+      process.stderr.write(
+        `\r\x1b[K${CLI_NAME}  timeline · warmed ${this.warmed}/${this.total} · ${this.totalMs}ms\n`,
+      );
     }
     return { warmed: this.warmed, totalMs: this.totalMs };
   }

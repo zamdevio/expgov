@@ -3,26 +3,42 @@ import path from 'node:path';
 import { Command } from 'commander';
 
 import {
+  bootstrapRuntime,
+  configureStyle,
   initProjectContext,
   isExportError,
   printExportError,
   printHelp,
   printHelpHint,
   printUnexpected,
+  resetRunOptions,
   runExportsDiff,
   runExportsGraph,
   runExportsInventory,
   runExportsTimeline,
   runExportsTrend,
   runExportsValidate,
+  setRunOptions,
   type HelpTopic,
 } from '@expgov/core';
+
+import { ensureConfig } from './commands/init/index.js';
+import { CLI_NAME, CLI_ROOT_DESCRIPTION } from './constants/cli.js';
+import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from './shared/context/globals.js';
+import { maybePrintCommandBanner } from './utils/cli/banner.js';
+import { resolveNoColor } from './utils/cli/noColor.js';
+import { configureCliHelp } from './utils/help/configureCliHelp.js';
 
 interface GlobalOpts {
   cwd?: string;
   config?: string;
   packageName?: string;
   cacheDir?: string;
+  yes?: boolean;
+  json?: boolean;
+  quiet?: boolean;
+  silent?: boolean;
+  color?: boolean;
 }
 
 function globalOpts(cmd: Command): GlobalOpts {
@@ -68,19 +84,66 @@ function withContext(cmd: Command, verbose: boolean | undefined, fn: () => void 
 }
 
 function addCacheFlags(cmd: Command): Command {
-  return cmd.option('-f, --force', 'rebuild snapshot and overwrite cache').option('--no-cache', 'skip cache');
+  return cmd
+    .option('-f, --force', 'rebuild snapshot and overwrite cache')
+    .option('--no-cache', 'skip cache');
 }
 
 export function buildProgram(): Command {
-  const program = new Command('expgov');
+  const program = new Command();
+
+  configureCliHelp(program);
 
   program
-    .description('Export governance for TypeScript SDK barrels')
+    .name(CLI_NAME)
+    .description(CLI_ROOT_DESCRIPTION)
     .version('0.1.0')
     .option('-C, --cwd <dir>', 'project root')
     .option('--config <path>', 'path to expgov.config.ts')
     .option('--package-name <name>', 'override package name')
-    .option('--cache-dir <path>', 'override cache directory');
+    .option('--cache-dir <path>', 'override cache directory')
+    .option('-y, --yes', 'non-interactive (init writes config without prompting)')
+    .option('-j, --json', 'machine-readable JSON envelope output')
+    .option('-q, --quiet', 'suppress info logs and tips; keep primary command output')
+    .option('-s, --silent', 'suppress all human output except errors and --json')
+    .option('--color', 'force color output', true)
+    .option('--no-color', 'disable color output');
+
+  program.hook('preAction', (_thisCommand, actionCommand) => {
+    const opts = program.opts<GlobalOpts>();
+    resetCliGlobals();
+    resetRunOptions();
+    setCliYesFlag(Boolean(opts.yes));
+    configureStyle(resolveNoColor(!opts.color));
+    setRunOptions({
+      json: Boolean(opts.json),
+      jsonPretty: true,
+      quiet: Boolean(opts.quiet),
+      silent: Boolean(opts.silent),
+      noColor: resolveNoColor(!opts.color),
+      verbose: Boolean((actionCommand.opts() as { verbose?: boolean }).verbose),
+    });
+    if (opts.cwd) process.chdir(path.resolve(opts.cwd));
+    maybePrintCommandBanner(actionCommand);
+  });
+
+  program
+    .command('init')
+    .description(`create ${CLI_NAME}.config.ts when missing (interactive unless --yes)`)
+    .option('-y, --yes', 'write config without prompting')
+    .option('-r, --rich', 'include commented tier examples in stableExact', false)
+    .option('-f, --force', 'overwrite existing config file')
+    .action(async (opts: { yes?: boolean; rich?: boolean; force?: boolean }) => {
+      try {
+        await ensureConfig({
+          yes: Boolean(opts.yes) || getCliYesFlag(),
+          force: Boolean(opts.force),
+          rich: Boolean(opts.rich),
+        });
+      } catch (err) {
+        handleError(err);
+      }
+    });
 
   addCacheFlags(
     program
@@ -213,6 +276,7 @@ export function buildProgram(): Command {
       }
       const topics: HelpTopic[] = [
         'all',
+        'init',
         'inventory',
         'diff',
         'validate',
@@ -228,5 +292,6 @@ export function buildProgram(): Command {
 }
 
 export function runCli(argv: string[]): void {
+  bootstrapRuntime();
   buildProgram().parse(argv);
 }

@@ -1,12 +1,13 @@
 import chalk from 'chalk';
 
 import { tryGetProjectContext } from '../context/index.js';
+import { getRunOptions } from '../runtime/runOptions.js';
+import { canPrintTip } from '../runtime/policy.js';
+import { BRAND, style } from '../runtime/style.js';
 import { formatTimelineRangeHelp } from '../time/index.js';
 
-const BRAND = chalk.bold.cyan('expgov');
-
 function cmd(name: string, args = ''): string {
-  return `  ${chalk.cyan(`expgov ${name}`)} ${chalk.dim(args)}`;
+  return `  ${style.accent(`expgov ${name}`)} ${style.dim(args)}`;
 }
 
 function section(title: string, lines: string[]): void {
@@ -14,13 +15,40 @@ function section(title: string, lines: string[]): void {
   for (const line of lines) console.log(line);
 }
 
-export type HelpTopic = 'all' | 'inventory' | 'diff' | 'validate' | 'trend' | 'timeline' | 'graph' | 'help';
+export type HelpTopic =
+  | 'all'
+  | 'init'
+  | 'inventory'
+  | 'diff'
+  | 'validate'
+  | 'trend'
+  | 'timeline'
+  | 'graph'
+  | 'help';
 
 export function printHelp(topic: HelpTopic = 'all'): void {
+  const run = getRunOptions();
+  if (run.json || run.silent) return;
+
   const ctx = tryGetProjectContext();
   const packageName = ctx?.packageName ?? '<package>';
   const rootBarrel = ctx?.rootIndexRepoPath ?? '<root-barrel>';
-  console.log(`\n${BRAND}  ${chalk.bold(`maintainer tools for ${packageName} export surface`)}`);
+  console.log(`\n${BRAND()}  ${chalk.bold(`maintainer tools for ${packageName} export surface`)}`);
+
+  if (topic === 'all' || topic === 'init') {
+    section('init — scaffold expgov.config.ts', [
+      cmd('init', '[flags]'),
+      '',
+      `  ${chalk.dim('Creates')} ${chalk.white('expgov.config.ts')} with safe defaults (detects monorepo vs single-package layout).`,
+      `  ${chalk.dim('Skips')} when config exists unless ${chalk.white('--force')}.`,
+      '',
+      `  ${chalk.bold('Flags')}`,
+      `    -y, --yes       write without prompts (CI / non-TTY)`,
+      `    -f, --force     overwrite existing expgov.config.ts`,
+      `    -r, --rich      commented stableExact examples`,
+      `    -h, --help      show this section`,
+    ]);
+  }
 
   if (topic === 'all' || topic === 'inventory') {
     section('inventory — summarize root barrel exports', [
@@ -159,7 +187,14 @@ export function printHelp(topic: HelpTopic = 'all'): void {
 
   if (topic === 'all') {
     section('global', [
-      `  ${chalk.bold('Commands')} inventory, diff, validate, trend, timeline, graph, help`,
+      `  ${chalk.bold('Commands')} init, inventory, diff, validate, trend, timeline, graph, help`,
+      `  ${chalk.bold('Global flags')}`,
+      `    -j, --json      machine-readable JSON envelope (stdout)`,
+      `    -q, --quiet     suppress info logs and tips; keep primary command output`,
+      `    -s, --silent    suppress all human output except errors and --json`,
+      `    -C, --cwd       project root`,
+      `    --config        path to expgov.config.ts`,
+      `    --no-color      disable color output`,
       `  ${chalk.bold('Cache')}   ${chalk.dim('.exports/cache/')} per-sha: inventory.full.json, timeline.summary.json`,
       `  ${chalk.bold('Config')}  ${chalk.dim('expgov.config.ts')}`,
       `  ${chalk.bold('Output')}  each command section above documents key columns and labels`,
@@ -173,8 +208,9 @@ export function printHelp(topic: HelpTopic = 'all'): void {
 }
 
 export function printHelpHint(command?: string): void {
+  if (!canPrintTip(getRunOptions())) return;
   const hint = command
     ? `Run ${chalk.cyan(`expgov ${command} --help`)} for command-specific usage.`
     : `Run ${chalk.cyan('expgov --help')} for full usage.`;
-  console.log(`${BRAND}  ${chalk.dim('hint')}  ${hint}\n`);
+  console.log(`${BRAND()}  ${chalk.dim('hint')}  ${hint}\n`);
 }

@@ -1,6 +1,8 @@
 import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
 import { listVersionTags, resolveSourceRef } from '../git/index.js';
-import { printCommandLine, printTrendReport } from '../logger/index.js';
+import { printTrendReport } from '../logger/index.js';
+import { beginCommand, finishCommand } from '../runtime/command.js';
+import { getRunOptions } from '../runtime/runOptions.js';
 
 export interface TrendCliOptions {
   tagLimit?: number;
@@ -10,13 +12,8 @@ export interface TrendCliOptions {
 }
 
 export function runExportsTrend(options: TrendCliOptions = {}): void {
-  const t0 = performance.now();
+  const timer = beginCommand('trend');
   const tags = listVersionTags(options.tagLimit ?? 12);
-  if (!tags.length) {
-    printCommandLine('trend', 'ok', Math.round(performance.now() - t0));
-    printTrendReport({ rows: [], tagLimit: options.tagLimit ?? 12, verbose: options.verbose });
-    return;
-  }
 
   const rows = tags.map((tag) => {
     const ref = resolveSourceRef(tag);
@@ -29,6 +26,18 @@ export function runExportsTrend(options: TrendCliOptions = {}): void {
     };
   });
 
-  printCommandLine('trend', 'ok', Math.round(performance.now() - t0));
+  finishCommand({
+    command: 'trend',
+    timer,
+    status: 'ok',
+    json: {
+      kind: 'trend',
+      ok: true,
+      data: { tagLimit: options.tagLimit ?? 12, rows },
+    },
+  });
+
+  if (getRunOptions().json) return;
+
   printTrendReport({ rows, tagLimit: options.tagLimit ?? 12, verbose: options.verbose });
 }

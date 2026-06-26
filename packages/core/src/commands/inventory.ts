@@ -1,6 +1,8 @@
 import { getSnapshot } from '../cache/index.js';
 import { formatGitRunStats, resetGitRunStats, resolveSourceRef } from '../git/index.js';
-import { printCommandLine, printInventoryReport, printVerboseInventory } from '../logger/index.js';
+import { printInventoryReport, printVerboseInventory } from '../logger/index.js';
+import { beginCommand, finishCommand } from '../runtime/command.js';
+import { getRunOptions } from '../runtime/runOptions.js';
 
 export interface InventoryCliOptions {
   ref?: string;
@@ -11,10 +13,28 @@ export interface InventoryCliOptions {
 
 export function runExportsInventory(options: InventoryCliOptions): void {
   resetGitRunStats();
-  const t0 = performance.now();
+  const timer = beginCommand('inventory');
   const ref = resolveSourceRef(options.ref);
   const result = getSnapshot(ref, { noCache: options.noCache, force: options.force, profile: 'full' });
-  printCommandLine('inventory', 'ok', Math.round(performance.now() - t0));
+
+  finishCommand({
+    command: 'inventory',
+    timer,
+    status: 'ok',
+    json: {
+      kind: 'inventory',
+      ok: true,
+      data: {
+        ref: ref.label,
+        sha: result.snapshot.sha,
+        summary: result.snapshot.summary,
+        cache: result.cache,
+      },
+    },
+  });
+
+  if (getRunOptions().json) return;
+
   printInventoryReport({
     ref,
     result,

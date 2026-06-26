@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+
 import { getWorktreeSnapshot } from '../cache/index.js';
 import {
   getProjectContext,
@@ -7,8 +8,11 @@ import {
   wildcardPackageTsconfigPath,
 } from '../context/index.js';
 import { sumSdkTierCounts } from '../inventory/index.js';
-import { printCommandLine, printValidateReport } from '../logger/index.js';
+import { printValidateReport } from '../logger/index.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
+import { beginCommand, finishCommand } from '../runtime/command.js';
+import { getRunOptions } from '../runtime/runOptions.js';
+import type { Issue } from '../types/json/envelope.js';
 
 interface PackageExports {
   [subpath: string]: unknown;
@@ -41,7 +45,7 @@ export interface ValidateOptions {
 }
 
 export function runExportsValidate(options: ValidateOptions = {}): number {
-  const t0 = performance.now();
+  const timer = beginCommand('validate');
   const violations: string[] = [];
   const notes: string[] = [];
   const advancedFlatSymbols: string[] = [];
@@ -119,7 +123,35 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   }
 
   const passed = violations.length === 0;
-  printCommandLine('validate', passed ? 'ok' : 'fail', Math.round(performance.now() - t0));
+  const issues: Issue[] = violations.map((message) => ({
+    severity: 'error',
+    code: 'expgov.validate.violation',
+    message,
+  }));
+
+  const exitCode = passed ? 0 : 1;
+  finishCommand({
+    command: 'validate',
+    timer,
+    status: passed ? 'ok' : 'fail',
+    exitCode,
+    json: {
+      kind: 'validate',
+      ok: passed,
+      issues,
+      data: {
+        passed,
+        violations,
+        notes,
+        advancedFlatSymbols,
+        internalFlatSymbols,
+        sdkTiers,
+      },
+    },
+  });
+
+  if (getRunOptions().json) return exitCode;
+
   printValidateReport({
     passed,
     violations,
@@ -128,5 +160,5 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     advancedFlatSymbols,
     internalFlatSymbols,
   });
-  return passed ? 0 : 1;
+  return exitCode;
 }

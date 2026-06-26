@@ -1,7 +1,9 @@
 import { getSnapshot } from '../cache/index.js';
 import { diffSnapshots } from '../format/index.js';
 import { parseDiffRange } from '../git/index.js';
-import { printCommandLine, printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
+import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
+import { beginCommand, finishCommand } from '../runtime/command.js';
+import { getRunOptions } from '../runtime/runOptions.js';
 
 export interface DiffCliOptions {
   range?: string;
@@ -11,7 +13,7 @@ export interface DiffCliOptions {
 }
 
 export function runExportsDiff(options: DiffCliOptions): void {
-  const t0 = performance.now();
+  const timer = beginCommand('diff');
   const { left, right, rangeLabel } = parseDiffRange(options.range);
   const cacheOpts = { noCache: options.noCache, force: options.force };
 
@@ -19,20 +21,23 @@ export function runExportsDiff(options: DiffCliOptions): void {
   const rightResult = getSnapshot(right, cacheOpts);
   const diff = diffSnapshots(leftResult.snapshot, rightResult.snapshot);
 
-  printCommandLine('diff', 'ok', Math.round(performance.now() - t0));
-  printDiffReport({
-    rangeLabel,
-    left: leftResult,
-    right: rightResult,
-    diff,
+  finishCommand({
+    command: 'diff',
+    timer,
+    status: 'ok',
+    json: {
+      kind: 'diff',
+      ok: true,
+      data: { rangeLabel, diff: diff.summaryDelta, added: diff.added, removed: diff.removed },
+    },
   });
 
+  if (getRunOptions().json) return;
+
+  printDiffReport({ rangeLabel, left: leftResult, right: rightResult, diff });
+
   if (options.verbose) {
-    printDiffVerbose({
-      diff,
-      left: leftResult.snapshot,
-      right: rightResult.snapshot,
-    });
+    printDiffVerbose({ diff, left: leftResult.snapshot, right: rightResult.snapshot });
     printDiffCacheDetail({ left: leftResult, right: rightResult });
   }
 }

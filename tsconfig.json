@@ -13,7 +13,12 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@expgov/core": ["./packages/core/src/index.ts"],
+      "expgov/core": ["./dist/core.d.ts", "./packages/core/src/index.ts"]
+    }
   },
-  "include": ["packages/**/*.ts", "tsup.config.ts"]
+  "include": ["packages/**/*.ts", "tsup.config.ts", "expgov.config.ts"]
 }
