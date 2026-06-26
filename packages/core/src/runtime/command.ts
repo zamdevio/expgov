@@ -1,6 +1,7 @@
 import process from 'node:process';
 
 import { maybeEmitCacheGitignoreTip } from '../git/gitignore-tip.js';
+import { maybeEmitLegacyTierConfigTip } from '../config/legacy-tip.js';
 import { emitJsonResult } from './timer.js';
 import { startCommandTimer, type CommandTimer } from './timer.js';
 import { getRunOptions } from './runOptions.js';
@@ -36,6 +37,7 @@ export function finishCommand(input: {
     });
   } else {
     maybeEmitCacheGitignoreTip();
+    maybeEmitLegacyTierConfigTip();
   }
   return input.exitCode;
 }

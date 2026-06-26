@@ -91,7 +91,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     if (sym.tier === 'advanced') advancedFlatSymbols.push(sym.name);
     if (sym.tier === 'unclassified') {
       violations.push(
-        `root flat export "${sym.name}" is unclassified — extend expgov tier config (stableExact or patterns)`,
+        `root flat export "${sym.name}" is unclassified — extend expgov tier config (tiers.<tier>.exact or .prefix, or @sdkTier)`,
       );
     }
   }

@@ -17,6 +17,20 @@ function formatStringList(items: string[], indent: string): string {
   return `[\n${items.map((item) => `${indent}  ${quote(item)},`).join('\n')}\n${indent}]`;
 }
 
+function formatTierBucket(
+  bucket: { exact?: string[]; prefix?: string[] } | undefined,
+  indent: string,
+  richExamples?: { exact?: string[] },
+): string {
+  const exact = bucket?.exact?.length
+    ? formatStringList(bucket.exact, `${indent}  `)
+    : richExamples?.exact?.length
+      ? `[\n${richExamples.exact.map((item) => `${indent}    // ${quote(item)},`).join('\n')}\n${indent}  ]`
+      : '[]';
+  const prefix = bucket?.prefix?.length ? formatStringList(bucket.prefix, `${indent}  `) : '[]';
+  return `{\n${indent}  exact: ${exact},\n${indent}  prefix: ${prefix},\n${indent}}`;
+}
+
 /** Generate expgov.config.ts source from detection (safe defaults, optional rich comments). */
 export function buildInitConfigTemplate(
   detection: InitDetection,
@@ -25,16 +39,7 @@ export function buildInitConfigTemplate(
   const config = detectionToConfig(detection);
   const imp = options.importSpecifier ?? DEFAULT_INIT_CONFIG_IMPORT;
   const rich = Boolean(options.rich);
-
-  const stableExactBlock =
-    config.tiers?.stableExact?.length
-      ? formatStringList(config.tiers.stableExact, '    ')
-      : rich
-        ? `[
-      // 'PingResult',
-      // 'stringifyEnvelope',
-    ]`
-        : '[]';
+  const tiers = config.tiers;
 
   const notes = detection.notes.map((n) => `// ${n}`).join('\n');
 
@@ -56,10 +61,9 @@ export default defineConfig({
     timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},
   },
   tiers: {
-    stableExact: ${stableExactBlock},
-    stablePrefixes: ${formatStringList(config.tiers?.stablePrefixes ?? [], '    ')},
-    internalPatterns: ${formatStringList(config.tiers?.internalPatterns ?? [], '    ')},
-    advancedPatterns: ${formatStringList(config.tiers?.advancedPatterns ?? [], '    ')},
+    stable: ${formatTierBucket(tiers?.stable, '    ', rich ? { exact: ['PingResult', 'stringifyEnvelope'] } : undefined)},
+    internal: ${formatTierBucket(tiers?.internal, '    ')},
+    advanced: ${formatTierBucket(tiers?.advanced, '    ')},
   },
 } satisfies ExpgovConfig);
 `;

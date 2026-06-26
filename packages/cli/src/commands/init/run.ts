@@ -22,7 +22,7 @@ function displayPath(cwd: string, target: string): string {
 
 function emitInitGuidance(): void {
   coreLogTip(`Next: run \`expgov validate\` then \`expgov inventory\` to inspect your root barrel.`);
-  coreLogTip(`Add root flat symbols to \`tiers.stableExact\` in ${CONFIG_FILE_NAME} as your SDK surface grows.`);
+  coreLogTip(`Add root flat symbols to \`tiers.stable.exact\` or \`tiers.stable.prefix\` in ${CONFIG_FILE_NAME} as your SDK surface grows.`);
 }
 
 export async function ensureConfig(opts: EnsureConfigOptions = {}): Promise<void> {

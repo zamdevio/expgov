@@ -1,42 +1,9 @@
 import path from 'node:path';
 
-import type { ExpgovConfig, ProjectContext, ResolvedTierRules } from '../config/types.js';
+import type { ExpgovConfig, ProjectContext } from '../config/types.js';
 import type { ExpgovConfigOverrides } from '../config/types.js';
+import { resolveTierRules } from '../config/tiers.js';
 import { resolveExpgovConfig } from '../config/load.js';
-
-const DEFAULT_STABLE_PREFIXES = [
-  'run',
-  'build',
-  'emit',
-  'get',
-  'set',
-  'reset',
-  'is',
-  'format',
-  'resolve',
-  'walk',
-  'directory',
-  'normalize',
-  'rethrow',
-  'noop',
-] as const;
-
-const DEFAULT_INTERNAL_PATTERNS = [/^internal[A-Z_]/, /Internal$/];
-const DEFAULT_ADVANCED_PATTERNS = [/^experimental[A-Z_]/, /^beta[A-Z_]/, /^advanced[A-Z_]/, /Unsafe$/];
-
-function compilePatterns(patterns: string[] | undefined, defaults: readonly RegExp[]): readonly RegExp[] {
-  if (!patterns?.length) return defaults;
-  return patterns.map((source) => new RegExp(source));
-}
-
-function resolveTierRules(config?: ExpgovConfig['tiers']): ResolvedTierRules {
-  return {
-    stableExact: new Set(config?.stableExact ?? []),
-    stablePrefixes: config?.stablePrefixes ?? [...DEFAULT_STABLE_PREFIXES],
-    internalPatterns: compilePatterns(config?.internalPatterns, DEFAULT_INTERNAL_PATTERNS),
-    advancedPatterns: compilePatterns(config?.advancedPatterns, DEFAULT_ADVANCED_PATTERNS),
-  };
-}
 
 function posixJoin(...parts: string[]): string {
   return path.posix.join(...parts.map((p) => p.replace(/\\/g, '/')));
@@ -97,6 +64,12 @@ export function clearProjectContext(): void {
 
 export function initProjectContext(overrides: ExpgovConfigOverrides = {}): ProjectContext {
   const { config, cwd } = resolveExpgovConfig(overrides);
+  const ctx = buildProjectContext(config, cwd);
+  setProjectContext(ctx);
+  return ctx;
+}
+
+export function initProjectContextFromConfig(config: ExpgovConfig, cwd: string): ProjectContext {
   const ctx = buildProjectContext(config, cwd);
   setProjectContext(ctx);
   return ctx;

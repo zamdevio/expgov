@@ -52,6 +52,7 @@ export type {
   ExpgovConfigOverrides,
   ProjectContext,
   TierRulesConfig,
+  TierBucket,
 } from './config/types.js';
 
 export {

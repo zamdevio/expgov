@@ -1,7 +1,20 @@
+/** One tier bucket — literal names and prefix/regex matchers. */
+export interface TierBucket {
+  exact?: string[];
+  prefix?: string[];
+}
+
 export interface TierRulesConfig {
+  stable?: TierBucket;
+  internal?: TierBucket;
+  advanced?: TierBucket;
+  /** @deprecated Use `tiers.stable.exact` */
   stableExact?: string[];
+  /** @deprecated Use `tiers.stable.prefix` */
   stablePrefixes?: string[];
+  /** @deprecated Use `tiers.internal.prefix` */
   internalPatterns?: string[];
+  /** @deprecated Use `tiers.advanced.prefix` */
   advancedPatterns?: string[];
 }
 
@@ -38,12 +51,8 @@ export interface ExpgovConfigOverrides {
   verbose?: boolean;
 }
 
-export interface ResolvedTierRules {
-  stableExact: ReadonlySet<string>;
-  stablePrefixes: readonly string[];
-  internalPatterns: readonly RegExp[];
-  advancedPatterns: readonly RegExp[];
-}
+export type { ResolvedTierBucket, ResolvedTierRules } from './tiers.js';
+import type { ResolvedTierRules } from './tiers.js';
 
 export interface ProjectContext {
   packageName: string;

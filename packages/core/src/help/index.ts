@@ -45,7 +45,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `  ${chalk.bold('Flags')}`,
       `    -y, --yes       write without prompts (CI / non-TTY)`,
       `    -f, --force     overwrite existing expgov.config.ts`,
-      `    -r, --rich      commented stableExact examples`,
+      `    -r, --rich      commented tiers.stable.exact examples`,
       `    -h, --help      show this section`,
     ]);
   }

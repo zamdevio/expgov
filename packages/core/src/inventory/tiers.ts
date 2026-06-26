@@ -1,13 +1,10 @@
 import { getProjectContext } from '../context/index.js';
+import { matchesTierBucket } from '../config/tiers.js';
 
 export type StabilityTier = 'stable' | 'advanced' | 'internal' | 'unclassified';
 export type DeclaredTierTag = Exclude<StabilityTier, 'unclassified'>;
 
 const SDK_TIER_TAG_PATTERN = /@sdkTier\s+(stable|advanced|internal)\b/;
-
-function hasPatternMatch(name: string, patterns: readonly RegExp[]): boolean {
-  return patterns.some((pattern) => pattern.test(name));
-}
 
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -58,9 +55,9 @@ export function resolveDeclaredTierTag(input: {
  *
  * Priority:
  * 1) @sdkTier JSDoc tag
- * 2) internal markers
- * 3) advanced markers
- * 4) stable allowlist / stable naming conventions
+ * 2) tiers.internal (exact + prefix/regex)
+ * 3) tiers.advanced (exact + prefix/regex)
+ * 4) tiers.stable (exact + prefix/regex)
  * 5) unclassified (forces explicit governance decision)
  */
 export function classifySymbolTier(
@@ -71,11 +68,9 @@ export function classifySymbolTier(
 
   const { tiers } = getProjectContext();
 
-  if (hasPatternMatch(name, tiers.internalPatterns)) return 'internal';
-  if (hasPatternMatch(name, tiers.advancedPatterns)) return 'advanced';
-
-  if (tiers.stableExact.has(name)) return 'stable';
-  if (tiers.stablePrefixes.some((prefix) => name.startsWith(prefix))) return 'stable';
+  if (matchesTierBucket(name, tiers.internal)) return 'internal';
+  if (matchesTierBucket(name, tiers.advanced)) return 'advanced';
+  if (matchesTierBucket(name, tiers.stable)) return 'stable';
 
   return 'unclassified';
 }
