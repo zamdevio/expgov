@@ -80,26 +80,27 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
   const top = topModules(snapshot.edges, options.verbose ? 20 : 8);
   const namespaces = namespaceRows(snapshot.namespaces);
 
-  finishCommand({
-    command: 'graph',
-    timer,
-    status: 'ok',
-    json: {
-      kind: 'graph',
-      ok: true,
-      data: {
-        ref: ref.label,
-        edgeCount: snapshot.edges.length,
-        targetGroups: targetGroups.map((g) => ({
-          targetSubpath: g.targetSubpath,
-          flat: g.flat,
-          namespace: g.namespace,
-        })),
+  if (getRunOptions().json) {
+    finishCommand({
+      command: 'graph',
+      timer,
+      status: 'ok',
+      json: {
+        kind: 'graph',
+        ok: true,
+        data: {
+          ref: ref.label,
+          edgeCount: snapshot.edges.length,
+          targetGroups: targetGroups.map((g) => ({
+            targetSubpath: g.targetSubpath,
+            flat: g.flat,
+            namespace: g.namespace,
+          })),
+        },
       },
-    },
-  });
-
-  if (getRunOptions().json) return;
+    });
+    return;
+  }
 
   printGraphReport({
     ref,
@@ -109,5 +110,17 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
     topModules: top,
     namespaces,
     verbose: options.verbose,
+  });
+
+  finishCommand({
+    command: 'graph',
+    timer,
+    status: 'ok',
+    footer: {
+      counts: {
+        edges: snapshot.edges.length,
+        symbols: snapshot.symbols.length,
+      },
+    },
   });
 }

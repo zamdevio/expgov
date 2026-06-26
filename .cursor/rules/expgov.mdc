@@ -17,7 +17,6 @@ alwaysApply: true
 ## Config
 - **TypeScript only:** `expgov.config.ts` via jiti — no JSON config.
 - Tier schema: nested `tiers.{stable,internal,advanced}.{exact,prefix}` — see `maintainer/systems/tiers.md`.
-- Legacy flat keys (`stableExact`, etc.) still work but emit a migration tip.
 
 ## Core purity
 - No `console.*` in `packages/core` command paths — use `emitLog`.

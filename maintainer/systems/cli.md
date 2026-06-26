@@ -29,12 +29,17 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 ## Output flow
 
 ```txt
-core command → emitLog({ type: 'report' | 'meta' | 'command-line' | ... })
-             → createConsoleLogSink (packages/core/src/runtime/sinks/console.ts)
+core command → report/meta events
+             → finishCommand → tips + footer (summary + command · status · ms)
+             → createConsoleLogSink
              → stdout/stderr
 ```
 
 Policy gates: `packages/core/src/runtime/policy.ts`
+
+## Footer
+
+After the report body, `finishCommand` emits optional `summary: key=val · …` then a blank line and `expgov  <command> · ok|fail · Nms`. Skipped under `--json` / `--silent`.
 
 ## Help
 

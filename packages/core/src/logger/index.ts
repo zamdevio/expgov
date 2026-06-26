@@ -11,7 +11,6 @@ import { cacheDirForSha, getRepoRoot, getRootIndexRepoPath, WORKTREE_CACHE_KEY }
 import { emitLog } from '../runtime/emitter.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintPrimary, canPrintVerbose } from '../runtime/policy.js';
-import type { CommandStatus } from '../runtime/types.js';
 import {
   compactCoreSourcePath,
   formatInventoryCategory,
@@ -95,10 +94,6 @@ function tierColor(tier: string, value: number): string {
     default:
       return text;
   }
-}
-
-export function printCommandLine(command: string, status: CommandStatus, ms: number): void {
-  emitLog({ type: 'command-line', command, status, durationMs: ms });
 }
 
 export function printHeader(command: string, subtitle: string): void {

@@ -130,27 +130,29 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   }));
 
   const exitCode = passed ? 0 : 1;
-  finishCommand({
-    command: 'validate',
-    timer,
-    status: passed ? 'ok' : 'fail',
-    exitCode,
-    json: {
-      kind: 'validate',
-      ok: passed,
-      issues,
-      data: {
-        passed,
-        violations,
-        notes,
-        advancedFlatSymbols,
-        internalFlatSymbols,
-        sdkTiers,
-      },
-    },
-  });
 
-  if (getRunOptions().json) return exitCode;
+  if (getRunOptions().json) {
+    finishCommand({
+      command: 'validate',
+      timer,
+      status: passed ? 'ok' : 'fail',
+      exitCode,
+      json: {
+        kind: 'validate',
+        ok: passed,
+        issues,
+        data: {
+          passed,
+          violations,
+          notes,
+          advancedFlatSymbols,
+          internalFlatSymbols,
+          sdkTiers,
+        },
+      },
+    });
+    return exitCode;
+  }
 
   printValidateReport({
     passed,
@@ -159,6 +161,20 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     verbose: options.verbose,
     advancedFlatSymbols,
     internalFlatSymbols,
+  });
+
+  finishCommand({
+    command: 'validate',
+    timer,
+    status: passed ? 'ok' : 'fail',
+    exitCode,
+    footer: {
+      counts: {
+        violations: violations.length,
+        stable: sdkTiers.stable,
+        unclassified: sdkTiers.unclassified,
+      },
+    },
   });
   return exitCode;
 }

@@ -39,7 +39,10 @@ tiers: {
 ```
 
 - `prefix` entries: plain string → `startsWith`; regex metacharacters or `/pattern/` → `RegExp.test`
-- Legacy flat keys still accepted — emit migration tip once per process
+
+## Command footer (human mode)
+
+Reports print first; `finishCommand` appends optional `summary: counts` then `command · ok|fail · Nms`.
 
 ## PR discipline
 

@@ -21,18 +21,19 @@ export function runExportsDiff(options: DiffCliOptions): void {
   const rightResult = getSnapshot(right, cacheOpts);
   const diff = diffSnapshots(leftResult.snapshot, rightResult.snapshot);
 
-  finishCommand({
-    command: 'diff',
-    timer,
-    status: 'ok',
-    json: {
-      kind: 'diff',
-      ok: true,
-      data: { rangeLabel, diff: diff.summaryDelta, added: diff.added, removed: diff.removed },
-    },
-  });
-
-  if (getRunOptions().json) return;
+  if (getRunOptions().json) {
+    finishCommand({
+      command: 'diff',
+      timer,
+      status: 'ok',
+      json: {
+        kind: 'diff',
+        ok: true,
+        data: { rangeLabel, diff: diff.summaryDelta, added: diff.added, removed: diff.removed },
+      },
+    });
+    return;
+  }
 
   printDiffReport({ rangeLabel, left: leftResult, right: rightResult, diff });
 
@@ -40,4 +41,16 @@ export function runExportsDiff(options: DiffCliOptions): void {
     printDiffVerbose({ diff, left: leftResult.snapshot, right: rightResult.snapshot });
     printDiffCacheDetail({ left: leftResult, right: rightResult });
   }
+
+  finishCommand({
+    command: 'diff',
+    timer,
+    status: 'ok',
+    footer: {
+      counts: {
+        added: diff.added.length,
+        removed: diff.removed.length,
+      },
+    },
+  });
 }

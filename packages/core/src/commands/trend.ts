@@ -26,18 +26,33 @@ export function runExportsTrend(options: TrendCliOptions = {}): void {
     };
   });
 
+  if (getRunOptions().json) {
+    finishCommand({
+      command: 'trend',
+      timer,
+      status: 'ok',
+      json: {
+        kind: 'trend',
+        ok: true,
+        data: { tagLimit: options.tagLimit ?? 12, rows },
+      },
+    });
+    return;
+  }
+
+  printTrendReport({ rows, tagLimit: options.tagLimit ?? 12, verbose: options.verbose });
+
+  const first = rows[0];
+  const last = rows[rows.length - 1];
   finishCommand({
     command: 'trend',
     timer,
     status: 'ok',
-    json: {
-      kind: 'trend',
-      ok: true,
-      data: { tagLimit: options.tagLimit ?? 12, rows },
+    footer: {
+      counts: {
+        tags: rows.length,
+        ...(first && last ? { 'Δ flat': last.rollup.rootFlat - first.rollup.rootFlat } : {}),
+      },
     },
   });
-
-  if (getRunOptions().json) return;
-
-  printTrendReport({ rows, tagLimit: options.tagLimit ?? 12, verbose: options.verbose });
 }

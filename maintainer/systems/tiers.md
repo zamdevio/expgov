@@ -83,21 +83,6 @@ If you define `tiers.stable` (even empty `exact`/`prefix`), defaults are **not**
 
 ---
 
-## Legacy flat keys (deprecated)
-
-Still normalized for backward compatibility:
-
-| Legacy | Maps to |
-|--------|---------|
-| `stableExact` | `stable.exact` |
-| `stablePrefixes` | `stable.prefix` |
-| `internalPatterns` | `internal.prefix` |
-| `advancedPatterns` | `advanced.prefix` |
-
-One migration tip per process when legacy keys are detected (`config/legacy-tip.ts`).
-
----
-
 ## Inventory metadata
 
 - `tierSource: 'tag'` when `@sdkTier` matched

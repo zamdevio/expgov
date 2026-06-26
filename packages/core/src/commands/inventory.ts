@@ -16,24 +16,26 @@ export function runExportsInventory(options: InventoryCliOptions): void {
   const timer = beginCommand('inventory');
   const ref = resolveSourceRef(options.ref);
   const result = getSnapshot(ref, { noCache: options.noCache, force: options.force, profile: 'full' });
+  const root = result.snapshot.summary.root;
 
-  finishCommand({
-    command: 'inventory',
-    timer,
-    status: 'ok',
-    json: {
-      kind: 'inventory',
-      ok: true,
-      data: {
-        ref: ref.label,
-        sha: result.snapshot.sha,
-        summary: result.snapshot.summary,
-        cache: result.cache,
+  if (getRunOptions().json) {
+    finishCommand({
+      command: 'inventory',
+      timer,
+      status: 'ok',
+      json: {
+        kind: 'inventory',
+        ok: true,
+        data: {
+          ref: ref.label,
+          sha: result.snapshot.sha,
+          summary: result.snapshot.summary,
+          cache: result.cache,
+        },
       },
-    },
-  });
-
-  if (getRunOptions().json) return;
+    });
+    return;
+  }
 
   printInventoryReport({
     ref,
@@ -41,4 +43,17 @@ export function runExportsInventory(options: InventoryCliOptions): void {
     gitStats: options.verbose ? formatGitRunStats() : undefined,
   });
   if (options.verbose) printVerboseInventory(result.snapshot);
+
+  finishCommand({
+    command: 'inventory',
+    timer,
+    status: 'ok',
+    footer: {
+      counts: {
+        flat: root.flat,
+        stable: root.stable,
+        unclassified: root.unclassified,
+      },
+    },
+  });
 }

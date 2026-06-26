@@ -21,7 +21,12 @@ export function createConsoleLogSink(): (event: LogEvent) => void {
     ) {
       return;
     }
-    if (!canPrintPrimary(run) && ['command-line', 'header', 'meta', 'report', 'blank'].includes(event.type)) {
+    if (
+      !canPrintPrimary(run) &&
+      ['footer', 'summary', 'note', 'header', 'meta', 'report', 'blank'].includes(
+        event.type,
+      )
+    ) {
       return;
     }
 
@@ -35,13 +40,20 @@ export function createConsoleLogSink(): (event: LogEvent) => void {
       case 'blank':
         console.log('');
         break;
-      case 'command-line': {
+      case 'summary':
+        console.log(`${BRAND()}  ${style.dim('summary:')} ${style.white(event.text)}`);
+        break;
+      case 'note':
+        console.log(`${BRAND()}  ${style.dim(event.text)}`);
+        break;
+      case 'footer': {
         const statusText =
           event.status === 'ok'
             ? style.ok(event.status)
             : event.status === 'fail'
               ? style.warn(event.status)
               : style.err(event.status);
+        console.log('');
         console.log(
           `${BRAND()}  ${style.bold(event.command)} ${style.dim('·')} ${statusText} ${style.dim('·')} ${style.white(`${event.durationMs}ms`)}`,
         );
@@ -60,12 +72,6 @@ export function createConsoleLogSink(): (event: LogEvent) => void {
         console.log(event.body);
         break;
       case 'envelope':
-        if (run.json) {
-          // host may also stringify via raw event
-        }
-        break;
-      case 'command-start':
-      case 'command-end':
         break;
       default:
         break;

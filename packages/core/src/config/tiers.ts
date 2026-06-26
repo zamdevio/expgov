@@ -13,8 +13,6 @@ export interface ResolvedTierRules {
   stable: ResolvedTierBucket;
   internal: ResolvedTierBucket;
   advanced: ResolvedTierBucket;
-  /** True when deprecated flat tier keys were present in config. */
-  usedLegacyTierKeys: boolean;
 }
 
 const DEFAULT_STABLE_PREFIXES = [
@@ -66,63 +64,22 @@ export function matchesTierBucket(name: string, bucket: ResolvedTierBucket): boo
   return bucket.matchers.some((matcher) => testPrefixMatcher(name, matcher));
 }
 
-function mergeBucket(
+function resolveBucket(
   nested: TierBucket | undefined,
-  legacyExact: string[] | undefined,
-  legacyPrefix: string[] | undefined,
-  defaultPrefixes: readonly string[] = [],
+  defaultPrefixes: readonly string[],
 ): ResolvedTierBucket {
-  const exactSources = [...(nested?.exact ?? []), ...(legacyExact ?? [])];
-  const prefixSources = [...(nested?.prefix ?? []), ...(legacyPrefix ?? []), ...defaultPrefixes];
+  const hasConfig = Boolean(nested && (nested.exact?.length || nested.prefix?.length));
+  const prefixSources = [...(nested?.prefix ?? []), ...(hasConfig ? [] : defaultPrefixes)];
   return {
-    exact: new Set(exactSources),
+    exact: new Set(nested?.exact ?? []),
     matchers: prefixSources.map(compilePrefixMatcher),
   };
 }
 
-function hasStableConfig(config?: TierRulesConfig): boolean {
-  return Boolean(
-    config?.stable ||
-      config?.stableExact?.length ||
-      config?.stablePrefixes?.length,
-  );
-}
-
-function hasInternalConfig(config?: TierRulesConfig): boolean {
-  return Boolean(config?.internal || config?.internalPatterns?.length);
-}
-
-function hasAdvancedConfig(config?: TierRulesConfig): boolean {
-  return Boolean(config?.advanced || config?.advancedPatterns?.length);
-}
-
 export function resolveTierRules(config?: TierRulesConfig): ResolvedTierRules {
-  const usedLegacyTierKeys = Boolean(
-    config?.stableExact?.length ||
-      config?.stablePrefixes?.length ||
-      config?.internalPatterns?.length ||
-      config?.advancedPatterns?.length,
-  );
-
   return {
-    stable: mergeBucket(
-      config?.stable,
-      config?.stableExact,
-      config?.stablePrefixes,
-      hasStableConfig(config) ? [] : DEFAULT_STABLE_PREFIXES,
-    ),
-    internal: mergeBucket(
-      config?.internal,
-      undefined,
-      config?.internalPatterns,
-      hasInternalConfig(config) ? [] : DEFAULT_INTERNAL_PREFIXES,
-    ),
-    advanced: mergeBucket(
-      config?.advanced,
-      undefined,
-      config?.advancedPatterns,
-      hasAdvancedConfig(config) ? [] : DEFAULT_ADVANCED_PREFIXES,
-    ),
-    usedLegacyTierKeys,
+    stable: resolveBucket(config?.stable, DEFAULT_STABLE_PREFIXES),
+    internal: resolveBucket(config?.internal, DEFAULT_INTERNAL_PREFIXES),
+    advanced: resolveBucket(config?.advanced, DEFAULT_ADVANCED_PREFIXES),
   };
 }

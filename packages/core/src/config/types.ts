@@ -8,14 +8,6 @@ export interface TierRulesConfig {
   stable?: TierBucket;
   internal?: TierBucket;
   advanced?: TierBucket;
-  /** @deprecated Use `tiers.stable.exact` */
-  stableExact?: string[];
-  /** @deprecated Use `tiers.stable.prefix` */
-  stablePrefixes?: string[];
-  /** @deprecated Use `tiers.internal.prefix` */
-  internalPatterns?: string[];
-  /** @deprecated Use `tiers.advanced.prefix` */
-  advancedPatterns?: string[];
 }
 
 export interface ExpgovCoreConfig {

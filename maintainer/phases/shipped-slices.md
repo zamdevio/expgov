@@ -10,7 +10,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 |------|-------|---------|
 | 2026-W26 | **P0** — scaffold | Portable CLI extracted from archlab `scripts/exports`; tsup bundle; `expgov.config.ts` (`a78a6fe`) |
 | 2026-W26 | **P1** — styled runtime | Log policy, JSON envelopes, global `-j/-q/-s`, banners, init command, cache gitignore tip (`4d53612`) |
-| 2026-W26 | **P2** — nested tier schema | `tiers.{stable,internal,advanced}.{exact,prefix}` + legacy flat key compat + maintainer hub |
+| 2026-W26 | **P2** — nested tier schema | `tiers.{stable,internal,advanced}.{exact,prefix}` + maintainer hub |
 
 ---
 
@@ -35,7 +35,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 - [x] `TierBucket` + nested `TierRulesConfig`
 - [x] `config/tiers.ts` resolver (prefix + regex in `prefix` arrays)
-- [x] Legacy flat keys (`stableExact`, etc.) normalized with one-time migration tip
 - [x] `classifySymbolTier` uses three buckets; `@sdkTier` still highest priority
 - [x] `init` template emits nested schema
+- [x] Command footer summary (`command · status · ms`) after report body
 - [x] `maintainer/` hub (phases, agents, systems)

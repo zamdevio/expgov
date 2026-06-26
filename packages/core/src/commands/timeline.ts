@@ -67,18 +67,19 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     rows[i]!.delta = rows[i]!.rollup.rootFlat - rows[i - 1]!.rollup.rootFlat;
   }
 
-  finishCommand({
-    command: 'timeline',
-    timer,
-    status: 'ok',
-    json: {
-      kind: 'timeline',
-      ok: true,
-      data: { range, limit, rows, warmStats },
-    },
-  });
-
-  if (getRunOptions().json) return;
+  if (getRunOptions().json) {
+    finishCommand({
+      command: 'timeline',
+      timer,
+      status: 'ok',
+      json: {
+        kind: 'timeline',
+        ok: true,
+        data: { range, limit, rows, warmStats },
+      },
+    });
+    return;
+  }
 
   printTimelineReport({
     range,
@@ -87,6 +88,18 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     verbose: options.verbose,
     warmStats,
     gitStats: formatGitRunStats(),
+  });
+
+  finishCommand({
+    command: 'timeline',
+    timer,
+    status: 'ok',
+    footer: {
+      counts: {
+        commits: rows.length,
+        warmed: warmStats.warmed,
+      },
+    },
   });
 }
 
