@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 
 import { tryGetProjectContext } from '../context/index.js';
+import { DEFAULT_CACHE_DIR } from '../paths.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintTip } from '../runtime/policy.js';
 import { BRAND, style } from '../runtime/style.js';
@@ -21,6 +22,7 @@ export type HelpTopic =
   | 'inventory'
   | 'diff'
   | 'validate'
+  | 'doctor'
   | 'trend'
   | 'timeline'
   | 'graph'
@@ -65,14 +67,14 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       '',
       `  ${chalk.bold('Flags')}`,
       `    -v, --verbose   symbol table: tier, category, symbolKind, targetSubpath; subpath rollups`,
-      `    -f, --force     rebuild snapshot and overwrite .exports/cache/ for this run`,
-      `    --no-cache      build fresh but skip reading/writing .exports/cache/ (status: bypass)`,
+      `    -f, --force     rebuild snapshot and overwrite ${DEFAULT_CACHE_DIR}/ for this run`,
+      `    --no-cache      build fresh but skip reading/writing ${DEFAULT_CACHE_DIR}/ (status: bypass)`,
       `    -h, --help      show this section`,
       '',
       `  ${chalk.bold('Output')}`,
       `    ${chalk.dim('root flat')}   count of flat exports on ${rootBarrel}`,
       `    ${chalk.dim('stable/advanced/internal')}   governance tiers (see expgov tier config)`,
-      `    ${chalk.dim('cache')}   hit/miss against .exports/cache/<sha>/inventory.full.json`,
+      `    ${chalk.dim('cache')}   hit/miss against ${DEFAULT_CACHE_DIR}/<sha>/inventory.full.json`,
     ]);
   }
 
@@ -114,6 +116,24 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `  ${chalk.bold('Output')}`,
       `    ${chalk.dim('✓/✗ lines')}   tsconfig ↔ npm exports parity, unclassified root flats`,
       `    ${chalk.dim('notes')}   policy gaps (internal/advanced still flat on root, etc.)`,
+    ]);
+  }
+
+  if (topic === 'all' || topic === 'doctor') {
+    section('doctor — config discovery and cache hygiene', [
+      cmd('doctor', '[flags]'),
+      '',
+      `  ${chalk.dim('Read-only')} setup checks — config paths, cache gitignore, tsconfig/npm drift hints.`,
+      `  ${chalk.dim('Exits')} 0 when healthy, 1 when actionable warnings remain.`,
+      '',
+      `  ${chalk.bold('Flags')}`,
+      `    -v, --verbose   extra hints (parity detail, cache snapshot count)`,
+      `    -h, --help      show this section`,
+      '',
+      `  ${chalk.bold('Checks')}`,
+      `    ${chalk.dim('config')}   package name, barrel, tsconfig, core package.json`,
+      `    ${chalk.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored; legacy .exports/cache migration hint`,
+      `    ${chalk.dim('drift')}   tsconfig ↔ npm exports parity (hints only — use validate for enforcement)`,
     ]);
   }
 
@@ -187,7 +207,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
 
   if (topic === 'all') {
     section('global', [
-      `  ${chalk.bold('Commands')} init, inventory, diff, validate, trend, timeline, graph, help`,
+      `  ${chalk.bold('Commands')} init, inventory, diff, validate, doctor, trend, timeline, graph, help`,
       `  ${chalk.bold('Global flags')}`,
       `    -j, --json      machine-readable JSON envelope (stdout)`,
       `    -q, --quiet     suppress info logs and tips; keep primary command output`,
@@ -195,12 +215,12 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `    -C, --cwd       project root`,
       `    --config        path to expgov.config.ts`,
       `    --no-color      disable color output`,
-      `  ${chalk.bold('Cache')}   ${chalk.dim('.exports/cache/')} per-sha: inventory.full.json, timeline.summary.json`,
+      `  ${chalk.bold('Cache')}   ${chalk.dim(`${DEFAULT_CACHE_DIR}/`)} per-sha: inventory.full.json, timeline.summary.json`,
       `  ${chalk.bold('Config')}  ${chalk.dim('expgov.config.ts')}`,
       `  ${chalk.bold('Output')}  each command section above documents key columns and labels`,
       `  ${chalk.bold('Debug')}   EXPORTS_DEBUG=1 for unexpected error stacks`,
       '',
-      `  ${chalk.dim('Resolving a ref warms')} ${chalk.dim('.exports/cache/')} ${chalk.dim('(gitignored). Nothing is committed to the repo.')}`,
+      `  ${chalk.dim('Resolving a ref warms')} ${chalk.dim(`${DEFAULT_CACHE_DIR}/`)} ${chalk.dim('(gitignored). Nothing is committed to the repo.')}`,
     ]);
   }
 

@@ -5,7 +5,7 @@
 1. **TypeScript config only** — `expgov.config.ts`; no JSON/YAML config files.
 2. **Tier governance** — every root flat export must classify via `@sdkTier` or `tiers.{stable,internal,advanced}`.
 3. **`validate` exits 1** on unclassified exports or tsconfig/npm drift — treat as CI gate.
-4. **Cache is gitignored** — `.exports/cache/`; tip users when missing from `.gitignore`.
+4. **Cache is gitignored** — `.expgov/cache/`; tip users when missing from `.gitignore`.
 
 ## Core purity
 

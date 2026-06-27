@@ -1,6 +1,6 @@
 # Commands phase
 
-**Status:** Active — core verbs shipped; `doctor` deferred.
+**Status:** Active — core verbs shipped; `doctor` wired.
 
 **Purpose:** CLI command → core mapping and roadmap.
 
@@ -19,6 +19,7 @@ init                     runInit + ensureConfig (CLI)
 inventory [ref]          runExportsInventory
 diff [range]             runExportsDiff
 validate                 runExportsValidate
+doctor                   runExportsDoctor
 trend                    runExportsTrend
 timeline [range]         runExportsTimeline
 graph [ref]              runExportsGraph
@@ -52,6 +53,7 @@ All governance commands are **read-only** except `init` (writes config).
 | `trend` | Export counts across `v*` tags |
 | `timeline` | Commits that edited root barrel |
 | `graph` | Re-export governance map |
+| `doctor` | Config discovery, cache dir, gitignore, tsconfig/npm drift hints |
 
 Global flags: `-C/--cwd`, `--config`, `-j/--json`, `-q/--quiet`, `-s/--silent`, `--no-color`, `-y/--yes`.
 
@@ -63,7 +65,6 @@ Per-command: `-v/--verbose`, `-f/--force`, `--no-cache` where applicable.
 
 | Command | Goal |
 |---------|------|
-| `doctor` | Config discovery, cache dir, gitignore, tsconfig/npm drift hints |
 | `sync-tiers` | Suggest `tiers.stable.exact` additions from unclassified inventory (dry-run) |
 
 ---

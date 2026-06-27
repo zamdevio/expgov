@@ -1,6 +1,6 @@
 # Architecture phases (blueprint)
 
-**Status:** Active — docs + CI gate shipped; `doctor` next.
+**Status:** Active — `doctor` + cache rename shipped; `sync-tiers` next.
 
 **Shipped history:** [`shipped-slices.md`](./shipped-slices.md) · **Commands:** [`commands.md`](./commands.md)
 
@@ -10,7 +10,7 @@
 
 Portable export-governance CLI for TypeScript SDK barrels: inventory, diff, validate, trend, timeline, graph.
 
-**Immediate focus:** `doctor` command.
+**Immediate focus:** `sync-tiers` dry-run helper.
 
 ---
 
@@ -22,7 +22,7 @@ Portable export-governance CLI for TypeScript SDK barrels: inventory, diff, vali
 | Core purity | Engine in `packages/core` — no TTY/chalk/prompts |
 | Thin CLI | `packages/cli` — Commander, banners, init prompts |
 | Tier explicitness | `@sdkTier` or config bucket — `unclassified` fails validate |
-| Cache is local | `.exports/cache/` per SHA — gitignored, never committed |
+| Cache is local | `.expgov/cache/` per SHA — gitignored, never committed |
 
 ---
 
@@ -66,4 +66,4 @@ Detail: [`systems/tiers.md`](../systems/tiers.md).
 - JSON config files
 - Remote cache / shared artifact store
 - Auto-fix PR bot for tier allowlists
-- `doctor` command (planned)
+- `sync-tiers` command (planned)

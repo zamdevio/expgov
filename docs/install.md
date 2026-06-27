@@ -68,4 +68,4 @@ pnpm cli:dev -- validate   # tsx dev entry
 
 ## Cache
 
-Snapshots are written to `.exports/cache/` (configurable via `cacheDir`). Add it to `.gitignore` — expgov prints a one-time tip when it detects a git repo without that entry.
+Snapshots are written to `.expgov/cache/` (configurable via `cacheDir`). Add it to `.gitignore` — expgov prints a one-time tip when it detects a git repo without that entry.

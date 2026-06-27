@@ -2,5 +2,5 @@ dist
 node_modules
 *.tsbuildinfo
 *.tgz
-.exports/cache
+.expgov/cache
 maintainer/temp/

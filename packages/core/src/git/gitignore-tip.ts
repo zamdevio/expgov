@@ -5,6 +5,7 @@ import { tryGetProjectContext } from '../context/index.js';
 import { coreLogTip } from '../runtime/log.js';
 import { canPrintTip } from '../runtime/policy.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { DEFAULT_CACHE_DIR, EXPGOV_DIR, LEGACY_CACHE_DIR } from '../paths.js';
 
 function isGitRepo(repoRoot: string): boolean {
   return existsSync(path.join(repoRoot, '.git'));
@@ -12,8 +13,9 @@ function isGitRepo(repoRoot: string): boolean {
 
 function cacheDirExists(repoRoot: string, cacheRel: string): boolean {
   const cachePath = path.join(repoRoot, cacheRel);
-  const exportsRoot = path.join(repoRoot, '.exports');
-  return existsSync(cachePath) || existsSync(exportsRoot);
+  const expgovRoot = path.join(repoRoot, EXPGOV_DIR);
+  const legacyRoot = path.join(repoRoot, '.exports');
+  return existsSync(cachePath) || existsSync(expgovRoot) || existsSync(legacyRoot);
 }
 
 /** Minimal gitignore matcher — sufficient for cache-dir tips (not a full gitignore implementation). */
@@ -58,7 +60,18 @@ export function shouldSuggestCacheGitignore(input: {
 
   const content = readFileSync(gitignorePath, 'utf8');
   const cacheRel = input.cacheDirRel.replace(/\\/g, '/');
-  const checks = [cacheRel, `${cacheRel}/`, '.exports', '.exports/', '.exports/cache', '.exports/cache/'];
+  const checks = [
+    cacheRel,
+    `${cacheRel}/`,
+    EXPGOV_DIR,
+    `${EXPGOV_DIR}/`,
+    DEFAULT_CACHE_DIR,
+    `${DEFAULT_CACHE_DIR}/`,
+    '.exports',
+    '.exports/',
+    LEGACY_CACHE_DIR,
+    `${LEGACY_CACHE_DIR}/`,
+  ];
   return !checks.some((p) => gitignoreIgnoresPath(content, p));
 }
 
@@ -73,7 +86,7 @@ export function maybeEmitCacheGitignoreTip(): void {
   const ctx = tryGetProjectContext();
   if (!ctx) return;
 
-  const cacheRel = path.relative(ctx.repoRoot, ctx.exportsCacheRoot).replace(/\\/g, '/') || '.exports/cache';
+  const cacheRel = path.relative(ctx.repoRoot, ctx.exportsCacheRoot).replace(/\\/g, '/') || DEFAULT_CACHE_DIR;
   if (!shouldSuggestCacheGitignore({ repoRoot: ctx.repoRoot, cacheDirRel: cacheRel })) return;
 
   tipShownThisProcess = true;

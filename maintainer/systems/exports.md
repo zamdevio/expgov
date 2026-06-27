@@ -49,7 +49,7 @@
 
 ## Cache
 
-Resolving a ref warms `.exports/cache/<sha>/inventory.full.json`.
+Resolving a ref warms `.expgov/cache/<sha>/inventory.full.json`.
 
 See [`cache.md`](./cache.md). Cache dir should be gitignored — see gitignore tip in `git/gitignore-tip.ts`.
 

@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   tsconfig: 'tsconfig.json',
-  cacheDir: '.exports/cache',
+  cacheDir: '.expgov/cache',
   git: {
     tagPattern: 'v*',
     timelineBarrelPath: 'packages/core/src/index.ts',
@@ -27,6 +27,7 @@ export default defineConfig({
         'CommandStatus',
         'CommandTimer',
         'DiffCliOptions',
+        'DoctorCliOptions',
         'ExpgovConfig',
         'ExpgovConfigOverrides',
         'ExportError',

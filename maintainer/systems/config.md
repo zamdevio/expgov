@@ -19,7 +19,7 @@ export default defineConfig({
     subpaths: { '.': 'src/index.ts' },
   },
   tsconfig: 'tsconfig.json',
-  cacheDir: '.exports/cache',
+  cacheDir: '.expgov/cache',
   tiers: { /* see tiers.md */ },
 } satisfies ExpgovConfig);
 ```
@@ -33,7 +33,7 @@ export default defineConfig({
 | `core.rootBarrel` | Root `index.ts` repo path |
 | `core.subpaths` | npm subpath → source entry (for SDK-wide rollups) |
 | `tsconfig` | Root tsconfig for path ↔ exports parity |
-| `cacheDir` | Default `.exports/cache` |
+| `cacheDir` | Default `.expgov/cache` |
 | `git.tagPattern` | Default `v*` for trend |
 | `git.timelineBarrelPath` | Barrel path for timeline log |
 | `tiers` | Tier buckets — [`tiers.md`](./tiers.md) |

@@ -1,5 +1,6 @@
 import type { InitDetection } from './detect.js';
 import { detectionToConfig } from './detect.js';
+import { DEFAULT_CACHE_DIR } from '../paths.js';
 
 export const DEFAULT_INIT_CONFIG_IMPORT = 'expgov/core';
 
@@ -55,7 +56,7 @@ export default defineConfig({
     subpaths: ${formatSubpaths(config.core.subpaths)},
   },
   tsconfig: ${quote(config.tsconfig ?? 'tsconfig.json')},
-  cacheDir: ${quote(config.cacheDir ?? '.exports/cache')},
+  cacheDir: ${quote(config.cacheDir ?? DEFAULT_CACHE_DIR)},
   git: {
     tagPattern: ${quote(config.git?.tagPattern ?? 'v*')},
     timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},

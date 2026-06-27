@@ -18,6 +18,7 @@ import {
   runExportsTimeline,
   runExportsTrend,
   runExportsValidate,
+  runExportsDoctor,
   setRunOptions,
   type HelpTopic,
 } from '@expgov/core';
@@ -195,6 +196,15 @@ export function buildProgram(): Command {
       );
     });
 
+  program
+    .command('doctor')
+    .description('config discovery and cache hygiene checks')
+    .option('-v, --verbose', 'verbose output')
+    .action((_opts, cmd) => {
+      const local = cmd.opts() as { verbose?: boolean };
+      withContext(cmd, local.verbose, () => runExportsDoctor({ verbose: local.verbose }));
+    });
+
   addCacheFlags(
     program
       .command('trend')
@@ -280,6 +290,7 @@ export function buildProgram(): Command {
         'inventory',
         'diff',
         'validate',
+        'doctor',
         'trend',
         'timeline',
         'graph',

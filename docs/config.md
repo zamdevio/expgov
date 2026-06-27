@@ -23,7 +23,7 @@ export default defineConfig({
     },
   },
   tsconfig: 'tsconfig.json',
-  cacheDir: '.exports/cache',
+  cacheDir: '.expgov/cache',
   tiers: {
     stable: {
       exact: ['RESULT_API_VERSION'],
@@ -50,7 +50,7 @@ Run `expgov init` to generate a working scaffold for your layout.
 | `core.rootBarrel` | Root barrel file (repo-relative path) |
 | `core.subpaths` | npm export subpath → source entry (for SDK-wide rollups) |
 | `tsconfig` | Root tsconfig for path mapping checks |
-| `cacheDir` | Snapshot cache root (default `.exports/cache`) |
+| `cacheDir` | Snapshot cache root (default `.expgov/cache`) |
 | `git.tagPattern` | Version tag glob for `trend` (default `v*`) |
 | `git.timelineBarrelPath` | Barrel path for `timeline` git log scope |
 | `tiers` | Export classification buckets — see below |

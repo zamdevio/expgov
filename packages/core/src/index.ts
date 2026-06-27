@@ -22,6 +22,10 @@ export {
   runExportsValidate,
   type ValidateOptions,
 } from './commands/validate.js';
+export {
+  runExportsDoctor,
+  type DoctorCliOptions,
+} from './commands/doctor.js';
 
 export { ExportError, isExportError, type ExportErrorCode } from './errors/index.js';
 export { printHelp, printHelpHint, type HelpTopic } from './help/index.js';

@@ -12,8 +12,8 @@
 
 | Priority | Slice | Goal |
 |----------|-------|------|
-| **Now** | `doctor` command | Config discovery + cache hygiene checks — see [`commands.md`](./commands.md) |
-| **Deferred** | `sync-tiers` | Dry-run tier allowlist suggestions from unclassified inventory |
+| **Now** | `sync-tiers` | Dry-run tier allowlist suggestions from unclassified inventory |
+| **Deferred** | Remote cache | Shared artifact store |
 
 Check [`shipped-slices.md`](./shipped-slices.md) before re-implementing runtime, init, or CLI styling.
 

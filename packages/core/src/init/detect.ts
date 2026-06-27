@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import type { ExpgovConfig, ExpgovCoreConfig } from '../config/types.js';
+import { DEFAULT_CACHE_DIR } from '../paths.js';
 
 export type InitLayout = 'monorepo-core' | 'single-package' | 'generic';
 
@@ -106,7 +107,7 @@ export function detectionToConfig(detection: InitDetection): ExpgovConfig {
     packageName: detection.packageName,
     core: detection.core,
     tsconfig: 'tsconfig.json',
-    cacheDir: '.exports/cache',
+    cacheDir: DEFAULT_CACHE_DIR,
     git: {
       tagPattern: 'v*',
       timelineBarrelPath: detection.rootBarrel,

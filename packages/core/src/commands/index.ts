@@ -1,4 +1,5 @@
 export { runExportsDiff, type DiffCliOptions } from './diff.js';
+export { runExportsDoctor, type DoctorCliOptions } from './doctor.js';
 export { runExportsGraph, type GraphCliOptions } from './graph.js';
 export { runExportsInventory, type InventoryCliOptions } from './inventory.js';
 export { runExportsTimeline, type TimelineCliOptions } from './timeline.js';

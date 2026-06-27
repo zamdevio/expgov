@@ -9,7 +9,7 @@
 | [`exports.md`](./exports.md) | Barrel governance, cache, validate checks |
 | [`config.md`](./config.md) | `expgov.config.ts` discovery and fields |
 | [`cli.md`](./cli.md) | Logger, style, banners, global flags, help |
-| [`cache.md`](./cache.md) | `.exports/cache/` layout and warm behavior |
+| [`cache.md`](./cache.md) | `.expgov/cache/` layout and warm behavior |
 
 **Plans (when):** [`phases/`](../phases/)
 **Rules:** [`agents/rules.md`](../agents/rules.md)

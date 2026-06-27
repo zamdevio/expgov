@@ -21,6 +21,8 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P2a** — command footer | Reports first; `summary` / `note` / `footer` log events; drop flat tier keys (`651bf29`) |
 | 2026-W26 | **P3** — user docs | `docs/` stubs: install, config, commands, `json.md` |
 | 2026-W26 | **P3a** — CI gate | GitHub Actions: `pnpm build`, `typecheck`, `expgov validate` on PRs |
+| 2026-W26 | **P4** — cache rename | Default cache dir `.exports/cache` → `.expgov/cache` |
+| 2026-W26 | **P4a** — `doctor` | Config discovery, cache gitignore, parity drift hints |
 
 ---
 
@@ -185,9 +187,24 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
+## P4 — cache rename (shipped) · 2026-W26
+
+- [x] Default `cacheDir`: `.expgov/cache` (`DEFAULT_CACHE_DIR` in `paths.ts`)
+- [x] Init scaffold, gitignore tip, help text, dogfood config, `.gitignore`
+- [x] `doctor` warns when legacy `.exports/cache/` still present
+
+---
+
+## P4a — `doctor` command (shipped) · 2026-W26
+
+- [x] `runExportsDoctor` — config paths, cache gitignore, tsconfig/npm drift hints
+- [x] CLI `doctor` + help/banner; `--json` kind `doctor`
+- [x] Exit 0 healthy / 1 when actionable warnings remain
+
+---
+
 ## Explicitly not shipped (do not assume present)
 
-- [ ] `doctor` command
 - [ ] `sync-tiers` dry-run helper
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`

@@ -2,14 +2,14 @@
 
 ## Location
 
-Default: `.exports/cache/` (configurable via `cacheDir` in `expgov.config.ts`).
+Default: `.expgov/cache` (configurable via `cacheDir` in `expgov.config.ts`).
 
 Working tree uses special key `__worktree__`.
 
 ## Layout
 
 ```txt
-.exports/cache/
+.expgov/cache/
 ├── meta.json
 └── <sha>/
     ├── inventory.full.json
@@ -28,7 +28,7 @@ Working tree uses special key `__worktree__`.
 Cache must not be committed. `git/gitignore-tip.ts` suggests adding `cacheDir/` to `.gitignore` when:
 
 - repo has `.git`
-- cache or `.exports` exists
+- cache or `.expgov` exists
 - `.gitignore` does not already ignore the path
 
 ## Meta

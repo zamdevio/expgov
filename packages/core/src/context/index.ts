@@ -4,6 +4,7 @@ import type { ExpgovConfig, ProjectContext } from '../config/types.js';
 import type { ExpgovConfigOverrides } from '../config/types.js';
 import { resolveTierRules } from '../config/tiers.js';
 import { resolveExpgovConfig } from '../config/load.js';
+import { DEFAULT_CACHE_DIR } from '../paths.js';
 
 function posixJoin(...parts: string[]): string {
   return path.posix.join(...parts.map((p) => p.replace(/\\/g, '/')));
@@ -15,7 +16,7 @@ export function buildProjectContext(config: ExpgovConfig, cwd: string): ProjectC
   const corePkgPath = path.resolve(repoRoot, config.core.packageJson ?? path.join(config.core.dir, 'package.json'));
   const rootIndexRepoPath = config.core.rootBarrel.replace(/\\/g, '/');
   const rootIndexAbsPath = path.resolve(repoRoot, rootIndexRepoPath);
-  const exportsCacheRoot = path.resolve(repoRoot, config.cacheDir ?? '.exports/cache');
+  const exportsCacheRoot = path.resolve(repoRoot, config.cacheDir ?? DEFAULT_CACHE_DIR);
   const tsconfigPath = path.resolve(repoRoot, config.tsconfig ?? 'tsconfig.json');
 
   const coreDirPosix = config.core.dir.replace(/\\/g, '/');
