@@ -143,11 +143,13 @@ flowchart TD
 
 ## Entry criteria (when to start Wave 1)
 
-From [`active-phase.md`](./active-phase.md):
+From [`active-phase.md`](./active-phase.md) — **complete**:
 
-- [ ] Nested tier schema migration complete for consumers
-- [ ] `expgov validate` CI gate shipped (or explicitly parallelized)
-- [ ] User `docs/` stubs available for flag contracts
+- [x] Nested tier schema shipped (dogfood config)
+- [x] `expgov validate` CI gate
+- [x] User `docs/` stubs for flag contracts
+
+**Wave 2** (Phases A–G) — row **#1** (`suggest`) shipped; start Phase **A**.
 
 ---
 
@@ -165,7 +167,7 @@ From [`active-phase.md`](./active-phase.md):
 
 ## Related maintainer docs
 
-- [`commands.md`](./commands.md) — command contracts + deferred verbs (`doctor`, `sync-tiers`)
+- [`commands.md`](./commands.md) — command contracts + deferred verbs (`doctor`, `suggest`)
 - [`architecture.md`](./architecture.md) — package map, principles
 - [`shipped-slices.md`](./shipped-slices.md) — do not re-implement receipts
 - [`../systems/README.md`](../systems/README.md) — engineering maps

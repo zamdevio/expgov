@@ -8,10 +8,12 @@
 
 | Doc | Role |
 |-----|------|
-| [`active-phase.md`](./active-phase.md) | **Current sprint focus** |
+| [`active-phase.md`](./active-phase.md) | **Current sprint + ordered backlog** |
 | [`shipped-slices.md`](./shipped-slices.md) | **Closed work** — ISO week timeline + receipts |
 | [`commands.md`](./commands.md) | Command roadmap — wired verbs + deferred future commands |
 | [`architecture.md`](./architecture.md) | Blueprint — layers, principles, out-of-scope |
+
+| [`observability-roadmap.md`](./observability-roadmap.md) | Phases A–G program index |
 
 Scratch / spikes: **`maintainer/temp/`** (gitignored).
 

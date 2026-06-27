@@ -94,6 +94,7 @@ const COMMAND_SUBTITLES: Record<string, string> = {
   diff: 'compare export surfaces between refs',
   validate: 'tsconfig ↔ npm parity + tier governance',
   doctor: 'config discovery and cache hygiene',
+  suggest: 'tier allowlist suggestions for unclassified exports',
   trend: 'export counts across release tags',
   timeline: 'commits that changed the root export barrel',
   graph: 're-export governance map',

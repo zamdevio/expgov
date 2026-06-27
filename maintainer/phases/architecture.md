@@ -1,6 +1,6 @@
 # Architecture phases (blueprint)
 
-**Status:** Active — `doctor` + cache rename shipped; `sync-tiers` next.
+**Status:** Active — `suggest` shipped; Phase A (CLI DX) next.
 
 **Shipped history:** [`shipped-slices.md`](./shipped-slices.md) · **Commands:** [`commands.md`](./commands.md)
 
@@ -10,7 +10,7 @@
 
 Portable export-governance CLI for TypeScript SDK barrels: inventory, diff, validate, trend, timeline, graph.
 
-**Immediate focus:** `sync-tiers` dry-run helper.
+**Immediate focus:** Phase A (CLI DX polish). Queue: [`active-phase.md`](./active-phase.md).
 
 ---
 
@@ -66,4 +66,3 @@ Detail: [`systems/tiers.md`](../systems/tiers.md).
 - JSON config files
 - Remote cache / shared artifact store
 - Auto-fix PR bot for tier allowlists
-- `sync-tiers` command (planned)

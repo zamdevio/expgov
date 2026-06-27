@@ -20,6 +20,7 @@ inventory [ref]          runExportsInventory
 diff [range]             runExportsDiff
 validate                 runExportsValidate
 doctor                   runExportsDoctor
+suggest                  runExportsSuggest
 trend                    runExportsTrend
 timeline [range]         runExportsTimeline
 graph [ref]              runExportsGraph
@@ -54,6 +55,7 @@ All governance commands are **read-only** except `init` (writes config).
 | `timeline` | Commits that edited root barrel |
 | `graph` | Re-export governance map |
 | `doctor` | Config discovery, cache dir, gitignore, tsconfig/npm drift hints |
+| `suggest` | Suggest `tiers.stable.exact` for unclassified exports (dry-run) |
 
 Global flags: `-C/--cwd`, `--config`, `-j/--json`, `-q/--quiet`, `-s/--silent`, `--no-color`, `-y/--yes`.
 
@@ -63,9 +65,7 @@ Per-command: `-v/--verbose`, `-f/--force`, `--no-cache` where applicable.
 
 ## Future commands (deferred)
 
-| Command | Goal |
-|---------|------|
-| `sync-tiers` | Suggest `tiers.stable.exact` additions from unclassified inventory (dry-run) |
+_None — see [`active-phase.md`](./active-phase.md) backlog for Phase A–G._
 
 ---
 

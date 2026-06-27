@@ -28,6 +28,7 @@ export default defineConfig({
         'CommandTimer',
         'DiffCliOptions',
         'DoctorCliOptions',
+        'SuggestCliOptions',
         'ExpgovConfig',
         'ExpgovConfigOverrides',
         'ExportError',

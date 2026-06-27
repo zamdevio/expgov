@@ -116,6 +116,7 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
 | `diff` | `expgov diff` |
 | `validate` | `expgov validate` |
 | `doctor` | `expgov doctor` |
+| `suggest` | `expgov suggest` |
 | `trend` | `expgov trend` |
 | `timeline` | `expgov timeline` |
 | `graph` | `expgov graph` |

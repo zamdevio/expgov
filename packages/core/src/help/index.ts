@@ -23,6 +23,7 @@ export type HelpTopic =
   | 'diff'
   | 'validate'
   | 'doctor'
+  | 'suggest'
   | 'trend'
   | 'timeline'
   | 'graph'
@@ -137,6 +138,24 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     ]);
   }
 
+  if (topic === 'all' || topic === 'suggest') {
+    section('suggest — tier allowlist suggestions (dry-run)', [
+      cmd('suggest', '[flags]'),
+      '',
+      `  ${chalk.dim('Read-only')} — lists unclassified flat exports and prints names to add to tiers.stable.exact.`,
+      `  ${chalk.dim('Does not')} edit expgov.config.ts.`,
+      `  ${chalk.dim('Exits')} 0 when nothing to suggest, 1 when unclassified exports remain.`,
+      '',
+      `  ${chalk.bold('Flags')}`,
+      `    -v, --verbose   subpath unclassified detail`,
+      `    -h, --help      show this section`,
+      '',
+      `  ${chalk.bold('Workflow')}`,
+      `    ${chalk.dim('1')} expgov suggest   copy suggested names into tier config`,
+      `    ${chalk.dim('2')} expgov validate  confirm governance passes`,
+    ]);
+  }
+
   if (topic === 'all' || topic === 'trend') {
     section('trend — export counts across release tags', [
       cmd('trend', '[flags]'),
@@ -207,7 +226,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
 
   if (topic === 'all') {
     section('global', [
-      `  ${chalk.bold('Commands')} init, inventory, diff, validate, doctor, trend, timeline, graph, help`,
+      `  ${chalk.bold('Commands')} init, inventory, diff, validate, doctor, suggest, trend, timeline, graph, help`,
       `  ${chalk.bold('Global flags')}`,
       `    -j, --json      machine-readable JSON envelope (stdout)`,
       `    -q, --quiet     suppress info logs and tips; keep primary command output`,

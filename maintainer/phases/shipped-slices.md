@@ -23,6 +23,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P3a** — CI gate | GitHub Actions: `pnpm build`, `typecheck`, `expgov validate` on PRs |
 | 2026-W26 | **P4** — cache rename | Default cache dir `.exports/cache` → `.expgov/cache` |
 | 2026-W26 | **P4a** — `doctor` | Config discovery, cache gitignore, parity drift hints |
+| 2026-W26 | **P5** — `suggest` | Dry-run `tiers.stable.exact` suggestions for unclassified flats |
 
 ---
 
@@ -203,9 +204,17 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
+## P5 — `suggest` command (shipped) · 2026-W26
+
+- [x] `runExportsSuggest` — collect unclassified flat exports; `formatStableExactSnippet`
+- [x] CLI `suggest` + help/banner; `--json` kind `suggest`
+- [x] Exit 0 when clean, 1 when names to add (dry-run — no config writes)
+
+---
+
 ## Explicitly not shipped (do not assume present)
 
-- [ ] `sync-tiers` dry-run helper
+- [ ] Phase A — CLI DX polish (`--top` / `--full`, aliases)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

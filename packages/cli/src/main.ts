@@ -19,6 +19,7 @@ import {
   runExportsTrend,
   runExportsValidate,
   runExportsDoctor,
+  runExportsSuggest,
   setRunOptions,
   type HelpTopic,
 } from '@expgov/core';
@@ -205,6 +206,15 @@ export function buildProgram(): Command {
       withContext(cmd, local.verbose, () => runExportsDoctor({ verbose: local.verbose }));
     });
 
+  program
+    .command('suggest')
+    .description('suggest tiers.stable.exact additions for unclassified exports (dry-run)')
+    .option('-v, --verbose', 'verbose output')
+    .action((_opts, cmd) => {
+      const local = cmd.opts() as { verbose?: boolean };
+      withContext(cmd, local.verbose, () => runExportsSuggest({ verbose: local.verbose }));
+    });
+
   addCacheFlags(
     program
       .command('trend')
@@ -291,6 +301,7 @@ export function buildProgram(): Command {
         'diff',
         'validate',
         'doctor',
+        'suggest',
         'trend',
         'timeline',
         'graph',

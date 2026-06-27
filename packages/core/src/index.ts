@@ -26,6 +26,10 @@ export {
   runExportsDoctor,
   type DoctorCliOptions,
 } from './commands/doctor.js';
+export {
+  runExportsSuggest,
+  type SuggestCliOptions,
+} from './commands/suggest.js';
 
 export { ExportError, isExportError, type ExportErrorCode } from './errors/index.js';
 export { printHelp, printHelpHint, type HelpTopic } from './help/index.js';
