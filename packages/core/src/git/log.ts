@@ -23,7 +23,9 @@ export function listBarrelCommits(input: {
   limit?: number;
 }): GitCommitRow[] {
   const args = ['log'];
-  if (input.limit !== undefined && input.limit > 0) args.push(`-n${input.limit}`);
+  if (input.limit !== undefined && Number.isFinite(input.limit) && input.limit > 0) {
+    args.push(`-n${input.limit}`);
+  }
   args.push(
     `--since=${input.sinceIso}`,
     `--until=${input.untilIso}`,

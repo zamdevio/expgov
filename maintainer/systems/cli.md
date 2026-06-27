@@ -12,7 +12,7 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 | Colors | `chalk` v5 + `configureStyle` |
 | Prompts | `@inquirer/prompts` (init only) |
 | Build | `tsup` at repo root |
-| Dev | `tsx packages/cli/bin/expgov.ts` |
+| Dev | `tsx packages/cli/bin/cli.ts` |
 
 ## Global flags
 
@@ -30,7 +30,7 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 | `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
 | `-y, --yes` | Non-interactive init |
 
-Per-command list flags (inventory, diff, graph, trend, timeline): `-l, --top <n>` (default 10), `--full`.
+Per-command list flags (inventory, diff, graph, trend, timeline): `-l, --top <n>` (default 10, min 1), `--full`.
 
 Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode never applies ANSI.
 

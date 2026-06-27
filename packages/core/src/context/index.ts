@@ -4,7 +4,7 @@ import type { ExpgovConfig, ProjectContext } from '../config/types.js';
 import type { ExpgovConfigOverrides } from '../config/types.js';
 import { resolveTierRules } from '../config/tiers.js';
 import { resolveExpgovConfig } from '../config/load.js';
-import { DEFAULT_CACHE_DIR } from '../paths.js';
+import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 
 function posixJoin(...parts: string[]): string {
   return path.posix.join(...parts.map((p) => p.replace(/\\/g, '/')));

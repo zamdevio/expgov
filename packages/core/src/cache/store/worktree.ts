@@ -3,10 +3,10 @@ import { readFileSync } from 'node:fs';
 import { buildSnapshot } from '../../inventory/index.js';
 import { fingerprintSource } from '../../inventory/fingerprint.js';
 import { createWorktreeReader } from '../../inventory/source.js';
+import { WORKTREE_CACHE_KEY } from '../../shared/constants/cache.js';
 import {
   getRootIndexAbsPath,
   getRootIndexRepoPath,
-  WORKTREE_CACHE_KEY,
 } from '../../paths.js';
 import { readCachedForProfile } from './files.js';
 import { loadCacheMeta } from './meta.js';

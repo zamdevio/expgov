@@ -1,7 +1,5 @@
-import { SNAPSHOT_VERSION, TOOL_VERSION } from '../paths.js';
+import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
 import type { StabilityTier } from './tiers.js';
-
-export type { StabilityTier } from './tiers.js';
 
 export type TsExportKind = 'value' | 'type';
 

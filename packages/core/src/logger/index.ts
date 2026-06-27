@@ -7,7 +7,8 @@ import type { DiffResult } from '../format/index.js';
 import { gitRevParse, shortSha, type SourceRef } from '../git/index.js';
 import type { InventorySnapshot, SubpathRollup, TierCounts } from '../inventory/index.js';
 import { sumSdkTierCounts } from '../inventory/index.js';
-import { cacheDirForSha, getRepoRoot, getRootIndexRepoPath, WORKTREE_CACHE_KEY } from '../paths.js';
+import { cacheDirForSha, getRepoRoot, getRootIndexRepoPath } from '../paths.js';
+import { WORKTREE_CACHE_KEY } from '../shared/constants/cache.js';
 import { emitLog } from '../runtime/emitter.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintPrimary, canPrintVerbose } from '../runtime/policy.js';
@@ -15,8 +16,8 @@ import {
   formatListTruncationHint,
   limitList,
   resolveListLimit,
-  type ListViewOptions,
 } from '../shared/listing.js';
+import type { ListViewOptions } from '../types/cli/list.js';
 import {
   compactCoreSourcePath,
   formatInventoryCategory,
@@ -37,8 +38,8 @@ function canEmitVerboseReport(): boolean {
   return canPrintVerbose(getRunOptions()) && !getRunOptions().quiet;
 }
 
-function logListTruncation(command: string, hiddenCount: number): void {
-  const hint = formatListTruncationHint(command, hiddenCount);
+function logListTruncation(hiddenCount: number): void {
+  const hint = formatListTruncationHint(hiddenCount);
   if (!hint) return;
   logLine(`       ${chalk.dim(hint)}`);
 }
@@ -162,7 +163,7 @@ export function printInventoryReport(input: {
     for (const [cat, count] of topCategories.items) {
       logLine(`       ${padLabel(cat, 14)} ${chalk.white(String(count))}`);
     }
-    logListTruncation('inventory', topCategories.hiddenCount);
+    logListTruncation(topCategories.hiddenCount);
   }
 }
 
@@ -223,7 +224,7 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
       `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${chalk.dim(sym.targetSubpath)} ${chalk.dim('[')}${tierSource}${chalk.dim(']')}`,
     );
   }
-  logListTruncation('inventory', flat.hiddenCount);
+  logListTruncation( flat.hiddenCount);
 
   if (snapshot.namespaces.length) {
     logLine('');
@@ -238,13 +239,13 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
         `       ${chalk.dim('·')} ${ns.name.padEnd(20)} ${chalk.dim('→')} ${src} ${chalk.dim('·')} ${chalk.dim(ns.targetSubpath)}`,
       );
     }
-    logListTruncation('inventory', namespaces.hiddenCount);
+    logListTruncation( namespaces.hiddenCount);
   }
 
   if (snapshot.summary.subpaths.length) {
     const subpaths = limitList(snapshot.summary.subpaths, listLimit);
     printPublishedSubpathRollups(subpaths.items);
-    logListTruncation('inventory', subpaths.hiddenCount);
+    logListTruncation( subpaths.hiddenCount);
   }
 }
 
@@ -278,7 +279,7 @@ export function printDiffReport(input: {
     const added = limitList(diff.added, listLimit);
     logLine(chalk.green.bold('       Added'));
     for (const name of added.items) logLine(`       ${chalk.green('+')} ${name}`);
-    logListTruncation('diff', added.hiddenCount);
+    logListTruncation( added.hiddenCount);
     logLine('');
   }
 
@@ -286,7 +287,7 @@ export function printDiffReport(input: {
     const removed = limitList(diff.removed, listLimit);
     logLine(chalk.red.bold('       Removed'));
     for (const name of removed.items) logLine(`       ${chalk.red('-')} ${name}`);
-    logListTruncation('diff', removed.hiddenCount);
+    logListTruncation( removed.hiddenCount);
     logLine('');
   }
 
@@ -324,7 +325,7 @@ export function printDiffVerbose(input: {
         );
       }
     }
-    logListTruncation('diff', added.hiddenCount);
+    logListTruncation( added.hiddenCount);
   }
   if (diff.removed.length) {
     const removed = limitList(diff.removed, listLimit);
@@ -338,7 +339,7 @@ export function printDiffVerbose(input: {
         );
       }
     }
-    logListTruncation('diff', removed.hiddenCount);
+    logListTruncation( removed.hiddenCount);
   }
 }
 
@@ -494,7 +495,7 @@ export function printTrendReport(input: {
       `       ${row.tag.padEnd(10)} ${String(row.rollup.rootFlat).padStart(6)} ${String(row.rollup.stable).padStart(6)} ${String(row.rollup.advanced).padStart(5)} ${String(row.rollup.internal).padStart(4)} ${chalk.dim(`(${row.cache})`)}`,
     );
   }
-  logListTruncation('trend', displayRows.hiddenCount);
+  logListTruncation( displayRows.hiddenCount);
 
   const first = displayRows.items[0]!;
   const last = displayRows.items[displayRows.items.length - 1]!;
@@ -520,7 +521,7 @@ export function printTrendReport(input: {
 
 export function printTimelineReport(input: {
   range: { label: string; since: string; until: string };
-  limit: number;
+  top: number;
   rows: {
     date: string;
     sha: string;
@@ -533,12 +534,12 @@ export function printTimelineReport(input: {
   warmStats?: { warmed: number; totalMs: number };
   gitStats?: string;
 }): void {
-  const limitLabel = input.limit === 0 ? 'none' : String(input.limit);
+  const topLabel = Number.isFinite(input.top) ? String(input.top) : 'all';
   printMeta({
     range: input.range.label,
     from: chalk.dim(input.range.since),
     to: chalk.dim(input.range.until),
-    limit: chalk.dim(limitLabel),
+    top: chalk.dim(topLabel),
     barrel: chalk.dim(`${input.rows.length} commits · ${getRootIndexRepoPath()}`),
     warm: input.warmStats
       ? chalk.dim(`${input.warmStats.warmed}/${input.rows.length} · ${input.warmStats.totalMs}ms`)
@@ -604,7 +605,7 @@ export function printGraphReport(input: {
       `       ${group.targetSubpath.padEnd(22)} ${String(group.flat).padStart(6)} ${String(group.namespace).padStart(4)}`,
     );
   }
-  logListTruncation('graph', targetGroups.hiddenCount);
+  logListTruncation( targetGroups.hiddenCount);
 
   printPublishedSubpathRollups(input.snapshot.summary.subpaths, 'Published npm subpaths');
 
@@ -616,7 +617,7 @@ export function printGraphReport(input: {
       `       ${chalk.dim('·')} ${ns.name.padEnd(18)} ${chalk.dim('→')} ${chalk.dim(src)} ${chalk.dim('·')} ${ns.targetSubpath}`,
     );
   }
-  logListTruncation('graph', namespaces.hiddenCount);
+  logListTruncation( namespaces.hiddenCount);
 
   logLine('');
   logLine(chalk.bold.dim('       Top source modules (edge count)'));
@@ -626,7 +627,7 @@ export function printGraphReport(input: {
       logLine(`       ${chalk.dim('     e.g.')} ${mod.symbols.join(', ')}`);
     }
   }
-  logListTruncation('graph', topModules.hiddenCount);
+  logListTruncation( topModules.hiddenCount);
 }
 
 export function printExportError(err: ExportError): void {

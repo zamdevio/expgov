@@ -5,14 +5,7 @@ import { printGraphReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { resolveListLimit } from '../shared/listing.js';
-import type { ListViewOptions } from '../shared/listing.js';
-
-export interface GraphCliOptions extends ListViewOptions {
-  ref?: string;
-  noCache?: boolean;
-  force?: boolean;
-  verbose?: boolean;
-}
+import type { GraphCliOptions } from '../types/commands/cli.js';
 
 interface TargetSubpathGroup {
   targetSubpath: string;

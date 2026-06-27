@@ -1,18 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-import type { ExpgovConfig, ExpgovCoreConfig } from '../config/types.js';
-import { DEFAULT_CACHE_DIR } from '../paths.js';
-
-export type InitLayout = 'monorepo-core' | 'single-package' | 'generic';
-
-export interface InitDetection {
-  layout: InitLayout;
-  packageName: string;
-  core: ExpgovCoreConfig;
-  rootBarrel: string;
-  notes: string[];
-}
+import type { ExpgovConfig } from '../config/types.js';
+import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
+import type { InitDetection } from '../types/init/detection.js';
 
 function readJson<T>(filePath: string): T | null {
   try {

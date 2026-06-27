@@ -1,9 +1,8 @@
 import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 
 import type { InventorySnapshot } from '../../inventory/index.js';
+import { CACHE_META_VERSION, TOOL_VERSION } from '../../shared/constants/cache.js';
 import {
-  CACHE_META_VERSION,
-  TOOL_VERSION,
   cacheDirForSha,
   getExportsCacheRoot,
   getExportsMetaPath,

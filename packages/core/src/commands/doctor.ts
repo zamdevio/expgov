@@ -9,14 +9,14 @@ import {
 } from '../context/index.js';
 import { shouldSuggestCacheGitignore } from '../git/gitignore-tip.js';
 import { printDoctorReport } from '../logger/index.js';
-import {
-  DEFAULT_CACHE_DIR,
-  getCorePkgPath,
-  getRootIndexRepoPath,
-  LEGACY_CACHE_DIR,
-} from '../paths.js';
+import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import {
+  DEFAULT_CACHE_DIR,
+  LEGACY_CACHE_DIR,
+} from '../shared/constants/cache.js';
+import type { DoctorCliOptions } from '../types/commands/cli.js';
 import type { Issue } from '../types/json/envelope.js';
 
 interface PackageExports {
@@ -83,10 +83,6 @@ function collectParityDrift(): string[] {
   }
 
   return drift;
-}
-
-export interface DoctorCliOptions {
-  verbose?: boolean;
 }
 
 export function runExportsDoctor(options: DoctorCliOptions = {}): number {

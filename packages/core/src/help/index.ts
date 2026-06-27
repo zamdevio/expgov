@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { tryGetProjectContext } from '../context/index.js';
-import { DEFAULT_CACHE_DIR } from '../paths.js';
+import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintTip } from '../runtime/policy.js';
 import { BRAND, style } from '../runtime/style.js';
@@ -193,7 +193,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `    ${chalk.dim('       ')} only steps between consecutive barrel edits, not every repo commit`,
       '',
       `  ${chalk.bold('Flags')}`,
-      `    --limit=<n>     max commits (default 20; 0 = no limit)`,
+      `    -l, --top <n>   max commits to show (default 10, min 1); --full for all in range`,
       `    -v, --verbose   full subjects; per-commit warm timing on stderr`,
       `    -f, --force     rebuild every commit snapshot and overwrite cache`,
       `    --no-cache      build fresh without reading or writing cache`,
@@ -234,7 +234,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `    -C, --cwd       project root`,
       `    -c, --config    path to expgov.config.ts`,
       `    -ncl, --no-color disable color output (also NO_COLOR env, non-TTY)`,
-      `    -l, --top <n>   max list rows on inventory/diff/graph/trend/timeline (default 10)`,
+      `    -l, --top <n>   max list rows (default 10, min 1); --full for no cap`,
       `    --full          show all list rows (no truncation)`,
       `  ${chalk.bold('Cache')}   ${chalk.dim(`${DEFAULT_CACHE_DIR}/`)} per-sha: inventory.full.json, timeline.summary.json`,
       `  ${chalk.bold('Config')}  ${chalk.dim('expgov.config.ts')}`,

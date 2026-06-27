@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 
 export function addListFlags(cmd: Command): Command {
   return cmd
-    .option('-l, --top <n>', 'max list rows (default 10)')
+    .option('-l, --top <n>', 'max list rows (default 10, min 1)', (v) => Number(v))
     .option('--full', 'show all list rows without truncation');
 }
 

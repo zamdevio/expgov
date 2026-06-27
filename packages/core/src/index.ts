@@ -1,35 +1,23 @@
 export {
   runExportsDiff,
-  type DiffCliOptions,
-} from './commands/diff.js';
-export {
-  runExportsGraph,
-  type GraphCliOptions,
-} from './commands/graph.js';
-export {
-  runExportsInventory,
-  type InventoryCliOptions,
-} from './commands/inventory.js';
-export {
-  runExportsTimeline,
-  type TimelineCliOptions,
-} from './commands/timeline.js';
-export {
-  runExportsTrend,
-  type TrendCliOptions,
-} from './commands/trend.js';
-export {
-  runExportsValidate,
-  type ValidateOptions,
-} from './commands/validate.js';
-export {
   runExportsDoctor,
-  type DoctorCliOptions,
-} from './commands/doctor.js';
-export {
+  runExportsGraph,
+  runExportsInventory,
+  runExportsTimeline,
+  runExportsTrend,
   runExportsSuggest,
-  type SuggestCliOptions,
-} from './commands/suggest.js';
+  runExportsValidate,
+} from './commands/index.js';
+export type {
+  DiffCliOptions,
+  DoctorCliOptions,
+  GraphCliOptions,
+  InventoryCliOptions,
+  TimelineCliOptions,
+  TrendCliOptions,
+  SuggestCliOptions,
+  ValidateOptions,
+} from './types/commands/index.js';
 
 export { ExportError, isExportError, type ExportErrorCode } from './errors/index.js';
 export { printHelp, printHelpHint, type HelpTopic } from './help/index.js';
@@ -50,11 +38,8 @@ export {
   detectionToConfig,
   runInit,
   INIT_CONFIG_FILE_NAME,
-  type InitDetection,
-  type InitLayout,
-  type InitRunOptions,
-  type InitRunResult,
 } from './init/index.js';
+export type { InitDetection, InitLayout, InitRunOptions, InitRunResult } from './types/init/index.js';
 export type {
   ExpgovConfig,
   ExpgovConfigOverrides,

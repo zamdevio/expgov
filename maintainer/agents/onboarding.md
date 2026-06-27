@@ -11,9 +11,9 @@
 ## Trace a command
 
 ```txt
-packages/cli/bin/expgov.ts
+packages/cli/bin/cli.ts
   → bootstrapRuntime() + subscribe console sink
-  → main.ts preAction (RunOptions, style, banner)
+  → cli.ts preAction (RunOptions, style, banner)
   → initProjectContext({ cwd, config, ... })
   → runExportsValidate / inventory / …
   → beginCommand → reports via emitLog → finishCommand (JSON or tips)

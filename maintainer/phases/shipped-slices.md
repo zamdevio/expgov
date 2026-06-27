@@ -33,7 +33,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 - [x] Monorepo: `packages/core` (`@expgov/core`) + `packages/cli` (thin Commander host)
 - [x] Root publish: `"bin": { "expgov": "./dist/cli.js" }`; `exports["./core"]` for config authors
 - [x] Build: `pnpm build` → core `tsc` + root `tsup` → `dist/cli.js`, `dist/core.js`, `dist/core.d.ts`
-- [x] Dev: `pnpm cli:dev` via `tsx packages/cli/bin/expgov.ts`
+- [x] Dev: `pnpm cli:dev` via `tsx packages/cli/bin/cli.ts`
 - [x] `ProjectContext` — package name, core paths, tsconfig, cache root, tier rules, subpath map
 - [x] `expgov.config.ts` only — loaded via **jiti**; `defineConfig()` helper; no JSON config
 - [x] Config discovery: cwd / git root; `--config` override; merge CLI overrides (`-C`, `--package-name`, `--cache-dir`)

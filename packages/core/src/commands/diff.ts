@@ -4,14 +4,7 @@ import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
-import type { ListViewOptions } from '../shared/listing.js';
-
-export interface DiffCliOptions extends ListViewOptions {
-  range?: string;
-  noCache?: boolean;
-  force?: boolean;
-  verbose?: boolean;
-}
+import type { DiffCliOptions } from '../types/commands/cli.js';
 
 export function runExportsDiff(options: DiffCliOptions): void {
   const timer = beginCommand('diff');

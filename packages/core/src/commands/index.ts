@@ -1,8 +1,18 @@
-export { runExportsDiff, type DiffCliOptions } from './diff.js';
-export { runExportsDoctor, type DoctorCliOptions } from './doctor.js';
-export { runExportsGraph, type GraphCliOptions } from './graph.js';
-export { runExportsInventory, type InventoryCliOptions } from './inventory.js';
-export { runExportsTimeline, type TimelineCliOptions } from './timeline.js';
-export { runExportsTrend, type TrendCliOptions } from './trend.js';
-export { runExportsSuggest, type SuggestCliOptions } from './suggest.js';
-export { runExportsValidate, type ValidateOptions } from './validate.js';
+export { runExportsDiff } from './diff.js';
+export { runExportsDoctor } from './doctor.js';
+export { runExportsGraph } from './graph.js';
+export { runExportsInventory } from './inventory.js';
+export { runExportsTimeline } from './timeline.js';
+export { runExportsTrend } from './trend.js';
+export { runExportsSuggest } from './suggest.js';
+export { runExportsValidate } from './validate.js';
+export type {
+  DiffCliOptions,
+  DoctorCliOptions,
+  GraphCliOptions,
+  InventoryCliOptions,
+  TimelineCliOptions,
+  TrendCliOptions,
+  SuggestCliOptions,
+  ValidateOptions,
+} from '../types/commands/index.js';

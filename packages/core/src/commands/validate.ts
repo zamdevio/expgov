@@ -12,6 +12,7 @@ import { printValidateReport } from '../logger/index.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import type { ValidateOptions } from '../types/commands/cli.js';
 import type { Issue } from '../types/json/envelope.js';
 
 interface PackageExports {
@@ -37,11 +38,6 @@ function npmExportKeys(exportsField: PackageExports): string[] {
 
 function tsconfigPackagePaths(paths: Record<string, string[]>): string[] {
   return Object.keys(paths).filter((key) => isPackageTsconfigPath(key));
-}
-
-export interface ValidateOptions {
-  since?: string;
-  verbose?: boolean;
 }
 
 export function runExportsValidate(options: ValidateOptions = {}): number {

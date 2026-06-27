@@ -4,17 +4,9 @@ import { printSuggestReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { Issue } from '../types/json/envelope.js';
+import type { SuggestCliOptions, TierExactSuggestion } from '../types/commands/cli.js';
 
-export interface SuggestCliOptions {
-  verbose?: boolean;
-}
-
-export type TierExactSuggestion = {
-  bucket: 'stable';
-  names: string[];
-};
-
-export function collectTierExactSuggestions(snapshot: InventorySnapshot): TierExactSuggestion {
+function collectTierExactSuggestions(snapshot: InventorySnapshot): TierExactSuggestion {
   const names = new Set<string>();
 
   for (const sym of snapshot.symbols) {

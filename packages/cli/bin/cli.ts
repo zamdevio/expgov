@@ -1,7 +1,6 @@
+#!/usr/bin/env node
 import path from 'node:path';
-
 import { Command } from 'commander';
-
 import {
   bootstrapRuntime,
   configureStyle,
@@ -24,13 +23,13 @@ import {
   type HelpTopic,
 } from '@expgov/core';
 
-import { ensureConfig } from './commands/init/index.js';
-import { CLI_NAME, CLI_ROOT_DESCRIPTION } from './constants/cli.js';
-import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from './shared/context/globals.js';
-import { maybePrintCommandBanner } from './utils/cli/banner.js';
-import { addCacheFlags, addListFlags } from './utils/cli/listFlags.js';
-import { resolveNoColor } from './utils/cli/noColor.js';
-import { configureCliHelp } from './utils/help/configureCliHelp.js';
+import { ensureConfig } from '../src/commands/init/index.js';
+import { CLI_NAME, CLI_ROOT_DESCRIPTION } from '../src/constants/cli.js';
+import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from '../src/shared/context/globals.js';
+import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
+import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
+import { resolveNoColor } from '../src/utils/cli/noColor.js';
+import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
 
 interface GlobalOpts {
   cwd?: string;
@@ -272,11 +271,9 @@ export function buildProgram(): Command {
         .command('timeline')
         .description('commits that changed the root export barrel')
         .argument('[range]', 'time range (default: @4w)')
-        .option('--limit <n>', 'deprecated alias for --top', (v) => Number(v))
         .option('-v, --verbose', 'verbose output')
         .action((range: string | undefined, _opts, cmd) => {
           const local = cmd.opts() as {
-            limit?: number;
             verbose?: boolean;
             force?: boolean;
             cache?: boolean;
@@ -286,7 +283,6 @@ export function buildProgram(): Command {
           withContext(cmd, local.verbose, () => {
             runExportsTimeline({
               range,
-              limit: local.limit,
               top: local.top,
               full: local.full,
               noCache: local.cache === false,

@@ -8,22 +8,14 @@ import { getRunOptions } from '../runtime/runOptions.js';
 import { CLI_NAME, style } from '../runtime/style.js';
 import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
 import { resolveListLimit } from '../shared/listing.js';
-import type { ListViewOptions } from '../shared/listing.js';
-
-export interface TimelineCliOptions extends ListViewOptions {
-  range?: string;
-  /** @deprecated Use `top` instead. */
-  limit?: number;
-  noCache?: boolean;
-  force?: boolean;
-  verbose?: boolean;
-}
+import type { TimelineCliOptions } from '../types/commands/cli.js';
 
 export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   resetGitRunStats();
   const timer = beginCommand('timeline');
   const rangeToken = options.range ?? '@4w';
-  const limit = resolveListLimit({ top: options.top ?? options.limit, full: options.full });
+  const listLimit = resolveListLimit(options);
+  const gitLimit = Number.isFinite(listLimit) ? listLimit : undefined;
   const range = parseTimelineRange(rangeToken);
   if (!range) {
     throw new ExportError(`Invalid timeline range "${rangeToken}"`, 'invalid_range', {
@@ -37,7 +29,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   const commits = listBarrelCommits({
     sinceIso: range.sinceIso,
     untilIso: range.untilIso,
-    limit,
+    limit: gitLimit,
   });
 
   const warmer = new TimelineWarmer(commits.length, Boolean(options.verbose));
@@ -78,7 +70,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
       json: {
         kind: 'timeline',
         ok: true,
-        data: { range, limit, rows, warmStats },
+        data: { range, top: listLimit, rows, warmStats },
       },
     });
     return;
@@ -86,7 +78,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
 
   printTimelineReport({
     range,
-    limit,
+    top: listLimit,
     rows,
     verbose: options.verbose,
     warmStats,

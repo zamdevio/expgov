@@ -7,7 +7,7 @@ const coreSrc = path.join(root, 'packages/core/src');
 
 export default defineConfig({
   entry: {
-    cli: 'packages/cli/bin/expgov.ts',
+    cli: 'packages/cli/bin/cli.ts',
     core: 'packages/core/src/index.ts',
   },
   format: ['esm'],

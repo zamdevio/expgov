@@ -1,8 +1,12 @@
-import type { InitDetection } from './detect.js';
+import type { InitDetection } from '../types/init/detection.js';
 import { detectionToConfig } from './detect.js';
-import { DEFAULT_CACHE_DIR } from '../paths.js';
+import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
+import {
+  DEFAULT_INIT_CONFIG_IMPORT,
+  INIT_CONFIG_FILE_NAME,
+} from '../shared/constants/init.js';
 
-export const DEFAULT_INIT_CONFIG_IMPORT = 'expgov/core';
+export { DEFAULT_INIT_CONFIG_IMPORT, INIT_CONFIG_FILE_NAME };
 
 function quote(s: string): string {
   return `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
@@ -69,5 +73,3 @@ export default defineConfig({
 } satisfies ExpgovConfig);
 `;
 }
-
-export const INIT_CONFIG_FILE_NAME = 'expgov.config.ts';

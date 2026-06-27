@@ -1,17 +1,7 @@
-import type { InitDetection } from './detect.js';
 import { detectInitProject } from './detect.js';
-import { buildInitConfigTemplate, INIT_CONFIG_FILE_NAME } from './template.js';
-
-export interface InitRunOptions {
-  rich?: boolean;
-  importSpecifier?: string;
-}
-
-export interface InitRunResult {
-  proposedConfigSource: string;
-  proposedConfigFileName: string;
-  detection: InitDetection;
-}
+import { buildInitConfigTemplate } from './template.js';
+import { INIT_CONFIG_FILE_NAME } from '../shared/constants/init.js';
+import type { InitRunOptions, InitRunResult } from '../types/init/run.js';
 
 export function runInit(repoRoot: string, opts: InitRunOptions = {}): InitRunResult {
   const detection = detectInitProject(repoRoot);
@@ -27,4 +17,6 @@ export function runInit(repoRoot: string, opts: InitRunOptions = {}): InitRunRes
 }
 
 export { buildInitConfigTemplate, INIT_CONFIG_FILE_NAME } from './template.js';
-export { detectInitProject, detectionToConfig, type InitDetection, type InitLayout } from './detect.js';
+export { DEFAULT_INIT_CONFIG_IMPORT } from '../shared/constants/init.js';
+export { detectInitProject, detectionToConfig } from './detect.js';
+export type { InitDetection, InitLayout, InitRunOptions, InitRunResult } from '../types/init/index.js';

@@ -10,7 +10,8 @@ import {
   type SourceReader,
 } from './source.js';
 import { classifySymbolTier, resolveDeclaredTierTag, type DeclaredTierTag } from './tiers.js';
-import { SNAPSHOT_VERSION, TOOL_VERSION, getRootIndexRepoPath } from '../paths.js';
+import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
+import { getRootIndexRepoPath } from '../paths.js';
 import { gitCommitMeta } from '../git/commit-meta.js';
 import type {
   GraphEdge,

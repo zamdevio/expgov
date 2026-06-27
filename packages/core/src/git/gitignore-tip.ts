@@ -5,7 +5,11 @@ import { tryGetProjectContext } from '../context/index.js';
 import { coreLogTip } from '../runtime/log.js';
 import { canPrintTip } from '../runtime/policy.js';
 import { getRunOptions } from '../runtime/runOptions.js';
-import { DEFAULT_CACHE_DIR, EXPGOV_DIR, LEGACY_CACHE_DIR } from '../paths.js';
+import {
+  DEFAULT_CACHE_DIR,
+  EXPGOV_DIR,
+  LEGACY_CACHE_DIR,
+} from '../shared/constants/cache.js';
 
 function isGitRepo(repoRoot: string): boolean {
   return existsSync(path.join(repoRoot, '.git'));

@@ -27,7 +27,7 @@ graph [ref]              runExportsGraph
 help [topic]             printHelp
 ```
 
-Handlers live in `packages/cli/src/main.ts` (except `init` → `commands/init/`).
+Handlers live in `packages/cli/bin/cli.ts` (except `init` → `commands/init/`).
 
 ---
 

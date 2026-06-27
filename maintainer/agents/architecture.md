@@ -49,7 +49,7 @@ Init prompts use `@inquirer/prompts` in **CLI only** (`packages/cli/src/commands
 
 - Root `"bin": { "expgov": "./dist/cli.js" }`
 - `pnpm build` → core tsc + root tsup
-- `pnpm cli:dev` → `tsx packages/cli/bin/expgov.ts`
+- `pnpm cli:dev` → `tsx packages/cli/bin/cli.ts`
 - Global CLI: `pnpm link --global` after build
 
 ## Config contract

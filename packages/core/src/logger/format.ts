@@ -1,9 +1,11 @@
 /** Truncate/pad inventory verbose columns. */
 import { getCoreSrcPrefix } from '../paths.js';
-export const INVENTORY_NAME_WIDTH = 33;
-export const INVENTORY_TIER_WIDTH = 10;
-export const INVENTORY_CATEGORY_WIDTH = 10;
-export const INVENTORY_SYMBOL_KIND_WIDTH = 10;
+import {
+  INVENTORY_CATEGORY_WIDTH,
+  INVENTORY_NAME_WIDTH,
+  INVENTORY_SYMBOL_KIND_WIDTH,
+  INVENTORY_TIER_WIDTH,
+} from '../shared/constants/inventory.js';
 
 export function formatInventoryName(name: string): string {
   if (name.length <= 30) return name.padEnd(INVENTORY_NAME_WIDTH);
