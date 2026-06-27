@@ -3,8 +3,9 @@ import { listVersionTags, resolveSourceRef } from '../git/index.js';
 import { printTrendReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import type { ListViewOptions } from '../shared/listing.js';
 
-export interface TrendCliOptions {
+export interface TrendCliOptions extends ListViewOptions {
   tagLimit?: number;
   noCache?: boolean;
   force?: boolean;
@@ -40,7 +41,7 @@ export function runExportsTrend(options: TrendCliOptions = {}): void {
     return;
   }
 
-  printTrendReport({ rows, tagLimit: options.tagLimit ?? 12, verbose: options.verbose });
+  printTrendReport({ rows, tagLimit: options.tagLimit ?? 12, verbose: options.verbose, listView: options });
 
   const first = rows[0];
   const last = rows[rows.length - 1];

@@ -4,8 +4,9 @@ import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import type { ListViewOptions } from '../shared/listing.js';
 
-export interface DiffCliOptions {
+export interface DiffCliOptions extends ListViewOptions {
   range?: string;
   noCache?: boolean;
   force?: boolean;
@@ -35,10 +36,10 @@ export function runExportsDiff(options: DiffCliOptions): void {
     return;
   }
 
-  printDiffReport({ rangeLabel, left: leftResult, right: rightResult, diff });
+  printDiffReport({ rangeLabel, left: leftResult, right: rightResult, diff, listView: options });
 
   if (options.verbose) {
-    printDiffVerbose({ diff, left: leftResult.snapshot, right: rightResult.snapshot });
+    printDiffVerbose({ diff, left: leftResult.snapshot, right: rightResult.snapshot, listView: options });
     printDiffCacheDetail({ left: leftResult, right: rightResult });
   }
 

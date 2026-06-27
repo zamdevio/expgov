@@ -4,8 +4,10 @@ import { resolveSourceRef } from '../git/index.js';
 import { printGraphReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { resolveListLimit } from '../shared/listing.js';
+import type { ListViewOptions } from '../shared/listing.js';
 
-export interface GraphCliOptions {
+export interface GraphCliOptions extends ListViewOptions {
   ref?: string;
   noCache?: boolean;
   force?: boolean;
@@ -47,7 +49,7 @@ function groupByTargetSubpath(snapshot: InventorySnapshot): TargetSubpathGroup[]
   return [...map.values()].sort((a, b) => b.flat + b.namespace - (a.flat + a.namespace));
 }
 
-function topModules(edges: GraphEdge[], limit = 10): ModuleGroup[] {
+function topModules(edges: GraphEdge[], limit: number): ModuleGroup[] {
   const map = new Map<string, { edges: number; symbols: string[] }>();
   for (const edge of edges) {
     const prev = map.get(edge.toModule) ?? { edges: 0, symbols: [] };
@@ -77,7 +79,8 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
   });
 
   const targetGroups = groupByTargetSubpath(snapshot);
-  const top = topModules(snapshot.edges, options.verbose ? 20 : 8);
+  const listLimit = resolveListLimit(options);
+  const top = topModules(snapshot.edges, listLimit);
   const namespaces = namespaceRows(snapshot.namespaces);
 
   if (getRunOptions().json) {
@@ -110,6 +113,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
     topModules: top,
     namespaces,
     verbose: options.verbose,
+    listView: options,
   });
 
   finishCommand({

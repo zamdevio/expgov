@@ -22,9 +22,17 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 | `-q, --quiet` | Suppress info/tips; keep primary report |
 | `-s, --silent` | Suppress human output except errors + `--json` |
 | `-C, --cwd` | Project root |
-| `--config` | Path to `expgov.config.ts` |
-| `--no-color` | Plain output |
+| `-c, --config` | Path to `expgov.config.ts` |
+| `-pn, --package-name` | Override package name |
+| `-cd, --cache-dir` | Override cache directory |
+| `-ncl, --no-color` | Plain output (also `NO_COLOR`, non-TTY) |
+| `-nlg, --no-log-prefix` | Omit `[expgov]` log prefix |
+| `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
 | `-y, --yes` | Non-interactive init |
+
+Per-command list flags (inventory, diff, graph, trend, timeline): `-l, --top <n>` (default 10), `--full`.
+
+Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode never applies ANSI.
 
 ## Output flow
 

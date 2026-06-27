@@ -28,6 +28,7 @@ import { ensureConfig } from './commands/init/index.js';
 import { CLI_NAME, CLI_ROOT_DESCRIPTION } from './constants/cli.js';
 import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from './shared/context/globals.js';
 import { maybePrintCommandBanner } from './utils/cli/banner.js';
+import { addCacheFlags, addListFlags } from './utils/cli/listFlags.js';
 import { resolveNoColor } from './utils/cli/noColor.js';
 import { configureCliHelp } from './utils/help/configureCliHelp.js';
 
@@ -40,7 +41,9 @@ interface GlobalOpts {
   json?: boolean;
   quiet?: boolean;
   silent?: boolean;
-  color?: boolean;
+  noColor?: boolean;
+  noLogPrefix?: boolean;
+  noLogChannel?: boolean;
 }
 
 function globalOpts(cmd: Command): GlobalOpts {
@@ -85,12 +88,6 @@ function withContext(cmd: Command, verbose: boolean | undefined, fn: () => void 
   }
 }
 
-function addCacheFlags(cmd: Command): Command {
-  return cmd
-    .option('-f, --force', 'rebuild snapshot and overwrite cache')
-    .option('--no-cache', 'skip cache');
-}
-
 export function buildProgram(): Command {
   const program = new Command();
 
@@ -101,28 +98,32 @@ export function buildProgram(): Command {
     .description(CLI_ROOT_DESCRIPTION)
     .version('0.1.0')
     .option('-C, --cwd <dir>', 'project root')
-    .option('--config <path>', 'path to expgov.config.ts')
-    .option('--package-name <name>', 'override package name')
-    .option('--cache-dir <path>', 'override cache directory')
+    .option('-c, --config <path>', 'path to expgov.config.ts')
+    .option('-pn, --package-name <name>', 'override package name')
+    .option('-cd, --cache-dir <path>', 'override cache directory')
     .option('-y, --yes', 'non-interactive (init writes config without prompting)')
     .option('-j, --json', 'machine-readable JSON envelope output')
     .option('-q, --quiet', 'suppress info logs and tips; keep primary command output')
     .option('-s, --silent', 'suppress all human output except errors and --json')
-    .option('--color', 'force color output', true)
-    .option('--no-color', 'disable color output');
+    .option('-ncl, --no-color', 'disable color output')
+    .option('-nlg, --no-log-prefix', 'omit [expgov] prefix on log lines')
+    .option('-nlc, --no-log-channel', 'omit info/warn/tip channel tags on log lines');
 
   program.hook('preAction', (_thisCommand, actionCommand) => {
     const opts = program.opts<GlobalOpts>();
     resetCliGlobals();
     resetRunOptions();
     setCliYesFlag(Boolean(opts.yes));
-    configureStyle(resolveNoColor(!opts.color));
+    const noColor = resolveNoColor(Boolean(opts.noColor));
+    configureStyle(noColor);
     setRunOptions({
       json: Boolean(opts.json),
       jsonPretty: true,
       quiet: Boolean(opts.quiet),
       silent: Boolean(opts.silent),
-      noColor: resolveNoColor(!opts.color),
+      noColor,
+      noLogPrefix: Boolean(opts.noLogPrefix),
+      noLogChannel: Boolean(opts.noLogChannel),
       verbose: Boolean((actionCommand.opts() as { verbose?: boolean }).verbose),
     });
     if (opts.cwd) process.chdir(path.resolve(opts.cwd));
@@ -147,42 +148,62 @@ export function buildProgram(): Command {
       }
     });
 
-  addCacheFlags(
-    program
-      .command('inventory')
-      .description('summarize root barrel exports')
-      .argument('[ref]', 'git ref (default: working tree)')
-      .option('-v, --verbose', 'verbose output')
-      .action((ref: string | undefined, _opts, cmd) => {
-        const local = cmd.opts() as { verbose?: boolean; force?: boolean; cache?: boolean };
-        withContext(cmd, local.verbose, () => {
-          runExportsInventory({
-            ref,
-            verbose: local.verbose,
-            noCache: local.cache === false,
-            force: local.force,
+  addListFlags(
+    addCacheFlags(
+      program
+        .command('inventory')
+        .description('summarize root barrel exports')
+        .argument('[ref]', 'git ref (default: working tree)')
+        .option('-v, --verbose', 'verbose output')
+        .action((ref: string | undefined, _opts, cmd) => {
+          const local = cmd.opts() as {
+            verbose?: boolean;
+            force?: boolean;
+            cache?: boolean;
+            top?: number;
+            full?: boolean;
+          };
+          withContext(cmd, local.verbose, () => {
+            runExportsInventory({
+              ref,
+              verbose: local.verbose,
+              noCache: local.cache === false,
+              force: local.force,
+              top: local.top,
+              full: local.full,
+            });
           });
-        });
-      }),
+        }),
+    ),
   );
 
-  addCacheFlags(
-    program
-      .command('diff')
-      .description('compare export surfaces between refs')
-      .argument('[range]', 'ref or A..B range')
-      .option('-v, --verbose', 'verbose output')
-      .action((range: string | undefined, _opts, cmd) => {
-        const local = cmd.opts() as { verbose?: boolean; force?: boolean; cache?: boolean };
-        withContext(cmd, local.verbose, () => {
-          runExportsDiff({
-            range,
-            noCache: local.cache === false,
-            force: local.force,
-            verbose: local.verbose,
+  addListFlags(
+    addCacheFlags(
+      program
+        .command('diff')
+        .description('compare export surfaces between refs')
+        .argument('[range]', 'ref or A..B range')
+        .option('-v, --verbose', 'verbose output')
+        .action((range: string | undefined, _opts, cmd) => {
+          const local = cmd.opts() as {
+            verbose?: boolean;
+            force?: boolean;
+            cache?: boolean;
+            top?: number;
+            full?: boolean;
+          };
+          withContext(cmd, local.verbose, () => {
+            runExportsDiff({
+              range,
+              noCache: local.cache === false,
+              force: local.force,
+              verbose: local.verbose,
+              top: local.top,
+              full: local.full,
+            });
           });
-        });
-      }),
+        }),
+    ),
   );
 
   program
@@ -215,73 +236,95 @@ export function buildProgram(): Command {
       withContext(cmd, local.verbose, () => runExportsSuggest({ verbose: local.verbose }));
     });
 
-  addCacheFlags(
-    program
-      .command('trend')
-      .description('export counts across release tags')
-      .option('--tags <n>', 'last N version tags', (v) => Number(v), 12)
-      .option('-v, --verbose', 'verbose output')
-      .action((_opts, cmd) => {
-        const local = cmd.opts() as {
-          tags: number;
-          verbose?: boolean;
-          force?: boolean;
-          cache?: boolean;
-        };
-        withContext(cmd, local.verbose, () => {
-          runExportsTrend({
-            tagLimit: local.tags,
-            noCache: local.cache === false,
-            force: local.force,
-            verbose: local.verbose,
+  addListFlags(
+    addCacheFlags(
+      program
+        .command('trend')
+        .description('export counts across release tags')
+        .option('--tags <n>', 'last N version tags', (v) => Number(v), 12)
+        .option('-v, --verbose', 'verbose output')
+        .action((_opts, cmd) => {
+          const local = cmd.opts() as {
+            tags: number;
+            verbose?: boolean;
+            force?: boolean;
+            cache?: boolean;
+            top?: number;
+            full?: boolean;
+          };
+          withContext(cmd, local.verbose, () => {
+            runExportsTrend({
+              tagLimit: local.tags,
+              noCache: local.cache === false,
+              force: local.force,
+              verbose: local.verbose,
+              top: local.top,
+              full: local.full,
+            });
           });
-        });
-      }),
+        }),
+    ),
   );
 
-  addCacheFlags(
-    program
-      .command('timeline')
-      .description('commits that changed the root export barrel')
-      .argument('[range]', 'time range (default: @4w)')
-      .option('--limit <n>', 'max commits', (v) => Number(v), 20)
-      .option('-v, --verbose', 'verbose output')
-      .action((range: string | undefined, _opts, cmd) => {
-        const local = cmd.opts() as {
-          limit: number;
-          verbose?: boolean;
-          force?: boolean;
-          cache?: boolean;
-        };
-        withContext(cmd, local.verbose, () => {
-          runExportsTimeline({
-            range,
-            limit: local.limit,
-            noCache: local.cache === false,
-            force: local.force,
-            verbose: local.verbose,
+  addListFlags(
+    addCacheFlags(
+      program
+        .command('timeline')
+        .description('commits that changed the root export barrel')
+        .argument('[range]', 'time range (default: @4w)')
+        .option('--limit <n>', 'deprecated alias for --top', (v) => Number(v))
+        .option('-v, --verbose', 'verbose output')
+        .action((range: string | undefined, _opts, cmd) => {
+          const local = cmd.opts() as {
+            limit?: number;
+            verbose?: boolean;
+            force?: boolean;
+            cache?: boolean;
+            top?: number;
+            full?: boolean;
+          };
+          withContext(cmd, local.verbose, () => {
+            runExportsTimeline({
+              range,
+              limit: local.limit,
+              top: local.top,
+              full: local.full,
+              noCache: local.cache === false,
+              force: local.force,
+              verbose: local.verbose,
+            });
           });
-        });
-      }),
+        }),
+    ),
   );
 
-  addCacheFlags(
-    program
-      .command('graph')
-      .description('re-export map')
-      .argument('[ref]', 'git ref')
-      .option('-v, --verbose', 'verbose output')
-      .action((ref: string | undefined, _opts, cmd) => {
-        const local = cmd.opts() as { verbose?: boolean; force?: boolean; cache?: boolean };
-        withContext(cmd, local.verbose, () => {
-          runExportsGraph({
-            ref,
-            noCache: local.cache === false,
-            force: local.force,
-            verbose: local.verbose,
+  addListFlags(
+    addCacheFlags(
+      program
+        .command('graph')
+        .description('re-export map')
+        .argument('[ref]', 'git ref')
+        .option('-v, --verbose', 'verbose output')
+        .action((ref: string | undefined, _opts, cmd) => {
+          const local = cmd.opts() as {
+            verbose?: boolean;
+            force?: boolean;
+            cache?: boolean;
+            top?: number;
+            full?: boolean;
+          };
+          withContext(cmd, local.verbose, () => {
+            runExportsGraph({
+              ref,
+              noCache: local.cache === false,
+              force: local.force,
+              verbose: local.verbose,
+              top: local.top,
+              full: local.full,
+            });
           });
-        });
-      }),
+        }),
+    ),
   );
 
   program

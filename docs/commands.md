@@ -10,11 +10,17 @@ All governance commands are **read-only** except `init` (writes `expgov.config.t
 | `-q, --quiet` | Suppress info logs and tips; keep primary report |
 | `-s, --silent` | Suppress human output except errors and `--json` |
 | `-C, --cwd` | Project root |
-| `--config` | Path to `expgov.config.ts` |
-| `--no-color` | Plain output |
+| `-c, --config` | Path to `expgov.config.ts` |
+| `-pn, --package-name` | Override package name |
+| `-cd, --cache-dir` | Override cache directory |
+| `-ncl, --no-color` | Plain output (`NO_COLOR` env, non-TTY also disable color) |
+| `-nlg, --no-log-prefix` | Omit `[expgov]` log prefix |
+| `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
 | `-y, --yes` | Non-interactive `init` |
 
-Per-command: `-v/--verbose`, `-f/--force`, `--no-cache` where applicable.
+**List flags** (inventory, diff, graph, trend, timeline): `-l, --top <n>` (default 10), `--full` (no truncation).
+
+Per-command: `-v/--verbose`, `-f/--force`, `-nch/--no-cache` where applicable.
 
 ---
 

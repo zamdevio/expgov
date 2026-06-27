@@ -1,6 +1,6 @@
 # Phase A — CLI DX Polish
 
-**Status:** Planning only — no implementation until current governance sprint completes.
+**Status:** In progress — A1 listing + A2 aliases + A3 color shipped in code.
 
 **Companion:** [`commands.md`](./commands.md) · [`../systems/cli.md`](../systems/cli.md) · [`shipped-slices.md`](./shipped-slices.md)
 

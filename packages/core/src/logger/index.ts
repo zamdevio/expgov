@@ -12,6 +12,12 @@ import { emitLog } from '../runtime/emitter.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintPrimary, canPrintVerbose } from '../runtime/policy.js';
 import {
+  formatListTruncationHint,
+  limitList,
+  resolveListLimit,
+  type ListViewOptions,
+} from '../shared/listing.js';
+import {
   compactCoreSourcePath,
   formatInventoryCategory,
   formatInventoryName,
@@ -29,6 +35,12 @@ function canEmitReport(): boolean {
 
 function canEmitVerboseReport(): boolean {
   return canPrintVerbose(getRunOptions()) && !getRunOptions().quiet;
+}
+
+function logListTruncation(command: string, hiddenCount: number): void {
+  const hint = formatListTruncationHint(command, hiddenCount);
+  if (!hint) return;
+  logLine(`       ${chalk.dim(hint)}`);
 }
 
 function logLine(message: string): void {
@@ -110,6 +122,7 @@ export function printInventoryReport(input: {
   ref: SourceRef;
   result: SnapshotResult;
   gitStats?: string;
+  listView?: ListViewOptions;
 }): void {
   const { ref, result } = input;
   const { snapshot, cache, barrelPath } = result;
@@ -138,15 +151,18 @@ export function printInventoryReport(input: {
   printSdkWideTiers(sumSdkTierCounts(snapshot));
   printPublishedSubpathRollups(snapshot.summary.subpaths);
 
-  const topCategories = Object.entries(r.byCategory ?? {})
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4);
-  if (topCategories.length) {
+  const listLimit = resolveListLimit(input.listView);
+  const topCategories = limitList(
+    Object.entries(r.byCategory ?? {}).sort((a, b) => b[1] - a[1]),
+    listLimit,
+  );
+  if (topCategories.items.length) {
     logLine('');
     logLine(chalk.bold.dim('       Top categories'));
-    for (const [cat, count] of topCategories) {
+    for (const [cat, count] of topCategories.items) {
       logLine(`       ${padLabel(cat, 14)} ${chalk.white(String(count))}`);
     }
+    logListTruncation('inventory', topCategories.hiddenCount);
   }
 }
 
@@ -179,14 +195,18 @@ function printPublishedSubpathRollups(subpaths: SubpathRollup[], title = 'Publis
   for (const sp of subpaths) logLine(formatSubpathRollupLine(sp));
 }
 
-export function printVerboseInventory(snapshot: InventorySnapshot): void {
+export function printVerboseInventory(snapshot: InventorySnapshot, listView?: ListViewOptions): void {
   if (!canEmitVerboseReport()) return;
-  const flat = [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name));
+  const listLimit = resolveListLimit(listView);
+  const flat = limitList(
+    [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name)),
+    listLimit,
+  );
 
   logLine('');
   logLine(chalk.bold.dim('       Symbols (root flat)'));
   logLine(chalk.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
-  for (const sym of flat) {
+  for (const sym of flat.items) {
     const tierPlain = formatInventoryTier(sym.tier);
     const tier =
       sym.tier === 'stable'
@@ -203,20 +223,28 @@ export function printVerboseInventory(snapshot: InventorySnapshot): void {
       `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${chalk.dim(sym.targetSubpath)} ${chalk.dim('[')}${tierSource}${chalk.dim(']')}`,
     );
   }
+  logListTruncation('inventory', flat.hiddenCount);
 
   if (snapshot.namespaces.length) {
     logLine('');
     logLine(chalk.bold.dim('       Namespaces (root)'));
-    for (const ns of snapshot.namespaces.sort((a, b) => a.name.localeCompare(b.name))) {
+    const namespaces = limitList(
+      [...snapshot.namespaces].sort((a, b) => a.name.localeCompare(b.name)),
+      listLimit,
+    );
+    for (const ns of namespaces.items) {
       const src = chalk.dim(compactCoreSourcePath(ns.sourceModule));
       logLine(
         `       ${chalk.dim('·')} ${ns.name.padEnd(20)} ${chalk.dim('→')} ${src} ${chalk.dim('·')} ${chalk.dim(ns.targetSubpath)}`,
       );
     }
+    logListTruncation('inventory', namespaces.hiddenCount);
   }
 
   if (snapshot.summary.subpaths.length) {
-    printPublishedSubpathRollups(snapshot.summary.subpaths);
+    const subpaths = limitList(snapshot.summary.subpaths, listLimit);
+    printPublishedSubpathRollups(subpaths.items);
+    logListTruncation('inventory', subpaths.hiddenCount);
   }
 }
 
@@ -225,8 +253,10 @@ export function printDiffReport(input: {
   left: SnapshotResult;
   right: SnapshotResult;
   diff: DiffResult;
+  listView?: ListViewOptions;
 }): void {
   const { rangeLabel, left, right, diff } = input;
+  const listLimit = resolveListLimit(input.listView);
 
   printMeta({
     range: rangeLabel,
@@ -245,14 +275,18 @@ export function printDiffReport(input: {
 
   logLine('');
   if (diff.added.length) {
+    const added = limitList(diff.added, listLimit);
     logLine(chalk.green.bold('       Added'));
-    for (const name of diff.added) logLine(`       ${chalk.green('+')} ${name}`);
+    for (const name of added.items) logLine(`       ${chalk.green('+')} ${name}`);
+    logListTruncation('diff', added.hiddenCount);
     logLine('');
   }
 
   if (diff.removed.length) {
+    const removed = limitList(diff.removed, listLimit);
     logLine(chalk.red.bold('       Removed'));
-    for (const name of diff.removed) logLine(`       ${chalk.red('-')} ${name}`);
+    for (const name of removed.items) logLine(`       ${chalk.red('-')} ${name}`);
+    logListTruncation('diff', removed.hiddenCount);
     logLine('');
   }
 
@@ -273,13 +307,16 @@ export function printDiffVerbose(input: {
   diff: DiffResult;
   left: InventorySnapshot;
   right: InventorySnapshot;
+  listView?: ListViewOptions;
 }): void {
   if (!canEmitVerboseReport()) return;
   const { diff, left, right } = input;
+  const listLimit = resolveListLimit(input.listView);
   if (diff.added.length) {
+    const added = limitList(diff.added, listLimit);
     logLine('');
     logLine(chalk.bold.dim('       Added detail'));
-    for (const name of diff.added) {
+    for (const name of added.items) {
       const sym = right.symbols.find((s) => s.name === name);
       if (sym) {
         logLine(
@@ -287,11 +324,13 @@ export function printDiffVerbose(input: {
         );
       }
     }
+    logListTruncation('diff', added.hiddenCount);
   }
   if (diff.removed.length) {
+    const removed = limitList(diff.removed, listLimit);
     logLine('');
     logLine(chalk.bold.dim('       Removed detail'));
-    for (const name of diff.removed) {
+    for (const name of removed.items) {
       const sym = left.symbols.find((s) => s.name === name);
       if (sym) {
         logLine(
@@ -299,6 +338,7 @@ export function printDiffVerbose(input: {
         );
       }
     }
+    logListTruncation('diff', removed.hiddenCount);
   }
 }
 
@@ -427,13 +467,17 @@ export function printTrendReport(input: {
   }[];
   tagLimit: number;
   verbose?: boolean;
+  listView?: ListViewOptions;
 }): void {
+  const listLimit = resolveListLimit(input.listView);
+  const displayRows = limitList(input.rows, listLimit);
+
   printMeta({
     tags: chalk.dim(String(input.rows.length)),
     window: chalk.dim(`last ${input.tagLimit} version tags`),
   });
 
-  if (!input.rows.length) {
+  if (!displayRows.items.length) {
     logLine('');
     logLine(chalk.dim('       No version tags found (git tag -l v*).'));
     return;
@@ -445,14 +489,15 @@ export function printTrendReport(input: {
       `       ${'tag'.padEnd(10)} ${'flat'.padStart(6)} ${'stable'.padStart(6)} ${'adv'.padStart(5)} ${'int'.padStart(4)}`,
     ),
   );
-  for (const row of input.rows) {
+  for (const row of displayRows.items) {
     logLine(
       `       ${row.tag.padEnd(10)} ${String(row.rollup.rootFlat).padStart(6)} ${String(row.rollup.stable).padStart(6)} ${String(row.rollup.advanced).padStart(5)} ${String(row.rollup.internal).padStart(4)} ${chalk.dim(`(${row.cache})`)}`,
     );
   }
+  logListTruncation('trend', displayRows.hiddenCount);
 
-  const first = input.rows[0]!;
-  const last = input.rows[input.rows.length - 1]!;
+  const first = displayRows.items[0]!;
+  const last = displayRows.items[displayRows.items.length - 1]!;
   const delta = last.rollup.rootFlat - first.rollup.rootFlat;
   const pct = first.rollup.rootFlat ? ((delta / first.rollup.rootFlat) * 100).toFixed(1) : '0.0';
   logLine('');
@@ -536,7 +581,13 @@ export function printGraphReport(input: {
   topModules: { module: string; edges: number; symbols: string[] }[];
   namespaces: { name: string; targetSubpath: string; module: string | null }[];
   verbose?: boolean;
+  listView?: ListViewOptions;
 }): void {
+  const listLimit = resolveListLimit(input.listView);
+  const targetGroups = limitList(input.targetGroups, listLimit);
+  const namespaces = limitList(input.namespaces, listLimit);
+  const topModules = limitList(input.topModules, listLimit);
+
   printMeta({
     ref: refLine(input.ref, input.snapshot),
     cache: cacheLabel(input.cache),
@@ -548,31 +599,34 @@ export function printGraphReport(input: {
   logLine('');
   logLine(chalk.bold.dim('       Root re-export targets (governance map)'));
   logLine(chalk.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
-  for (const group of input.targetGroups.slice(0, input.verbose ? undefined : 12)) {
+  for (const group of targetGroups.items) {
     logLine(
       `       ${group.targetSubpath.padEnd(22)} ${String(group.flat).padStart(6)} ${String(group.namespace).padStart(4)}`,
     );
   }
+  logListTruncation('graph', targetGroups.hiddenCount);
 
   printPublishedSubpathRollups(input.snapshot.summary.subpaths, 'Published npm subpaths');
 
   logLine('');
   logLine(chalk.bold.dim('       Root namespaces'));
-  for (const ns of input.namespaces.slice(0, input.verbose ? undefined : 15)) {
+  for (const ns of namespaces.items) {
     const src = compactCoreSourcePath(ns.module);
     logLine(
       `       ${chalk.dim('·')} ${ns.name.padEnd(18)} ${chalk.dim('→')} ${chalk.dim(src)} ${chalk.dim('·')} ${ns.targetSubpath}`,
     );
   }
+  logListTruncation('graph', namespaces.hiddenCount);
 
   logLine('');
   logLine(chalk.bold.dim('       Top source modules (edge count)'));
-  for (const mod of input.topModules) {
+  for (const mod of topModules.items) {
     logLine(`       ${chalk.dim('·')} ${mod.edges.toString().padStart(4)}  ${mod.module}`);
     if (input.verbose && mod.symbols.length) {
       logLine(`       ${chalk.dim('     e.g.')} ${mod.symbols.join(', ')}`);
     }
   }
+  logListTruncation('graph', topModules.hiddenCount);
 }
 
 export function printExportError(err: ExportError): void {

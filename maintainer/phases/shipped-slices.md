@@ -24,6 +24,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P4** — cache rename | Default cache dir `.exports/cache` → `.expgov/cache` |
 | 2026-W26 | **P4a** — `doctor` | Config discovery, cache gitignore, parity drift hints |
 | 2026-W26 | **P5** — `suggest` | Dry-run `tiers.stable.exact` suggestions for unclassified flats |
+| 2026-W26 | **P6** — CLI DX (A1–A3) | `--top`/`--full` listing, short aliases, TTY color defaults |
 
 ---
 
@@ -212,9 +213,20 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
+## P6 — CLI DX Phase A1–A3 (shipped) · 2026-W26
+
+- [x] `shared/listing.ts` — `resolveListLimit`, `limitList`, default top 10
+- [x] `--top` / `--full` on inventory, diff, graph, trend, timeline (`--limit` deprecated alias)
+- [x] Truncation hints: `…and N more (expgov <cmd> --full)`
+- [x] Global aliases: `-c`, `-pn`, `-cd`, `-ncl`, `-nlg`, `-nlc`; `-nch` for `--no-cache`
+- [x] Color: TTY + no `NO_COLOR` default; removed positive `--color` flag
+
+---
+
 ## Explicitly not shipped (do not assume present)
 
-- [ ] Phase A — CLI DX polish (`--top` / `--full`, aliases)
+- [ ] Phase A4 — tier provenance labels in inventory output
+- [ ] Phase A5 — workflow-oriented help sections
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

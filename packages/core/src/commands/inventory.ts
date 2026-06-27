@@ -3,8 +3,9 @@ import { formatGitRunStats, resetGitRunStats, resolveSourceRef } from '../git/in
 import { printInventoryReport, printVerboseInventory } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import type { ListViewOptions } from '../shared/listing.js';
 
-export interface InventoryCliOptions {
+export interface InventoryCliOptions extends ListViewOptions {
   ref?: string;
   verbose?: boolean;
   noCache?: boolean;
@@ -41,8 +42,9 @@ export function runExportsInventory(options: InventoryCliOptions): void {
     ref,
     result,
     gitStats: options.verbose ? formatGitRunStats() : undefined,
+    listView: options,
   });
-  if (options.verbose) printVerboseInventory(result.snapshot);
+  if (options.verbose) printVerboseInventory(result.snapshot, options);
 
   finishCommand({
     command: 'inventory',

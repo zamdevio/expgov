@@ -7,9 +7,12 @@ import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { CLI_NAME, style } from '../runtime/style.js';
 import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
+import { resolveListLimit } from '../shared/listing.js';
+import type { ListViewOptions } from '../shared/listing.js';
 
-export interface TimelineCliOptions {
+export interface TimelineCliOptions extends ListViewOptions {
   range?: string;
+  /** @deprecated Use `top` instead. */
   limit?: number;
   noCache?: boolean;
   force?: boolean;
@@ -20,7 +23,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   resetGitRunStats();
   const timer = beginCommand('timeline');
   const rangeToken = options.range ?? '@4w';
-  const limit = options.limit ?? 20;
+  const limit = resolveListLimit({ top: options.top ?? options.limit, full: options.full });
   const range = parseTimelineRange(rangeToken);
   if (!range) {
     throw new ExportError(`Invalid timeline range "${rangeToken}"`, 'invalid_range', {
