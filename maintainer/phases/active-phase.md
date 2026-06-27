@@ -12,10 +12,8 @@
 
 | Priority | Slice | Goal |
 |----------|-------|------|
-| **Now** | Tier schema polish | Nested `tiers.{stable,internal,advanced}.{exact,prefix}` shipped; migrate archlab + consumer configs off flat keys |
-| **Next** | User docs | `docs/` stubs for install, config, commands, JSON envelope |
-| **Next** | CI gate | `expgov validate` in GitHub Actions on PRs |
-| **Deferred** | `doctor` command | Config discovery + cache hygiene checks — see [`commands.md`](./commands.md) |
+| **Now** | `doctor` command | Config discovery + cache hygiene checks — see [`commands.md`](./commands.md) |
+| **Deferred** | `sync-tiers` | Dry-run tier allowlist suggestions from unclassified inventory |
 
 Check [`shipped-slices.md`](./shipped-slices.md) before re-implementing runtime, init, or CLI styling.
 

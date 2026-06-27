@@ -1,6 +1,6 @@
 # Architecture phases (blueprint)
 
-**Status:** Active — tier schema shipped; CI + user docs next.
+**Status:** Active — docs + CI gate shipped; `doctor` next.
 
 **Shipped history:** [`shipped-slices.md`](./shipped-slices.md) · **Commands:** [`commands.md`](./commands.md)
 
@@ -10,7 +10,7 @@
 
 Portable export-governance CLI for TypeScript SDK barrels: inventory, diff, validate, trend, timeline, graph.
 
-**Immediate focus:** migrate consumer configs to nested tiers; add CI validate gate; user-facing `docs/`.
+**Immediate focus:** `doctor` command.
 
 ---
 

@@ -19,6 +19,8 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P1a** — CLI host polish | Colorized Commander help, per-command box banners, `-r` on `init`, dogfood config (`4d53612`) |
 | 2026-W26 | **P2** — nested tier schema | `tiers.{stable,internal,advanced}.{exact,prefix}`; maintainer hub; `.cursor/rules` (`daa4615`) |
 | 2026-W26 | **P2a** — command footer | Reports first; `summary` / `note` / `footer` log events; drop flat tier keys (`651bf29`) |
+| 2026-W26 | **P3** — user docs | `docs/` stubs: install, config, commands, `json.md` |
+| 2026-W26 | **P3a** — CI gate | GitHub Actions: `pnpm build`, `typecheck`, `expgov validate` on PRs |
 
 ---
 
@@ -162,15 +164,29 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | Target | Status |
 |--------|--------|
 | **expgov repo** | Root `expgov.config.ts`; `expgov validate` passes (80 stable root flats) |
-| **archlab** | Consumer `expgov.config.ts`; `expgov -C archlab validate` (pre-nested migration — update when touched) |
 | **Global CLI** | `pnpm build && pnpm link --global` → `expgov` on PATH |
+
+---
+
+## P3 — user docs (shipped) · 2026-W26
+
+- [x] `docs/README.md` — index + quick start
+- [x] `docs/install.md` — requirements, init, local dev, cache
+- [x] `docs/config.md` — `expgov.config.ts` fields, nested tiers, `@sdkTier`
+- [x] `docs/commands.md` — all wired verbs + global flags
+- [x] `docs/json.md` — `--json` contract, `kind` values, CI examples
+
+---
+
+## P3a — CI gate (shipped) · 2026-W26
+
+- [x] `.github/workflows/validate.yml` — `pnpm install`, `build`, `typecheck`, `node dist/cli.js validate`
+- [x] Triggers on `push` to `main` and `pull_request`
 
 ---
 
 ## Explicitly not shipped (do not assume present)
 
-- [ ] `docs/` user-facing manual
-- [ ] GitHub Actions / CI `expgov validate` gate
 - [ ] `doctor` command
 - [ ] `sync-tiers` dry-run helper
 - [ ] Automated tier allowlist PR bot
