@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+
 
 import { tryGetProjectContext } from '../context/index.js';
 import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
@@ -12,7 +12,7 @@ function cmd(name: string, args = ''): string {
 }
 
 function section(title: string, lines: string[]): void {
-  console.log(`\n${chalk.bold(title)}`);
+  console.log(`\n${style.bold(title)}`);
   for (const line of lines) console.log(line);
 }
 
@@ -37,16 +37,16 @@ export function printHelp(topic: HelpTopic = 'all'): void {
   const ctx = tryGetProjectContext();
   const packageName = ctx?.packageName ?? '<package>';
   const rootBarrel = ctx?.rootIndexRepoPath ?? '<root-barrel>';
-  console.log(`\n${BRAND()}  ${chalk.bold(`maintainer tools for ${packageName} export surface`)}`);
+  console.log(`\n${BRAND()}  ${style.bold(`maintainer tools for ${packageName} export surface`)}`);
 
   if (topic === 'all' || topic === 'init') {
     section('init — scaffold expgov.config.ts', [
       cmd('init', '[flags]'),
       '',
-      `  ${chalk.dim('Creates')} ${chalk.white('expgov.config.ts')} with safe defaults (detects monorepo vs single-package layout).`,
-      `  ${chalk.dim('Skips')} when config exists unless ${chalk.white('--force')}.`,
+      `  ${style.dim('Creates')} ${style.white('expgov.config.ts')} with safe defaults (detects monorepo vs single-package layout).`,
+      `  ${style.dim('Skips')} when config exists unless ${style.white('--force')}.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -y, --yes       write without prompts (CI / non-TTY)`,
       `    -f, --force     overwrite existing expgov.config.ts`,
       `    -r, --rich      commented tiers.stable.exact examples`,
@@ -58,25 +58,25 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('inventory — summarize root barrel exports', [
       cmd('inventory', '[ref] [flags]'),
       '',
-      `  ${chalk.dim('Prints')} root flat count, namespace count, tier and category breakdown.`,
-      `  ${chalk.dim('Default ref')} working tree (includes uncommitted edits).`,
+      `  ${style.dim('Prints')} root flat count, namespace count, tier and category breakdown.`,
+      `  ${style.dim('Default ref')} working tree (includes uncommitted edits).`,
       '',
-      `  ${chalk.bold('Refs')}`,
-      `    ${chalk.dim('(omit)')}     working tree`,
+      `  ${style.bold('Refs')}`,
+      `    ${style.dim('(omit)')}     working tree`,
       `    HEAD         committed HEAD`,
       `    v0.1.4       tag`,
       `    d60df9e      short commit SHA (git must resolve uniquely)`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -v, --verbose   symbol table: tier, category, symbolKind, targetSubpath; subpath rollups`,
       `    -f, --force     rebuild snapshot and overwrite ${DEFAULT_CACHE_DIR}/ for this run`,
       `    --no-cache      build fresh but skip reading/writing ${DEFAULT_CACHE_DIR}/ (status: bypass)`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Output')}`,
-      `    ${chalk.dim('root flat')}   count of flat exports on ${rootBarrel}`,
-      `    ${chalk.dim('stable/advanced/internal')}   governance tiers (see expgov tier config)`,
-      `    ${chalk.dim('cache')}   hit/miss against ${DEFAULT_CACHE_DIR}/<sha>/inventory.full.json`,
+      `  ${style.bold('Output')}`,
+      `    ${style.dim('root flat')}   count of flat exports on ${rootBarrel}`,
+      `    ${style.dim('stable/advanced/internal')}   governance tiers (see expgov tier config)`,
+      `    ${style.dim('cache')}   hit/miss against ${DEFAULT_CACHE_DIR}/<sha>/inventory.full.json`,
     ]);
   }
 
@@ -84,23 +84,23 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('diff — compare export surfaces between refs', [
       cmd('diff', '[ref|A..B] [flags]'),
       '',
-      `  ${chalk.dim('Default')} HEAD → working tree.`,
+      `  ${style.dim('Default')} HEAD → working tree.`,
       '',
-      `  ${chalk.bold('Forms')}`,
-      `    ${chalk.dim('(omit)')}           HEAD → working tree`,
+      `  ${style.bold('Forms')}`,
+      `    ${style.dim('(omit)')}           HEAD → working tree`,
       `    v0.1.4               v0.1.4 → working tree`,
       `    v0.1.3..v0.1.4       tag range (two commits)`,
       `    a6caa74..HEAD        SHA or tag .. SHA or tag`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -v, --verbose   category, symbolKind, targetSubpath for each added/removed symbol`,
       `    -f, --force     rebuild snapshots and overwrite cache for both refs`,
       `    --no-cache      build fresh without reading or writing cache`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Output')}`,
-      `    ${chalk.dim('Added/Removed')}   flat export names only (namespaces not listed here)`,
-      `    ${chalk.dim('Tier violations')}   internal/advanced symbols promoted against policy`,
+      `  ${style.bold('Output')}`,
+      `    ${style.dim('Added/Removed')}   flat export names only (namespaces not listed here)`,
+      `    ${style.dim('Tier violations')}   internal/advanced symbols promoted against policy`,
     ]);
   }
 
@@ -108,16 +108,16 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('validate — governance checks on working tree', [
       cmd('validate', '[flags]'),
       '',
-      `  ${chalk.dim('Exits')} 0 when checks pass, 1 when they fail.`,
+      `  ${style.dim('Exits')} 0 when checks pass, 1 when they fail.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -v, --verbose   all notes, path parity gaps, tier flat leaks`,
       `    --since=<ref>   reserved for future delta validation`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Output')}`,
-      `    ${chalk.dim('✓/✗ lines')}   tsconfig ↔ npm exports parity, unclassified root flats`,
-      `    ${chalk.dim('notes')}   policy gaps (internal/advanced still flat on root, etc.)`,
+      `  ${style.bold('Output')}`,
+      `    ${style.dim('✓/✗ lines')}   tsconfig ↔ npm exports parity, unclassified root flats`,
+      `    ${style.dim('notes')}   policy gaps (internal/advanced still flat on root, etc.)`,
     ]);
   }
 
@@ -125,17 +125,17 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('doctor — config discovery and cache hygiene', [
       cmd('doctor', '[flags]'),
       '',
-      `  ${chalk.dim('Read-only')} setup checks — config paths, cache gitignore, tsconfig/npm drift hints.`,
-      `  ${chalk.dim('Exits')} 0 when healthy, 1 when actionable warnings remain.`,
+      `  ${style.dim('Read-only')} setup checks — config paths, cache gitignore, tsconfig/npm drift hints.`,
+      `  ${style.dim('Exits')} 0 when healthy, 1 when actionable warnings remain.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -v, --verbose   extra hints (parity detail, cache snapshot count)`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Checks')}`,
-      `    ${chalk.dim('config')}   package name, barrel, tsconfig, core package.json`,
-      `    ${chalk.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored; legacy .exports/cache migration hint`,
-      `    ${chalk.dim('drift')}   tsconfig ↔ npm exports parity (hints only — use validate for enforcement)`,
+      `  ${style.bold('Checks')}`,
+      `    ${style.dim('config')}   package name, barrel, tsconfig, core package.json`,
+      `    ${style.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored; legacy .exports/cache migration hint`,
+      `    ${style.dim('drift')}   tsconfig ↔ npm exports parity (hints only — use validate for enforcement)`,
     ]);
   }
 
@@ -143,17 +143,17 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('suggest — tier allowlist suggestions (dry-run)', [
       cmd('suggest', '[flags]'),
       '',
-      `  ${chalk.dim('Read-only')} — lists unclassified flat exports and prints names to add to tiers.stable.exact.`,
-      `  ${chalk.dim('Does not')} edit expgov.config.ts.`,
-      `  ${chalk.dim('Exits')} 0 when nothing to suggest, 1 when unclassified exports remain.`,
+      `  ${style.dim('Read-only')} — lists unclassified flat exports and prints names to add to tiers.stable.exact.`,
+      `  ${style.dim('Does not')} edit expgov.config.ts.`,
+      `  ${style.dim('Exits')} 0 when nothing to suggest, 1 when unclassified exports remain.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -v, --verbose   subpath unclassified detail`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Workflow')}`,
-      `    ${chalk.dim('1')} expgov suggest   copy suggested names into tier config`,
-      `    ${chalk.dim('2')} expgov validate  confirm governance passes`,
+      `  ${style.bold('Workflow')}`,
+      `    ${style.dim('1')} expgov suggest   copy suggested names into tier config`,
+      `    ${style.dim('2')} expgov validate  confirm governance passes`,
     ]);
   }
 
@@ -161,18 +161,18 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('trend — export counts across release tags', [
       cmd('trend', '[flags]'),
       '',
-      `  ${chalk.dim('Prints')} root flat / stable / advanced / internal per \`v*\` tag.`,
-      `  ${chalk.dim('Warms')} cache for each tag when missing.`,
+      `  ${style.dim('Prints')} root flat / stable / advanced / internal per \`v*\` tag.`,
+      `  ${style.dim('Warms')} cache for each tag when missing.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    --tags=<n>      last N version tags (default 12)`,
       `    -v, --verbose   category breakdown on latest tag`,
       `    -f, --force     rebuild every tag snapshot and overwrite cache`,
       `    --no-cache      build fresh without reading or writing cache`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Output')}`,
-      `    ${chalk.dim('flat/stable/adv/int')}   per-tag root export counts; Δ footer compares first vs last tag in window`,
+      `  ${style.bold('Output')}`,
+      `    ${style.dim('flat/stable/adv/int')}   per-tag root export counts; Δ footer compares first vs last tag in window`,
     ]);
   }
 
@@ -180,20 +180,20 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('timeline — commits that changed the root export barrel', [
       cmd('timeline', '[range] [flags]'),
       '',
-      `  ${chalk.dim('Default range')} @4w (last 4 weeks, UTC).`,
-      `  ${chalk.dim('Scope')} git log on ${chalk.white(rootBarrel)} only — not every repo commit.`,
-      `  ${chalk.dim('Example')} @3m has ~330 repo commits but only commits that edit the root barrel appear.`,
+      `  ${style.dim('Default range')} @4w (last 4 weeks, UTC).`,
+      `  ${style.dim('Scope')} git log on ${style.white(rootBarrel)} only — not every repo commit.`,
+      `  ${style.dim('Example')} @3m has ~330 repo commits but only commits that edit the root barrel appear.`,
       '',
-      `  ${chalk.bold('Range formats')}`,
-      ...formatTimelineRangeHelp().map((line) => `    ${chalk.dim(line)}`),
+      `  ${style.bold('Range formats')}`,
+      ...formatTimelineRangeHelp().map((line) => `    ${style.dim(line)}`),
       '',
-      `  ${chalk.bold('Output')}`,
-      `    ${chalk.dim('flat')}   root flat export count at that commit`,
-      `    ${chalk.dim('Δ')}      change in flat vs the row above (newest commit first; — on first row)`,
-      `    ${chalk.dim('       ')} +N = N more flat exports than the newer barrel edit above; -N = N fewer`,
-      `    ${chalk.dim('       ')} only steps between consecutive barrel edits, not every repo commit`,
+      `  ${style.bold('Output')}`,
+      `    ${style.dim('flat')}   root flat export count at that commit`,
+      `    ${style.dim('Δ')}      change in flat vs the row above (newest commit first; — on first row)`,
+      `    ${style.dim('       ')} +N = N more flat exports than the newer barrel edit above; -N = N fewer`,
+      `    ${style.dim('       ')} only steps between consecutive barrel edits, not every repo commit`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -T, --top <n>   max commits to show (default 10, min 1); -F/--full for all in range`,
       `    -v, --verbose   full subjects; per-commit warm timing on stderr`,
       `    -f, --force     rebuild every commit snapshot and overwrite cache`,
@@ -206,18 +206,18 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('graph — re-export map (target subpaths + modules)', [
       cmd('graph', '[ref] [flags]'),
       '',
-      `  ${chalk.dim('Prints')} governance groups from snapshot edges[] and root namespaces.`,
-      `  ${chalk.dim('Default ref')} working tree.`,
+      `  ${style.dim('Prints')} governance groups from snapshot edges[] and root namespaces.`,
+      `  ${style.dim('Default ref')} working tree.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    -v, --verbose   all subpath groups, sample symbols per module`,
       `    -f, --force     rebuild snapshot and overwrite cache`,
       `    --no-cache      build fresh without reading or writing cache`,
       `    -h, --help      show this section`,
       '',
-      `  ${chalk.bold('Output')}`,
-      `    ${chalk.dim('By target subpath')}   governance grouping (flat + namespace counts per npm subpath)`,
-      `    ${chalk.dim('Root namespaces')}   export * as name → source file → target subpath`,
+      `  ${style.bold('Output')}`,
+      `    ${style.dim('By target subpath')}   governance grouping (flat + namespace counts per npm subpath)`,
+      `    ${style.dim('Root namespaces')}   export * as name → source file → target subpath`,
     ]);
   }
 
@@ -225,24 +225,24 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     section('version — CLI and SDK versions', [
       cmd('version', '[flags]'),
       '',
-      `  ${chalk.dim('Prints')} current CLI and @expgov/core SDK semver lines.`,
-      `  ${chalk.dim('Alias')} ${chalk.white('expgov -V')} when no subcommand is present.`,
+      `  ${style.dim('Prints')} current CLI and @expgov/core SDK semver lines.`,
+      `  ${style.dim('Alias')} ${style.white('expgov -V')} when no subcommand is present.`,
       '',
-      `  ${chalk.bold('Flags')}`,
+      `  ${style.bold('Flags')}`,
       `    --check         fetch latest from npm registry; show upgrade hint when newer`,
       `    --reset         clear cached update check (~/.expgov/state/version.json)`,
-      `    ${chalk.dim('Env')} ${chalk.white('EXPGOV_NO_UPDATE_CHECK=1')} skips registry fetch on --check`,
+      `    ${style.dim('Env')} ${style.white('EXPGOV_NO_UPDATE_CHECK=1')} skips registry fetch on --check`,
     ]);
   }
 
   if (topic === 'all' || topic === 'help') {
-    section('help', [cmd('help'), '', `  ${chalk.dim('Prints')} full usage.`]);
+    section('help', [cmd('help'), '', `  ${style.dim('Prints')} full usage.`]);
   }
 
   if (topic === 'all') {
     section('global', [
-      `  ${chalk.bold('Commands')} init, inventory, diff, validate, doctor, suggest, trend, timeline, graph, version, help`,
-      `  ${chalk.bold('Global flags')}`,
+      `  ${style.bold('Commands')} init, inventory, diff, validate, doctor, suggest, trend, timeline, graph, version, help`,
+      `  ${style.bold('Global flags')}`,
       `    -j, --json      machine-readable JSON envelope (stdout)`,
       `    -q, --quiet     suppress info logs and tips; keep primary command output`,
       `    -s, --silent    suppress all human output except errors and --json`,
@@ -251,12 +251,12 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `    -ncl, --no-color disable color output (also NO_COLOR env, non-TTY)`,
       `    -T, --top <n>   max list rows (default 10, min 1); -F/--full for no cap`,
       `    -F, --full          show all list rows (no truncation)`,
-      `  ${chalk.bold('Cache')}   ${chalk.dim(`${DEFAULT_CACHE_DIR}/`)} per-sha: inventory.full.json, timeline.summary.json`,
-      `  ${chalk.bold('Config')}  ${chalk.dim('expgov.config.ts')}`,
-      `  ${chalk.bold('Output')}  each command section above documents key columns and labels`,
-      `  ${chalk.bold('Debug')}   EXPORTS_DEBUG=1 for unexpected error stacks`,
+      `  ${style.bold('Cache')}   ${style.dim(`${DEFAULT_CACHE_DIR}/`)} per-sha: inventory.full.json, timeline.summary.json`,
+      `  ${style.bold('Config')}  ${style.dim('expgov.config.ts')}`,
+      `  ${style.bold('Output')}  each command section above documents key columns and labels`,
+      `  ${style.bold('Debug')}   EXPORTS_DEBUG=1 for unexpected error stacks`,
       '',
-      `  ${chalk.dim('Resolving a ref warms')} ${chalk.dim(`${DEFAULT_CACHE_DIR}/`)} ${chalk.dim('(gitignored). Nothing is committed to the repo.')}`,
+      `  ${style.dim('Resolving a ref warms')} ${style.dim(`${DEFAULT_CACHE_DIR}/`)} ${style.dim('(gitignored). Nothing is committed to the repo.')}`,
     ]);
   }
 
@@ -266,7 +266,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
 export function printHelpHint(command?: string): void {
   if (!canPrintTip(getRunOptions())) return;
   const hint = command
-    ? `Run ${chalk.cyan(`expgov ${command} --help`)} for command-specific usage.`
-    : `Run ${chalk.cyan('expgov --help')} for full usage.`;
-  console.log(`${BRAND()}  ${chalk.dim('hint')}  ${hint}\n`);
+    ? `Run ${style.accent(`expgov ${command} --help`)} for command-specific usage.`
+    : `Run ${style.accent('expgov --help')} for full usage.`;
+  console.log(`${BRAND()}  ${style.dim('hint')}  ${hint}\n`);
 }

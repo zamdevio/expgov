@@ -44,3 +44,37 @@ export function configureStyle(noColor: boolean): void {
 export const CLI_NAME = 'expgov';
 export const CLI_MARK = '⚡';
 export const BRAND = () => style.bold(style.accent(CLI_NAME));
+
+export function boldDim(text: string): string {
+  return style.bold(style.dim(text));
+}
+
+export function tierStyle(tier: string): (text: string) => string {
+  switch (tier) {
+    case 'stable':
+      return style.ok;
+    case 'advanced':
+      return style.warn;
+    case 'internal':
+      return style.magenta;
+    case 'unclassified':
+      return style.err;
+    default:
+      return style.accent;
+  }
+}
+
+export function cacheStatusStyle(status: string): string {
+  switch (status) {
+    case 'hit':
+      return style.ok('hit');
+    case 'miss':
+      return style.warn('miss');
+    case 'refresh':
+      return style.accent('refresh');
+    case 'bypass':
+      return style.dim('bypass');
+    default:
+      return style.dim('n/a');
+  }
+}

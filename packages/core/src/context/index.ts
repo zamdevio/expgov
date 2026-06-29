@@ -1,9 +1,8 @@
 import path from 'node:path';
 
+import { resolveTierCatalog } from '../config/tierCatalog.js';
 import type { ExpgovConfig, ProjectContext } from '../config/types.js';
 import type { ExpgovConfigOverrides } from '../config/types.js';
-import { resolveTierRules } from '../config/tiers.js';
-import { resolveTierTagPolicy } from '../config/tierTag.js';
 import { resolveExpgovConfig } from '../config/load.js';
 import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 
@@ -22,6 +21,7 @@ export function buildProjectContext(config: ExpgovConfig, cwd: string): ProjectC
 
   const coreDirPosix = config.core.dir.replace(/\\/g, '/');
   const coreSrcPrefix = posixJoin(coreDirPosix, 'src') + '/';
+  const tierCatalog = resolveTierCatalog(config.tiers);
 
   return {
     packageName: config.packageName,
@@ -39,9 +39,9 @@ export function buildProjectContext(config: ExpgovConfig, cwd: string): ProjectC
       tagPattern: config.git?.tagPattern ?? 'v*',
       timelineBarrelPath: (config.git?.timelineBarrelPath ?? rootIndexRepoPath).replace(/\\/g, '/'),
     },
-    tiers: resolveTierRules(config.tiers),
+    tierCatalog,
     tierConfig: config.tiers ?? {},
-    tierTag: resolveTierTagPolicy(config.tiers?.tag),
+    tierTag: tierCatalog.tag,
   };
 }
 

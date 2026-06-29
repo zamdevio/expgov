@@ -1,8 +1,16 @@
-export type StabilityTier = 'stable' | 'advanced' | 'internal' | 'unclassified';
+/** Configured tier bucket id (e.g. stable, beta, preview). */
+export type TierId = string;
 
-export type DeclaredTierTag = Exclude<StabilityTier, 'unclassified'>;
+export type StabilityTier = TierId | 'unclassified';
 
-export type TierBucketName = 'stable' | 'internal' | 'advanced';
+export type TierBucketName = TierId;
+
+export type TierPolicy =
+  | 'public'
+  | 'maintainer'
+  | 'experimental'
+  | 'preview'
+  | 'deprecated';
 
 export type TierProvenanceKind = 'tag' | 'config-exact' | 'config-prefix' | 'default-prefix';
 

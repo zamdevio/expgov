@@ -47,6 +47,7 @@ export type {
   TierRulesConfig,
   TierTagConfig,
   TierBucket,
+  TierPolicy,
 } from './config/types.js';
 
 export {

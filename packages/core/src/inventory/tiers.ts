@@ -1,18 +1,27 @@
 import { getProjectContext } from '../context/index.js';
 import type { TierBucket } from '../config/types.js';
-import { formatTierTagProvenance } from '../config/tierTag.js';
+import { formatTierTagProvenance, tierFromTagLiteral } from '../config/tierTag.js';
 import {
   compilePrefixMatcher,
   testPrefixMatcher,
 } from '../config/tiers.js';
-import { TIER_BUCKET_ORDER } from '../shared/constants/tiers.js';
+import {
+  DEFAULT_ADVANCED_PREFIXES,
+  DEFAULT_INTERNAL_PREFIXES,
+  DEFAULT_STABLE_PREFIXES,
+} from '../config/tiers.js';
 import type {
-  DeclaredTierTag,
   StabilityTier,
   SymbolTierClassification,
   TierBucketName,
   TierProvenance,
 } from '../types/inventory/tiers.js';
+
+const BUILTIN_DEFAULT_PREFIXES: Record<string, readonly string[]> = {
+  stable: DEFAULT_STABLE_PREFIXES,
+  internal: DEFAULT_INTERNAL_PREFIXES,
+  advanced: DEFAULT_ADVANCED_PREFIXES,
+};
 
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -24,7 +33,7 @@ function escapeRegExp(text: string): string {
 export function resolveDeclaredTierTag(input: {
   name: string;
   moduleContent: string | null;
-}): { tier: DeclaredTierTag; tagLiteral: string } | undefined {
+}): { tier: string; tagLiteral: string } | undefined {
   const { name, moduleContent } = input;
   if (!moduleContent) return undefined;
 
@@ -53,7 +62,7 @@ export function resolveDeclaredTierTag(input: {
     const tagMatch = tierTag.tagPattern.exec(jsDocBlock);
     if (tagMatch?.[1]) {
       const tagLiteral = tagMatch[1];
-      const tier = tierTag.labelToTier.get(tagLiteral);
+      const tier = tierFromTagLiteral(tierTag, tagLiteral);
       if (tier) return { tier, tagLiteral };
     }
 
@@ -103,15 +112,13 @@ function matchTierBucketProvenance(
  * Tier classifier with provenance for SDK export governance.
  *
  * Priority:
- * 1) configured JSDoc tier tag (default `@sdkTier`)
- * 2) tiers.internal (exact + prefix/regex)
- * 3) tiers.advanced (exact + prefix/regex)
- * 4) tiers.stable (exact + prefix/regex)
- * 5) unclassified (forces explicit governance decision)
+ * 1) configured JSDoc tier tag (default `@sdkTier <bucket>`)
+ * 2) tier buckets in catalog precedence order
+ * 3) unclassified (forces explicit governance decision)
  */
 export function classifySymbolTierWithProvenance(
   name: string,
-  options?: { declaredTierTag?: DeclaredTierTag; declaredTagLiteral?: string },
+  options?: { declaredTierTag?: string; declaredTagLiteral?: string },
 ): SymbolTierClassification {
   if (options?.declaredTierTag) {
     const { tierTag } = getProjectContext();
@@ -125,12 +132,17 @@ export function classifySymbolTierWithProvenance(
     };
   }
 
-  const { tierConfig } = getProjectContext();
+  const { tierCatalog, tierConfig } = getProjectContext();
 
-  for (const bucket of TIER_BUCKET_ORDER) {
-    const provenance = matchTierBucketProvenance(name, bucket.name, tierConfig[bucket.name], bucket.defaults);
+  for (const entry of tierCatalog.entries) {
+    const provenance = matchTierBucketProvenance(
+      name,
+      entry.name,
+      tierConfig[entry.name] as TierBucket | undefined,
+      BUILTIN_DEFAULT_PREFIXES[entry.name] ?? [],
+    );
     if (provenance) {
-      return { tier: bucket.tier, provenance };
+      return { tier: entry.name, provenance };
     }
   }
 
@@ -140,7 +152,7 @@ export function classifySymbolTierWithProvenance(
 /** Tier classifier for SDK export governance (tier only). */
 export function classifySymbolTier(
   name: string,
-  options?: { declaredTierTag?: DeclaredTierTag; declaredTagLiteral?: string },
+  options?: { declaredTierTag?: string; declaredTagLiteral?: string },
 ): StabilityTier {
   return classifySymbolTierWithProvenance(name, options).tier;
 }

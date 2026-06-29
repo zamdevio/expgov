@@ -1,16 +1,21 @@
-/** One tier bucket — literal names and prefix/regex matchers. */
+import type { TierPolicy } from '../types/inventory/tiers.js';
+
+export type { TierPolicy };
 export interface TierBucket {
+  /** Governance policy preset (built-ins default when omitted). */
+  policy?: TierPolicy;
+  /** Lower runs first in the classifier (built-ins have defaults). */
+  precedence?: number;
   exact?: string[];
   prefix?: string[];
 }
 
 /**
  * JSDoc export-tier tag policy under `tiers.tag`.
- * Override tag name (default `sdkTier`) and map up to 10 literals → stable | internal | advanced.
+ * Tag literals must match configured bucket names (e.g. `@sdkTier stable`).
  */
 export interface TierTagConfig {
   name?: string;
-  values?: Partial<Record<string, 'stable' | 'internal' | 'advanced'>>;
 }
 
 export interface TierRulesConfig {
@@ -18,6 +23,7 @@ export interface TierRulesConfig {
   stable?: TierBucket;
   internal?: TierBucket;
   advanced?: TierBucket;
+  [bucketName: string]: TierBucket | TierTagConfig | undefined;
 }
 
 export interface ExpgovCoreConfig {
@@ -53,8 +59,8 @@ export interface ExpgovConfigOverrides {
   verbose?: boolean;
 }
 
-export type { ResolvedTierBucket, ResolvedTierRules } from './tiers.js';
-import type { ResolvedTierRules } from './tiers.js';
+export type { ResolvedTierBucket } from './tiers.js';
+import type { ResolvedTierCatalog } from './tierCatalog.js';
 import type { ResolvedTierTagPolicy } from './tierTag.js';
 
 export interface ProjectContext {
@@ -73,7 +79,7 @@ export interface ProjectContext {
     tagPattern: string;
     timelineBarrelPath: string;
   };
-  tiers: ResolvedTierRules;
+  tierCatalog: ResolvedTierCatalog;
   /** Raw tier buckets from config (for provenance labels). */
   tierConfig: TierRulesConfig;
   /** Resolved JSDoc tier-tag matcher (`tiers.tag`). */

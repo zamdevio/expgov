@@ -20,12 +20,6 @@ export default defineConfig({
   tiers: {
     tag: {
       name: 'exportTier',
-      values: {
-        stable: 'stable',
-        internal: 'internal',
-        advanced: 'advanced',
-        beta: 'advanced',
-      },
     },
     stable: {
       exact: [
@@ -63,6 +57,7 @@ export default defineConfig({
         'SDK_VERSION',
         'TierRulesConfig',
         'TierTagConfig',
+        'TierPolicy',
         'TierBucket',
         'TimelineCliOptions',
         'TrendCliOptions',

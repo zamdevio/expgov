@@ -1,4 +1,5 @@
-import chalk from 'chalk';
+
+import { boldDim, style } from '../../runtime/style.js';
 
 import { logLine } from '../report.js';
 
@@ -13,26 +14,26 @@ export function printSuggestReport(input: {
 
   logLine('');
   if (!suggestion.names.length) {
-    logLine(`       ${chalk.green('✓')} no unclassified flat exports — tier rules cover the working tree`);
+    logLine(`       ${style.ok('✓')} no unclassified flat exports — tier rules cover the working tree`);
     return;
   }
 
-  logLine(`       ${chalk.yellow('!')} ${suggestion.names.length} unclassified flat export(s) — add to tiers.${suggestion.bucket}.exact`);
+  logLine(`       ${style.warn('!')} ${suggestion.names.length} unclassified flat export(s) — add to tiers.${suggestion.bucket}.exact`);
   logLine('');
-  logLine(chalk.bold.dim('       Suggested names'));
-  for (const name of suggestion.names) logLine(`       ${chalk.cyan('·')} ${name}`);
+  logLine(boldDim('       Suggested names'));
+  for (const name of suggestion.names) logLine(`       ${style.accent('·')} ${name}`);
 
   if (snippet) {
     logLine('');
-    logLine(chalk.bold.dim('       Paste into expgov.config.ts'));
-    for (const line of snippet.split('\n')) logLine(`       ${chalk.dim(line)}`);
+    logLine(boldDim('       Paste into expgov.config.ts'));
+    for (const line of snippet.split('\n')) logLine(`       ${style.dim(line)}`);
   }
 
   if (hints.length) {
     logLine('');
-    for (const hint of hints.slice(0, hintLimit)) logLine(`       ${chalk.dim('·')} ${hint}`);
+    for (const hint of hints.slice(0, hintLimit)) logLine(`       ${style.dim('·')} ${hint}`);
     if (!verbose && hints.length > hintLimit) {
-      logLine(`       ${chalk.dim(`…and ${hints.length - hintLimit} more hints (use -v)`)}`);
+      logLine(`       ${style.dim(`…and ${hints.length - hintLimit} more hints (use -v)`)}`);
     }
   }
 }

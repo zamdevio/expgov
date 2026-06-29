@@ -4,25 +4,50 @@
 
 ---
 
-## Config schema (nested)
+## Config schema
+
+Built-in buckets (`stable`, `internal`, `advanced`) plus any custom bucket names at the top level:
 
 ```ts
 tiers: {
+  tag: { name: 'exportTier' }, // optional — default sdkTier
   stable: {
+    policy: 'public',
     exact: ['RESULT_API_VERSION', 'CliJsonEnvelope'],
-    prefix: ['run', 'get', 'build', '^customPrefix'],
+    prefix: ['run', 'get', 'build'],
   },
   internal: {
-    exact: [],
+    policy: 'maintainer',
     prefix: ['^internal[A-Z_]', 'Internal$'],
   },
   advanced: {
+    policy: 'experimental',
     prefix: ['^experimental[A-Z_]', 'Unsafe$'],
+  },
+  beta: {
+    policy: 'preview',
+    prefix: ['^beta'],
   },
 }
 ```
 
-Each tier has optional `exact` (literal export names) and `prefix` (string prefix or regex).
+Each bucket supports `policy`, `precedence`, `exact`, and `prefix`.
+
+Resolver: `packages/core/src/config/tierCatalog.ts` → `resolveTierCatalog()`.
+
+---
+
+## Policies
+
+| Policy | Default for | Root flat |
+|--------|-------------|-----------|
+| `public` | `stable` | allowed |
+| `maintainer` | `internal` | **validate fails** |
+| `experimental` | `advanced` | **validate fails** |
+| `preview` | custom | allowed |
+| `deprecated` | custom | allowed |
+
+Implementation: `packages/core/src/config/tierPolicy.ts`.
 
 ---
 
@@ -32,13 +57,9 @@ Implemented in `packages/core/src/inventory/tiers.ts`:
 
 | Priority | Source |
 |----------|--------|
-| 1 | Configured JSDoc tier tag (default `@sdkTier stable \| advanced \| internal`) on exported declaration JSDoc |
-| 2 | `tiers.internal.exact` / `.prefix` |
-| 3 | `tiers.advanced.exact` / `.prefix` |
-| 4 | `tiers.stable.exact` / `.prefix` |
-| 5 | `unclassified` → **validate fails** |
-
-Internal and advanced win over stable when multiple buckets could match.
+| 1 | Configured JSDoc tier tag — literal must match a bucket name (`@exportTier beta`) |
+| 2 | Buckets sorted by `precedence` (lower first; defaults: internal 10, advanced 20, stable 100) |
+| 3 | `unclassified` → **validate fails** |
 
 ---
 
@@ -46,18 +67,7 @@ Internal and advanced win over stable when multiple buckets could match.
 
 Default tag name: **`sdkTier`** (override with `tiers.tag.name`).
 
-```ts
-tiers: {
-  tag: {
-    name: 'exportTier', // optional — default sdkTier
-    values: {
-      stable: 'stable',
-      beta: 'advanced', // map custom literals (max 10) → stable | internal | advanced
-    },
-  },
-  stable: { exact: ['RESULT_API_VERSION'] },
-}
-```
+Tag literals map **directly** to bucket names — no `tiers.tag.values` remap.
 
 ```ts
 /**
@@ -67,23 +77,6 @@ export function myPublicApi() {}
 ```
 
 Supported on exported `function`, `const`, `class`, `interface`, `type`, `enum`.
-
-Tag precedence is highest — overrides config buckets.
-
----
-
-## `@sdkTier` JSDoc (default tag name)
-
-```ts
-/**
- * @sdkTier stable
- */
-export function myPublicApi() {}
-```
-
-Supported on exported `function`, `const`, `class`, `interface`, `type`, `enum`.
-
-Tag precedence is highest — overrides config buckets.
 
 ---
 
@@ -101,7 +94,7 @@ Resolver: `packages/core/src/config/tiers.ts` → `compilePrefixMatcher`
 
 ## Defaults
 
-When a tier bucket is **omitted entirely** from config:
+When a built-in bucket is **omitted entirely** from config:
 
 | Tier | Default prefixes |
 |------|------------------|
@@ -109,7 +102,9 @@ When a tier bucket is **omitted entirely** from config:
 | `internal.prefix` | `^internal[A-Z_]`, `Internal$` |
 | `advanced.prefix` | `^experimental[A-Z_]`, `^beta[A-Z_]`, `^advanced[A-Z_]`, `Unsafe$` |
 
-If you define `tiers.stable` (even empty `exact`/`prefix`), defaults are **not** merged — init scaffold includes explicit prefixes.
+Custom buckets have **no** default prefixes — define `exact` and/or `prefix` explicitly.
+
+If you define `tiers.stable` (even empty `exact`/`prefix`), built-in defaults are **not** merged — init scaffold includes explicit prefixes.
 
 ---
 
@@ -118,5 +113,6 @@ If you define `tiers.stable` (even empty `exact`/`prefix`), defaults are **not**
 - `tierProvenance` on each symbol: `{ kind, label, bucket? }`
 - Tag kind label reflects configured tag name (e.g. `@sdkTier stable`, `@exportTier beta`)
 - Config kinds: `tiers.stable.exact`, `tiers.advanced.prefix`, `default stable prefix`, etc.
+- Custom tier counts roll into `TierCounts.custom` in snapshots
 
 Verbose inventory shows provenance in brackets.

@@ -1,5 +1,4 @@
-import chalk from 'chalk';
-
+import { boldDim, style } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../cache/index.js';
 import type { InventorySnapshot } from '../../inventory/index.js';
 import type { DiffResult } from '../../format/diff.js';
@@ -19,8 +18,8 @@ export function printDiffReport(input: {
 
   printMeta({
     range: rangeLabel,
-    from: `${left.snapshot.refLabel} ${chalk.dim(`(${snapshotShaLabel(left.snapshot)})`)}`,
-    to: `${right.snapshot.refLabel} ${chalk.dim(`(${snapshotShaLabel(right.snapshot)})`)}`,
+    from: `${left.snapshot.refLabel} ${style.dim(`(${snapshotShaLabel(left.snapshot)})`)}`,
+    to: `${right.snapshot.refLabel} ${style.dim(`(${snapshotShaLabel(right.snapshot)})`)}`,
     cache: `${cacheLabel(left.cache)} / ${cacheLabel(right.cache)}`,
   });
 
@@ -35,30 +34,30 @@ export function printDiffReport(input: {
   logLine('');
   if (diff.added.length) {
     const added = limitList(diff.added, listLimit);
-    logLine(chalk.green.bold('       Added'));
-    for (const name of added.items) logLine(`       ${chalk.green('+')} ${name}`);
+    logLine(style.bold(style.ok('       Added')));
+    for (const name of added.items) logLine(`       ${style.ok('+')} ${name}`);
     logListTruncation(added.hiddenCount);
     logLine('');
   }
 
   if (diff.removed.length) {
     const removed = limitList(diff.removed, listLimit);
-    logLine(chalk.red.bold('       Removed'));
-    for (const name of removed.items) logLine(`       ${chalk.red('-')} ${name}`);
+    logLine(style.bold(style.err('       Removed')));
+    for (const name of removed.items) logLine(`       ${style.err('-')} ${name}`);
     logListTruncation(removed.hiddenCount);
     logLine('');
   }
 
   if (!diff.added.length && !diff.removed.length) {
-    logLine(chalk.dim('       No flat export additions or removals.'));
+    logLine(style.dim('       No flat export additions or removals.'));
     logLine('');
   }
 
   if (diff.tierViolations.length) {
-    logLine(chalk.yellow.bold('       Tier violations'));
-    for (const v of diff.tierViolations) logLine(`       ${chalk.yellow('!')} ${v}`);
+    logLine(style.bold(style.warn('       Tier violations')));
+    for (const v of diff.tierViolations) logLine(`       ${style.warn('!')} ${v}`);
   } else {
-    logLine(`       ${chalk.green('✓')} ${chalk.dim('No tier violations')}`);
+    logLine(`       ${style.ok('✓')} ${style.dim('No tier violations')}`);
   }
 }
 
@@ -74,12 +73,12 @@ export function printDiffVerbose(input: {
   if (diff.added.length) {
     const added = limitList(diff.added, listLimit);
     logLine('');
-    logLine(chalk.bold.dim('       Added detail'));
+    logLine(boldDim('       Added detail'));
     for (const name of added.items) {
       const sym = right.symbols.find((s) => s.name === name);
       if (sym) {
         logLine(
-          `       ${chalk.dim('·')} ${name} → ${sym.tier} · ${sym.category} · ${sym.symbolKind} → ${sym.targetSubpath}`,
+          `       ${style.dim('·')} ${name} → ${sym.tier} · ${sym.category} · ${sym.symbolKind} → ${sym.targetSubpath}`,
         );
       }
     }
@@ -88,12 +87,12 @@ export function printDiffVerbose(input: {
   if (diff.removed.length) {
     const removed = limitList(diff.removed, listLimit);
     logLine('');
-    logLine(chalk.bold.dim('       Removed detail'));
+    logLine(boldDim('       Removed detail'));
     for (const name of removed.items) {
       const sym = left.symbols.find((s) => s.name === name);
       if (sym) {
         logLine(
-          `       ${chalk.dim('·')} ${name} → ${sym.tier} · ${sym.category} · ${sym.symbolKind} → ${sym.targetSubpath}`,
+          `       ${style.dim('·')} ${name} → ${sym.tier} · ${sym.category} · ${sym.symbolKind} → ${sym.targetSubpath}`,
         );
       }
     }
@@ -105,7 +104,7 @@ export function printDiffCacheDetail(input: { left: SnapshotResult; right: Snaps
   if (!canEmitVerboseReport()) return;
   const { left, right } = input;
   logLine('');
-  logLine(chalk.bold.dim('       Cache detail'));
-  logLine(`       ${padLabel('from')} ${left.snapshot.sha} ${chalk.dim(`(${left.cache})`)}`);
-  logLine(`       ${padLabel('to')} ${right.snapshot.sha} ${chalk.dim(`(${right.cache})`)}`);
+  logLine(boldDim('       Cache detail'));
+  logLine(`       ${padLabel('from')} ${left.snapshot.sha} ${style.dim(`(${left.cache})`)}`);
+  logLine(`       ${padLabel('to')} ${right.snapshot.sha} ${style.dim(`(${right.cache})`)}`);
 }

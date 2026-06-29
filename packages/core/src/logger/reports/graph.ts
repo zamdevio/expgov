@@ -1,4 +1,5 @@
-import chalk from 'chalk';
+
+import { boldDim, style } from '../../runtime/style.js';
 
 import type { CacheStatus } from '../../cache/index.js';
 import type { SourceRef } from '../../git/index.js';
@@ -27,14 +28,14 @@ export function printGraphReport(input: {
   printMeta({
     ref: refLine(input.ref, input.snapshot),
     cache: cacheLabel(input.cache),
-    edges: chalk.dim(String(input.snapshot.edges.length)),
-    symbols: chalk.dim(String(input.snapshot.symbols.length)),
-    subpaths: chalk.dim(String(input.snapshot.summary.subpaths.length)),
+    edges: style.dim(String(input.snapshot.edges.length)),
+    symbols: style.dim(String(input.snapshot.symbols.length)),
+    subpaths: style.dim(String(input.snapshot.summary.subpaths.length)),
   });
 
   logLine('');
-  logLine(chalk.bold.dim('       Root re-export targets (governance map)'));
-  logLine(chalk.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
+  logLine(boldDim('       Root re-export targets (governance map)'));
+  logLine(style.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
   if (targetGroups.items.length === 0) {
     logSectionEmpty('No re-export target subpaths.');
   } else {
@@ -54,9 +55,9 @@ export function printGraphReport(input: {
     namespaces.items,
     'No root namespace exports.',
     (ns) => {
-      const src = chalk.dim(formatNamespaceSourceLabel(ns.module));
+      const src = style.dim(formatNamespaceSourceLabel(ns.module));
       logLine(
-        `       ${chalk.dim('·')} ${ns.name.padEnd(18)} ${src} ${chalk.dim('·')} ${ns.targetSubpath}`,
+        `       ${style.dim('·')} ${ns.name.padEnd(18)} ${src} ${style.dim('·')} ${ns.targetSubpath}`,
       );
     },
     namespaces.hiddenCount,
@@ -69,10 +70,10 @@ export function printGraphReport(input: {
     'No source modules in the re-export graph.',
     (mod) => {
       logLine(
-        `       ${chalk.dim('·')} ${mod.edges.toString().padStart(4)}  ${mod.module} ${chalk.dim(`(${mod.edgeProvenance})`)}`,
+        `       ${style.dim('·')} ${mod.edges.toString().padStart(4)}  ${mod.module} ${style.dim(`(${mod.edgeProvenance})`)}`,
       );
       if (input.verbose && mod.symbols.length) {
-        logLine(`       ${chalk.dim('     e.g.')} ${mod.symbols.join(', ')}`);
+        logLine(`       ${style.dim('     e.g.')} ${mod.symbols.join(', ')}`);
       }
     },
     topModules.hiddenCount,

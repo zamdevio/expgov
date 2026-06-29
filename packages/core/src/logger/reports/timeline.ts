@@ -1,4 +1,5 @@
-import chalk from 'chalk';
+
+import { style } from '../../runtime/style.js';
 
 import type { CacheStatus } from '../../cache/index.js';
 import { getRootIndexRepoPath } from '../../paths.js';
@@ -23,35 +24,35 @@ export function printTimelineReport(input: {
   const topLabel = Number.isFinite(input.top) ? String(input.top) : 'all';
   printMeta({
     range: input.range.label,
-    from: chalk.dim(input.range.since),
-    to: chalk.dim(input.range.until),
-    top: chalk.dim(topLabel),
-    barrel: chalk.dim(`${input.rows.length} commits · ${getRootIndexRepoPath()}`),
+    from: style.dim(input.range.since),
+    to: style.dim(input.range.until),
+    top: style.dim(topLabel),
+    barrel: style.dim(`${input.rows.length} commits · ${getRootIndexRepoPath()}`),
     warm: input.warmStats
-      ? chalk.dim(`${input.warmStats.warmed}/${input.rows.length} · ${input.warmStats.totalMs}ms`)
+      ? style.dim(`${input.warmStats.warmed}/${input.rows.length} · ${input.warmStats.totalMs}ms`)
       : undefined,
-    git: input.gitStats ? chalk.dim(input.gitStats) : undefined,
+    git: input.gitStats ? style.dim(input.gitStats) : undefined,
   });
 
   if (!input.rows.length) {
     logLine('');
-    logLine(chalk.dim('       No commits touching the root barrel in this range.'));
+    logLine(style.dim('       No commits touching the root barrel in this range.'));
     return;
   }
   logLine(
-    chalk.dim(
+    style.dim(
       '       Δ = flat change vs row above (newest first); — = first row; +N/−N flat exports vs newer barrel edit',
     ),
   );
 
   logLine('');
-  logLine(chalk.dim(`       ${'date'.padEnd(12)} ${'sha'.padEnd(9)} ${'flat'.padStart(5)} ${'Δ'.padStart(5)}  subject`));
+  logLine(style.dim(`       ${'date'.padEnd(12)} ${'sha'.padEnd(9)} ${'flat'.padStart(5)} ${'Δ'.padStart(5)}  subject`));
   for (const row of input.rows) {
     let deltaStr: string;
-    if (row.delta === null) deltaStr = chalk.dim('    —');
-    else if (row.delta === 0) deltaStr = chalk.dim('    0');
-    else if (row.delta > 0) deltaStr = chalk.yellow(` +${row.delta}`.padStart(4));
-    else deltaStr = chalk.green(` ${row.delta}`.padStart(4));
+    if (row.delta === null) deltaStr = style.dim('    —');
+    else if (row.delta === 0) deltaStr = style.dim('    0');
+    else if (row.delta > 0) deltaStr = style.warn(` +${row.delta}`.padStart(4));
+    else deltaStr = style.ok(` ${row.delta}`.padStart(4));
 
     const subject = formatSubject(row.subject, 48, input.verbose);
     logLine(

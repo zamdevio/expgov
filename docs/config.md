@@ -54,48 +54,51 @@ Run `expgov init` to generate a working scaffold for your layout.
 | `git.tagPattern` | Version tag glob for `trend` (default `v*`) |
 | `git.timelineBarrelPath` | Barrel path for `timeline` git log scope |
 | `tiers` | Export classification buckets — see below |
-| `tiers.tag` | Optional JSDoc tag name + literal map (max 10) — see below |
+| `tiers.tag` | Optional JSDoc tag name — literals must match bucket names |
 
 ## Tier buckets
 
-Each stability level has optional `exact` (literal export names) and `prefix` (string prefix or regex):
+Each bucket has optional `policy`, `precedence`, `exact` (literal export names), and `prefix` (string prefix or regex):
 
 ```ts
 tiers: {
-  stable:   { exact: ['MyType'], prefix: ['run', '^customPrefix'] },
-  internal: { prefix: ['^internal[A-Z_]', 'Internal$'] },
-  advanced: { prefix: ['^experimental[A-Z_]', 'Unsafe$'] },
+  tag: { name: 'exportTier' }, // optional — default sdkTier
+  stable:   { policy: 'public', exact: ['MyType'], prefix: ['run'] },
+  internal: { policy: 'maintainer', prefix: ['^internal[A-Z_]', 'Internal$'] },
+  advanced: { policy: 'experimental', prefix: ['^experimental[A-Z_]', 'Unsafe$'] },
+  beta:     { policy: 'preview', prefix: ['^beta'] }, // custom bucket
 }
 ```
+
+**Policies** (built-ins default when `policy` is omitted):
+
+| Policy | Default bucket | Root flat behavior |
+|--------|----------------|-------------------|
+| `public` | `stable` | allowed |
+| `maintainer` | `internal` | validate fails |
+| `experimental` | `advanced` | validate fails |
+| `preview` | custom | allowed (notes only) |
+| `deprecated` | custom | allowed (notes only) |
 
 **Classifier priority** (first match wins):
 
-1. Configured JSDoc tier tag (default `@sdkTier stable | internal | advanced`) on the export
-2. `tiers.internal`
-3. `tiers.advanced`
-4. `tiers.stable`
-5. `unclassified` → `validate` fails
+1. Configured JSDoc tier tag (default `@sdkTier <bucket>`) — literal must match a bucket name
+2. Buckets by `precedence` (lower first; built-in defaults: internal 10, advanced 20, stable 100)
+3. `unclassified` → `validate` fails
 
-### Custom tag name and literals (`tiers.tag`)
+### Custom tag name (`tiers.tag`)
 
 ```ts
 tiers: {
-  tag: {
-    name: 'exportTier', // optional — default sdkTier
-    values: {
-      stable: 'stable',
-      internal: 'internal',
-      advanced: 'advanced',
-      beta: 'advanced', // up to 10 literals → stable | internal | advanced
-    },
-  },
+  tag: { name: 'exportTier' },
   stable: { exact: ['MyType'] },
+  beta: { policy: 'preview', prefix: ['^beta'] },
 }
 ```
 
 ```ts
-/** @exportTier stable */
-export function myPublicApi() {}
+/** @exportTier beta */
+export function previewApi() {}
 ```
 
 Prefix forms:

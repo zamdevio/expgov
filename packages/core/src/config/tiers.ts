@@ -64,7 +64,7 @@ export function matchesTierBucket(name: string, bucket: ResolvedTierBucket): boo
   return bucket.matchers.some((matcher) => testPrefixMatcher(name, matcher));
 }
 
-function resolveBucket(
+export function resolveBucket(
   nested: TierBucket | undefined,
   defaultPrefixes: readonly string[],
 ): ResolvedTierBucket {

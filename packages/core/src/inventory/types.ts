@@ -34,6 +34,7 @@ export interface TierCounts {
   advanced: number;
   internal: number;
   unclassified: number;
+  custom: Record<string, number>;
 }
 
 export interface InventorySymbol {

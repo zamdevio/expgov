@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import path from 'node:path';
 
 import type { CacheStatus } from '../cache/index.js';
@@ -10,6 +9,7 @@ import { formatListTruncationHint } from '../shared/listing.js';
 import { emitLog } from '../runtime/emitter.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintPrimary, canPrintVerbose } from '../runtime/policy.js';
+import { boldDim, cacheStatusStyle, style, tierStyle } from '../runtime/style.js';
 
 export function canEmitReport(): boolean {
   return canPrintPrimary(getRunOptions());
@@ -27,11 +27,11 @@ export function logLine(message: string): void {
 export function logListTruncation(hiddenCount: number): void {
   const hint = formatListTruncationHint(hiddenCount);
   if (!hint) return;
-  logLine(`       ${chalk.dim(hint)}`);
+  logLine(`       ${style.dim(hint)}`);
 }
 
 export function logSectionEmpty(message: string): void {
-  logLine(chalk.dim(`       ${message}`));
+  logLine(style.dim(`       ${message}`));
 }
 
 export function logListSection<T>(
@@ -41,7 +41,7 @@ export function logListSection<T>(
   renderItem: (item: T) => void,
   hiddenCount = 0,
 ): void {
-  logLine(chalk.bold.dim(`       ${title}`));
+  logLine(boldDim(`       ${title}`));
   if (items.length === 0) {
     logSectionEmpty(emptyMessage);
     return;
@@ -51,16 +51,16 @@ export function logListSection<T>(
 }
 
 export function padLabel(label: string, width = 10): string {
-  return chalk.dim(label.padEnd(width));
+  return style.dim(label.padEnd(width));
 }
 
 export function formatDelta(before: number, after: number): string {
   const delta = after - before;
-  if (delta === 0) return chalk.dim(`${before} → ${after}`);
+  if (delta === 0) return style.dim(`${before} → ${after}`);
   if (delta > 0) {
-    return `${chalk.dim(String(before))} ${chalk.dim('→')} ${chalk.yellow(String(after))} ${chalk.yellow(`(+${delta})`)}`;
+    return `${style.dim(String(before))} ${style.dim('→')} ${style.warn(String(after))} ${style.warn(`(+${delta})`)}`;
   }
-  return `${chalk.dim(String(before))} ${chalk.dim('→')} ${chalk.green(String(after))} ${chalk.green(`(${delta})`)}`;
+  return `${style.dim(String(before))} ${style.dim('→')} ${style.ok(String(after))} ${style.ok(`(${delta})`)}`;
 }
 
 export function inventoryCacheDirDisplay(sha: string): string {
@@ -68,18 +68,7 @@ export function inventoryCacheDirDisplay(sha: string): string {
 }
 
 export function cacheLabel(status: CacheStatus): string {
-  switch (status) {
-    case 'hit':
-      return chalk.green('hit');
-    case 'miss':
-      return chalk.yellow('miss');
-    case 'refresh':
-      return chalk.cyan('refresh');
-    case 'bypass':
-      return chalk.dim('bypass');
-    default:
-      return chalk.dim('n/a');
-  }
+  return cacheStatusStyle(status);
 }
 
 export function snapshotShaLabel(snapshot: InventorySnapshot): string {
@@ -91,25 +80,14 @@ export function snapshotShaLabel(snapshot: InventorySnapshot): string {
 
 export function refLine(ref: SourceRef, snapshot: InventorySnapshot): string {
   if (ref.kind === 'worktree') {
-    return `working tree ${chalk.dim(`(${snapshotShaLabel(snapshot)})`)}`;
+    return `working tree ${style.dim(`(${snapshotShaLabel(snapshot)})`)}`;
   }
-  return `${ref.label} ${chalk.dim(`(${shortSha(ref.sha)})`)}`;
+  return `${ref.label} ${style.dim(`(${shortSha(ref.sha)})`)}`;
 }
 
 export function tierColor(tier: string, value: number): string {
   const text = String(value).padStart(6, ' ');
-  switch (tier) {
-    case 'stable':
-      return chalk.green(text);
-    case 'advanced':
-      return chalk.yellow(text);
-    case 'internal':
-      return chalk.magenta(text);
-    case 'unclassified':
-      return chalk.red(text);
-    default:
-      return text;
-  }
+  return tierStyle(tier)(text);
 }
 
 export function printHeader(command: string, subtitle: string): void {

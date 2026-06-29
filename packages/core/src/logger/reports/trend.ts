@@ -1,4 +1,5 @@
-import chalk from 'chalk';
+
+import { boldDim, style } from '../../runtime/style.js';
 
 import type { CacheStatus } from '../../cache/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
@@ -26,25 +27,25 @@ export function printTrendReport(input: {
   const displayRows = limitList(input.rows, listLimit);
 
   printMeta({
-    tags: chalk.dim(String(input.rows.length)),
-    window: chalk.dim(`last ${input.tagLimit} version tags`),
+    tags: style.dim(String(input.rows.length)),
+    window: style.dim(`last ${input.tagLimit} version tags`),
   });
 
   if (!displayRows.items.length) {
     logLine('');
-    logLine(chalk.dim('       No version tags found (git tag -l v*).'));
+    logLine(style.dim('       No version tags found (git tag -l v*).'));
     return;
   }
 
   logLine('');
   logLine(
-    chalk.dim(
+    style.dim(
       `       ${'tag'.padEnd(10)} ${'flat'.padStart(6)} ${'stable'.padStart(6)} ${'adv'.padStart(5)} ${'int'.padStart(4)}`,
     ),
   );
   for (const row of displayRows.items) {
     logLine(
-      `       ${row.tag.padEnd(10)} ${String(row.rollup.rootFlat).padStart(6)} ${String(row.rollup.stable).padStart(6)} ${String(row.rollup.advanced).padStart(5)} ${String(row.rollup.internal).padStart(4)} ${chalk.dim(`(${row.cache})`)}`,
+      `       ${row.tag.padEnd(10)} ${String(row.rollup.rootFlat).padStart(6)} ${String(row.rollup.stable).padStart(6)} ${String(row.rollup.advanced).padStart(5)} ${String(row.rollup.internal).padStart(4)} ${style.dim(`(${row.cache})`)}`,
     );
   }
   logListTruncation(displayRows.hiddenCount);
@@ -55,16 +56,16 @@ export function printTrendReport(input: {
   const pct = first.rollup.rootFlat ? ((delta / first.rollup.rootFlat) * 100).toFixed(1) : '0.0';
   logLine('');
   if (delta === 0) {
-    logLine(`       ${chalk.dim(`Δ ${first.tag} → ${last.tag}: flat unchanged`)}`);
+    logLine(`       ${style.dim(`Δ ${first.tag} → ${last.tag}: flat unchanged`)}`);
   } else if (delta > 0) {
-    logLine(`       ${chalk.yellow(`Δ ${first.tag} → ${last.tag}: +${delta} flat (+${pct}%)`)}`);
+    logLine(`       ${style.warn(`Δ ${first.tag} → ${last.tag}: +${delta} flat (+${pct}%)`)}`);
   } else {
-    logLine(`       ${chalk.green(`Δ ${first.tag} → ${last.tag}: ${delta} flat (${pct}%)`)}`);
+    logLine(`       ${style.ok(`Δ ${first.tag} → ${last.tag}: ${delta} flat (${pct}%)`)}`);
   }
 
   if (input.verbose) {
     logLine('');
-    logLine(chalk.bold.dim('       Categories (latest tag)'));
+    logLine(boldDim('       Categories (latest tag)'));
     for (const [cat, count] of Object.entries(last.rollup.byCategory).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))) {
       logLine(`       ${padLabel(cat, 14)} ${count ?? 0}`);
     }

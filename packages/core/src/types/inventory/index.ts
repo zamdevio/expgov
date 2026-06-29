@@ -1,8 +1,9 @@
 export type {
-  DeclaredTierTag,
   StabilityTier,
   SymbolTierClassification,
   TierBucketName,
+  TierId,
+  TierPolicy,
   TierProvenance,
   TierProvenanceKind,
 } from './tiers.js';

@@ -1,4 +1,6 @@
 import type { InventorySnapshot } from '../inventory/index.js';
+import { getProjectContext } from '../context/index.js';
+import { policyViolatesRootFlat } from '../config/tierPolicy.js';
 
 export interface DiffResult {
   added: string[];
@@ -18,13 +20,17 @@ export function diffSnapshots(left: InventorySnapshot, right: InventorySnapshot)
   const removed = [...leftNames].filter((n) => !rightNames.has(n)).sort();
 
   const tierViolations: string[] = [];
+  const { tierCatalog } = getProjectContext();
+
   for (const sym of right.symbols) {
     if (sym.exportKind !== 'flat') continue;
-    if (sym.tier === 'internal') {
-      tierViolations.push(`${sym.name} (${sym.tier}) exported flat on root`);
-    }
     if (sym.tier === 'unclassified') {
       tierViolations.push(`${sym.name} (unclassified)`);
+      continue;
+    }
+    const entry = tierCatalog.byName.get(sym.tier);
+    if (entry && policyViolatesRootFlat(entry.policy)) {
+      tierViolations.push(`${sym.name} (${sym.tier}) exported flat on root`);
     }
   }
 

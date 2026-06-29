@@ -1,5 +1,5 @@
-import chalk from 'chalk';
 
+import { boldDim, style, tierStyle } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../cache/index.js';
 import type { SourceRef } from '../../git/index.js';
 import type { InventorySnapshot, SubpathRollup, TierCounts } from '../../inventory/index.js';
@@ -36,25 +36,31 @@ function formatSubpathRollupLine(sp: SubpathRollup): string {
     sp.byTier.stable ? `stable ${sp.byTier.stable}` : '',
     sp.byTier.advanced ? `adv ${sp.byTier.advanced}` : '',
     sp.byTier.internal ? `int ${sp.byTier.internal}` : '',
+    ...Object.entries(sp.byTier.custom)
+      .filter(([, count]) => count > 0)
+      .map(([name, count]) => `${name} ${count}`),
     sp.byTier.unclassified ? `uncls ${sp.byTier.unclassified}` : '',
   ].filter(Boolean);
-  const tiers = tierParts.length ? chalk.dim(` · ${tierParts.join(' · ')}`) : '';
-  return `       ${chalk.dim('·')} ${sp.npmSubpath.padEnd(32)} flat ${String(sp.flat).padStart(4)}  ns ${String(sp.namespace).padStart(3)}${tiers}`;
+  const tiers = tierParts.length ? style.dim(` · ${tierParts.join(' · ')}`) : '';
+  return `       ${style.dim('·')} ${sp.npmSubpath.padEnd(32)} flat ${String(sp.flat).padStart(4)}  ns ${String(sp.namespace).padStart(3)}${tiers}`;
 }
 
 export function printSdkWideTiers(tiers: TierCounts): void {
   logLine('');
-  logLine(chalk.bold.dim('       SDK-wide tiers (root + published subpaths)'));
+  logLine(boldDim('       SDK-wide tiers (root + published subpaths)'));
   logLine(`       ${padLabel('stable')} ${tierColor('stable', tiers.stable)}`);
   logLine(`       ${padLabel('advanced')} ${tierColor('advanced', tiers.advanced)}`);
   logLine(`       ${padLabel('internal')} ${tierColor('internal', tiers.internal)}`);
   logLine(`       ${padLabel('unclassified')} ${tierColor('unclassified', tiers.unclassified)}`);
+  for (const [name, count] of Object.entries(tiers.custom).sort(([a], [b]) => a.localeCompare(b))) {
+    if (count > 0) logLine(`       ${padLabel(name)} ${tierColor(name, count)}`);
+  }
 }
 
 export function printPublishedSubpathRollups(subpaths: SubpathRollup[], title = 'Published subpaths (rollup)'): void {
   if (!subpaths.length) return;
   logLine('');
-  logLine(chalk.bold.dim(`       ${title}`));
+  logLine(boldDim(`       ${title}`));
   for (const sp of subpaths) logLine(formatSubpathRollupLine(sp));
 }
 
@@ -69,20 +75,20 @@ export function printInventoryReport(input: {
 
   printMeta({
     ref: refLine(ref, snapshot),
-    barrel: chalk.dim(barrelPath),
-    cache: `${cacheLabel(cache)} ${chalk.dim(`· ${inventoryCacheDirDisplay(snapshot.sha)}`)}`,
-    generated: chalk.dim(new Date(snapshot.generatedAt).toISOString()),
-    commit: snapshot.git?.commitDate ? chalk.dim(snapshot.git.commitDate) : undefined,
-    edges: chalk.dim(String(snapshot.edges.length)),
-    subpaths: chalk.dim(String(snapshot.summary.subpaths.length)),
-    git: input.gitStats ? chalk.dim(input.gitStats) : undefined,
+    barrel: style.dim(barrelPath),
+    cache: `${cacheLabel(cache)} ${style.dim(`· ${inventoryCacheDirDisplay(snapshot.sha)}`)}`,
+    generated: style.dim(new Date(snapshot.generatedAt).toISOString()),
+    commit: snapshot.git?.commitDate ? style.dim(snapshot.git.commitDate) : undefined,
+    edges: style.dim(String(snapshot.edges.length)),
+    subpaths: style.dim(String(snapshot.summary.subpaths.length)),
+    git: input.gitStats ? style.dim(input.gitStats) : undefined,
   });
 
   logLine('');
-  logLine(chalk.bold.dim('       Root barrel tiers'));
+  logLine(boldDim('       Root barrel tiers'));
   const r = snapshot.summary.root;
-  logLine(`       ${padLabel('root flat')} ${chalk.white(String(r.flat))}`);
-  logLine(`       ${padLabel('namespace')} ${chalk.white(String(r.namespace))}`);
+  logLine(`       ${padLabel('root flat')} ${style.white(String(r.flat))}`);
+  logLine(`       ${padLabel('namespace')} ${style.white(String(r.namespace))}`);
   logLine(`       ${padLabel('stable')} ${tierColor('stable', r.stable)}`);
   logLine(`       ${padLabel('advanced')} ${tierColor('advanced', r.advanced)}`);
   logLine(`       ${padLabel('internal')} ${tierColor('internal', r.internal)}`);
@@ -98,9 +104,9 @@ export function printInventoryReport(input: {
   );
   if (topCategories.items.length) {
     logLine('');
-    logLine(chalk.bold.dim('       Top categories'));
+    logLine(boldDim('       Top categories'));
     for (const [cat, count] of topCategories.items) {
-      logLine(`       ${padLabel(cat, 14)} ${chalk.white(String(count))}`);
+      logLine(`       ${padLabel(cat, 14)} ${style.white(String(count))}`);
     }
     logListTruncation(topCategories.hiddenCount);
   }
@@ -115,28 +121,21 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
   );
 
   logLine('');
-  logLine(chalk.bold.dim('       Symbols (root flat)'));
+  logLine(boldDim('       Symbols (root flat)'));
   if (flat.items.length === 0) {
     logSectionEmpty('No root flat exports.');
   } else {
-    logLine(chalk.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
+    logLine(style.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
     for (const sym of flat.items) {
       const tierPlain = formatInventoryTier(sym.tier);
-      const tier =
-        sym.tier === 'stable'
-          ? chalk.green(tierPlain)
-          : sym.tier === 'advanced'
-            ? chalk.yellow(tierPlain)
-            : sym.tier === 'internal'
-              ? chalk.magenta(tierPlain)
-              : chalk.red(tierPlain);
-      const category = chalk.cyan(formatInventoryCategory(sym.category));
-      const symbolKind = chalk.white(formatInventorySymbolKind(sym.symbolKind));
+      const tier = tierStyle(sym.tier)(tierPlain);
+      const category = style.accent(formatInventoryCategory(sym.category));
+      const symbolKind = style.white(formatInventorySymbolKind(sym.symbolKind));
       const provenanceLabel = sym.tierProvenance?.kind === 'tag'
-        ? chalk.cyan(formatTierProvenanceLabel(sym.tierProvenance))
-        : chalk.dim(formatTierProvenanceLabel(sym.tierProvenance));
+        ? style.accent(formatTierProvenanceLabel(sym.tierProvenance))
+        : style.dim(formatTierProvenanceLabel(sym.tierProvenance));
       logLine(
-        `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${chalk.dim(sym.targetSubpath)} ${chalk.dim('[')}${provenanceLabel}${chalk.dim(']')}`,
+        `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${style.dim(sym.targetSubpath)} ${style.dim('[')}${provenanceLabel}${style.dim(']')}`,
       );
     }
     logListTruncation(flat.hiddenCount);
@@ -152,9 +151,9 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
     namespaces.items,
     'No root namespace exports.',
     (ns) => {
-      const src = chalk.dim(formatNamespaceSourceLabel(ns.sourceModule));
+      const src = style.dim(formatNamespaceSourceLabel(ns.sourceModule));
       logLine(
-        `       ${chalk.dim('·')} ${ns.name.padEnd(20)} ${src} ${chalk.dim('·')} ${chalk.dim(ns.targetSubpath)}`,
+        `       ${style.dim('·')} ${ns.name.padEnd(20)} ${src} ${style.dim('·')} ${style.dim(ns.targetSubpath)}`,
       );
     },
     namespaces.hiddenCount,

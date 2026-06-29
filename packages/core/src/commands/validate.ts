@@ -1,5 +1,4 @@
 import { readFileSync } from 'node:fs';
-
 import { getWorktreeSnapshot } from '../cache/index.js';
 import {
   getProjectContext,
@@ -9,7 +8,7 @@ import {
 } from '../context/index.js';
 import { sumSdkTierCounts } from '../inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
-import type { TierBucketName } from '../types/inventory/index.js';
+import { policyViolatesRootFlat } from '../config/tierPolicy.js';
 import { printValidateReport } from '../logger/index.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
@@ -42,13 +41,13 @@ function tsconfigPackagePaths(paths: Record<string, string[]>): string[] {
   return Object.keys(paths).filter((key) => isPackageTsconfigPath(key));
 }
 
-function summarizeTierSources(symbols: { exportKind: string; tierProvenance?: { kind: string; bucket?: TierBucketName } }[]): {
+function summarizeTierSources(symbols: { exportKind: string; tierProvenance?: { kind: string; bucket?: string } }[]): {
   tag: number;
   config: number;
   defaultPrefix: number;
-  byBucket: Record<TierBucketName, number>;
+  byBucket: Record<string, number>;
 } {
-  const byBucket: Record<TierBucketName, number> = { stable: 0, internal: 0, advanced: 0 };
+  const byBucket: Record<string, number> = {};
   let tag = 0;
   let config = 0;
   let defaultPrefix = 0;
@@ -66,7 +65,7 @@ function summarizeTierSources(symbols: { exportKind: string; tierProvenance?: { 
     } else {
       config += 1;
     }
-    if (p.bucket) byBucket[p.bucket] += 1;
+    if (p.bucket) byBucket[p.bucket] = (byBucket[p.bucket] ?? 0) + 1;
   }
 
   return { tag, config, defaultPrefix, byBucket };
@@ -109,7 +108,9 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   }
 
   const { snapshot } = getWorktreeSnapshot({ noCache: true });
+  const { tierCatalog } = getProjectContext();
   const tierSources = summarizeTierSources(snapshot.symbols);
+  const rootFlatPolicyBlocks = new Map<string, string[]>();
 
   for (const sym of snapshot.symbols) {
     if (sym.exportKind !== 'flat') continue;
@@ -119,6 +120,13 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
       violations.push(
         `root flat export "${sym.name}" is unclassified — extend expgov tier config (tiers.<tier>.exact or .prefix, or ${formatTierTagHint()})`,
       );
+      continue;
+    }
+    const entry = tierCatalog.byName.get(sym.tier);
+    if (entry && policyViolatesRootFlat(entry.policy)) {
+      const names = rootFlatPolicyBlocks.get(sym.tier) ?? [];
+      names.push(sym.name);
+      rootFlatPolicyBlocks.set(sym.tier, names);
     }
   }
 
@@ -127,18 +135,24 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     `tier sources: ${formatTierTagHint()}=${tierSources.tag} · config=${tierSources.config} · default-prefix=${tierSources.defaultPrefix}`,
   );
   if (options.verbose) {
-    notes.push(
-      `tier config by bucket: stable=${tierSources.byBucket.stable} internal=${tierSources.byBucket.internal} advanced=${tierSources.byBucket.advanced}`,
-    );
+    const bucketSummary = Object.entries(tierSources.byBucket)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([bucket, count]) => `${bucket}=${count}`)
+      .join(' ');
+    if (bucketSummary) notes.push(`tier config by bucket: ${bucketSummary}`);
   }
+  const customTierSummary = Object.entries(sdkTiers.custom)
+    .filter(([, count]) => count > 0)
+    .map(([name, count]) => `${name}=${count}`)
+    .join(' ');
   notes.push(
-    `sdk-wide tiers: stable=${sdkTiers.stable} advanced=${sdkTiers.advanced} internal=${sdkTiers.internal} unclassified=${sdkTiers.unclassified}`,
+    `sdk-wide tiers: stable=${sdkTiers.stable} advanced=${sdkTiers.advanced} internal=${sdkTiers.internal} unclassified=${sdkTiers.unclassified}${customTierSummary ? ` · ${customTierSummary}` : ''}`,
   );
 
   for (const subpath of snapshot.summary.subpaths) {
     if (subpath.byTier.unclassified > 0) {
       violations.push(
-        `${subpath.npmSubpath} has ${subpath.byTier.unclassified} unclassified export(s) — add ${formatTierTagHint()} or stable allowlist`,
+        `${subpath.npmSubpath} has ${subpath.byTier.unclassified} unclassified export(s) — add ${formatTierTagHint()} or tier allowlist`,
       );
     }
     if (options.verbose && subpath.flat > 0) {
@@ -148,11 +162,11 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     }
   }
 
-  if (internalFlatSymbols.length) {
-    violations.push(`${internalFlatSymbols.length} internal-tier symbol(s) still flat on root`);
-  }
-  if (advancedFlatSymbols.length) {
-    violations.push(`${advancedFlatSymbols.length} advanced-tier symbol(s) still flat on root`);
+  for (const [tier, names] of rootFlatPolicyBlocks) {
+    const policy = tierCatalog.byName.get(tier)?.policy;
+    violations.push(
+      `${names.length} ${tier}-tier (${policy ?? 'restricted'}) symbol(s) still flat on root`,
+    );
   }
 
   const passed = violations.length === 0;

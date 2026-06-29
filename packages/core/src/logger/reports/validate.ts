@@ -1,4 +1,5 @@
-import chalk from 'chalk';
+
+import { boldDim, style } from '../../runtime/style.js';
 
 import { logLine } from '../report.js';
 
@@ -15,32 +16,32 @@ export function printValidateReport(input: {
 
   if (!passed) {
     logLine('');
-    for (const v of violations) logLine(`       ${chalk.red('✗')} ${v}`);
+    for (const v of violations) logLine(`       ${style.err('✗')} ${v}`);
     if (verbose && notes.length) {
       logLine('');
-      logLine(chalk.bold.dim('       Notes'));
-      for (const note of notes) logLine(`       ${chalk.dim('·')} ${note}`);
+      logLine(boldDim('       Notes'));
+      for (const note of notes) logLine(`       ${style.dim('·')} ${note}`);
     }
     return;
   }
 
   logLine('');
-  logLine(`       ${chalk.green('✓')} tsconfig paths ⊆ npm exports (wildcard flagged separately)`);
-  logLine(`       ${chalk.green('✓')} no unclassified root flat exports`);
-  for (const note of notes.slice(0, noteLimit)) logLine(`       ${chalk.dim('·')} ${note}`);
+  logLine(`       ${style.ok('✓')} tsconfig paths ⊆ npm exports (wildcard flagged separately)`);
+  logLine(`       ${style.ok('✓')} no unclassified root flat exports`);
+  for (const note of notes.slice(0, noteLimit)) logLine(`       ${style.dim('·')} ${note}`);
   if (!verbose && notes.length > 5) {
-    logLine(`       ${chalk.dim(`…and ${notes.length - 5} more notes (use -v)`)}`);
+    logLine(`       ${style.dim(`…and ${notes.length - 5} more notes (use -v)`)}`);
   }
 
   if (verbose && internalFlatSymbols.length) {
     logLine('');
-    logLine(chalk.bold.dim('       Internal-tier flat on root'));
-    for (const name of internalFlatSymbols.sort()) logLine(`       ${chalk.magenta('·')} ${name}`);
+    logLine(boldDim('       Internal-tier flat on root'));
+    for (const name of internalFlatSymbols.sort()) logLine(`       ${style.magenta('·')} ${name}`);
   }
 
   if (verbose && advancedFlatSymbols.length) {
     logLine('');
-    logLine(chalk.bold.dim('       Advanced-tier flat on root'));
-    for (const name of advancedFlatSymbols.sort()) logLine(`       ${chalk.yellow('·')} ${name}`);
+    logLine(boldDim('       Advanced-tier flat on root'));
+    for (const name of advancedFlatSymbols.sort()) logLine(`       ${style.warn('·')} ${name}`);
   }
 }

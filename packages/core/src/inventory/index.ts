@@ -7,10 +7,11 @@ export { parseBarrelExports } from './parse-barrel.js';
 export { classifyExportCategory, targetSubpathFor } from './categories.js';
 export { classifySymbolTier, classifySymbolTierWithProvenance, resolveDeclaredTierTag } from './tiers.js';
 export type {
-  DeclaredTierTag,
   StabilityTier,
   SymbolTierClassification,
   TierBucketName,
+  TierId,
+  TierPolicy,
   TierProvenance,
   TierProvenanceKind,
 } from '../types/inventory/index.js';

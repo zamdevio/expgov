@@ -9,7 +9,6 @@ import {
   readModuleAtPath,
   type SourceReader,
 } from './source.js';
-import type { DeclaredTierTag } from '../types/inventory/index.js';
 import { classifySymbolTier, classifySymbolTierWithProvenance, resolveDeclaredTierTag } from './tiers.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
 import { getRootIndexRepoPath } from '../paths.js';
@@ -26,11 +25,18 @@ import type {
 } from './types.js';
 
 function emptyTierCounts(): TierCounts {
-  return { stable: 0, advanced: 0, internal: 0, unclassified: 0 };
+  return { stable: 0, advanced: 0, internal: 0, unclassified: 0, custom: {} };
 }
 
 function rollTier(counts: TierCounts, tier: InventorySymbol['tier']): void {
-  counts[tier] += 1;
+  if (tier === 'unclassified') {
+    counts.unclassified += 1;
+    return;
+  }
+  if (tier === 'stable') counts.stable += 1;
+  else if (tier === 'advanced') counts.advanced += 1;
+  else if (tier === 'internal') counts.internal += 1;
+  else counts.custom[tier] = (counts.custom[tier] ?? 0) + 1;
 }
 
 function buildRootSummary(symbols: InventorySymbol[], namespaces: InventoryNamespace[]): RootSummary {
@@ -151,7 +157,7 @@ function enrichBarrel(input: {
   return { symbols, namespaces, edges };
 }
 
-function subpathTierHint(npmSubpath: string): DeclaredTierTag | undefined {
+function subpathTierHint(npmSubpath: string): string | undefined {
   if (npmSubpath.endsWith('/advanced')) return 'advanced';
   if (npmSubpath.endsWith('/internal')) return 'internal';
   return undefined;
@@ -162,7 +168,7 @@ function classifySubpathExportTier(input: {
   barrelRepoPath: string;
   sourceSpecifier: string | null;
   reader: SourceReader;
-  subpathHint?: DeclaredTierTag;
+  subpathHint?: string;
 }): InventorySymbol['tier'] {
   const mod = input.sourceSpecifier
     ? readModule(input.reader, input.barrelRepoPath, input.sourceSpecifier)
@@ -190,6 +196,9 @@ export function sumSdkTierCounts(snapshot: Pick<InventorySnapshot, 'summary'>): 
     totals.advanced += subpath.byTier.advanced;
     totals.internal += subpath.byTier.internal;
     totals.unclassified += subpath.byTier.unclassified;
+    for (const [name, count] of Object.entries(subpath.byTier.custom)) {
+      totals.custom[name] = (totals.custom[name] ?? 0) + count;
+    }
   }
 
   return totals;
