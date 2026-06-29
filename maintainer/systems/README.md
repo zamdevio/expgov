@@ -5,11 +5,14 @@
 
 | Doc | Holds |
 |-----|--------|
-| [`tiers.md`](./tiers.md) | Nested tier schema, `@sdkTier`, classifier priority |
-| [`exports.md`](./exports.md) | Barrel governance, cache, validate checks |
+| [`principles.md`](./principles.md) | Mission, core constraints, deferred scope |
+| [`tiers.md`](./tiers.md) | Nested tier schema, `@sdkTier`, classifier priority, provenance (P9–P11) |
+| [`exports.md`](./exports.md) | Barrel governance, validate checks |
 | [`config.md`](./config.md) | `expgov.config.ts` discovery and fields |
-| [`cli.md`](./cli.md) | Logger, style, banners, global flags, help |
-| [`cache.md`](./cache.md) | `.expgov/cache/` layout and warm behavior |
+| [`cli.md`](./cli.md) | Listing, help, insights, flags, banners, footer (Phase A + E partial) |
+| [`cache.md`](./cache.md) | `.expgov/cache/` layout, worktree `files.json` gate (P16) |
+| [`observability.md`](./observability.md) | Metrics-over-snapshots model; Phase G catalog (planned) |
 
-**Plans (when):** [`phases/`](../phases/)
+**Shipped receipts:** [`shipped/README.md`](../shipped/README.md)
+**Active plans:** [`phases/active-phase.md`](../phases/active-phase.md)
 **Rules:** [`agents/rules.md`](../agents/rules.md)

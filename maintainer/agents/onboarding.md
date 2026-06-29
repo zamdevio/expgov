@@ -28,10 +28,10 @@ commands/init/run.ts → runInit (core) → write expgov.config.ts
 ## Before coding a slice
 
 - [ ] Scoped in `active-phase.md`
-- [ ] Not already in `shipped-slices.md`
+- [ ] Not already in `maintainer/shipped/README.md`
 - [ ] Core logic has no prompts/chalk in command paths
 - [ ] Tier/export changes include `expgov validate` pass
-- [ ] Update `shipped-slices.md` on ship
+- [ ] Update `maintainer/shipped/README.md` on ship
 
 ## Local dev
 

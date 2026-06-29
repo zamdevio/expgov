@@ -59,4 +59,4 @@ See [`cache.md`](./cache.md). Cache dir should be gitignored — see gitignore t
 
 1. Add `@sdkTier` or update `tiers.stable.exact` / `.prefix` in `expgov.config.ts`
 2. Run `expgov validate`
-3. Update `maintainer/phases/shipped-slices.md` if shipping a governance slice
+3. Update `maintainer/shipped/README.md` if shipping a governance slice

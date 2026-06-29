@@ -4,7 +4,7 @@
 
 **Purpose:** CLI command → core mapping and roadmap.
 
-Companion: [`architecture.md`](./architecture.md) · [`active-phase.md`](./active-phase.md)
+Companion: [`../systems/principles.md`](../systems/principles.md) · [`active-phase.md`](./active-phase.md)
 
 ---
 

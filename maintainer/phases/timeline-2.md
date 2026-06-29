@@ -2,7 +2,7 @@
 
 **Status:** Planning only.
 
-**Companion:** [`commands.md`](./commands.md) · [`../systems/cache.md`](../systems/cache.md) · Phase A [`cli-dx-polish.md`](./cli-dx-polish.md)
+**Companion:** [`commands.md`](./commands.md) · [`../systems/cli.md`](../systems/cli.md) (Phase A shipped)
 
 ---
 

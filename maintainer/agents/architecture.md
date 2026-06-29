@@ -27,12 +27,21 @@ expgov/
 ```txt
 packages/core/src/
 ├── commands/       # runExports* — beginCommand/finishCommand + reports
-├── config/         # load.ts, types.ts, tiers.ts (resolver)
+├── config/         # load.ts, tiers.ts, tierCatalog, tierPolicy
 ├── context/        # ProjectContext from expgov.config.ts
+├── cache/          # snapshot warm/read, worktree files.json
 ├── inventory/      # barrel snapshot + classifySymbolTier
 ├── init/           # detect + template for init command
-├── runtime/        # RunOptions, emitter, policy, timer, JSON envelope
-└── logger/         # human report formatters (emit via log sink)
+├── git/            # refs, gitignore tip
+├── insights/       # command metadata aggregations (Phase E)
+├── runtime/        # RunOptions, emitter, policy, timer, JSON envelope, style
+├── logger/         # human report formatters (emit via log sink)
+└── help/           # long-form usage text
+
+packages/cli/src/
+├── bin/cli.ts      # thin entry — bootstrapRuntime + buildProgram
+├── commands/init/  # ensureConfig + prompts
+└── utils/          # help colorization, banners, list flags
 ```
 
 ## Import rule
@@ -57,3 +66,5 @@ Init prompts use `@inquirer/prompts` in **CLI only** (`packages/cli/src/commands
 - File: `expgov.config.ts` at repo root (or `--config`)
 - Loader: jiti (`packages/core/src/config/load.ts`)
 - Types: `defineConfig`, `ExpgovConfig` from `expgov/core`
+
+Engineering principles and out-of-scope list: [`systems/principles.md`](../systems/principles.md).

@@ -1,6 +1,6 @@
 # Observability & CLI DX Roadmap
 
-**Status:** Planning only — execute after current governance sprint (tiers polish, CI validate, user docs).
+**Status:** Phase A + P16 + P17 (partial E) shipped — active work on Phase E remainder, then B/C.
 
 **Audience:** Maintainers sequencing the next evolution of expgov.
 
@@ -19,58 +19,47 @@ Evolve expgov from **export-governance CLI** to **polished SDK observability too
 
 ## Planning documents
 
-| Phase | Document | Focus |
-|-------|----------|-------|
-| **A** | [`cli-dx-polish.md`](./cli-dx-polish.md) | Listing `--top`/`--full`, aliases, color, provenance, help |
-| **B** | [`timeline-2.md`](./timeline-2.md) | Git ref ranges, release markers, rich deltas, summaries |
-| **C** | [`graph-2.md`](./graph-2.md) | Namespace-root graph, analytics, filters |
-| **D** | [`../api-chain.md`](../api-chain.md) | Execution introspection pipeline |
-| **E** | [`rich-command-metadata.md`](./rich-command-metadata.md) | Answer the next question per command |
-| **F** | [`cli-output-audit.md`](./cli-output-audit.md) | Full UX audit receipt |
-| **G** | [`observability.md`](./observability.md) | Long-term metrics from cache/snapshots |
+| Phase | Status | Document / map |
+|-------|--------|----------------|
+| **A** | Shipped (P6, P9–P15) | [`systems/cli.md`](../systems/cli.md) |
+| **B** | Planned | [`timeline-2.md`](./timeline-2.md) |
+| **C** | Planned | [`graph-2.md`](./graph-2.md) |
+| **D** | Planned | [`../api-chain.md`](../api-chain.md) |
+| **E** | In progress (P17 partial) | [`rich-command-metadata.md`](./rich-command-metadata.md) |
+| **F** | Planned | [`cli-output-audit.md`](./cli-output-audit.md) |
+| **G** | Planned | [`systems/observability.md`](../systems/observability.md) |
+
+Worktree cache gate (2e): shipped P16 — [`systems/cache.md`](../systems/cache.md).
 
 ---
 
-## Current state summary (audit baseline)
+## Current state summary
 
-### Commands (wired, stable)
+### Commands
 
-| Command | Core entry | Cache | Key output limits today |
-|---------|------------|-------|-------------------------|
-| `init` | CLI `ensureConfig` | — | — |
-| `inventory` | `runExportsInventory` | full | top 4 categories |
-| `diff` | `runExportsDiff` | full ×2 | unbounded added/removed |
-| `validate` | `runExportsValidate` | worktree bypass | 5 notes |
-| `trend` | `runExportsTrend` | per tag | `--tags` window |
-| `timeline` | `runExportsTimeline` | timeline profile | `--limit` 20 |
-| `graph` | `runExportsGraph` | full | 12/15/8 slices |
-| `help` | `printHelp` | — | — |
+| Command | Cache | Listing (`-T`/`-F`) | Insights (P17) |
+|---------|-------|---------------------|----------------|
+| `inventory` | full | yes | shipped |
+| `diff` | full ×2 | yes | shipped |
+| `validate` | worktree bypass | yes | shipped |
+| `trend` | per tag | yes | shipped |
+| `timeline` | timeline profile | yes | pending (Phase B) |
+| `graph` | full | yes | pending (Phase C) |
+| `init` | — | — | tips only |
 
-### Global flags (today)
+### Global flags
 
-`-C`, `--config`, `--package-name`, `--cache-dir`, `-y`, `-j`, `-q`, `-s`, `--color` (default true), `--no-color`
+`-C`, `-c/--config`, `-pn/--package-name`, `-cd/--cache-dir`, `-y`, `-j`, `-q`, `-s`, `-nlc`, `-nlg`, `-ncl/--no-color`. Bare `expgov` → help, exit 0.
 
-`RunOptions.noLogPrefix` / `noLogChannel` exist in core but are **not CLI-wired**.
+### Cache
 
-### Cache model
+`.expgov/cache/<sha>/` + `__worktree__/` with `files.json` + `inputFilesEpoch` (P16).
 
-`.exports/cache/<sha>/inventory.full.json` + `timeline.summary.json`; statuses `hit|miss|refresh|bypass`.
+### Still open (B/C/D)
 
-### Timeline model
-
-Time ranges only (`@4w`, ISO week, date range) — **not** `v1..v2` git ref ranges.
-
-### Graph model
-
-Target subpath groups + alphabetical namespaces + top modules by edge count — **not** namespace-first analytics.
-
-### Logging
-
-`emitLog` events: report, meta, header, summary, note, footer. `TimelineWarmer` bypasses emitter (purity debt).
-
-### Provenance gap
-
-`tierSource: tag | fallback` — verbose shows `[fallback]` without config rule path.
+- Timeline: time ranges only — not `v1..v2` git ref ranges; no release markers.
+- Graph: subpath groups + top modules — not namespace-first analytics.
+- API chain trace: not wired to CLI.
 
 ---
 
@@ -78,7 +67,7 @@ Target subpath groups + alphabetical namespaces + top modules by edge count — 
 
 ```mermaid
 flowchart TD
-  A[Phase A CLI DX]
+  A[Phase A CLI DX - shipped]
   B[Phase B Timeline 2]
   C[Phase C Graph 2]
   D[Phase D API Chain]
@@ -97,51 +86,41 @@ flowchart TD
   B --> G
   C --> G
   E --> G
-  D --> G
 ```
 
 ---
 
 ## Recommended program order
 
-### Wave 1 — Foundation (2–3 PRs)
+### Done
 
-1. Phase **A3** color + **A2** aliases (incl. `noLogPrefix`/`noLogChannel`)
-2. Phase **A1** shared listing helper + command adoption
-3. Phase **D1** trace bus + `TimelineWarmer` emitter migration
+- Phase **A** (listing, aliases, color, provenance, help, truncation)
+- Worktree **files.json** gate (P16)
+- Phase **E** partial — inventory, validate, diff, trend insights (P17)
 
-### Wave 2 — Surface quality (3–4 PRs)
+### Next
 
-4. ~~Phase **A4** tier provenance~~ (shipped) + Phase **A5** help workflows
-5. Phase **E** insights module + inventory/validate/diff/trend
-6. Phase **F** glossary + indent constants (from audit)
-
-### Wave 3 — Structural observability (3–4 PRs)
-
-7. Phase **B1** timeline ref ranges + **B2** release markers
-8. Phase **C2** graph analytics + **C1** namespace-centric report
-9. Phase **B3–B4** timeline metadata + summaries (merge with E timeline insights)
-
-### Wave 4 — Depth (ongoing)
-
-10. Phase **C3** graph filters + **C4** modes as flags
-11. Phase **D2–D4** cache/git/classify tracing
-12. Phase **G** metrics one family per PR (churn → velocity → health → report)
+1. Finish Phase **E** — graph + timeline insights (after / with B/C analytics)
+2. Phase **B1** timeline ref ranges + **B2** release markers
+3. Phase **C2** graph analytics + **C1** namespace-centric report
+4. Phase **B3–B4** timeline metadata + summaries
+5. Phase **F** glossary + indent constants (from audit)
+6. Phase **D** trace bus + `TimelineWarmer` emitter migration
+7. Phase **G** metrics one family per PR
 
 ---
 
-## Principles (from planning brief)
+## Principles
 
 - Stay incremental — no unnecessary rewrites
 - Preserve backwards compatibility (`--limit` shim, additive JSON)
 - Reuse inventory/cache — no duplicate parsers
 - Maximize shared helpers (`listing`, `insights`, `graph/analytics`, `trace`)
 - CLI output: information-dense, never noisy
-- Every proposal documents: motivation, user value, approach, dependencies, complexity, risks, extensions
 
 ---
 
-## Entry criteria (when to start Wave 1)
+## Entry criteria (Wave 1)
 
 From [`active-phase.md`](./active-phase.md) — **complete**:
 
@@ -149,25 +128,25 @@ From [`active-phase.md`](./active-phase.md) — **complete**:
 - [x] `expgov validate` CI gate
 - [x] User `docs/` stubs for flag contracts
 
-**Wave 2** (Phases A–G) — row **#1** (`suggest`) shipped; start Phase **A**.
+**Current focus:** Phase **E** remainder → Phase **B** / **C**.
 
 ---
 
 ## Exit criteria (program complete)
 
-- All list commands support `--top` / `--full` with identical UX
+- All list commands support `--top` / `--full` with identical UX — **done**
 - `timeline` accepts git ref ranges and shows release markers
 - `graph` is namespace-first with documented analytics
 - `-v` shows execution chain (or `-vv` for detail)
-- Each command answers ≥1 “next question” inline
+- Each command answers ≥1 “next question” inline — **partial** (P17)
 - Phase F audit items owned or explicitly deferred with reason
-- Phase G1–G3 shipped; G4–G8 scheduled or deferred in observability.md
+- Phase G1–G3 shipped; G4–G8 scheduled in [`systems/observability.md`](../systems/observability.md)
 
 ---
 
 ## Related maintainer docs
 
-- [`commands.md`](./commands.md) — command contracts + deferred verbs (`doctor`, `suggest`)
-- [`architecture.md`](./architecture.md) — package map, principles
-- [`shipped-slices.md`](./shipped-slices.md) — do not re-implement receipts
-- [`../systems/README.md`](../systems/README.md) — engineering maps
+- [`commands.md`](./commands.md) — command contracts + deferred verbs
+- [`../systems/principles.md`](../systems/principles.md) — constraints and deferred scope
+- [`../shipped/README.md`](../shipped/README.md) — closed work receipts
+- [`systems/README.md`](../systems/README.md) — engineering maps

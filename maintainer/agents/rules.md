@@ -47,7 +47,7 @@ Reports print first; `finishCommand` appends optional `summary: counts` then `co
 ## PR discipline
 
 - One phase slice per PR
-- Update `maintainer/phases/shipped-slices.md` when closing a slice
+- Update `maintainer/shipped/README.md` when closing a slice
 - Run `pnpm build && expgov validate` before commit when touching exports or tiers
 - User docs in `docs/` — no maintainer jargon
 

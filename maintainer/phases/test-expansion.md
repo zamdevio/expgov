@@ -1,8 +1,22 @@
 # Test expansion plan
 
-**Status:** Planning — slice tests shipped (`shared/listing`); expand by subsystem.
+**Status:** Planning — unit tests shipped across listing, cache, tiers, insights; expand by subsystem.
 
-**Companion:** [`active-phase.md`](./active-phase.md) · [`../systems/README.md`](../systems/README.md)
+---
+
+## Shipped
+
+| Area | Test file | What it locks |
+|------|-----------|---------------|
+| Listing contract | `shared/__tests__/listing.test.ts` | `resolveListLimit`, `limitList`, truncation hint |
+| Insights (Phase E) | `shared/__tests__/insights.test.ts` | inventory, validate, diff, trend insight shapes |
+| Worktree cache gate | `shared/__tests__/worktreeSnapshot.test.ts`, `worktreeTrack.test.ts` | `files.json` epoch, barrel + re-export closure |
+| Cache mode | `shared/__tests__/cacheMode.test.ts`, `resolveCache.test.ts` | hit/miss/bypass, `cache.enabled` |
+| Tier classifier | `shared/__tests__/tiers.test.ts` | tag vs config precedence, provenance |
+| Subpath key | `shared/__tests__/context.test.ts` | `npmSubpathKey` strips `./` prefix |
+| Init template | `shared/__tests__/initTemplate.test.ts` | conservative default buckets |
+
+**Runner:** vitest (`pnpm test` at repo root). **CI:** `ci.yml` runs typecheck + test + build + validate.
 
 ---
 
@@ -20,7 +34,6 @@
 | Area | Path | What to assert |
 |------|------|----------------|
 | **Prefix compiler** | `config/tiers.ts` | `compilePrefixMatcher`: literal, `/regex/`, metachar auto-regex; `matchesTierBucket` |
-| **Tier classifier** | `inventory/tiers.ts` | tag vs config precedence; exact/prefix/default-prefix provenance labels |
 | **Category heuristics** | `inventory/categories.ts` | `runX`, `createFooContext`, type vs flat |
 | **Tier counts** | `inventory/tierCounts.ts` | `sumSdkTierCounts` merges `custom`; footer fields |
 | **Re-export chain** | `inventory/reexport-chain.ts` | single-hop and multi-hop `@sdkTier` resolution (fixture strings) |
@@ -74,10 +87,10 @@ Avoid e2e subprocess CLI in Wave 3 unless necessary — prefer importing built p
 
 ## Execution order
 
-1. Wave 1: `config/tiers` + `inventory/tiers` (highest governance risk).
-2. Wave 1: `tierCounts` + `categories` (quick wins).
+1. Wave 1: `config/tiers` prefix compiler (highest governance risk after tiers.test).
+2. Wave 1: `categories` + `tierCounts` (quick wins).
 3. Wave 2: `parse-barrel` fixtures.
-4. Wave 3: CLI argv when A5 help work stabilizes.
+4. Wave 3: CLI argv smoke.
 5. Wave 4: only if git/cache flakes are controlled.
 
 ---
@@ -88,5 +101,3 @@ Avoid e2e subprocess CLI in Wave 3 unless necessary — prefer importing built p
 |------|----------|----------|
 | typecheck + test + build + madge:circular + validate | `.github/workflows/ci.yml` | yes |
 | knip + madge orphans/leaves | `.github/workflows/architecture.yml` | no (advisory) |
-
-Add `pnpm test` to PR checklist in [`../agents/onboarding.md`](../agents/onboarding.md) when Wave 1 lands.

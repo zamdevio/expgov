@@ -2,7 +2,7 @@
 
 **Status:** Planning only — complete UX review of human output.
 
-**Companion:** [`../systems/cli.md`](../systems/cli.md) · Phase A [`cli-dx-polish.md`](./cli-dx-polish.md)
+**Companion:** [`../systems/cli.md`](../systems/cli.md) (Phase A shipped)
 
 ---
 

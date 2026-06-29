@@ -2,7 +2,7 @@
 
 **Status:** Planning only.
 
-**Companion:** [`../systems/exports.md`](../systems/exports.md) · Phase A [`cli-dx-polish.md`](./cli-dx-polish.md) · Phase E [`rich-command-metadata.md`](./rich-command-metadata.md)
+**Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Phase E [`rich-command-metadata.md`](./rich-command-metadata.md)
 
 ---
 

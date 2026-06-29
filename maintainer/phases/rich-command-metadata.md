@@ -2,7 +2,26 @@
 
 **Status:** In progress — `inventory`, `validate`, `diff`, and `trend` shipped; `graph` / `timeline` pending (Phase B/C deps).
 
-**Companion:** [`commands.md`](./commands.md) · Phase A [`cli-dx-polish.md`](./cli-dx-polish.md) · Phase C [`graph-2.md`](./graph-2.md)
+---
+
+## Shipped
+
+| Command | Insights | Receipt |
+|---------|----------|---------|
+| `inventory` | Largest module (edges), median exports/module, unclassified warnings | `006b45a` |
+| `validate` | Hot spot / worst subpath on failure; internal/advanced counts on `-v` | `006b45a` |
+| `diff` | Module edge delta, tier movement, new advanced, truncated add/remove samples | `b60faad` |
+| `trend` | Largest tag-pair jump/drop, stable % shift | `b60faad` |
+
+**Module:** `packages/core/src/insights/` — pure functions over snapshots (no I/O).
+
+**Render:** `logger/reports/insights.ts` — dim `◇` block before footer; max 5 lines; shown under `--quiet`; suppressed under `--silent`.
+
+**JSON:** additive `data.insights` on inventory, validate, diff, trend.
+
+**Tests:** `shared/__tests__/insights.test.ts` (9 cases).
+
+**Engineering map:** [`systems/cli.md`](../systems/cli.md#insights-phase-e--partial).
 
 ---
 
@@ -35,64 +54,7 @@ If data requires a new git fetch or second snapshot, either:
 
 ---
 
-## Per-command plan
-
-### `inventory [ref]`
-
-**Primary output:** Root tiers, SDK-wide tiers, subpath rollups, top categories.
-
-| Next question | Proposed answer | Source |
-|---------------|-----------------|--------|
-| Largest namespace? | `largest ns: runtime (18 symbols)` | `namespaces[]` |
-| Largest source module? | `largest module: …/commands/index.ts (22 edges)` | `edges[]` |
-| Median exports per module? | `median 4 exports/module (12 modules)` | `edges` grouped |
-| Any unclassified? | Already in tier counts | `summary.root` |
-
-**Placement:** Dim block before footer; JSON `data.insights`.
-
-**Complexity:** Low.
-
-**Risks:** Median obscure for small SDKs — hide when &lt;3 modules.
-
----
-
-### `diff [range]`
-
-**Primary output:** Tier deltas, added/removed flats, violations.
-
-| Next question | Proposed answer | Source |
-|---------------|-----------------|--------|
-| Biggest source module change? | `largest module delta: +5 edges in …/runtime/` | diff edge counts |
-| Largest namespace change? | `namespace analysis: +3 symbols` | namespace sets |
-| Tier movement? | `stable +2 · advanced −1` | `summaryDelta` |
-| New advanced APIs? | `new advanced: foo, bar` (top 3) | `right.symbols` |
-| Removed APIs? | top 3 names in footer if truncated list | `diff.removed` |
-
-**Placement:** After added/removed sections; respect Phase A `--top` with “+N more in footer insight”.
-
-**Complexity:** Medium.
-
-**Dependencies:** `diffSnapshots` extension for module/namespace deltas (shared with Timeline B3).
-
----
-
-### `validate`
-
-**Primary output:** Pass/fail, violations, notes.
-
-| Next question | Proposed answer | Source |
-|---------------|-----------------|--------|
-| Largest unclassified module? | `hot spot: …/internal/foo.ts (4 unclassified)` | symbols grouped by `sourceModule` |
-| Largest offending namespace? | `namespace experimental: 3 unclassified` | `namespaces` + symbols |
-| Worst subpath? | Already partially in violations | `summary.subpaths` |
-
-**Placement:** Only on **failure** or `-v`; avoid noise on green CI.
-
-**Complexity:** Low.
-
-**Risks:** Actionable text must cite config fix (`tiers.stable.exact`).
-
----
+## Per-command plan (remaining)
 
 ### `graph [ref]`
 
@@ -127,22 +89,6 @@ If data requires a new git fetch or second snapshot, either:
 
 ---
 
-### `trend`
-
-**Primary output:** Per-tag flat/stable/adv/int table.
-
-| Next question | Proposed answer | Source |
-|---------------|-----------------|--------|
-| Fastest growth tag pair? | `largest jump: v1.0.0→v1.1.0 (+14 flat)` | consecutive rows |
-| Stable ratio trend? | `stable %: 72% → 81%` | rollups |
-| Regression tag? | tag where flat dropped most | row deltas |
-
-**Placement:** After Δ footer line (extends existing first→last Δ).
-
-**Complexity:** Low.
-
----
-
 ### `init`
 
 **Primary output:** Config written / skipped.
@@ -158,29 +104,12 @@ If data requires a new git fetch or second snapshot, either:
 
 ---
 
-## Architecture considerations
+## Architecture (shared)
 
-### Shared insights module
-
-`packages/core/src/insights/` (or `shared/insights.ts`):
-
-```ts
-computeInventoryInsights(snapshot): InventoryInsights
-computeDiffInsights(left, right, diff): DiffInsights
-// etc.
-```
-
-- Pure functions over snapshots.
-- No I/O.
-- Unit-tested against dogfood `inventory.full.json` fixture.
-
-### Rendering
-
-- `printInsightsBlock(insights, { top })` in logger — consistent dim prefix `       ◇ ` or reuse summary style.
+- Pure functions in `packages/core/src/insights/`.
+- `printInsightsBlock` in logger — consistent dim prefix `◇`.
 - JSON: always include `data.insights` object (additive).
-- Policy: suppress under `--quiet`? **No** — insights are primary value; suppress only under `--silent` / `--json` optional key.
-
-### Footer vs body
+- Policy: suppress only under `--silent` (not `--quiet`).
 
 | Layer | Content |
 |-------|---------|
@@ -194,7 +123,7 @@ computeDiffInsights(left, right, diff): DiffInsights
 
 | Phase | Provides |
 |-------|----------|
-| Phase A | Truncation + “see --full” hints |
+| Phase A (shipped) | Truncation + “see --full” hints |
 | Phase B | Timeline summaries |
 | Phase C | Graph analytics |
 | Phase D | Optional trace when insights look wrong |
@@ -220,12 +149,7 @@ computeDiffInsights(left, right, diff): DiffInsights
 
 ---
 
-## Recommended execution order
+## Remaining execution order
 
-1. **Shared insights module** + unit tests.
-2. **inventory** + **validate** (single-snapshot, low risk).
-3. **diff** + **trend** (delta logic).
-4. **graph** (after Phase C analytics).
-5. **timeline** (merge with Phase B4 summary).
-
-Estimated: **2 PRs** parallel to Phase B/C where noted.
+1. **graph** (after Phase C analytics).
+2. **timeline** (merge with Phase B4 summary).
