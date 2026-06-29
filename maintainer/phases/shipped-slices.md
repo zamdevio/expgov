@@ -344,7 +344,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ## Explicitly not shipped (do not assume present)
 
-- [ ] Phase **E** — rich command metadata (inline “next question” hints)
+- [ ] Phase **E** — rich command metadata (inline “next question” hints) — **inventory + validate shipped**; diff/trend/graph/timeline pending
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

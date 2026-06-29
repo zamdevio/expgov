@@ -1,3 +1,4 @@
+import { computeInventoryInsights } from '../../insights/index.js';
 import { VERBOSE_INVENTORY_ROW_PREFIX } from '../../shared/constants/inventory.js';
 import { boldDim, style, tierStyle } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../types/cache/index.js';
@@ -27,6 +28,7 @@ import {
   canEmitVerboseReport,
 } from '../report.js';
 import { printSdkWideTiers, printTierRollupLines } from './tierRollup.js';
+import { printInsightsBlock } from './insights.js';
 
 function formatSubpathRollupLine(sp: SubpathRollup): string {
   const tierParts = [
@@ -92,6 +94,8 @@ export function printInventoryReport(input: {
     }
     logListTruncation(topCategories.hiddenCount);
   }
+
+  printInsightsBlock(computeInventoryInsights(snapshot).lines);
 }
 
 export function printVerboseInventory(snapshot: InventorySnapshot, listView?: ListViewOptions): void {

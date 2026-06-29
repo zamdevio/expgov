@@ -2,6 +2,7 @@ import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { formatGitRunStats, resetGitRunStats, resolveSourceRef } from '../git/index.js';
 import { tierCountsFooterFields } from '../inventory/index.js';
+import { computeInventoryInsights } from '../insights/index.js';
 import { printInventoryReport, printVerboseInventory } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
@@ -13,6 +14,7 @@ export function runExportsInventory(options: InventoryCliOptions): void {
   const ref = resolveSourceRef(options.ref);
   const result = getSnapshot(ref, resolveCacheOptions({ noCache: options.noCache, force: options.force, profile: 'full' }));
   const root = result.snapshot.summary.root;
+  const insights = computeInventoryInsights(result.snapshot);
 
   if (getRunOptions().json) {
     finishCommand({
@@ -27,6 +29,7 @@ export function runExportsInventory(options: InventoryCliOptions): void {
           sha: result.snapshot.sha,
           summary: result.snapshot.summary,
           cache: result.cache,
+          insights,
         },
       },
     });

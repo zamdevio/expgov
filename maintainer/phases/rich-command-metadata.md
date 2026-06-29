@@ -1,6 +1,6 @@
 # Phase E — Rich Command Metadata
 
-**Status:** Planning only.
+**Status:** In progress — `inventory` + `validate` shipped; `diff` / `trend` / `graph` / `timeline` pending.
 
 **Companion:** [`commands.md`](./commands.md) · Phase A [`cli-dx-polish.md`](./cli-dx-polish.md) · Phase C [`graph-2.md`](./graph-2.md)
 

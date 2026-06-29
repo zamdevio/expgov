@@ -32,6 +32,10 @@ Snapshots for uncommitted state live under `.expgov/cache/__worktree__/`. expgov
 
 Commit/SHA refs use immutable per-SHA cache dirs — no `files.json` needed.
 
+### Insights (Phase E)
+
+Several commands append an **Insights** block before the footer — answers to the likely next question (largest module, hot spots on validate failure, etc.). Shown in human output (including `--quiet`); available as `data.insights` in `--json`. Suppressed under `--silent`.
+
 ---
 
 ## `init`

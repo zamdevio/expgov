@@ -8,6 +8,7 @@ import {
 } from '../context/index.js';
 import { formatTierCountsNote, sumSdkTierCounts, tierCountsFooterFields } from '../inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
+import { computeValidateInsights } from '../insights/index.js';
 import { policyViolatesRootFlat } from '../config/tierPolicy.js';
 import { printValidateReport } from '../logger/index.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
@@ -162,6 +163,12 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   }
 
   const passed = violations.length === 0;
+  const insights = computeValidateInsights(snapshot, {
+    passed,
+    verbose: options.verbose,
+    internalFlatCount: internalFlatSymbols.length,
+    advancedFlatCount: advancedFlatSymbols.length,
+  });
   const issues: Issue[] = violations.map((message) => ({
     severity: 'error',
     code: 'expgov.validate.violation',
@@ -187,6 +194,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
           advancedFlatSymbols,
           internalFlatSymbols,
           sdkTiers,
+          insights,
         },
       },
     });
@@ -200,6 +208,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     verbose: options.verbose,
     advancedFlatSymbols,
     internalFlatSymbols,
+    insights,
   });
 
   finishCommand({

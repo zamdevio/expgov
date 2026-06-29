@@ -101,7 +101,11 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
     "ref": "worktree",
     "sha": "__worktree__",
     "summary": { "root": { "flat": 80, "namespaces": 0 }, "sdkTiers": { "stable": 80 } },
-    "cache": { "status": "hit" }
+    "cache": { "status": "hit" },
+    "insights": {
+      "lines": [{ "key": "largest-module", "text": "largest module: … (N edges, M flats)" }],
+      "largestModule": { "path": "packages/core/src/…", "count": 12 }
+    }
   },
   "issues": [],
   "meta": { "apiVersion": "1", "command": "inventory", "durationMs": 12 }

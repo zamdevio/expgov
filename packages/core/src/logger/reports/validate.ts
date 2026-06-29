@@ -1,7 +1,8 @@
-
+import { computeValidateInsights } from '../../insights/index.js';
 import { boldDim, style } from '../../runtime/style.js';
 
 import { logLine } from '../report.js';
+import { printInsightsBlock } from './insights.js';
 
 export function printValidateReport(input: {
   passed: boolean;
@@ -10,8 +11,9 @@ export function printValidateReport(input: {
   verbose?: boolean;
   advancedFlatSymbols?: string[];
   internalFlatSymbols?: string[];
+  insights?: ReturnType<typeof computeValidateInsights>;
 }): void {
-  const { passed, violations, notes, verbose, advancedFlatSymbols = [], internalFlatSymbols = [] } = input;
+  const { passed, violations, notes, verbose, advancedFlatSymbols = [], internalFlatSymbols = [], insights } = input;
   const noteLimit = verbose ? notes.length : 5;
 
   if (!passed) {
@@ -22,6 +24,7 @@ export function printValidateReport(input: {
       logLine(boldDim('       Notes'));
       for (const note of notes) logLine(`       ${style.dim('·')} ${note}`);
     }
+    if (insights) printInsightsBlock(insights.lines);
     return;
   }
 
@@ -44,4 +47,6 @@ export function printValidateReport(input: {
     logLine(boldDim('       Advanced-tier flat on root'));
     for (const name of advancedFlatSymbols.sort()) logLine(`       ${style.warn('·')} ${name}`);
   }
+
+  if (insights) printInsightsBlock(insights.lines);
 }
