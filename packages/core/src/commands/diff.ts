@@ -1,6 +1,7 @@
 import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { diffSnapshots } from '../format/index.js';
+import { computeDiffInsights } from '../insights/index.js';
 import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
@@ -15,6 +16,7 @@ export function runExportsDiff(options: DiffCliOptions): void {
   const leftResult = getSnapshot(left, cacheOpts);
   const rightResult = getSnapshot(right, cacheOpts);
   const diff = diffSnapshots(leftResult.snapshot, rightResult.snapshot);
+  const insights = computeDiffInsights(leftResult.snapshot, rightResult.snapshot, diff);
 
   if (getRunOptions().json) {
     finishCommand({
@@ -24,7 +26,7 @@ export function runExportsDiff(options: DiffCliOptions): void {
       json: {
         kind: 'diff',
         ok: true,
-        data: { rangeLabel, diff: diff.summaryDelta, added: diff.added, removed: diff.removed },
+        data: { rangeLabel, diff: diff.summaryDelta, added: diff.added, removed: diff.removed, insights },
       },
     });
     return;

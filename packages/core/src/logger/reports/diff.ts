@@ -1,3 +1,4 @@
+import { computeDiffInsights } from '../../insights/index.js';
 import { boldDim, style } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../types/cache/index.js';
 import type { InventorySnapshot } from '../../types/inventory/index.js';
@@ -6,6 +7,7 @@ import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import type { TierCounts } from '../../types/inventory/snapshot.js';
 import { formatDelta, logLine, logListTruncation, padLabel, printMeta, snapshotShaLabel, cacheLabel, canEmitVerboseReport } from '../report.js';
+import { printInsightsBlock } from './insights.js';
 
 function printCustomTierDeltas(left: TierCounts, right: TierCounts): void {
   const names = new Set([...Object.keys(left.custom), ...Object.keys(right.custom)]);
@@ -71,6 +73,8 @@ export function printDiffReport(input: {
   } else {
     logLine(`       ${style.ok('✓')} ${style.dim('No tier violations')}`);
   }
+
+  printInsightsBlock(computeDiffInsights(left.snapshot, right.snapshot, diff).lines);
 }
 
 export function printDiffVerbose(input: {

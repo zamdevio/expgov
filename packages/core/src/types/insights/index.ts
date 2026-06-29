@@ -9,6 +9,17 @@ export interface ModuleRef {
   count: number;
 }
 
+export interface ModuleDeltaRef {
+  path: string;
+  delta: number;
+}
+
+export interface TagPairDelta {
+  from: string;
+  to: string;
+  delta: number;
+}
+
 export interface InventoryInsights {
   lines: InsightLine[];
   largestModule?: ModuleRef;
@@ -21,4 +32,18 @@ export interface ValidateInsights {
   lines: InsightLine[];
   hottestUnclassifiedModule?: ModuleRef;
   worstSubpath?: { npmSubpath: string; unclassified: number };
+}
+
+export interface DiffInsights {
+  lines: InsightLine[];
+  largestModuleDelta?: ModuleDeltaRef;
+  tierMovement?: Record<string, number>;
+}
+
+export interface TrendInsights {
+  lines: InsightLine[];
+  largestJump?: TagPairDelta;
+  largestDrop?: TagPairDelta;
+  stableRatioFirst?: number;
+  stableRatioLast?: number;
 }

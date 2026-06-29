@@ -1,10 +1,11 @@
-
 import { boldDim, style } from '../../runtime/style.js';
 
+import { computeTrendInsights } from '../../insights/index.js';
 import type { CacheStatus } from '../../types/cache/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import { logLine, logListTruncation, padLabel, printMeta } from '../report.js';
+import { printInsightsBlock } from './insights.js';
 
 export function printTrendReport(input: {
   rows: {
@@ -73,4 +74,7 @@ export function printTrendReport(input: {
     }
     logListTruncation(limited.hiddenCount);
   }
+
+  const insights = computeTrendInsights(input.rows);
+  if (insights) printInsightsBlock(insights.lines);
 }

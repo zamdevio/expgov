@@ -1,6 +1,7 @@
 import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { listVersionTags, resolveSourceRef } from '../git/index.js';
+import { computeTrendInsights } from '../insights/index.js';
 import { printTrendReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
@@ -24,6 +25,8 @@ export function runExportsTrend(options: TrendCliOptions = {}): void {
     };
   });
 
+  const insights = computeTrendInsights(rows);
+
   if (getRunOptions().json) {
     finishCommand({
       command: 'trend',
@@ -32,7 +35,7 @@ export function runExportsTrend(options: TrendCliOptions = {}): void {
       json: {
         kind: 'trend',
         ok: true,
-        data: { tagLimit: options.tagLimit ?? 12, rows },
+        data: { tagLimit: options.tagLimit ?? 12, rows, insights },
       },
     });
     return;
