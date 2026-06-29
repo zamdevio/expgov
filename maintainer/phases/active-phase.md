@@ -46,6 +46,7 @@ Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parent
 | Auto-fix PR bot | Needs stable `suggest` output + policy; out of scope for dry-run CLI |
 | JSON config (`expgov.config.json`) | Config-as-code only — see [`../systems/principles.md`](../systems/principles.md) |
 | Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
+| Source profiles (H) | `.ts` sufficient for v1 — see [`sourceProfiles.md`](./sourceProfiles.md) |
 
 ---
 

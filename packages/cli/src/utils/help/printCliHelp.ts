@@ -1,24 +1,8 @@
 import type { Command } from 'commander';
 
-import { getRunOptions, style } from '@expgov/core';
+import { getRunOptions } from '@expgov/core';
 
-const WORKFLOW_LINES = [
-  'New export surface     init → inventory → validate',
-  'Release review         trend → diff v1..v2 → validate',
-  'API archaeology        timeline @3m → diff <sha>..HEAD',
-  'Dependency map         graph → inventory -v',
-] as const;
-
-function printWorkflowAppendix(): void {
-  console.log('');
-  console.log(style.bold(style.magenta('Workflows:')));
-  for (const line of WORKFLOW_LINES) {
-    console.log(`  ${style.dim(line)}`);
-  }
-  console.log('');
-}
-
-/** Commander `-h` output; root help appends workflow cheat sheet. */
+/** Delegate to Commander outputHelp (root Workflows appendix lives in configureCliHelp.formatHelp). */
 export function printCliHelp(program: Command, topic?: string): void {
   const run = getRunOptions();
   if (run.json || run.silent) return;
@@ -27,7 +11,6 @@ export function printCliHelp(program: Command, topic?: string): void {
 
   if (!normalized || normalized === 'all' || normalized === 'help') {
     program.outputHelp();
-    printWorkflowAppendix();
     return;
   }
 
@@ -38,5 +21,4 @@ export function printCliHelp(program: Command, topic?: string): void {
   }
 
   program.outputHelp();
-  printWorkflowAppendix();
 }

@@ -4,6 +4,7 @@ import { CLI_NAME, CLI_ROOT_TAGLINE } from '../../constants/cli.js';
 import { formatBoxHeader, style } from '@expgov/core';
 import { formatCommandHelpExtras } from './commandHelp.js';
 import { styleCommandHelpTerm } from './term.js';
+import { formatWorkflowAppendix } from './workflowAppendix.js';
 
 const SECTION_HEADER = /^(Options|Commands|Arguments|Global Options|Examples|Related):$/;
 const HELP_ROW = /^(\s{2})(.+?)(\s{2,})(.*)$/;
@@ -113,7 +114,6 @@ const COMMAND_SUBTITLES: Record<string, string> = {
   timeline: 'commits that changed the root export barrel',
   graph: 're-export governance map',
   version: 'CLI and SDK versions',
-  help: 'command usage reference',
 };
 
 export function configureCliHelp(program: Command): void {
@@ -127,7 +127,9 @@ export function configureCliHelp(program: Command): void {
       if (opts.json || opts.silent) return colored;
       const title = toolDisplayTitle(cmd);
       const subtitle = COMMAND_SUBTITLES[cmd.name()] ?? CLI_ROOT_TAGLINE;
-      return `\n${formatBoxHeader(title, subtitle)}\n\n${colored}`;
+      let out = `\n${formatBoxHeader(title, subtitle)}\n\n${colored}`;
+      if (!cmd.parent) out += formatWorkflowAppendix();
+      return out;
     },
   });
 }
