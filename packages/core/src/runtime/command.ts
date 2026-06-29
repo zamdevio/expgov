@@ -1,11 +1,12 @@
 import process from 'node:process';
 
 import { maybeEmitCacheGitignoreTip } from '../git/gitignore-tip.js';
-import { emitCommandFooter, type CommandFooterSummary } from './footer.js';
-import { emitJsonResult } from './timer.js';
-import { startCommandTimer, type CommandTimer } from './timer.js';
+import { emitCommandFooter } from './footer.js';
+import { emitJsonResult, startCommandTimer } from './timer.js';
 import { getRunOptions } from './runOptions.js';
-import type { CommandStatus } from './types.js';
+import type { CommandFooterSummary } from '../types/runtime/footer.js';
+import type { CommandStatus } from '../types/runtime/status.js';
+import type { CommandTimer } from '../types/runtime/timer.js';
 import type { Issue } from '../types/json/envelope.js';
 
 export function beginCommand(command: string): CommandTimer {

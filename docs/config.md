@@ -23,7 +23,10 @@ export default defineConfig({
     },
   },
   tsconfig: 'tsconfig.json',
-  cacheDir: '.expgov/cache',
+  cache: {
+    enabled: true,
+    dir: '.expgov/cache',
+  },
   tiers: {
     stable: {
       exact: ['RESULT_API_VERSION'],
@@ -50,7 +53,7 @@ Run `expgov init` to generate a working scaffold for your layout.
 | `core.rootBarrel` | Root barrel file (repo-relative path) |
 | `core.subpaths` | npm export subpath → source entry (for SDK-wide rollups) |
 | `tsconfig` | Root tsconfig for path mapping checks |
-| `cacheDir` | Snapshot cache root (default `.expgov/cache`) |
+| `cache` | Snapshot cache — `true` / `false` or `{ enabled?, dir? }` (default enabled, dir `.expgov/cache`) |
 | `git.tagPattern` | Version tag glob for `trend` (default `v*`) |
 | `git.timelineBarrelPath` | Barrel path for `timeline` git log scope |
 | `tiers` | Export classification buckets — see below |
@@ -130,4 +133,4 @@ export function myPublicApi() {}
 | `-C, --cwd` | Project root |
 | `--config` | Config file path |
 | `--package-name` | Override `packageName` |
-| `--cache-dir` | Override `cacheDir` |
+| `--cache-dir` | Override `cache.dir` |

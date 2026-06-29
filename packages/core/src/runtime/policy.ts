@@ -1,4 +1,4 @@
-import type { RunOptions } from './runOptions.js';
+import type { RunOptions } from '../types/runtime/run.js';
 
 export function canPrintCommandBanner(run: RunOptions): boolean {
   return !run.json && !run.silent;

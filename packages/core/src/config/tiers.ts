@@ -1,46 +1,17 @@
 import type { TierBucket, TierRulesConfig } from '../types/config/tiers.js';
+import type { PrefixMatcher, ResolvedTierBucket, ResolvedTierRules } from '../types/config/prefix.js';
+import {
+  DEFAULT_ADVANCED_PREFIXES,
+  DEFAULT_INTERNAL_PREFIXES,
+  DEFAULT_STABLE_PREFIXES,
+  REGEX_METACHAR,
+} from '../shared/constants/tiers.js';
 
-export type PrefixMatcher =
-  | { kind: 'prefix'; value: string }
-  | { kind: 'regex'; pattern: RegExp };
-
-export interface ResolvedTierBucket {
-  exact: ReadonlySet<string>;
-  matchers: readonly PrefixMatcher[];
-}
-
-export interface ResolvedTierRules {
-  stable: ResolvedTierBucket;
-  internal: ResolvedTierBucket;
-  advanced: ResolvedTierBucket;
-}
-
-const REGEX_METACHAR = /[\^$[\]()+?|\\]/;
-
-export const DEFAULT_STABLE_PREFIXES = [
-  'run',
-  'build',
-  'emit',
-  'get',
-  'set',
-  'reset',
-  'is',
-  'format',
-  'resolve',
-  'walk',
-  'directory',
-  'normalize',
-  'rethrow',
-  'noop',
-] as const;
-
-export const DEFAULT_INTERNAL_PREFIXES = ['^internal[A-Z_]', 'Internal$'] as const;
-export const DEFAULT_ADVANCED_PREFIXES = [
-  '^experimental[A-Z_]',
-  '^beta[A-Z_]',
-  '^advanced[A-Z_]',
-  'Unsafe$',
-] as const;
+export {
+  DEFAULT_ADVANCED_PREFIXES,
+  DEFAULT_INTERNAL_PREFIXES,
+  DEFAULT_STABLE_PREFIXES,
+} from '../shared/constants/tiers.js';
 
 /** Compile a config prefix entry as literal startsWith or RegExp. */
 export function compilePrefixMatcher(source: string): PrefixMatcher {

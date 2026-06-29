@@ -1,8 +1,8 @@
 import { VERBOSE_INVENTORY_ROW_PREFIX } from '../../shared/constants/inventory.js';
 import { boldDim, style, tierStyle } from '../../runtime/style.js';
-import type { SnapshotResult } from '../../cache/index.js';
-import type { SourceRef } from '../../git/index.js';
-import type { InventorySnapshot, SubpathRollup } from '../../inventory/index.js';
+import type { SnapshotResult } from '../../types/cache/index.js';
+import type { SourceRef } from '../../types/git/index.js';
+import type { InventorySnapshot, SubpathRollup } from '../../types/inventory/index.js';
 import { sumSdkTierCounts } from '../../inventory/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
@@ -16,8 +16,7 @@ import {
   formatVerboseInventoryHeader,
 } from '../format.js';
 import {
-  cacheLabel,
-  inventoryCacheDirDisplay,
+  formatCacheMetaLine,
   logLine,
   logListSection,
   logListTruncation,
@@ -62,7 +61,7 @@ export function printInventoryReport(input: {
   printMeta({
     ref: refLine(ref, snapshot),
     barrel: style.dim(barrelPath),
-    cache: `${cacheLabel(cache)} ${style.dim(`· ${inventoryCacheDirDisplay(snapshot.sha)}`)}`,
+    cache: formatCacheMetaLine(cache, snapshot.sha),
     generated: style.dim(new Date(snapshot.generatedAt).toISOString()),
     commit: snapshot.git?.commitDate ? style.dim(snapshot.git.commitDate) : undefined,
     edges: style.dim(String(snapshot.edges.length)),

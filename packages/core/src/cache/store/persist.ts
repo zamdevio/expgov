@@ -3,14 +3,14 @@ import { mkdirSync } from 'node:fs';
 import {
   buildLightSnapshot,
   buildSnapshot,
-  type InventorySnapshot,
 } from '../../inventory/index.js';
+import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
 import { cacheDirForSha } from '../../paths.js';
 import { writePathForProfile } from './files.js';
 import { writeJsonAtomic } from './io.js';
 import { loadCacheMeta, touchMetaEntry } from './meta.js';
-import type { CacheMeta, CacheProfile } from './types.js';
-import type { SourceReader } from '../../inventory/source.js';
+import type { CacheMeta, CacheProfile } from '../../types/cache/store.js';
+import type { SourceReader } from '../../types/inventory/source.js';
 
 export function persistSnapshot(
   sha: string,

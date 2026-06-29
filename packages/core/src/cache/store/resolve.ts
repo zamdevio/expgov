@@ -1,12 +1,15 @@
-import type { InventorySnapshot } from '../../inventory/index.js';
-import type { SourceRef } from '../../git/index.js';
+import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
+import type { SourceRef } from '../../types/git/index.js';
 import { getCommitSnapshot } from './commit.js';
 import { loadCacheMeta } from './meta.js';
-import type { CacheOptions, SnapshotResult } from './types.js';
+import type { CacheOptions, SnapshotResult } from '../../types/cache/store.js';
 import { getWorktreeSnapshot } from './worktree.js';
+import { shouldReadCache, shouldWriteCache } from './mode.js';
 
 export function getSnapshot(ref: SourceRef, options: CacheOptions = {}): SnapshotResult {
-  loadCacheMeta();
+  if (shouldReadCache(options) || shouldWriteCache(options)) {
+    loadCacheMeta();
+  }
   if (ref.kind === 'worktree') return getWorktreeSnapshot(options);
   return getCommitSnapshot(ref, options);
 }

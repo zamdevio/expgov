@@ -1,10 +1,10 @@
 
 import { style } from '../../runtime/style.js';
 
-import type { CacheStatus } from '../../cache/index.js';
+import type { CacheStatus } from '../../types/cache/index.js';
 import { getRootIndexRepoPath } from '../../paths.js';
 import { formatSubject } from '../format.js';
-import { logLine, printMeta } from '../report.js';
+import { logLine, logListTruncation, printMeta } from '../report.js';
 
 export function printTimelineReport(input: {
   range: { label: string; since: string; until: string };
@@ -17,6 +17,7 @@ export function printTimelineReport(input: {
     rollup: { rootFlat: number; stable: number };
     delta: number | null;
   }[];
+  hiddenCount?: number;
   verbose?: boolean;
   warmStats?: { warmed: number; totalMs: number };
   gitStats?: string;
@@ -59,4 +60,5 @@ export function printTimelineReport(input: {
       `       ${row.date.padEnd(12)} ${row.sha.slice(0, 7).padEnd(9)} ${String(row.rollup.rootFlat).padStart(5)} ${deltaStr}  ${subject}`,
     );
   }
+  logListTruncation(input.hiddenCount ?? 0);
 }

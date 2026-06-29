@@ -1,9 +1,5 @@
+import type { GitCommitMeta } from '../types/git/commit-meta.js';
 import { runGit } from './run.js';
-
-export interface GitCommitMeta {
-  commitDate: string;
-  authorDate?: string;
-}
 
 export function gitCommitMeta(sha: string): GitCommitMeta | null {
   const result = runGit(['show', '-s', '--format=%cI|%aI', sha]);

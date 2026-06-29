@@ -1,9 +1,4 @@
-export type ExportErrorCode =
-  | 'unknown_ref'
-  | 'invalid_range'
-  | 'barrel_missing'
-  | 'usage'
-  | 'validate_failed';
+import type { ExportErrorCode } from '../types/errors/codes.js';
 
 export class ExportError extends Error {
   readonly code: ExportErrorCode;

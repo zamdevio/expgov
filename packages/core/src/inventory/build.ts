@@ -1,14 +1,15 @@
 import { packageNamePathPrefix } from '../context/index.js';
 import { classifyExportCategory, targetSubpathFor, tierForNamespace } from './categories.js';
 import { fingerprintSource } from './fingerprint.js';
-import { parseBarrelExports, type ParsedExport } from './parse-barrel.js';
+import { parseBarrelExports } from './parse-barrel.js';
+import type { ParsedExport } from '../types/inventory/parse.js';
 import { resolveSymbolKind } from './resolve-symbol.js';
 import {
   publishedSubpathBarrels,
   readModule,
   readModuleAtPath,
-  type SourceReader,
 } from './source.js';
+import type { SourceReader } from '../types/inventory/source.js';
 import { classifySymbolTier, classifySymbolTierWithProvenance, resolveDeclaredTierTag } from './tiers.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
 import { getRootIndexRepoPath } from '../paths.js';
@@ -22,7 +23,7 @@ import type {
   RootSummary,
   SubpathRollup,
   TierCounts,
-} from './types.js';
+} from '../types/inventory/snapshot.js';
 import { emptyTierCounts } from './tierCounts.js';
 
 function rollTier(counts: TierCounts, tier: InventorySymbol['tier']): void {

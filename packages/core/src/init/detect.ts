@@ -98,7 +98,7 @@ export function detectionToConfig(detection: InitDetection): ExpgovConfig {
     packageName: detection.packageName,
     core: detection.core,
     tsconfig: 'tsconfig.json',
-    cacheDir: DEFAULT_CACHE_DIR,
+    cache: { dir: DEFAULT_CACHE_DIR },
     git: {
       tagPattern: 'v*',
       timelineBarrelPath: detection.rootBarrel,

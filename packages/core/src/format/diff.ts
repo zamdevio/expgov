@@ -1,16 +1,7 @@
-import type { InventorySnapshot } from '../inventory/index.js';
+import type { InventorySnapshot } from '../types/inventory/index.js';
+import type { DiffResult } from '../types/format/diff.js';
 import { getProjectContext } from '../context/index.js';
 import { policyViolatesRootFlat } from '../config/tierPolicy.js';
-
-export interface DiffResult {
-  added: string[];
-  removed: string[];
-  summaryDelta: {
-    left: InventorySnapshot['summary'];
-    right: InventorySnapshot['summary'];
-  };
-  tierViolations: string[];
-}
 
 export function diffSnapshots(left: InventorySnapshot, right: InventorySnapshot): DiffResult {
   const leftNames = new Set(left.symbols.filter((s) => s.exportKind === 'flat').map((s) => s.name));

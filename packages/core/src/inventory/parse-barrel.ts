@@ -1,21 +1,6 @@
 import ts from 'typescript';
 
-import type { TsExportKind } from './types.js';
-
-export interface ParsedFlatExport {
-  name: string;
-  tsKind: TsExportKind;
-  exportKind: 'flat';
-  sourceSpecifier: string | null;
-}
-
-export interface ParsedNamespaceExport {
-  name: string;
-  exportKind: 'namespace';
-  sourceSpecifier: string | null;
-}
-
-export type ParsedExport = ParsedFlatExport | ParsedNamespaceExport;
+import type { ParsedExport } from '../types/inventory/parse.js';
 
 export function parseBarrelExports(source: string, fileName: string): ParsedExport[] {
   const sf = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);

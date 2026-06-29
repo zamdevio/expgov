@@ -23,7 +23,7 @@ export function maybePrintCommandBanner(cmd: Command): void {
   if (run.json || run.silent) return;
 
   const name = cmd.name();
-  if (!name) return;
+  if (!name || name === 'help') return;
 
   const subtitle = BANNER_SUBTITLES[name] ?? CLI_ROOT_TAGLINE;
   const title = name.charAt(0).toUpperCase() + name.slice(1);

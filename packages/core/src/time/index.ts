@@ -1,1 +1,1 @@
-export { parseTimelineRange, formatTimelineRangeHelp, type TimelineRange } from './ranges.js';
+export { parseTimelineRange, formatTimelineRangeHelp } from './ranges.js';

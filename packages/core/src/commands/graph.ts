@@ -1,26 +1,17 @@
-import type { GraphEdge, InventoryNamespace, InventorySnapshot } from '../inventory/index.js';
+import type { GraphEdge, InventoryNamespace, InventorySnapshot } from '../types/inventory/index.js';
 import { getSnapshot } from '../cache/index.js';
+import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { resolveSourceRef } from '../git/index.js';
 import { formatModuleEdgeProvenance } from '../logger/format.js';
 import { printGraphReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
-import { resolveListLimit } from '../shared/listing.js';
 import type { GraphCliOptions } from '../types/commands/cli.js';
-
-interface TargetSubpathGroup {
-  targetSubpath: string;
-  flat: number;
-  namespace: number;
-  modules: Map<string, number>;
-}
-
-interface ModuleGroup {
-  module: string;
-  edges: number;
-  symbols: string[];
-  edgeProvenance: string;
-}
+import type {
+  GraphModuleGroup,
+  GraphNamespaceRow,
+  GraphTargetSubpathGroup,
+} from '../types/commands/graph.js';
 
 function moduleEdgeKinds(edges: GraphEdge[], module: string): { hasFlatReexport: boolean; hasNamespaceReexport: boolean } {
   const moduleEdges = edges.filter((edge) => edge.toModule === module);
@@ -30,10 +21,10 @@ function moduleEdgeKinds(edges: GraphEdge[], module: string): { hasFlatReexport:
   };
 }
 
-function groupByTargetSubpath(snapshot: InventorySnapshot): TargetSubpathGroup[] {
-  const map = new Map<string, TargetSubpathGroup>();
+function groupByTargetSubpath(snapshot: InventorySnapshot): GraphTargetSubpathGroup[] {
+  const map = new Map<string, GraphTargetSubpathGroup>();
 
-  const touch = (targetSubpath: string): TargetSubpathGroup => {
+  const touch = (targetSubpath: string): GraphTargetSubpathGroup => {
     let group = map.get(targetSubpath);
     if (!group) {
       group = { targetSubpath, flat: 0, namespace: 0, modules: new Map() };
@@ -52,7 +43,7 @@ function groupByTargetSubpath(snapshot: InventorySnapshot): TargetSubpathGroup[]
   return [...map.values()].sort((a, b) => b.flat + b.namespace - (a.flat + a.namespace));
 }
 
-function topModules(edges: GraphEdge[], limit: number): ModuleGroup[] {
+function topModules(edges: GraphEdge[]): GraphModuleGroup[] {
   const map = new Map<string, { edges: number; symbols: string[] }>();
   for (const edge of edges) {
     const prev = map.get(edge.toModule) ?? { edges: 0, symbols: [] };
@@ -66,11 +57,10 @@ function topModules(edges: GraphEdge[], limit: number): ModuleGroup[] {
       ...data,
       edgeProvenance: formatModuleEdgeProvenance(moduleEdgeKinds(edges, module)),
     }))
-    .sort((a, b) => b.edges - a.edges)
-    .slice(0, limit);
+    .sort((a, b) => b.edges - a.edges);
 }
 
-function namespaceRows(namespaces: InventoryNamespace[]): { name: string; targetSubpath: string; module: string | null }[] {
+function namespaceRows(namespaces: InventoryNamespace[]): GraphNamespaceRow[] {
   return namespaces
     .map((ns) => ({ name: ns.name, targetSubpath: ns.targetSubpath, module: ns.sourceModule }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -79,15 +69,13 @@ function namespaceRows(namespaces: InventoryNamespace[]): { name: string; target
 export function runExportsGraph(options: GraphCliOptions = {}): void {
   const timer = beginCommand('graph');
   const ref = resolveSourceRef(options.ref);
-  const { snapshot, cache } = getSnapshot(ref, {
-    noCache: options.noCache,
-    force: options.force,
-    profile: 'full',
-  });
+  const { snapshot, cache } = getSnapshot(
+    ref,
+    resolveCacheOptions({ noCache: options.noCache, force: options.force, profile: 'full' }),
+  );
 
   const targetGroups = groupByTargetSubpath(snapshot);
-  const listLimit = resolveListLimit(options);
-  const top = topModules(snapshot.edges, listLimit);
+  const top = topModules(snapshot.edges);
   const namespaces = namespaceRows(snapshot.namespaces);
 
   if (getRunOptions().json) {

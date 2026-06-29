@@ -1,10 +1,10 @@
 import { boldDim, style } from '../../runtime/style.js';
-import type { SnapshotResult } from '../../cache/index.js';
-import type { InventorySnapshot } from '../../inventory/index.js';
-import type { DiffResult } from '../../format/diff.js';
+import type { SnapshotResult } from '../../types/cache/index.js';
+import type { InventorySnapshot } from '../../types/inventory/index.js';
+import type { DiffResult } from '../../types/format/diff.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
-import type { TierCounts } from '../../inventory/types.js';
+import type { TierCounts } from '../../types/inventory/snapshot.js';
 import { formatDelta, logLine, logListTruncation, padLabel, printMeta, snapshotShaLabel, cacheLabel, canEmitVerboseReport } from '../report.js';
 
 function printCustomTierDeltas(left: TierCounts, right: TierCounts): void {

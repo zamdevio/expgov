@@ -1,0 +1,48 @@
+# CI — build gate on every push and PR
+#
+# typecheck → test → build → madge:circular → expgov validate (dogfood)
+# Engineering map: maintainer/systems/README.md · Build gate in .cursor/rules
+
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: typecheck
+        run: pnpm typecheck
+
+      - name: test
+        run: pnpm test
+
+      - name: build
+        run: pnpm build
+
+      - name: madge circular
+        run: pnpm madge:circular
+
+      - name: expgov validate
+        run: node dist/cli.js validate

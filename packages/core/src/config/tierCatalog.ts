@@ -1,42 +1,14 @@
-import {
-  DEFAULT_ADVANCED_PREFIXES,
-  DEFAULT_INTERNAL_PREFIXES,
-  DEFAULT_STABLE_PREFIXES,
-  resolveBucket,
-  type ResolvedTierBucket,
-} from './tiers.js';
+import { resolveBucket } from './tiers.js';
 import { resolveBucketPolicy } from './tierPolicy.js';
-import { resolveTierTagPolicy, type ResolvedTierTagPolicy } from './tierTag.js';
+import { resolveTierTagPolicy } from './tierTag.js';
+import {
+  BUILTIN_BUCKET_NAMES,
+  BUILTIN_DEFAULT_PREFIXES,
+  DEFAULT_BUCKET_PRECEDENCE,
+  TIER_TAG_CONFIG_KEY,
+} from '../shared/constants/tiers.js';
+import type { ResolvedTierCatalog, ResolvedTierEntry } from '../types/config/catalog.js';
 import type { TierBucket, TierRulesConfig, TierTagConfig } from '../types/config/tiers.js';
-import type { TierPolicy } from '../types/inventory/tiers.js';
-
-const BUILTIN_BUCKET_NAMES = ['stable', 'internal', 'advanced'] as const;
-const TAG_CONFIG_KEY = 'tag';
-
-const BUILTIN_DEFAULT_PREFIXES: Record<(typeof BUILTIN_BUCKET_NAMES)[number], readonly string[]> = {
-  stable: DEFAULT_STABLE_PREFIXES,
-  internal: DEFAULT_INTERNAL_PREFIXES,
-  advanced: DEFAULT_ADVANCED_PREFIXES,
-};
-
-const DEFAULT_PRECEDENCE: Record<string, number> = {
-  internal: 10,
-  advanced: 20,
-  stable: 100,
-};
-
-export interface ResolvedTierEntry {
-  name: string;
-  policy: TierPolicy;
-  bucket: ResolvedTierBucket;
-  precedence: number;
-}
-
-export interface ResolvedTierCatalog {
-  tag: ResolvedTierTagPolicy;
-  entries: readonly ResolvedTierEntry[];
-  byName: ReadonlyMap<string, ResolvedTierEntry>;
-}
 
 function isTierTagConfig(value: TierBucket | TierTagConfig | undefined): value is TierTagConfig {
   if (!value || typeof value !== 'object') return false;
@@ -54,7 +26,7 @@ function collectBucketConfigs(config?: TierRulesConfig): Map<string, TierBucket>
   if (!config) return buckets;
 
   for (const [key, value] of Object.entries(config)) {
-    if (key === TAG_CONFIG_KEY || buckets.has(key)) continue;
+    if (key === TIER_TAG_CONFIG_KEY || buckets.has(key)) continue;
     if (value && typeof value === 'object' && !isTierTagConfig(value)) {
       buckets.set(key, value);
     }
@@ -67,7 +39,7 @@ function resolvePrecedence(name: string, bucket: TierBucket, customIndex: number
   if (typeof bucket.precedence === 'number' && Number.isFinite(bucket.precedence)) {
     return bucket.precedence;
   }
-  if (name in DEFAULT_PRECEDENCE) return DEFAULT_PRECEDENCE[name]!;
+  if (name in DEFAULT_BUCKET_PRECEDENCE) return DEFAULT_BUCKET_PRECEDENCE[name]!;
   return 50 + customIndex;
 }
 

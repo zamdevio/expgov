@@ -1,4 +1,4 @@
-import type { InventorySnapshot } from '../../inventory/index.js';
+import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../../shared/constants/cache.js';
 
 export function isValidSummary(value: unknown): value is InventorySnapshot['summary'] {

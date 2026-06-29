@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 import { buildSnapshot } from '../../inventory/index.js';
+import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
 import { fingerprintSource } from '../../inventory/fingerprint.js';
 import { createWorktreeReader } from '../../inventory/source.js';
 import { WORKTREE_CACHE_KEY } from '../../shared/constants/cache.js';
@@ -15,7 +16,7 @@ import {
   parseAndPersistFull,
   persistTimelineSnapshot,
 } from './persist.js';
-import type { CacheOptions, SnapshotResult } from './types.js';
+import type { CacheOptions, SnapshotResult } from '../../types/cache/store.js';
 import { rebuildCacheStatus, shouldReadCache, shouldWriteCache } from './mode.js';
 import { isFullSnapshot, isTimelineSnapshot } from './validation.js';
 
@@ -23,7 +24,7 @@ function readWorktreeSource(): string {
   return readFileSync(getRootIndexAbsPath(), 'utf8');
 }
 
-function worktreeFingerprintMatches(snapshot: import('../../inventory/index.js').InventorySnapshot, fingerprint: string): boolean {
+function worktreeFingerprintMatches(snapshot: InventorySnapshot, fingerprint: string): boolean {
   if (!snapshot.sourceFingerprint) return true;
   return snapshot.sourceFingerprint === fingerprint;
 }

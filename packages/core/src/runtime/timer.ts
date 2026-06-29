@@ -1,13 +1,9 @@
 import { emitLog } from './emitter.js';
-import type { CommandStatus } from '../runtime/types.js';
+import type { CommandTimer } from '../types/runtime/timer.js';
+import type { CommandStatus } from '../types/runtime/status.js';
 import { getRunOptions } from './runOptions.js';
 import { buildCliJsonEnvelope, stringifyEnvelope } from '../shared/result/cliJson.js';
 import type { Issue } from '../types/json/envelope.js';
-
-export interface CommandTimer {
-  end(status: CommandStatus, exitCode?: number): number;
-  elapsed(): number;
-}
 
 export function startCommandTimer(_command: string): CommandTimer {
   const t0 = performance.now();

@@ -1,4 +1,5 @@
 import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
+import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { listVersionTags, resolveSourceRef } from '../git/index.js';
 import { printTrendReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
@@ -11,7 +12,10 @@ export function runExportsTrend(options: TrendCliOptions = {}): void {
 
   const rows = tags.map((tag) => {
     const ref = resolveSourceRef(tag);
-    const { snapshot, cache } = getSnapshot(ref, { noCache: options.noCache, force: options.force });
+    const { snapshot, cache } = getSnapshot(
+      ref,
+      resolveCacheOptions({ noCache: options.noCache, force: options.force }),
+    );
     return {
       tag,
       sha: ref.kind === 'commit' ? ref.sha : snapshot.sha,

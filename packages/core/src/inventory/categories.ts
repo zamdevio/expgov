@@ -1,17 +1,15 @@
-import type { ExportCategory } from './types.js';
+import type { ExportCategory } from '../types/inventory/snapshot.js';
 import type { StabilityTier } from '../types/inventory/index.js';
+import { CATEGORY_CONTEXT, CATEGORY_RUN_ENTRY } from '../shared/constants/inventory.js';
 import { classifySymbolTier } from './tiers.js';
-
-const RUN_ENTRY = /^run[A-Z]/;
-const CONTEXT = /^create[A-Z].*Context$/;
 
 export function classifyExportCategory(name: string, tsKind: 'value' | 'type', exportKind: 'flat' | 'namespace'): ExportCategory {
   if (exportKind === 'namespace') return 'namespace-mirror';
   if (tsKind === 'type') return 'type';
   if (name.startsWith('ISSUE_')) return 'issues';
-  if (RUN_ENTRY.test(name)) return 'run';
+  if (CATEGORY_RUN_ENTRY.test(name)) return 'run';
   if (name === 'defineConfig' || name === 'loadConfig' || name.startsWith('resolveConfig')) return 'config';
-  if (CONTEXT.test(name)) return 'context';
+  if (CATEGORY_CONTEXT.test(name)) return 'context';
 
   const tier = classifySymbolTier(name);
   if (tier === 'advanced') return 'advanced';

@@ -1,22 +1,27 @@
 
 import { boldDim, style } from '../../runtime/style.js';
 
-import type { CacheStatus } from '../../cache/index.js';
-import type { SourceRef } from '../../git/index.js';
-import type { InventorySnapshot } from '../../inventory/index.js';
+import type { CacheStatus } from '../../types/cache/index.js';
+import type { SourceRef } from '../../types/git/index.js';
+import type { InventorySnapshot } from '../../types/inventory/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
+import type {
+  GraphModuleGroup,
+  GraphNamespaceRow,
+  GraphTargetSubpathGroup,
+} from '../../types/commands/graph.js';
 import { formatNamespaceSourceLabel } from '../format.js';
-import { cacheLabel, logLine, logListSection, logListTruncation, logSectionEmpty, printMeta, refLine } from '../report.js';
+import { formatCacheMetaLine, logLine, logListSection, logListTruncation, logSectionEmpty, printMeta, refLine } from '../report.js';
 import { printPublishedSubpathRollups } from './inventory.js';
 
 export function printGraphReport(input: {
   ref: SourceRef;
   snapshot: InventorySnapshot;
   cache: CacheStatus;
-  targetGroups: { targetSubpath: string; flat: number; namespace: number; modules: Map<string, number> }[];
-  topModules: { module: string; edges: number; symbols: string[]; edgeProvenance: string }[];
-  namespaces: { name: string; targetSubpath: string; module: string | null }[];
+  targetGroups: GraphTargetSubpathGroup[];
+  topModules: GraphModuleGroup[];
+  namespaces: GraphNamespaceRow[];
   verbose?: boolean;
   listView?: ListViewOptions;
 }): void {
@@ -27,7 +32,7 @@ export function printGraphReport(input: {
 
   printMeta({
     ref: refLine(input.ref, input.snapshot),
-    cache: cacheLabel(input.cache),
+    cache: formatCacheMetaLine(input.cache, input.snapshot.sha),
     edges: style.dim(String(input.snapshot.edges.length)),
     symbols: style.dim(String(input.snapshot.symbols.length)),
     subpaths: style.dim(String(input.snapshot.summary.subpaths.length)),

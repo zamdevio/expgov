@@ -1,8 +1,9 @@
 import path from 'node:path';
 
-import type { CacheStatus } from '../cache/index.js';
-import { gitRevParse, shortSha, type SourceRef } from '../git/index.js';
-import type { InventorySnapshot } from '../inventory/index.js';
+import type { CacheStatus } from '../types/cache/index.js';
+import { gitRevParse, shortSha } from '../git/index.js';
+import type { SourceRef } from '../types/git/ref.js';
+import type { InventorySnapshot } from '../types/inventory/index.js';
 import { cacheDirForSha, getRepoRoot } from '../paths.js';
 import { WORKTREE_CACHE_KEY } from '../shared/constants/cache.js';
 import { formatListTruncationHint } from '../shared/listing.js';
@@ -69,6 +70,16 @@ export function inventoryCacheDirDisplay(sha: string): string {
 
 export function cacheLabel(status: CacheStatus): string {
   return cacheStatusStyle(status);
+}
+
+export function formatCacheMetaLine(status: CacheStatus, snapshotSha: string): string {
+  if (status === 'disabled') {
+    return `${cacheLabel(status)} ${style.dim('· config cache.enabled: false')}`;
+  }
+  if (status === 'bypass') {
+    return `${cacheLabel(status)} ${style.dim('· --no-cache')}`;
+  }
+  return `${cacheLabel(status)} ${style.dim(`· ${inventoryCacheDirDisplay(snapshotSha)}`)}`;
 }
 
 export function snapshotShaLabel(snapshot: InventorySnapshot): string {

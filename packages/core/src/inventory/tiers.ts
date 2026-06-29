@@ -4,11 +4,8 @@ import {
   compilePrefixMatcher,
   testPrefixMatcher,
 } from '../config/tiers.js';
-import {
-  DEFAULT_ADVANCED_PREFIXES,
-  DEFAULT_INTERNAL_PREFIXES,
-  DEFAULT_STABLE_PREFIXES,
-} from '../config/tiers.js';
+import { BUILTIN_DEFAULT_PREFIXES } from '../shared/constants/tiers.js';
+import { MAX_REEXPORT_DEPTH } from '../shared/constants/inventory.js';
 import type { TierBucket } from '../types/config/tiers.js';
 import {
   declarationPatternFor,
@@ -21,14 +18,7 @@ import type {
   TierBucketName,
   TierProvenance,
 } from '../types/inventory/tiers.js';
-import { MAX_REEXPORT_DEPTH } from '../shared/constants/inventory.js';
 
-
-const BUILTIN_DEFAULT_PREFIXES: Record<string, readonly string[]> = {
-  stable: DEFAULT_STABLE_PREFIXES,
-  internal: DEFAULT_INTERNAL_PREFIXES,
-  advanced: DEFAULT_ADVANCED_PREFIXES,
-};
 function resolveDeclaredTierTagInContent(input: {
   name: string;
   moduleContent: string;
@@ -146,7 +136,7 @@ function classifyConfigTierWithProvenance(name: string): SymbolTierClassificatio
       name,
       entry.name,
       tierConfig[entry.name] as TierBucket | undefined,
-      BUILTIN_DEFAULT_PREFIXES[entry.name] ?? [],
+      BUILTIN_DEFAULT_PREFIXES[entry.name as keyof typeof BUILTIN_DEFAULT_PREFIXES] ?? [],
     );
     if (provenance) {
       return { tier: entry.name, provenance };

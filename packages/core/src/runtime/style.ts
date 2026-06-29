@@ -74,6 +74,8 @@ export function cacheStatusStyle(status: string): string {
       return style.accent('refresh');
     case 'bypass':
       return style.dim('bypass');
+    case 'disabled':
+      return style.dim('disabled');
     default:
       return style.dim('n/a');
   }

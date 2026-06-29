@@ -12,7 +12,10 @@ export default defineConfig({
     },
   },
   tsconfig: 'tsconfig.json',
-  cacheDir: '.expgov/cache',
+  cache: {
+    enabled: true,
+    dir: '.expgov/cache',
+  },
   git: {
     tagPattern: 'v*',
     timelineBarrelPath: 'packages/core/src/index.ts',
@@ -35,6 +38,7 @@ export default defineConfig({
         'SuggestCliOptions',
         'ExpgovConfig',
         'ExpgovConfigOverrides',
+        'ExpgovCacheConfig',
         'ExportError',
         'ExportErrorCode',
         'GraphCliOptions',

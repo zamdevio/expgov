@@ -1,13 +1,4 @@
-export type RunOptions = {
-  json: boolean;
-  jsonPretty: boolean;
-  quiet: boolean;
-  silent: boolean;
-  noColor: boolean;
-  noLogChannel: boolean;
-  noLogPrefix: boolean;
-  verbose: boolean;
-};
+import type { RunOptions } from '../types/runtime/run.js';
 
 const defaults: RunOptions = {
   json: false,

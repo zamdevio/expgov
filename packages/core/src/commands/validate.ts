@@ -14,11 +14,8 @@ import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { ValidateOptions } from '../types/commands/cli.js';
+import type { PackageExports } from '../types/config/package.js';
 import type { Issue } from '../types/json/envelope.js';
-
-interface PackageExports {
-  [subpath: string]: unknown;
-}
 
 function readCoreExports(): PackageExports {
   const pkg = JSON.parse(readFileSync(getCorePkgPath(), 'utf8')) as { exports?: PackageExports };

@@ -19,8 +19,10 @@ export type {
   ValidateOptions,
 } from './types/commands/index.js';
 
-export { ExportError, isExportError, type ExportErrorCode } from './errors/index.js';
-export { printHelp, printHelpHint, type HelpTopic } from './help/index.js';
+export { ExportError, isExportError } from './errors/index.js';
+export type { ExportErrorCode } from './types/errors/index.js';
+export { printHelp, printHelpHint } from './help/index.js';
+export type { HelpTopic } from './types/help/index.js';
 export { printExportError, printUnexpected } from './logger/index.js';
 
 export {
@@ -32,6 +34,7 @@ export {
   setProjectContext,
 } from './context/index.js';
 export { resolveExpgovConfig, formatConfigDiscoveryHint, defineConfig } from './config/load.js';
+export { resolveCacheSettings } from './config/resolveCache.js';
 export {
   buildInitConfigTemplate,
   detectInitProject,
@@ -43,13 +46,14 @@ export type { InitDetection, InitLayout, InitRunOptions, InitRunResult } from '.
 export type {
   ExpgovConfig,
   ExpgovConfigOverrides,
+  ExpgovCacheConfig,
   ProjectContext,
   TierRulesConfig,
   TierTagConfig,
   TierBucket,
   TierPolicy,
+  ResolvedTierBucket,
 } from './types/config/index.js';
-export type { ResolvedTierBucket } from './config/tiers.js';
 
 export {
   bootstrapRuntime,
@@ -80,6 +84,13 @@ export {
   buildCliJsonEnvelope,
   RESULT_API_VERSION,
 } from './runtime/index.js';
-export type { RunOptions, LogEvent, LogSink, LogLevel, CommandTimer, CommandStatus } from './runtime/index.js';
+export type {
+  RunOptions,
+  LogEvent,
+  LogSink,
+  LogLevel,
+  CommandTimer,
+  CommandStatus,
+} from './types/runtime/index.js';
 export type { CliJsonEnvelope, Issue, IssueSeverity, ResultMeta } from './types/json/envelope.js';
 export { SDK_PACKAGE_NAME, SDK_VERSION } from './shared/constants/sdk.js';

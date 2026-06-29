@@ -1,4 +1,5 @@
 import { ExportError } from '../errors/index.js';
+import type { SourceRef } from '../types/git/ref.js';
 import { runGit } from './run.js';
 
 export function recentVersionTags(limit = 8): string[] {
@@ -35,10 +36,6 @@ export function gitShowFile(sha: string, repoRelativePath: string): string | nul
   if (!result.ok) return null;
   return result.stdout;
 }
-
-export type SourceRef =
-  | { kind: 'worktree'; label: string }
-  | { kind: 'commit'; sha: string; label: string };
 
 export function resolveSourceRef(input: string | undefined): SourceRef {
   if (!input || input === 'worktree' || input === 'working-tree' || input === 'wt') {

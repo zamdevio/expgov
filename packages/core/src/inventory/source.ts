@@ -5,9 +5,7 @@ import { npmSubpathKey } from '../context/index.js';
 import { gitShowFile } from '../git/index.js';
 import { coreRepoPath, getRepoRoot, getSubpathSourceEntries } from '../paths.js';
 
-export interface SourceReader {
-  read(repoRelativePath: string): string | null;
-}
+import type { SourceReader } from '../types/inventory/source.js';
 
 export function createWorktreeReader(): SourceReader {
   return {

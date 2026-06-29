@@ -1,6 +1,6 @@
 import type { InitDetection } from '../types/init/detection.js';
+import { resolveCacheSettings } from '../config/resolveCache.js';
 import { detectionToConfig } from './detect.js';
-import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 import {
   DEFAULT_INIT_CONFIG_IMPORT,
   INIT_CONFIG_FILE_NAME,
@@ -42,6 +42,7 @@ export function buildInitConfigTemplate(
   options: { rich?: boolean; importSpecifier?: string } = {},
 ): string {
   const config = detectionToConfig(detection);
+  const cacheSettings = resolveCacheSettings(config);
   const imp = options.importSpecifier ?? DEFAULT_INIT_CONFIG_IMPORT;
   const rich = Boolean(options.rich);
   const tiers = config.tiers;
@@ -60,7 +61,10 @@ export default defineConfig({
     subpaths: ${formatSubpaths(config.core.subpaths)},
   },
   tsconfig: ${quote(config.tsconfig ?? 'tsconfig.json')},
-  cacheDir: ${quote(config.cacheDir ?? DEFAULT_CACHE_DIR)},
+  cache: {
+    enabled: true,
+    dir: ${quote(cacheSettings.dir)},
+  },
   git: {
     tagPattern: ${quote(config.git?.tagPattern ?? 'v*')},
     timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},

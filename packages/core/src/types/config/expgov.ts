@@ -1,4 +1,5 @@
 import type { TierRulesConfig } from './tiers.js';
+import type { ExpgovCacheInput } from './cache.js';
 
 export interface ExpgovCoreConfig {
   dir: string;
@@ -18,7 +19,10 @@ export interface ExpgovConfig {
   repoRoot?: string;
   core: ExpgovCoreConfig;
   tsconfig?: string;
-  cacheDir?: string;
+  /**
+   * Snapshot cache — `true` / `false` shorthand or `{ enabled?, dir? }`.
+   */
+  cache?: ExpgovCacheInput;
   git?: ExpgovGitConfig;
   tiers?: TierRulesConfig;
 }
@@ -28,6 +32,7 @@ export interface ExpgovConfigOverrides {
   configPath?: string;
   packageName?: string;
   repoRoot?: string;
+  /** CLI override — merges into `cache.dir`. */
   cacheDir?: string;
   tsconfig?: string;
   verbose?: boolean;

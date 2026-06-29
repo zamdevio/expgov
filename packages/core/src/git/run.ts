@@ -1,26 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { getRepoRoot } from '../paths.js';
-
-export interface GitRunResult {
-  ok: boolean;
-  stdout: string;
-  stderr: string;
-  status: number | null;
-  durationMs: number;
-}
-
-export interface GitInvocation {
-  args: string[];
-  ok: boolean;
-  durationMs: number;
-  status: number | null;
-}
-
-export interface GitRunStats {
-  invocations: number;
-  totalMs: number;
-  last?: GitInvocation;
-}
+import type { GitRunResult, GitRunStats } from '../types/git/run.js';
 
 let sessionStats: GitRunStats = { invocations: 0, totalMs: 0 };
 

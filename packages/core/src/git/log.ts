@@ -1,11 +1,6 @@
 import { getTagPattern, getTimelineBarrelPath } from '../paths.js';
+import type { GitCommitRow } from '../types/git/commits.js';
 import { runGit } from './run.js';
-
-export interface GitCommitRow {
-  sha: string;
-  date: string;
-  subject: string;
-}
 
 /** All `v*` tags sorted by version refname. */
 export function listVersionTags(limit?: number): string[] {

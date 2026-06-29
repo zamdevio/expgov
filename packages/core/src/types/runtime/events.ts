@@ -1,5 +1,5 @@
-import type { CliJsonEnvelope, Issue } from '../types/json/envelope.js';
-import type { CommandStatus } from './types.js';
+import type { CliJsonEnvelope, Issue } from '../json/envelope.js';
+import type { CommandStatus } from './status.js';
 
 export type LogLevel = 'info' | 'notice' | 'warn' | 'error' | 'tip' | 'verbose';
 
@@ -13,7 +13,7 @@ export type LogEvent =
   | { type: 'header'; command: string; subtitle: string }
   | { type: 'meta'; rows: Record<string, string | undefined> }
   | { type: 'report'; command: string; body: string }
-  | { type: 'envelope'; envelope: CliJsonEnvelope<string, unknown> }
+  | { type: 'envelope'; envelope: CliJsonEnvelope<string, unknown> };
 
 export type CommandSummary = {
   command: string;

@@ -3,8 +3,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { createJiti } from 'jiti';
 import type { ExpgovConfig, ExpgovConfigOverrides } from '../types/config/index.js';
-
-const CONFIG_FILENAME = 'expgov.config.ts';
+import { INIT_CONFIG_FILE_NAME } from '../shared/constants/init.js';
 
 const jiti = createJiti(import.meta.url, { interopDefault: true });
 
@@ -26,7 +25,7 @@ function resolveRepoRoot(cwd: string, configRepoRoot?: string): string {
 }
 
 function discoverConfigFile(repoRoot: string): string | null {
-  const candidate = path.join(repoRoot, CONFIG_FILENAME);
+  const candidate = path.join(repoRoot, INIT_CONFIG_FILE_NAME);
   return existsSync(candidate) ? candidate : null;
 }
 
@@ -48,12 +47,18 @@ function loadConfigFile(filePath: string): ExpgovConfig {
   return config;
 }
 
+function mergeCacheOverride(config: ExpgovConfig, cacheDir?: string): ExpgovConfig['cache'] {
+  if (cacheDir === undefined) return config.cache;
+  const base = typeof config.cache === 'object' ? config.cache : {};
+  return { ...base, dir: cacheDir };
+}
+
 function mergeOverrides(config: ExpgovConfig, overrides: ExpgovConfigOverrides): ExpgovConfig {
   return {
     ...config,
     packageName: overrides.packageName ?? config.packageName,
     repoRoot: overrides.repoRoot ?? config.repoRoot,
-    cacheDir: overrides.cacheDir ?? config.cacheDir,
+    cache: mergeCacheOverride(config, overrides.cacheDir),
     tsconfig: overrides.tsconfig ?? config.tsconfig,
     core: { ...config.core },
     git: config.git ? { ...config.git } : undefined,
@@ -78,7 +83,7 @@ export function resolveExpgovConfig(overrides: ExpgovConfigOverrides = {}): {
     return { config: mergeOverrides(config, overrides), configPath, cwd };
   }
 
-  const inCwd = path.join(cwd, CONFIG_FILENAME);
+  const inCwd = path.join(cwd, INIT_CONFIG_FILE_NAME);
   if (existsSync(inCwd)) {
     const config = loadConfigFile(inCwd);
     return { config: mergeOverrides(config, overrides), configPath: inCwd, cwd };
@@ -92,7 +97,7 @@ export function resolveExpgovConfig(overrides: ExpgovConfigOverrides = {}): {
   }
 
   throw new Error(
-    `No expgov config found. Add ${CONFIG_FILENAME} to the project root or pass --config path/to/${CONFIG_FILENAME}.`,
+    `No expgov config found. Add ${INIT_CONFIG_FILE_NAME} to the project root or pass --config path/to/${INIT_CONFIG_FILE_NAME}.`,
   );
 }
 
@@ -100,8 +105,7 @@ export function formatConfigDiscoveryHint(cwd: string): string {
   const repoRoot = findGitRoot(cwd) ?? cwd;
   const found = discoverConfigFile(repoRoot);
   if (found) return `Found ${path.relative(cwd, found)}`;
-  return `Looked in ${repoRoot} for ${CONFIG_FILENAME}`;
+  return `Looked in ${repoRoot} for ${INIT_CONFIG_FILE_NAME}`;
 }
 
-export type { ExpgovConfigOverrides } from '../types/config/index.js';
 export { defineConfig } from './define.js';

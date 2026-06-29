@@ -1,5 +1,5 @@
 import { boldDim } from '../../runtime/style.js';
-import type { TierCounts } from '../../inventory/types.js';
+import type { TierCounts } from '../../types/inventory/snapshot.js';
 import { logLine, padLabel, tierColor } from '../report.js';
 
 /** Print built-in + custom tier count rows (inventory root / SDK-wide sections). */

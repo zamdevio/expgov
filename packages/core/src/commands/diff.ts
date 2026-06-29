@@ -1,4 +1,5 @@
 import { getSnapshot } from '../cache/index.js';
+import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { diffSnapshots } from '../format/index.js';
 import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
@@ -9,7 +10,7 @@ import type { DiffCliOptions } from '../types/commands/cli.js';
 export function runExportsDiff(options: DiffCliOptions): void {
   const timer = beginCommand('diff');
   const { left, right, rangeLabel } = parseDiffRange(options.range);
-  const cacheOpts = { noCache: options.noCache, force: options.force };
+  const cacheOpts = resolveCacheOptions({ noCache: options.noCache, force: options.force });
 
   const leftResult = getSnapshot(left, cacheOpts);
   const rightResult = getSnapshot(right, cacheOpts);

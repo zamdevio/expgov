@@ -9,3 +9,8 @@ export type {
   TrendCliOptions,
   ValidateOptions,
 } from './cli.js';
+export type {
+  GraphModuleGroup,
+  GraphNamespaceRow,
+  GraphTargetSubpathGroup,
+} from './graph.js';

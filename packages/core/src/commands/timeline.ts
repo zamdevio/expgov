@@ -1,13 +1,14 @@
 import { ExportError } from '../errors/index.js';
 import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
-import type { CacheStatus } from '../cache/index.js';
+import { resolveCacheOptions } from '../cache/resolveOptions.js';
+import type { CacheStatus } from '../types/cache/index.js';
 import { formatGitRunStats, listBarrelCommits, resetGitRunStats, shortSha } from '../git/index.js';
 import { printTimelineReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { CLI_NAME, style } from '../runtime/style.js';
 import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
-import { resolveListLimit } from '../shared/listing.js';
+import { limitList, resolveListLimit } from '../shared/listing.js';
 import type { TimelineCliOptions } from '../types/commands/cli.js';
 
 export function runExportsTimeline(options: TimelineCliOptions = {}): void {
@@ -15,7 +16,6 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   const timer = beginCommand('timeline');
   const rangeToken = options.range ?? '@4w';
   const listLimit = resolveListLimit(options);
-  const gitLimit = Number.isFinite(listLimit) ? listLimit : undefined;
   const range = parseTimelineRange(rangeToken);
   if (!range) {
     throw new ExportError(`Invalid timeline range "${rangeToken}"`, 'invalid_range', {
@@ -26,23 +26,23 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     });
   }
 
-  const commits = listBarrelCommits({
+  const allCommits = listBarrelCommits({
     sinceIso: range.sinceIso,
     untilIso: range.untilIso,
-    limit: gitLimit,
   });
+  const { items: commits, hiddenCount } = limitList(allCommits, listLimit);
 
   const warmer = new TimelineWarmer(commits.length, Boolean(options.verbose));
   const rows = commits.map((commit) => {
     const warmT0 = performance.now();
     const { snapshot, cache } = getSnapshot(
       { kind: 'commit', sha: commit.sha, label: shortSha(commit.sha) },
-      {
+      resolveCacheOptions({
         noCache: options.noCache,
         force: options.force,
         profile: 'timeline',
         git: { commitDate: commit.date },
-      },
+      }),
     );
     warmer.tick(commit.sha, Math.round(performance.now() - warmT0), cache);
     return {
@@ -80,6 +80,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     range,
     top: listLimit,
     rows,
+    hiddenCount,
     verbose: options.verbose,
     warmStats,
     gitStats: formatGitRunStats(),

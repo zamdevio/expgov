@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["expgov.config.ts"],
+  "ignoreDependencies": [
+    "@expgov/core",
+    "@inquirer/prompts",
+    "chalk",
+    "commander",
+    "jiti"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "workspaces": {
+    "packages/core": {
+      "entry": ["src/**/*.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/cli": {
+      "entry": ["bin/**/*.ts", "src/**/*.ts"],
+      "project": ["bin/**/*.ts", "src/**/*.ts"]
+    }
+  }
+}

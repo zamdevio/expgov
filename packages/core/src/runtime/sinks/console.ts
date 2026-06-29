@@ -1,6 +1,6 @@
 import { getRunOptions } from '../runOptions.js';
 import { canPrintPrimary } from '../policy.js';
-import type { LogEvent } from '../events.js';
+import type { LogEvent } from '../../types/runtime/index.js';
 import { BRAND, style } from '../style.js';
 
 function write(stream: 'stdout' | 'stderr', message: string): void {

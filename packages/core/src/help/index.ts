@@ -6,6 +6,7 @@ import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintTip } from '../runtime/policy.js';
 import { BRAND, style } from '../runtime/style.js';
 import { formatTimelineRangeHelp } from '../time/index.js';
+import type { HelpTopic } from '../types/help/topic.js';
 
 function cmd(name: string, args = ''): string {
   return `  ${style.accent(`expgov ${name}`)} ${style.dim(args)}`;
@@ -15,20 +16,6 @@ function section(title: string, lines: string[]): void {
   console.log(`\n${style.bold(title)}`);
   for (const line of lines) console.log(line);
 }
-
-export type HelpTopic =
-  | 'all'
-  | 'init'
-  | 'inventory'
-  | 'diff'
-  | 'validate'
-  | 'doctor'
-  | 'suggest'
-  | 'trend'
-  | 'timeline'
-  | 'graph'
-  | 'version'
-  | 'help';
 
 export function printHelp(topic: HelpTopic = 'all'): void {
   const run = getRunOptions();
@@ -76,7 +63,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `  ${style.bold('Output')}`,
       `    ${style.dim('root flat')}   count of flat exports on ${rootBarrel}`,
       `    ${style.dim('stable/advanced/internal')}   governance tiers (see expgov tier config)`,
-      `    ${style.dim('cache')}   hit/miss against ${DEFAULT_CACHE_DIR}/<sha>/inventory.full.json`,
+      `    ${style.dim('cache')}   hit · miss · refresh · bypass (--no-cache) · disabled (config)`,
     ]);
   }
 
@@ -134,7 +121,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       '',
       `  ${style.bold('Checks')}`,
       `    ${style.dim('config')}   package name, barrel, tsconfig, core package.json`,
-      `    ${style.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored; legacy .exports/cache migration hint`,
+      `    ${style.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored; stale .exports/cache dir hint`,
       `    ${style.dim('drift')}   tsconfig ↔ npm exports parity (hints only — use validate for enforcement)`,
     ]);
   }

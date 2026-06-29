@@ -1,9 +1,9 @@
 {
-  "name": "@expgov/cli",
+  "name": "expgov",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "CLI host for export governance.",
+  "description": "Workspace-only CLI sources for expgov. The installable npm binary is the repository root package (expgov), not a separate scoped name. Keep version aligned with root package.json and @expgov/core on every release.",
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

@@ -7,3 +7,7 @@ export const VERBOSE_INVENTORY_ROW_PREFIX = '       · ';
 
 /** Max hops when following re-export chains for JSDoc tier tags. */
 export const MAX_REEXPORT_DEPTH = 12;
+
+/** Category heuristics for root flat export names. */
+export const CATEGORY_RUN_ENTRY = /^run[A-Z]/;
+export const CATEGORY_CONTEXT = /^create[A-Z].*Context$/;

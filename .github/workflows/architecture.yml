@@ -1,0 +1,45 @@
+# Repo hygiene on main pushes (non-blocking advisory)
+#
+# knip + madge orphans/leaves — triage in maintainer; does not block merge.
+# Manual re-run: workflow_dispatch.
+
+name: Architecture
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  hygiene:
+    name: knip + madge
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: knip
+        run: pnpm knip
+        continue-on-error: true
+
+      - name: madge circular
+        run: pnpm madge:circular
+        continue-on-error: true
+
+      - name: madge orphans
+        run: pnpm madge:orphans
+        continue-on-error: true
+
+      - name: madge leaves
+        run: pnpm madge:leaves
+        continue-on-error: true

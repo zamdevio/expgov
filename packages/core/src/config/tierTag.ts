@@ -1,13 +1,6 @@
 import { DEFAULT_TIER_TAG_NAME } from '../shared/constants/tiers.js';
+import type { ResolvedTierTagPolicy } from '../types/config/catalog.js';
 import type { TierTagConfig } from '../types/config/tiers.js';
-
-export interface ResolvedTierTagPolicy {
-  name: string;
-  bucketNames: readonly string[];
-  tagPattern: RegExp;
-  /** When tag and config both match: `tag` (default) or `config`. */
-  precedence: 'tag' | 'config';
-}
 
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

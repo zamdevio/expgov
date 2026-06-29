@@ -19,4 +19,3 @@ export function runInit(repoRoot: string, opts: InitRunOptions = {}): InitRunRes
 export { buildInitConfigTemplate, INIT_CONFIG_FILE_NAME } from './template.js';
 export { DEFAULT_INIT_CONFIG_IMPORT } from '../shared/constants/init.js';
 export { detectInitProject, detectionToConfig } from './detect.js';
-export type { InitDetection, InitLayout, InitRunOptions, InitRunResult } from '../types/init/index.js';

@@ -17,11 +17,8 @@ import {
   LEGACY_CACHE_DIR,
 } from '../shared/constants/cache.js';
 import type { DoctorCliOptions } from '../types/commands/cli.js';
+import type { PackageExports } from '../types/config/package.js';
 import type { Issue } from '../types/json/envelope.js';
-
-interface PackageExports {
-  [subpath: string]: unknown;
-}
 
 function readCoreExports(): PackageExports {
   const pkg = JSON.parse(readFileSync(getCorePkgPath(), 'utf8')) as { exports?: PackageExports };
@@ -97,6 +94,10 @@ export function runExportsDoctor(options: DoctorCliOptions = {}): number {
 
   const cacheRel = path.relative(ctx.repoRoot, ctx.exportsCacheRoot).replace(/\\/g, '/') || DEFAULT_CACHE_DIR;
 
+  if (!ctx.cacheEnabled) {
+    ok.push('cache disabled in config (cache.enabled: false)');
+  }
+
   if (!existsSync(ctx.rootIndexAbsPath)) {
     warnings.push(`root barrel missing on disk: ${ctx.rootIndexRepoPath}`);
   } else {
@@ -115,24 +116,29 @@ export function runExportsDoctor(options: DoctorCliOptions = {}): number {
     ok.push(`core package.json ${path.relative(ctx.repoRoot, ctx.corePkgPath)}`);
   }
 
+  if (ctx.cacheEnabled) {
+    const cacheExists = existsSync(ctx.exportsCacheRoot);
+    const snapshotCount = countCacheSnapshots(ctx.exportsCacheRoot);
+    if (cacheExists) {
+      hints.push(`cache ${cacheRel}/ exists (${snapshotCount} snapshot dir(s))`);
+    } else if (options.verbose) {
+      hints.push(`cache ${cacheRel}/ not created yet (warms on first inventory/diff run)`);
+    }
+  } else if (options.verbose) {
+    hints.push(`cache dir ${cacheRel}/ configured but writes skipped (cache.enabled: false)`);
+  }
+
   const legacyCachePath = path.join(ctx.repoRoot, LEGACY_CACHE_DIR);
   if (existsSync(legacyCachePath)) {
     warnings.push(
-      `legacy cache ${LEGACY_CACHE_DIR}/ still present — remove after migrating config cacheDir to ${DEFAULT_CACHE_DIR}`,
+      `legacy cache ${LEGACY_CACHE_DIR}/ still present — remove manually (use cache.dir: ${DEFAULT_CACHE_DIR})`,
     );
   }
 
-  const cacheExists = existsSync(ctx.exportsCacheRoot);
-  const snapshotCount = countCacheSnapshots(ctx.exportsCacheRoot);
-  if (cacheExists) {
-    hints.push(`cache ${cacheRel}/ exists (${snapshotCount} snapshot dir(s))`);
-  } else if (options.verbose) {
-    hints.push(`cache ${cacheRel}/ not created yet (warms on first inventory/diff run)`);
-  }
-
+  const cacheOnDisk = existsSync(ctx.exportsCacheRoot);
   if (shouldSuggestCacheGitignore({ repoRoot: ctx.repoRoot, cacheDirRel: cacheRel })) {
     warnings.push(`add \`${cacheRel}/\` to .gitignore — local snapshots must not be committed`);
-  } else if (cacheExists || existsSync(path.join(ctx.repoRoot, DEFAULT_CACHE_DIR))) {
+  } else if (cacheOnDisk || existsSync(path.join(ctx.repoRoot, DEFAULT_CACHE_DIR))) {
     ok.push(`cache path gitignored (${cacheRel}/)`);
   }
 
@@ -151,6 +157,7 @@ export function runExportsDoctor(options: DoctorCliOptions = {}): number {
     message,
   }));
   const exitCode = healthy ? 0 : 1;
+  const snapshotCount = ctx.cacheEnabled ? countCacheSnapshots(ctx.exportsCacheRoot) : 0;
 
   if (getRunOptions().json) {
     finishCommand({

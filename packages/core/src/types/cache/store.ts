@@ -1,4 +1,4 @@
-import type { InventorySnapshot, SnapshotScanDepth } from '../../inventory/index.js';
+import type { InventorySnapshot, SnapshotScanDepth } from '../inventory/snapshot.js';
 
 export interface CacheMetaEntry {
   requestedRefs: string[];
@@ -20,6 +20,8 @@ export interface CacheOptions {
   noCache?: boolean;
   /** Skip cache read, rebuild, and overwrite on disk for this run (`-f` / `--force`). */
   force?: boolean;
+  /** Resolved from config `cache.enabled` (default true). */
+  cacheEnabled?: boolean;
   /** `timeline` uses a separate small cache file; default `full` for inventory/diff/graph/trend. */
   profile?: CacheProfile;
   /** Override scan depth; derived from profile when omitted. */
@@ -28,7 +30,7 @@ export interface CacheOptions {
   git?: InventorySnapshot['git'];
 }
 
-export type CacheStatus = 'hit' | 'miss' | 'refresh' | 'bypass' | 'n/a';
+export type CacheStatus = 'hit' | 'miss' | 'refresh' | 'bypass' | 'disabled' | 'n/a';
 
 export interface SnapshotResult {
   snapshot: InventorySnapshot;

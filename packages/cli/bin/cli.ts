@@ -7,7 +7,6 @@ import {
   initProjectContext,
   isExportError,
   printExportError,
-  printHelp,
   printHelpHint,
   printUnexpected,
   resetRunOptions,
@@ -20,7 +19,6 @@ import {
   runExportsDoctor,
   runExportsSuggest,
   setRunOptions,
-  type HelpTopic,
 } from '@expgov/core';
 
 import { ensureConfig } from '../src/commands/init/index.js';
@@ -31,6 +29,7 @@ import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
 import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
 import { resolveNoColor } from '../src/utils/cli/noColor.js';
 import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
+import { printCliHelp } from '../src/utils/help/printCliHelp.js';
 import { printCurrentVersionLine, runVersionCheckCommand, runVersionResetCommand } from '../src/utils/version/index.js';
 
 interface GlobalOpts {
@@ -63,11 +62,11 @@ function initFromCommand(cmd: Command, verbose?: boolean): void {
   });
 }
 
-function handleError(err: unknown): never {
+function handleError(err: unknown, program: Command): never {
   if (isExportError(err)) {
     if (err.code === 'usage') {
       if (err.exitCode !== 0) printExportError(err);
-      printHelp('all');
+      printCliHelp(program);
       printHelpHint(typeof err.details.command === 'string' ? err.details.command : undefined);
       process.exit(err.exitCode);
     }
@@ -79,13 +78,13 @@ function handleError(err: unknown): never {
   process.exit(1);
 }
 
-function withContext(cmd: Command, verbose: boolean | undefined, fn: () => void | number): void {
+function withContext(cmd: Command, verbose: boolean | undefined, program: Command, fn: () => void | number): void {
   try {
     initFromCommand(cmd, verbose);
     const code = fn();
     if (typeof code === 'number') process.exit(code);
   } catch (err) {
-    handleError(err);
+    handleError(err, program);
   }
 }
 
@@ -100,7 +99,7 @@ function buildProgram(): Command {
     .option('-C, --cwd <dir>', 'project root')
     .option('-c, --config <path>', 'path to expgov.config.ts')
     .option('-pn, --package-name <name>', 'override package name')
-    .option('-cd, --cache-dir <path>', 'override cache directory')
+    .option('-cd, --cache-dir <path>', 'override cache.dir')
     .option('-y, --yes', 'non-interactive (init writes config without prompting)')
     .option('-j, --json', 'machine-readable JSON envelope output')
     .option('-q, --quiet', 'suppress info logs and tips; keep primary command output')
@@ -136,7 +135,7 @@ function buildProgram(): Command {
     .option('-y, --yes', 'write config without prompting')
     .option('-r, --rich', 'include commented tiers.stable.exact examples', false)
     .option('-f, --force', 'overwrite existing config file')
-    .action(async (opts: { yes?: boolean; rich?: boolean; force?: boolean }) => {
+    .action(async (opts: { yes?: boolean; rich?: boolean; force?: boolean }, _cmd, cmd) => {
       try {
         await ensureConfig({
           yes: Boolean(opts.yes) || getCliYesFlag(),
@@ -144,7 +143,7 @@ function buildProgram(): Command {
           rich: Boolean(opts.rich),
         });
       } catch (err) {
-        handleError(err);
+        handleError(err, cmd.root());
       }
     });
 
@@ -163,7 +162,7 @@ function buildProgram(): Command {
             top?: number;
             full?: boolean;
           };
-          withContext(cmd, local.verbose, () => {
+          withContext(cmd, local.verbose, program, () => {
             runExportsInventory({
               ref,
               verbose: local.verbose,
@@ -192,7 +191,7 @@ function buildProgram(): Command {
             top?: number;
             full?: boolean;
           };
-          withContext(cmd, local.verbose, () => {
+          withContext(cmd, local.verbose, program, () => {
             runExportsDiff({
               range,
               noCache: local.cache === false,
@@ -213,7 +212,7 @@ function buildProgram(): Command {
     .option('--since <ref>', 'reserved for future delta validation')
     .action((_opts, cmd) => {
       const local = cmd.opts() as { verbose?: boolean; since?: string };
-      withContext(cmd, local.verbose, () =>
+      withContext(cmd, local.verbose, program, () =>
         runExportsValidate({ since: local.since, verbose: local.verbose }),
       );
     });
@@ -224,7 +223,7 @@ function buildProgram(): Command {
     .option('-v, --verbose', 'verbose output')
     .action((_opts, cmd) => {
       const local = cmd.opts() as { verbose?: boolean };
-      withContext(cmd, local.verbose, () => runExportsDoctor({ verbose: local.verbose }));
+      withContext(cmd, local.verbose, program, () => runExportsDoctor({ verbose: local.verbose }));
     });
 
   program
@@ -233,7 +232,7 @@ function buildProgram(): Command {
     .option('-v, --verbose', 'verbose output')
     .action((_opts, cmd) => {
       const local = cmd.opts() as { verbose?: boolean };
-      withContext(cmd, local.verbose, () => runExportsSuggest({ verbose: local.verbose }));
+      withContext(cmd, local.verbose, program, () => runExportsSuggest({ verbose: local.verbose }));
     });
 
   addListFlags(
@@ -252,7 +251,7 @@ function buildProgram(): Command {
             top?: number;
             full?: boolean;
           };
-          withContext(cmd, local.verbose, () => {
+          withContext(cmd, local.verbose, program, () => {
             runExportsTrend({
               tagLimit: local.tags,
               noCache: local.cache === false,
@@ -281,7 +280,7 @@ function buildProgram(): Command {
             top?: number;
             full?: boolean;
           };
-          withContext(cmd, local.verbose, () => {
+          withContext(cmd, local.verbose, program, () => {
             runExportsTimeline({
               range,
               top: local.top,
@@ -310,7 +309,7 @@ function buildProgram(): Command {
             top?: number;
             full?: boolean;
           };
-          withContext(cmd, local.verbose, () => {
+          withContext(cmd, local.verbose, program, () => {
             runExportsGraph({
               ref,
               noCache: local.cache === false,
@@ -352,29 +351,16 @@ function buildProgram(): Command {
       } catch {
         // generic help without config
       }
-      const topics: HelpTopic[] = [
-        'all',
-        'init',
-        'inventory',
-        'diff',
-        'validate',
-        'doctor',
-        'suggest',
-        'trend',
-        'timeline',
-        'graph',
-        'version',
-        'help',
-      ];
-      printHelp(topics.includes(topic as HelpTopic) ? (topic as HelpTopic) : 'all');
+      printCliHelp(program, topic);
     });
 
   return program;
 }
 
 bootstrapRuntime();
-buildProgram()
+const program = buildProgram();
+program
   .parseAsync(preprocessArgv(process.argv))
   .catch((err: unknown) => {
-    handleError(err);
+    handleError(err, program);
   });

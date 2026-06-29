@@ -14,6 +14,7 @@
 | [`architecture.md`](./architecture.md) | Blueprint — layers, principles, out-of-scope |
 
 | [`observability-roadmap.md`](./observability-roadmap.md) | Phases A–G program index |
+| [`worktree.md`](./worktree.md) | Worktree `files.json` cache correctness (planned) |
 
 Scratch / spikes: **`maintainer/temp/`** (gitignored).
 

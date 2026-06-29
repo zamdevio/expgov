@@ -1,9 +1,9 @@
 import path from 'node:path';
 
 import { resolveTierCatalog } from '../config/tierCatalog.js';
+import { resolveCacheSettings } from '../config/resolveCache.js';
 import type { ExpgovConfig, ExpgovConfigOverrides, ProjectContext } from '../types/config/index.js';
 import { resolveExpgovConfig } from '../config/load.js';
-import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 
 function posixJoin(...parts: string[]): string {
   return path.posix.join(...parts.map((p) => p.replace(/\\/g, '/')));
@@ -15,7 +15,8 @@ export function buildProjectContext(config: ExpgovConfig, cwd: string): ProjectC
   const corePkgPath = path.resolve(repoRoot, config.core.packageJson ?? path.join(config.core.dir, 'package.json'));
   const rootIndexRepoPath = config.core.rootBarrel.replace(/\\/g, '/');
   const rootIndexAbsPath = path.resolve(repoRoot, rootIndexRepoPath);
-  const exportsCacheRoot = path.resolve(repoRoot, config.cacheDir ?? DEFAULT_CACHE_DIR);
+  const cacheSettings = resolveCacheSettings(config);
+  const exportsCacheRoot = path.resolve(repoRoot, cacheSettings.dir);
   const tsconfigPath = path.resolve(repoRoot, config.tsconfig ?? 'tsconfig.json');
 
   const coreDirPosix = config.core.dir.replace(/\\/g, '/');
@@ -32,6 +33,7 @@ export function buildProjectContext(config: ExpgovConfig, cwd: string): ProjectC
     rootIndexAbsPath,
     exportsCacheRoot,
     exportsMetaPath: path.join(exportsCacheRoot, 'meta.json'),
+    cacheEnabled: cacheSettings.enabled,
     tsconfigPath,
     subpathSourceEntries: { ...config.core.subpaths },
     git: {

@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 
-import type { InventorySnapshot } from '../../inventory/index.js';
+import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
 import { CACHE_META_VERSION, TOOL_VERSION } from '../../shared/constants/cache.js';
 import {
   cacheDirForSha,
@@ -10,7 +10,7 @@ import {
 } from '../../paths.js';
 import { readJsonFile, writeJsonAtomic } from './io.js';
 import { purgeStaleCacheForSha } from './files.js';
-import type { CacheMeta, CacheMetaEntry } from './types.js';
+import type { CacheMeta, CacheMetaEntry } from '../../types/cache/store.js';
 import { isValidSnapshot, isValidSummary, snapshotMatchesSha } from './validation.js';
 
 function defaultMeta(): CacheMeta {

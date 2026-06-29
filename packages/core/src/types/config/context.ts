@@ -1,5 +1,4 @@
-import type { ResolvedTierCatalog } from '../../config/tierCatalog.js';
-import type { ResolvedTierTagPolicy } from '../../config/tierTag.js';
+import type { ResolvedTierCatalog, ResolvedTierTagPolicy } from './catalog.js';
 import type { ExpgovConfig } from './expgov.js';
 import type { TierRulesConfig } from './tiers.js';
 
@@ -13,6 +12,8 @@ export interface ProjectContext {
   rootIndexAbsPath: string;
   exportsCacheRoot: string;
   exportsMetaPath: string;
+  /** Resolved from `cache.enabled` (default true). */
+  cacheEnabled: boolean;
   tsconfigPath: string;
   subpathSourceEntries: Record<string, string>;
   git: {

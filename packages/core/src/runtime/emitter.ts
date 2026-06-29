@@ -1,4 +1,4 @@
-import type { LogEvent, LogSink } from './events.js';
+import type { LogEvent, LogSink } from '../types/runtime/index.js';
 
 const sinks = new Set<LogSink>();
 let defaultSinkInstalled = false;

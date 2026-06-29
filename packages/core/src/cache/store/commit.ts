@@ -1,7 +1,8 @@
 import { buildSnapshot } from '../../inventory/index.js';
 import { createGitReader } from '../../inventory/source.js';
 import { ExportError } from '../../errors/index.js';
-import { gitShowFile, shortSha, type SourceRef } from '../../git/index.js';
+import { gitShowFile, shortSha } from '../../git/index.js';
+import type { SourceRef } from '../../types/git/ref.js';
 import { getRootIndexRepoPath } from '../../paths.js';
 import { readCachedForProfile, purgeStaleCacheForSha } from './files.js';
 import { loadCacheMeta, touchMetaEntry } from './meta.js';
@@ -10,7 +11,7 @@ import {
   parseAndPersistFull,
   persistTimelineSnapshot,
 } from './persist.js';
-import type { CacheOptions, SnapshotResult } from './types.js';
+import type { CacheOptions, SnapshotResult } from '../../types/cache/store.js';
 import { rebuildCacheStatus, shouldReadCache, shouldWriteCache } from './mode.js';
 
 function barrelMissingError(ref: SourceRef & { kind: 'commit' }): ExportError {

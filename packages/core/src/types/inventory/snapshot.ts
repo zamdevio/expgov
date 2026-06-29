@@ -1,5 +1,5 @@
-import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
-import type { StabilityTier, TierProvenance } from '../types/inventory/tiers.js';
+import { SNAPSHOT_VERSION, TOOL_VERSION } from '../../shared/constants/cache.js';
+import type { StabilityTier, TierProvenance } from './tiers.js';
 
 export type TsExportKind = 'value' | 'type';
 

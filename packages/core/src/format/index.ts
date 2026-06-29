@@ -1,1 +1,1 @@
-export { diffSnapshots, type DiffResult } from './diff.js';
+export { diffSnapshots } from './diff.js';

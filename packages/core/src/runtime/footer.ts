@@ -1,12 +1,8 @@
 import { emitLog } from './emitter.js';
 import { getRunOptions } from './runOptions.js';
 import { canPrintPrimary } from './policy.js';
-import type { CommandStatus } from './types.js';
-
-export interface CommandFooterSummary {
-  counts?: Record<string, string | number>;
-  notes?: string[];
-}
+import type { CommandFooterSummary } from '../types/runtime/footer.js';
+import type { CommandStatus } from '../types/runtime/status.js';
 
 /** Pinned summary footer — emitted after command body (nodehunter-style). */
 export function emitCommandFooter(input: {

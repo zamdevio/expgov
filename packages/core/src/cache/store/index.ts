@@ -23,14 +23,6 @@ export {
   getSnapshot,
   trendRollupFromSnapshot,
 } from './resolve.js';
-export type {
-  CacheMeta,
-  CacheMetaEntry,
-  CacheOptions,
-  CacheProfile,
-  CacheStatus,
-  SnapshotResult,
-} from './types.js';
 export {
   getWorktreeSnapshot,
 } from './worktree.js';

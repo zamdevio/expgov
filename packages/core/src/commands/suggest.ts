@@ -1,5 +1,5 @@
 import { getWorktreeSnapshot } from '../cache/index.js';
-import type { InventorySnapshot } from '../inventory/index.js';
+import type { InventorySnapshot } from '../types/inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { printSuggestReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';

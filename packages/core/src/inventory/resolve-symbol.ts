@@ -1,5 +1,5 @@
 import { resolveModuleCandidates } from './source.js';
-import type { ResolvedSymbolKind } from './types.js';
+import type { ResolvedSymbolKind } from '../types/inventory/snapshot.js';
 
 const DEFINITION_PATTERNS: { kind: ResolvedSymbolKind; pattern: (name: string) => RegExp }[] = [
   { kind: 'function', pattern: (n) => new RegExp(`export\\s+(?:async\\s+)?function\\s+${escapeRegExp(n)}\\b`) },

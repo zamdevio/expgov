@@ -9,10 +9,5 @@ export {
   snapshotPathsForSha,
   trendRollupFromSnapshot,
   writePathForProfile,
-  type CacheMeta,
-  type CacheMetaEntry,
-  type CacheOptions,
-  type CacheProfile,
-  type CacheStatus,
-  type SnapshotResult,
 } from './store/index.js';
+export { resolveCacheOptions } from './resolveOptions.js';

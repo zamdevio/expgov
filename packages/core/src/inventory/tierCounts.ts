@@ -1,4 +1,4 @@
-import type { InventorySnapshot, TierCounts } from './types.js';
+import type { InventorySnapshot, TierCounts } from '../types/inventory/snapshot.js';
 
 export function emptyTierCounts(): TierCounts {
   return { stable: 0, advanced: 0, internal: 0, unclassified: 0, custom: {} };

@@ -1,7 +1,7 @@
 
 import { boldDim, style } from '../../runtime/style.js';
 
-import type { CacheStatus } from '../../cache/index.js';
+import type { CacheStatus } from '../../types/cache/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import { logLine, logListTruncation, padLabel, printMeta } from '../report.js';
@@ -64,10 +64,13 @@ export function printTrendReport(input: {
   }
 
   if (input.verbose) {
+    const categories = Object.entries(last.rollup.byCategory).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0));
+    const limited = limitList(categories, listLimit);
     logLine('');
     logLine(boldDim('       Categories (latest tag)'));
-    for (const [cat, count] of Object.entries(last.rollup.byCategory).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))) {
+    for (const [cat, count] of limited.items) {
       logLine(`       ${padLabel(cat, 14)} ${count ?? 0}`);
     }
+    logListTruncation(limited.hiddenCount);
   }
 }

@@ -2,13 +2,7 @@
  * Timeline range parsing for exports:timeline.
  * Supports ISO weeks, date ranges, and relative windows.
  */
-export interface TimelineRange {
-  label: string;
-  since: string;
-  until: string;
-  sinceIso: string;
-  untilIso: string;
-}
+import type { TimelineRange } from '../types/time/range.js';
 
 function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
