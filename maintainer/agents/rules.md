@@ -51,6 +51,27 @@ Reports print first; `finishCommand` appends optional `summary: counts` then `co
 - Run `pnpm build && expgov validate` before commit when touching exports or tiers
 - User docs in `docs/` — no maintainer jargon
 
+## Commit messages (Conventional Commits)
+
+Format: `<type>(<scope>): <imperative subject>` — subject lowercase, no trailing period, ≤72 chars.
+
+| Type | Use for |
+|------|---------|
+| `feat` | New commands, behavior, public exports |
+| `fix` | Bug fixes |
+| `refactor` | Internal structure; no intended user-visible change |
+| `docs` | `docs/` or `maintainer/` only |
+| `ci` | `.github/workflows/` |
+| `build` | tsup / build pipeline only |
+
+**Scopes (pick one):** `cli`, `core`, `config`, `cache`, `doctor`, `suggest`, `ci`, `docs`.
+
+Breaking CLI or config contracts: `feat(scope)!:` in the subject and/or a `BREAKING CHANGE:` footer.
+
+Example: `feat(cli): add version command with build-time semver injection`
+
+**Recovery:** `backup/pre-conventional-071a012` preserves pre-rewrite history if needed.
+
 ## Export changes
 
 - Root barrel: `packages/core/src/index.ts`
