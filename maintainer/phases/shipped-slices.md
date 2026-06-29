@@ -30,7 +30,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P9** — tier provenance (A4) | `tierProvenance` labels; logger `reports/` split; `-T/-F` list flags (`4f943b3`) |
 | 2026-W26 | **P10** — tier policies + style | Custom tier buckets + `policy`; `style` tokens only in `runtime/style.ts` (`1408c6e`) |
 | 2026-W26 | **P11** — tier rollup + config types | Custom tiers in rollups; JSDoc re-export chain; `types/config/` barrel |
-| 2026-W26 | **P12** — cache config + CI hygiene | `cache.enabled`/`cache.dir`; `ci.yml` + `architecture.yml`; knip/madge/vitest; `types/` consolidation (`d65429a`) |
+| 2026-W26 | **P12** — cache config + CI hygiene | `cache.enabled`/`cache.dir`; `ci.yml` + `architecture.yml`; knip/madge/vitest; `types/` consolidation (`55eab70`) |
 | 2026-W26 | **P13** — conservative init | Empty built-in tier buckets; `--rich` commented opt-in hints (`c5fcbab`) |
 | 2026-W26 | **P14** — Commander-first help (A5) | `printCliHelp`; workflows appendix; per-command Examples/Related (`HEAD`) |
 | 2026-W26 | **P15** — list truncation hints (A1b) | Report-layer `…and N more`; graph/timeline `hiddenCount` fixes (`HEAD`) |
