@@ -18,7 +18,7 @@ All governance commands are **read-only** except `init` (writes `expgov.config.t
 | `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
 | `-y, --yes` | Non-interactive `init` |
 
-**List flags** (inventory, diff, graph, trend, timeline): `-l, --top <n>` (default 10, min 1), `--full` (no truncation).
+**List flags** (inventory, diff, graph, trend, timeline): `-T, --top <n>` (default 10, min 1), `-F, --full` (no truncation).
 
 Per-command: `-v/--verbose`, `-f/--force`, `-nch/--no-cache` where applicable.
 

@@ -1,5 +1,6 @@
 import type { ExportCategory } from './types.js';
-import { classifySymbolTier, type StabilityTier } from './tiers.js';
+import type { StabilityTier } from '../types/inventory/index.js';
+import { classifySymbolTier } from './tiers.js';
 
 const RUN_ENTRY = /^run[A-Z]/;
 const CONTEXT = /^create[A-Z].*Context$/;

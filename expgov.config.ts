@@ -18,6 +18,15 @@ export default defineConfig({
     timelineBarrelPath: 'packages/core/src/index.ts',
   },
   tiers: {
+    tag: {
+      name: 'exportTier',
+      values: {
+        stable: 'stable',
+        internal: 'internal',
+        advanced: 'advanced',
+        beta: 'advanced',
+      },
+    },
     stable: {
       exact: [
         'BRAND',
@@ -53,6 +62,7 @@ export default defineConfig({
         'SDK_PACKAGE_NAME',
         'SDK_VERSION',
         'TierRulesConfig',
+        'TierTagConfig',
         'TierBucket',
         'TimelineCliOptions',
         'TrendCliOptions',

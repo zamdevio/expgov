@@ -1,5 +1,5 @@
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
-import type { StabilityTier } from './tiers.js';
+import type { StabilityTier, TierProvenance } from '../types/inventory/tiers.js';
 
 export type TsExportKind = 'value' | 'type';
 
@@ -41,7 +41,7 @@ export interface InventorySymbol {
   tsKind: TsExportKind;
   exportKind: ExportKind;
   tier: StabilityTier;
-  tierSource?: 'tag' | 'fallback';
+  tierProvenance?: TierProvenance;
   category: ExportCategory;
   targetSubpath: string;
   symbolKind: ResolvedSymbolKind;

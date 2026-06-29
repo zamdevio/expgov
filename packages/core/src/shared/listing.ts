@@ -28,5 +28,5 @@ export function limitList<T>(items: T[], limit: number): { items: T[]; hiddenCou
 
 export function formatListTruncationHint(hiddenCount: number): string {
   if (hiddenCount <= 0) return '';
-  return `…and ${hiddenCount} more (use --full or --top <n>)`;
+  return `…and ${hiddenCount} more (use -F/--full or -T/--top <n>)`;
 }

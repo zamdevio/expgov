@@ -9,7 +9,8 @@ import {
   readModuleAtPath,
   type SourceReader,
 } from './source.js';
-import { classifySymbolTier, resolveDeclaredTierTag, type DeclaredTierTag } from './tiers.js';
+import type { DeclaredTierTag } from '../types/inventory/index.js';
+import { classifySymbolTier, classifySymbolTierWithProvenance, resolveDeclaredTierTag } from './tiers.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
 import { getRootIndexRepoPath } from '../paths.js';
 import { gitCommitMeta } from '../git/commit-meta.js';
@@ -104,11 +105,15 @@ function enrichBarrel(input: {
       continue;
     }
 
-    const declaredTierTag = resolveDeclaredTierTag({
+    const declared = resolveDeclaredTierTag({
       name: item.name,
       moduleContent,
     });
-    const tier = classifySymbolTier(item.name, { declaredTierTag });
+    const classification = classifySymbolTierWithProvenance(item.name, {
+      declaredTierTag: declared?.tier,
+      declaredTagLiteral: declared?.tagLiteral,
+    });
+    const tier = classification.tier;
     const category = classifyExportCategory(item.name, item.tsKind, 'flat');
     const targetSubpath = targetSubpathFor(category, item.name);
     const symbolKind = resolveSymbolKind(
@@ -124,7 +129,7 @@ function enrichBarrel(input: {
       tsKind: item.tsKind,
       exportKind: 'flat',
       tier,
-      tierSource: declaredTierTag ? 'tag' : 'fallback',
+      tierProvenance: classification.provenance ?? undefined,
       category,
       targetSubpath,
       symbolKind,
@@ -162,11 +167,11 @@ function classifySubpathExportTier(input: {
   const mod = input.sourceSpecifier
     ? readModule(input.reader, input.barrelRepoPath, input.sourceSpecifier)
     : null;
-  const declaredTierTag = resolveDeclaredTierTag({
+  const declared = resolveDeclaredTierTag({
     name: input.name,
     moduleContent: mod?.content ?? null,
   });
-  if (declaredTierTag) return declaredTierTag;
+  if (declared) return declared.tier;
   if (input.subpathHint) return input.subpathHint;
 
   const tier = classifySymbolTier(input.name);

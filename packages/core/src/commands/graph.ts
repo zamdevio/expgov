@@ -1,6 +1,7 @@
 import type { GraphEdge, InventoryNamespace, InventorySnapshot } from '../inventory/index.js';
 import { getSnapshot } from '../cache/index.js';
 import { resolveSourceRef } from '../git/index.js';
+import { formatModuleEdgeProvenance } from '../logger/format.js';
 import { printGraphReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
@@ -18,6 +19,15 @@ interface ModuleGroup {
   module: string;
   edges: number;
   symbols: string[];
+  edgeProvenance: string;
+}
+
+function moduleEdgeKinds(edges: GraphEdge[], module: string): { hasFlatReexport: boolean; hasNamespaceReexport: boolean } {
+  const moduleEdges = edges.filter((edge) => edge.toModule === module);
+  return {
+    hasFlatReexport: moduleEdges.some((edge) => edge.kind === 'flat-reexport'),
+    hasNamespaceReexport: moduleEdges.some((edge) => edge.kind === 'namespace-reexport'),
+  };
 }
 
 function groupByTargetSubpath(snapshot: InventorySnapshot): TargetSubpathGroup[] {
@@ -51,7 +61,11 @@ function topModules(edges: GraphEdge[], limit: number): ModuleGroup[] {
     map.set(edge.toModule, prev);
   }
   return [...map.entries()]
-    .map(([module, data]) => ({ module, ...data }))
+    .map(([module, data]) => ({
+      module,
+      ...data,
+      edgeProvenance: formatModuleEdgeProvenance(moduleEdgeKinds(edges, module)),
+    }))
     .sort((a, b) => b.edges - a.edges)
     .slice(0, limit);
 }

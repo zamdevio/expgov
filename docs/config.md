@@ -54,6 +54,7 @@ Run `expgov init` to generate a working scaffold for your layout.
 | `git.tagPattern` | Version tag glob for `trend` (default `v*`) |
 | `git.timelineBarrelPath` | Barrel path for `timeline` git log scope |
 | `tiers` | Export classification buckets — see below |
+| `tiers.tag` | Optional JSDoc tag name + literal map (max 10) — see below |
 
 ## Tier buckets
 
@@ -69,11 +70,33 @@ tiers: {
 
 **Classifier priority** (first match wins):
 
-1. `@sdkTier stable | internal | advanced` JSDoc on the export
+1. Configured JSDoc tier tag (default `@sdkTier stable | internal | advanced`) on the export
 2. `tiers.internal`
 3. `tiers.advanced`
 4. `tiers.stable`
 5. `unclassified` → `validate` fails
+
+### Custom tag name and literals (`tiers.tag`)
+
+```ts
+tiers: {
+  tag: {
+    name: 'exportTier', // optional — default sdkTier
+    values: {
+      stable: 'stable',
+      internal: 'internal',
+      advanced: 'advanced',
+      beta: 'advanced', // up to 10 literals → stable | internal | advanced
+    },
+  },
+  stable: { exact: ['MyType'] },
+}
+```
+
+```ts
+/** @exportTier stable */
+export function myPublicApi() {}
+```
 
 Prefix forms:
 

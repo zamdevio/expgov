@@ -32,7 +32,7 @@ Implemented in `packages/core/src/inventory/tiers.ts`:
 
 | Priority | Source |
 |----------|--------|
-| 1 | `@sdkTier stable \| advanced \| internal` on exported declaration JSDoc |
+| 1 | Configured JSDoc tier tag (default `@sdkTier stable \| advanced \| internal`) on exported declaration JSDoc |
 | 2 | `tiers.internal.exact` / `.prefix` |
 | 3 | `tiers.advanced.exact` / `.prefix` |
 | 4 | `tiers.stable.exact` / `.prefix` |
@@ -42,7 +42,37 @@ Internal and advanced win over stable when multiple buckets could match.
 
 ---
 
-## `@sdkTier` JSDoc
+## JSDoc tier tag (`tiers.tag`)
+
+Default tag name: **`sdkTier`** (override with `tiers.tag.name`).
+
+```ts
+tiers: {
+  tag: {
+    name: 'exportTier', // optional — default sdkTier
+    values: {
+      stable: 'stable',
+      beta: 'advanced', // map custom literals (max 10) → stable | internal | advanced
+    },
+  },
+  stable: { exact: ['RESULT_API_VERSION'] },
+}
+```
+
+```ts
+/**
+ * @exportTier stable
+ */
+export function myPublicApi() {}
+```
+
+Supported on exported `function`, `const`, `class`, `interface`, `type`, `enum`.
+
+Tag precedence is highest — overrides config buckets.
+
+---
+
+## `@sdkTier` JSDoc (default tag name)
 
 ```ts
 /**
@@ -85,7 +115,8 @@ If you define `tiers.stable` (even empty `exact`/`prefix`), defaults are **not**
 
 ## Inventory metadata
 
-- `tierSource: 'tag'` when `@sdkTier` matched
-- `tierSource: 'fallback'` when config bucket matched
+- `tierProvenance` on each symbol: `{ kind, label, bucket? }`
+- Tag kind label reflects configured tag name (e.g. `@sdkTier stable`, `@exportTier beta`)
+- Config kinds: `tiers.stable.exact`, `tiers.advanced.prefix`, `default stable prefix`, etc.
 
-Verbose inventory shows tier source in brackets.
+Verbose inventory shows provenance in brackets.

@@ -1,5 +1,6 @@
 import { getWorktreeSnapshot } from '../cache/index.js';
 import type { InventorySnapshot } from '../inventory/index.js';
+import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { printSuggestReport } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
@@ -44,7 +45,7 @@ export function runExportsSuggest(options: SuggestCliOptions = {}): number {
 
   const hints: string[] = [];
   if (hasSuggestions) {
-    hints.push('copy names into tiers.stable.exact in expgov.config.ts, or add @sdkTier on declarations');
+    hints.push(`copy names into tiers.stable.exact in expgov.config.ts, or add ${formatTierTagHint()} on declarations`);
     hints.push('run expgov validate after updating tier rules');
   }
   if (options.verbose && subpathUnclassified > 0) {
@@ -55,7 +56,7 @@ export function runExportsSuggest(options: SuggestCliOptions = {}): number {
     ? suggestion.names.map((name) => ({
         severity: 'info',
         code: 'expgov.suggest.unclassified',
-        message: `unclassified flat export "${name}" — add to tiers.stable.exact or @sdkTier`,
+        message: `unclassified flat export "${name}" — add to tiers.stable.exact or ${formatTierTagHint()}`,
       }))
     : [];
 

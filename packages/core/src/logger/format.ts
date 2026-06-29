@@ -6,6 +6,7 @@ import {
   INVENTORY_SYMBOL_KIND_WIDTH,
   INVENTORY_TIER_WIDTH,
 } from '../shared/constants/inventory.js';
+import type { TierProvenance } from '../types/inventory/tiers.js';
 
 export function formatInventoryName(name: string): string {
   if (name.length <= 30) return name.padEnd(INVENTORY_NAME_WIDTH);
@@ -39,4 +40,22 @@ export function compactCoreSourcePath(repoPath: string | null): string {
   if (!repoPath) return '(source unresolved)';
   const prefix = getCoreSrcPrefix();
   return repoPath.startsWith(prefix) ? repoPath.slice(prefix.length) : repoPath;
+}
+
+export function formatNamespaceSourceLabel(repoPath: string | null): string {
+  return `derived from ${compactCoreSourcePath(repoPath)}`;
+}
+
+export function formatTierProvenanceLabel(provenance: TierProvenance | undefined): string {
+  return provenance?.label ?? 'unclassified';
+}
+
+export function formatModuleEdgeProvenance(input: {
+  hasFlatReexport: boolean;
+  hasNamespaceReexport: boolean;
+}): string {
+  if (input.hasNamespaceReexport && !input.hasFlatReexport) {
+    return 'resolved from namespace analysis';
+  }
+  return 'root barrel re-export';
 }

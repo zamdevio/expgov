@@ -8,6 +8,8 @@ import {
   wildcardPackageTsconfigPath,
 } from '../context/index.js';
 import { sumSdkTierCounts } from '../inventory/index.js';
+import { formatTierTagHint } from '../inventory/tierTagHint.js';
+import type { TierBucketName } from '../types/inventory/index.js';
 import { printValidateReport } from '../logger/index.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
@@ -40,14 +42,42 @@ function tsconfigPackagePaths(paths: Record<string, string[]>): string[] {
   return Object.keys(paths).filter((key) => isPackageTsconfigPath(key));
 }
 
+function summarizeTierSources(symbols: { exportKind: string; tierProvenance?: { kind: string; bucket?: TierBucketName } }[]): {
+  tag: number;
+  config: number;
+  defaultPrefix: number;
+  byBucket: Record<TierBucketName, number>;
+} {
+  const byBucket: Record<TierBucketName, number> = { stable: 0, internal: 0, advanced: 0 };
+  let tag = 0;
+  let config = 0;
+  let defaultPrefix = 0;
+
+  for (const sym of symbols) {
+    if (sym.exportKind !== 'flat') continue;
+    const p = sym.tierProvenance;
+    if (!p) continue;
+    if (p.kind === 'tag') {
+      tag += 1;
+      continue;
+    }
+    if (p.kind === 'default-prefix') {
+      defaultPrefix += 1;
+    } else {
+      config += 1;
+    }
+    if (p.bucket) byBucket[p.bucket] += 1;
+  }
+
+  return { tag, config, defaultPrefix, byBucket };
+}
+
 export function runExportsValidate(options: ValidateOptions = {}): number {
   const timer = beginCommand('validate');
   const violations: string[] = [];
   const notes: string[] = [];
   const advancedFlatSymbols: string[] = [];
   const internalFlatSymbols: string[] = [];
-  let tagTierCount = 0;
-  let fallbackTierCount = 0;
 
   const wildcard = wildcardPackageTsconfigPath();
   const corePkgRel = getRootIndexRepoPath().replace(/\/src\/.*$/, '/package.json');
@@ -79,21 +109,28 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   }
 
   const { snapshot } = getWorktreeSnapshot({ noCache: true });
+  const tierSources = summarizeTierSources(snapshot.symbols);
+
   for (const sym of snapshot.symbols) {
     if (sym.exportKind !== 'flat') continue;
-    if (sym.tierSource === 'tag') tagTierCount += 1;
-    else fallbackTierCount += 1;
     if (sym.tier === 'internal') internalFlatSymbols.push(sym.name);
     if (sym.tier === 'advanced') advancedFlatSymbols.push(sym.name);
     if (sym.tier === 'unclassified') {
       violations.push(
-        `root flat export "${sym.name}" is unclassified — extend expgov tier config (tiers.<tier>.exact or .prefix, or @sdkTier)`,
+        `root flat export "${sym.name}" is unclassified — extend expgov tier config (tiers.<tier>.exact or .prefix, or ${formatTierTagHint()})`,
       );
     }
   }
 
   const sdkTiers = sumSdkTierCounts(snapshot);
-  notes.push(`root tier sources: tagged=${tagTierCount} fallback=${fallbackTierCount}`);
+  notes.push(
+    `tier sources: ${formatTierTagHint()}=${tierSources.tag} · config=${tierSources.config} · default-prefix=${tierSources.defaultPrefix}`,
+  );
+  if (options.verbose) {
+    notes.push(
+      `tier config by bucket: stable=${tierSources.byBucket.stable} internal=${tierSources.byBucket.internal} advanced=${tierSources.byBucket.advanced}`,
+    );
+  }
   notes.push(
     `sdk-wide tiers: stable=${sdkTiers.stable} advanced=${sdkTiers.advanced} internal=${sdkTiers.internal} unclassified=${sdkTiers.unclassified}`,
   );
@@ -101,7 +138,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   for (const subpath of snapshot.summary.subpaths) {
     if (subpath.byTier.unclassified > 0) {
       violations.push(
-        `${subpath.npmSubpath} has ${subpath.byTier.unclassified} unclassified export(s) — add @sdkTier or stable allowlist`,
+        `${subpath.npmSubpath} has ${subpath.byTier.unclassified} unclassified export(s) — add ${formatTierTagHint()} or stable allowlist`,
       );
     }
     if (options.verbose && subpath.flat > 0) {

@@ -5,8 +5,15 @@ export {
 } from './build.js';
 export { parseBarrelExports } from './parse-barrel.js';
 export { classifyExportCategory, targetSubpathFor } from './categories.js';
-export { classifySymbolTier } from './tiers.js';
-export type { StabilityTier } from './tiers.js';
+export { classifySymbolTier, classifySymbolTierWithProvenance, resolveDeclaredTierTag } from './tiers.js';
+export type {
+  DeclaredTierTag,
+  StabilityTier,
+  SymbolTierClassification,
+  TierBucketName,
+  TierProvenance,
+  TierProvenanceKind,
+} from '../types/inventory/index.js';
 export type {
   ExportCategory,
   ExportKind,

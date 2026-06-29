@@ -15,7 +15,9 @@ export interface ResolvedTierRules {
   advanced: ResolvedTierBucket;
 }
 
-const DEFAULT_STABLE_PREFIXES = [
+const REGEX_METACHAR = /[\^$[\]()+?|\\]/;
+
+export const DEFAULT_STABLE_PREFIXES = [
   'run',
   'build',
   'emit',
@@ -32,15 +34,13 @@ const DEFAULT_STABLE_PREFIXES = [
   'noop',
 ] as const;
 
-const DEFAULT_INTERNAL_PREFIXES = ['^internal[A-Z_]', 'Internal$'] as const;
-const DEFAULT_ADVANCED_PREFIXES = [
+export const DEFAULT_INTERNAL_PREFIXES = ['^internal[A-Z_]', 'Internal$'] as const;
+export const DEFAULT_ADVANCED_PREFIXES = [
   '^experimental[A-Z_]',
   '^beta[A-Z_]',
   '^advanced[A-Z_]',
   'Unsafe$',
 ] as const;
-
-const REGEX_METACHAR = /[\^$[\]()+?|\\]/;
 
 /** Compile a config prefix entry as literal startsWith or RegExp. */
 export function compilePrefixMatcher(source: string): PrefixMatcher {
