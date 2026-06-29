@@ -25,7 +25,7 @@
   "scripts": {
     "build": "pnpm core:build && pnpm cli:build",
     "postbuild": "chmod +x dist/cli.js",
-    "typecheck": "pnpm core:typecheck && pnpm cli:typecheck",
+    "typecheck": "pnpm core:typecheck && pnpm core:build && pnpm cli:typecheck",
     "test": "vitest run",
     "test:summary": "pnpm test 2>&1 | grep -E 'Test Files|Tests|Start at|Duration'",
     "knip": "knip",
