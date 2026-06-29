@@ -10,6 +10,8 @@ export const EXPGOV_DIR = '.expgov';
 
 export const FULL_SNAPSHOT_FILENAME = 'inventory.full.json';
 export const TIMELINE_SNAPSHOT_FILENAME = 'timeline.summary.json';
+export const WORKTREE_FILES_FILENAME = 'files.json';
+export const WORKTREE_FILES_VERSION = 1 as const;
 
 export const CACHE_META_VERSION = 1 as const;
 export const SNAPSHOT_VERSION = 1 as const;

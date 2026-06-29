@@ -103,6 +103,8 @@ export interface InventorySnapshot {
   generatedAt: string;
   /** Hash of root barrel source at generation time (cache freshness for working tree). */
   sourceFingerprint?: string;
+  /** Digest of tracked input files when snapshot was built (worktree `files.json` epoch). */
+  inputFilesEpoch?: string;
   scanDepth?: SnapshotScanDepth;
   git?: SnapshotGitMeta;
   barrel: string;

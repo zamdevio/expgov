@@ -1,6 +1,6 @@
-# Worktree cache — files index (planned)
+# Worktree cache — files index (shipped)
 
-**Status:** Planning — correctness gap in shipped worktree cache.
+**Status:** Shipped — `files.json` + `inputFilesEpoch` under `__worktree__/`.
 
 **Companion:** [`systems/cache.md`](../systems/cache.md) · [`active-phase.md`](./active-phase.md)
 
@@ -8,22 +8,15 @@
 
 ---
 
-## Problem
+## Problem (fixed in P16)
 
 Worktree snapshots live under cache key `__worktree__` (`.expgov/cache/__worktree__/`).
 
-Today, cache validity uses **`sourceFingerprint` on the root barrel only** (`fingerprintSource(root index text)` in `cache/store/worktree.ts`). That means:
-
-| Edit | Cache behavior today |
-|------|----------------------|
-| Root `index.ts` barrel | Miss → rebuild ✓ |
-| Subpath barrel (`/advanced`, etc.) | **Stale hit** ✗ |
-| Source module (JSDoc `@sdkTier`, re-export target) | **Stale hit** ✗ |
-| `expgov.config.ts` tier rules | **Stale hit** ✗ |
-
-Users compensate with `-f/--force` or `-nch/--no-cache` — flags should be **opt-out**, not required for correctness.
+**Before P16**, cache validity used **`sourceFingerprint` on the root barrel only**. That meant stale hits on subpath barrels, deep re-exports, modules (JSDoc `@sdkTier`), and `expgov.config.ts` edits unless the user passed `-f/--force` or `-nch/--no-cache`.
 
 Commit-keyed cache (`<sha>/`) is fine: git tree content is immutable per SHA. **Worktree is the only ref that needs a files index.**
+
+**Shipped:** `cache/store/worktreeTrack.ts` + `worktreeFiles.ts` — hash gate via `files.json` and `inputFilesEpoch` on snapshots.
 
 ---
 
@@ -39,7 +32,7 @@ Automatic freshness for worktree inventory without forcing users to remember for
 
 ---
 
-## Layout (proposed)
+## Layout
 
 Keep the existing cache key dir; add a files index beside snapshots:
 
@@ -91,7 +84,8 @@ Barrel-only tracking **does not** catch module-only edits (tier JSDoc, implement
 
 1. All barrel paths (above)
 2. Every `sourceModule` / `toModule` repo path from snapshot `symbols`, `namespaces`, `edges`
-3. Governance inputs: `expgov.config.ts`, root `package.json` (exports map drives subpath list)
+3. **Barrel re-export chains** — every module reachable from barrel export specifiers (direct hop + `findNamedReexportSpecifier` walk)
+4. Governance inputs: `expgov.config.ts`, root `package.json` (exports map drives subpath list)
 
 On the next worktree run: **re-hash the union on disk** (fast). Any diff → full rebuild → rewrite `files.json` from the new scan closure.
 
@@ -143,21 +137,19 @@ getWorktreeSnapshot(options):
 
 ---
 
-## Implementation slices
+## Implementation slices (shipped)
 
-One PR per row.
+| # | Slice | Touch | Status |
+|---|-------|-------|--------|
+| 1 | Types + constants | `types/cache/worktreeFiles.ts`, `WORKTREE_FILES_FILENAME`, schema version | ✓ |
+| 2 | IO | `cache/store/worktreeFiles.ts` — load/save/validate `files.json` | ✓ |
+| 3 | Fingerprint pass | `cache/store/worktreeTrack.ts` — barrels, chains, hash on disk | ✓ |
+| 4 | Wire `getWorktreeSnapshot` | Epoch + closure replaces root-only `sourceFingerprint` gate | ✓ |
+| 5 | Closure persistence | `collectBarrelScanClosure` + snapshot module paths → `files.json` | ✓ |
+| 6 | Tests | `worktreeSnapshot.test.ts`, `worktreeTrack.test.ts`; tmp under `<tmpdir>/expgov/` | ✓ |
+| 7 | Docs | [`systems/cache.md`](../systems/cache.md), [`docs/commands.md`](../../docs/commands.md) | ✓ |
 
-| # | Slice | Touch |
-|---|-------|-------|
-| 1 | Types + constants | `types/cache/worktreeFiles.ts`, `WORKTREE_FILES_FILENAME`, schema version |
-| 2 | IO | `cache/store/worktreeFiles.ts` — load/save/validate `files.json`, atomic write |
-| 3 | Fingerprint pass | `cache/store/worktreeTrack.ts` — discover barrels, hash files on disk |
-| 4 | Wire `getWorktreeSnapshot` | Replace root-only `sourceFingerprint` check with epoch + closure |
-| 5 | Closure persistence | After `buildSnapshot`, collect module paths into `files.json` |
-| 6 | Tests | Hash diff → miss; barrel edit → miss; module edit → miss; intact → hit |
-| 7 | Docs | Update [`systems/cache.md`](../systems/cache.md), `docs/commands.md` cache notes |
-
-**Depends on:** shipped cache layer (P0b). **Soft dep:** none.
+**Depends on:** shipped cache layer (P0b).
 
 ---
 
@@ -169,11 +161,11 @@ One PR per row.
 
 ---
 
-## Open questions
+## Resolved decisions
 
-1. **`sourceFingerprint` field** — keep for root barrel quick check / backwards compat, or replace entirely with `inputFilesEpoch`?
-2. **Light profile** — timeline path reads root barrel only today; track root barrel + config only for `timeline` profile, or share full `files.json`?
-3. **Config outside repo** — if `expgov.config.ts` is ever outside git root, include absolute path in index (i18nprune uses config-relative paths only).
+1. **`sourceFingerprint`** — kept on snapshots for debugging; **primary gate is `inputFilesEpoch`**.
+2. **Light profile** — shares `files.json` under `__worktree__/`; first timeline-only run indexes barrels + governance; full `inventory` expands closure (including re-export chains).
+3. **Config path** — `ProjectContext.configRepoPath` (repo-relative); discovered via `resolveExpgovConfig`.
 
 ---
 

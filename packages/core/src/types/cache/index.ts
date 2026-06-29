@@ -6,3 +6,4 @@ export type {
   CacheStatus,
   SnapshotResult,
 } from './store.js';
+export type { WorktreeFileRecord, WorktreeFilesState } from './worktreeFiles.js';

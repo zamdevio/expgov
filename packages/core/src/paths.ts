@@ -1,7 +1,12 @@
 import path from 'node:path';
 
 import { getProjectContext } from './context/index.js';
-import { FULL_SNAPSHOT_FILENAME, TIMELINE_SNAPSHOT_FILENAME } from './shared/constants/cache.js';
+import {
+  FULL_SNAPSHOT_FILENAME,
+  TIMELINE_SNAPSHOT_FILENAME,
+  WORKTREE_CACHE_KEY,
+  WORKTREE_FILES_FILENAME,
+} from './shared/constants/cache.js';
 
 export function getRepoRoot(): string {
   return getProjectContext().repoRoot;
@@ -60,4 +65,8 @@ export function timelineSnapshotPathForSha(sha: string): string {
 
 export function cacheDirForSha(sha: string): string {
   return path.join(getExportsCacheRoot(), sha);
+}
+
+export function worktreeFilesPath(): string {
+  return path.join(cacheDirForSha(WORKTREE_CACHE_KEY), WORKTREE_FILES_FILENAME);
 }

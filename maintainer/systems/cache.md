@@ -16,6 +16,15 @@ Working tree uses special key `__worktree__`.
     └── timeline.summary.json
 ```
 
+Worktree uses key `__worktree__` and adds a tracked-files index:
+
+```txt
+.expgov/cache/__worktree__/
+├── files.json
+├── inventory.full.json
+└── timeline.summary.json
+```
+
 ## Behavior
 
 - **miss** — snapshot built from git tree or working tree
@@ -24,11 +33,9 @@ Working tree uses special key `__worktree__`.
 - **bypass** — `--no-cache` (no read/write this run)
 - **disabled** — `cache.enabled: false` in config (no read/write any run)
 
-## Worktree gap (planned)
+## Worktree freshness
 
-Commit SHA cache is immutable; **worktree** is not. Today validity checks only fingerprint the **root barrel** — subpath barrel edits, module/JSDoc changes, and config edits can still **hit stale cache**.
-
-**Planned:** `files.json` under `__worktree__/` (i18nprune-style file hashes + `inputFilesEpoch`). Full rebuild when any tracked file changes — no incremental snapshot merge. See [`phases/worktree.md`](../phases/worktree.md).
+Commit SHA cache is immutable; **worktree** is not. Validity checks hash a tracked file set under `__worktree__/files.json` (barrels, barrel re-export chains, scan closure, `expgov.config.ts`, core `package.json`) and bind snapshots via `inputFilesEpoch`. Any new, missing, or changed file triggers a full rebuild — no incremental snapshot merge. See [`phases/worktree.md`](../phases/worktree.md).
 
 ## Gitignore
 

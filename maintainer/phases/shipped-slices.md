@@ -34,6 +34,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P13** — conservative init | Empty built-in tier buckets; `--rich` commented opt-in hints (`c5fcbab`) |
 | 2026-W26 | **P14** — Commander-first help (A5) | `printCliHelp`; workflows appendix; per-command Examples/Related (`HEAD`) |
 | 2026-W26 | **P15** — list truncation hints (A1b) | Report-layer `…and N more`; graph/timeline `hiddenCount` fixes (`HEAD`) |
+| 2026-W26 | **P16** — worktree files index (2e) | `files.json` + `inputFilesEpoch` hash gate under `__worktree__/` (`HEAD`) |
 
 ---
 
@@ -280,7 +281,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
-## P12 — cache config + CI hygiene (shipped) · `d65429a`
+## P12 — cache config + CI hygiene (shipped) · `55eab70`
 
 - [x] `cache: true | false | { enabled?, dir? }` — config-level disable (`disabled` cache status)
 - [x] `resolveCacheOptions` — merges CLI flags with `cache.enabled`
@@ -318,6 +319,17 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 - [x] `formatListTruncationHint` — `…and N more (use -F/--full or -T/--top <n>)`
 - [x] Report-layer only — graph `topModules` no pre-slice in command host
 - [x] Timeline — full commit fetch; `hiddenCount` on display cap
+
+---
+
+## P16 — worktree files index / 2e (shipped)
+
+- [x] `files.json` under `.expgov/cache/__worktree__/` — per-file content hashes
+- [x] `inputFilesEpoch` on worktree snapshots — bound to tracked file set
+- [x] Track barrels, scan closure (symbols/namespaces/edges), barrel re-export chains, `expgov.config.ts`, core `package.json`
+- [x] `collectBarrelScanClosure` — deep re-export hops (`findNamedReexportSpecifier` walk)
+- [x] Full rebuild on any hash diff — no incremental snapshot merge
+- [x] Tests: hit/miss on barrel, direct module, and deep re-export edits; tmp fixtures under `<tmpdir>/expgov/`
 
 ---
 
@@ -364,5 +376,6 @@ See [`active-phase.md`](./active-phase.md) for current sprint focus.
 | Commander-first help | P14 | `cli/utils/help/printCliHelp.ts` |
 | `cache.enabled` / `disabled` status | P12 | `config/resolveCache.ts`, `cache/store/mode.ts` |
 | Conservative init tiers | P13 | `init/detect.ts`, `init/template.ts` |
+| Worktree `files.json` gate | P16 | `cache/store/worktreeTrack.ts`, `worktreeFiles.ts` |
 | `expgov version` | P8 | `commands/version.ts` |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

@@ -22,6 +22,16 @@ All governance commands are **read-only** except `init` (writes `expgov.config.t
 
 Per-command: `-v/--verbose`, `-f/--force`, `-nch/--no-cache` where applicable.
 
+### Cache (working tree)
+
+Snapshots for uncommitted state live under `.expgov/cache/__worktree__/`. expgov tracks barrels, re-export chains, config, and scanned modules in `files.json` and rebuilds automatically when any tracked file changes.
+
+- **Default** — correct freshness without flags; `cache: hit` in JSON when reused.
+- **`-f/--force`** — rebuild this run (still writes unless `--no-cache`).
+- **`-nch/--no-cache`** — bypass read and write (debug/CI), not a day-to-day stale-cache fix.
+
+Commit/SHA refs use immutable per-SHA cache dirs — no `files.json` needed.
+
 ---
 
 ## `init`

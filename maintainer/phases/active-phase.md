@@ -14,9 +14,7 @@
 
 | Priority | Slice | Goal |
 |----------|-------|------|
-| **Now** | **Worktree files index (2e)** | `files.json` hash gate for worktree cache |
-
-A5 + A1b shipped — see [`shipped-slices.md`](./shipped-slices.md) P14–P15.
+| **Now** | **Phase E** — Rich command metadata | Answer the “next question” per command inline |
 
 Check [`shipped-slices.md`](./shipped-slices.md) before re-implementing runtime, init, or CLI styling.
 
@@ -33,7 +31,7 @@ Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parent
 | ~~2b~~ | ~~Phase **A** — provenance + policies~~ | ~~Tier provenance, custom buckets, JSDoc chain~~ | shipped (A4) | [`shipped-slices.md`](./shipped-slices.md) |
 | ~~**2c**~~ | ~~Phase **A5** — Commander-first help~~ | shipped | [`shipped-slices.md`](./shipped-slices.md) P14 |
 | ~~**2d**~~ | ~~Phase **A1b** — truncation hints~~ | shipped | [`shipped-slices.md`](./shipped-slices.md) P15 |
-| **2e** | **Worktree files index** | `files.json` hash gate for worktree cache — no stale module/subpath hits | cache (shipped) | [`worktree.md`](./worktree.md) |
+| ~~**2e**~~ | ~~**Worktree files index**~~ | shipped | [`shipped-slices.md`](./shipped-slices.md) |
 | 3 | Phase **E** — Rich command metadata | Answer the “next question” per command inline | A (listing contract) | [`rich-command-metadata.md`](./rich-command-metadata.md) |
 | 4 | Phase **B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries | A (listing), cache (shipped) | [`timeline-2.md`](./timeline-2.md) |
 | 5 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | A (listing) | [`graph-2.md`](./graph-2.md) |

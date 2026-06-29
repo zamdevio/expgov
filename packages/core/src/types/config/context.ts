@@ -12,6 +12,8 @@ export interface ProjectContext {
   rootIndexAbsPath: string;
   exportsCacheRoot: string;
   exportsMetaPath: string;
+  /** Repo-relative path to `expgov.config.ts` when present. */
+  configRepoPath: string | null;
   /** Resolved from `cache.enabled` (default true). */
   cacheEnabled: boolean;
   tsconfigPath: string;
