@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 
 import { formatBoxHeader, getRunOptions } from '@expgov/core';
 
-import { CLI_ROOT_TAGLINE } from '../../constants/cli.js';
+import { CLI_NAME, CLI_ROOT_TAGLINE } from '../../constants/cli.js';
 
 const BANNER_SUBTITLES: Record<string, string> = {
   init: 'expgov.config.ts — export governance scaffold',
@@ -18,12 +18,13 @@ const BANNER_SUBTITLES: Record<string, string> = {
   help: 'command usage reference',
 };
 
-export function maybePrintCommandBanner(cmd: Command): void {
+export function maybePrintCommandBanner(cmd: Command, root?: Command): void {
   const run = getRunOptions();
   if (run.json || run.silent) return;
 
   const name = cmd.name();
-  if (!name || name === 'help') return;
+  if (!name || name === 'help' || name === CLI_NAME) return;
+  if (root && cmd === root) return;
 
   const subtitle = BANNER_SUBTITLES[name] ?? CLI_ROOT_TAGLINE;
   const title = name.charAt(0).toUpperCase() + name.slice(1);

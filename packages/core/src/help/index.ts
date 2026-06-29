@@ -121,7 +121,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       '',
       `  ${style.bold('Checks')}`,
       `    ${style.dim('config')}   package name, barrel, tsconfig, core package.json`,
-      `    ${style.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored; stale .exports/cache dir hint`,
+      `    ${style.dim('cache')}   ${DEFAULT_CACHE_DIR}/ gitignored when present`,
       `    ${style.dim('drift')}   tsconfig ↔ npm exports parity (hints only — use validate for enforcement)`,
     ]);
   }

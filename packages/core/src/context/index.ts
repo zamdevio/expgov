@@ -97,9 +97,11 @@ export function initProjectContextFromConfig(
   return ctx;
 }
 
-export function npmSubpathKey(npmSubpathKey: string): string {
+export function npmSubpathKey(subpathKey: string): string {
   const { packageName } = getProjectContext();
-  return npmSubpathKey === '.' ? packageName : `${packageName}/${npmSubpathKey}`;
+  if (subpathKey === '.') return packageName;
+  const normalized = subpathKey.replace(/^\.\//, '');
+  return `${packageName}/${normalized}`;
 }
 
 export function packageNamePathPrefix(): string {

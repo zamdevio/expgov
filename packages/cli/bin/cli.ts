@@ -127,7 +127,7 @@ function buildProgram(): Command {
       verbose: Boolean((actionCommand.opts() as { verbose?: boolean }).verbose),
     });
     if (opts.cwd) process.chdir(path.resolve(opts.cwd));
-    maybePrintCommandBanner(actionCommand);
+    maybePrintCommandBanner(actionCommand, program);
   });
 
   program
@@ -206,17 +206,24 @@ function buildProgram(): Command {
     ),
   );
 
-  program
-    .command('validate')
-    .description('governance checks on working tree')
-    .option('-v, --verbose', 'verbose output')
-    .option('--since <ref>', 'reserved for future delta validation')
-    .action((_opts, cmd) => {
-      const local = cmd.opts() as { verbose?: boolean; since?: string };
-      withContext(cmd, local.verbose, program, () =>
-        runExportsValidate({ since: local.since, verbose: local.verbose }),
-      );
-    });
+  addListFlags(
+    program
+      .command('validate')
+      .description('governance checks on working tree')
+      .option('-v, --verbose', 'verbose output')
+      .option('--since <ref>', 'reserved for future delta validation')
+      .action((_opts, cmd) => {
+        const local = cmd.opts() as { verbose?: boolean; since?: string; top?: number; full?: boolean };
+        withContext(cmd, local.verbose, program, () =>
+          runExportsValidate({
+            since: local.since,
+            verbose: local.verbose,
+            top: local.top,
+            full: local.full,
+          }),
+        );
+      }),
+  );
 
   program
     .command('doctor')
@@ -354,6 +361,10 @@ function buildProgram(): Command {
       }
       printCliHelp(program, topic);
     });
+
+  program.action(() => {
+    printCliHelp(program);
+  });
 
   return program;
 }

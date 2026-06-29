@@ -209,6 +209,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     advancedFlatSymbols,
     internalFlatSymbols,
     insights,
+    listView: options,
   });
 
   finishCommand({

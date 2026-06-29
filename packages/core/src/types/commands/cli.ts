@@ -48,7 +48,7 @@ export interface TrendCliOptions extends ListViewOptions {
   verbose?: boolean;
 }
 
-export interface ValidateOptions {
+export interface ValidateOptions extends ListViewOptions {
   since?: string;
   verbose?: boolean;
 }

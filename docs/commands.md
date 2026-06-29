@@ -86,7 +86,11 @@ Governance checks on the working tree. **Exits 0 on pass, 1 on fail.**
 ```bash
 expgov validate
 expgov validate -v
+expgov validate -T 5    # cap violation/note lists (default 10)
+expgov validate -F        # show all list rows
 ```
+
+List flags (`-T`/`--top`, `-F`/`--full`) apply to violations, notes, and verbose symbol lists.
 
 Checks include:
 

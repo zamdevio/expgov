@@ -14,7 +14,6 @@ import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import {
   DEFAULT_CACHE_DIR,
-  LEGACY_CACHE_DIR,
 } from '../shared/constants/cache.js';
 import type { DoctorCliOptions } from '../types/commands/cli.js';
 import type { PackageExports } from '../types/config/package.js';
@@ -128,13 +127,6 @@ export function runExportsDoctor(options: DoctorCliOptions = {}): number {
     hints.push(`cache dir ${cacheRel}/ configured but writes skipped (cache.enabled: false)`);
   }
 
-  const legacyCachePath = path.join(ctx.repoRoot, LEGACY_CACHE_DIR);
-  if (existsSync(legacyCachePath)) {
-    warnings.push(
-      `legacy cache ${LEGACY_CACHE_DIR}/ still present — remove manually (use cache.dir: ${DEFAULT_CACHE_DIR})`,
-    );
-  }
-
   const cacheOnDisk = existsSync(ctx.exportsCacheRoot);
   if (shouldSuggestCacheGitignore({ repoRoot: ctx.repoRoot, cacheDirRel: cacheRel })) {
     warnings.push(`add \`${cacheRel}/\` to .gitignore — local snapshots must not be committed`);
@@ -176,7 +168,6 @@ export function runExportsDoctor(options: DoctorCliOptions = {}): number {
           hints,
           cacheRel,
           snapshotCount,
-          legacyCachePresent: existsSync(legacyCachePath),
         },
       },
     });
