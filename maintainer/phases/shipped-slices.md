@@ -2,7 +2,7 @@
 
 Closed work only. Check here before re-implementing. Durable engineering detail lives in [`systems/`](../systems/README.md).
 
-**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `HEAD` (P7–P11, 2026-W26 cont.).
+**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `c5fcbab` (P7–P15).
 
 ---
 
@@ -30,6 +30,10 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P9** — tier provenance (A4) | `tierProvenance` labels; logger `reports/` split; `-T/-F` list flags (`4f943b3`) |
 | 2026-W26 | **P10** — tier policies + style | Custom tier buckets + `policy`; `style` tokens only in `runtime/style.ts` (`1408c6e`) |
 | 2026-W26 | **P11** — tier rollup + config types | Custom tiers in rollups; JSDoc re-export chain; `types/config/` barrel |
+| 2026-W26 | **P12** — cache config + CI hygiene | `cache.enabled`/`cache.dir`; `ci.yml` + `architecture.yml`; knip/madge/vitest; `types/` consolidation (`d65429a`) |
+| 2026-W26 | **P13** — conservative init | Empty built-in tier buckets; `--rich` commented opt-in hints (`c5fcbab`) |
+| 2026-W26 | **P14** — Commander-first help (A5) | `printCliHelp`; workflows appendix; per-command Examples/Related (`HEAD`) |
+| 2026-W26 | **P15** — list truncation hints (A1b) | Report-layer `…and N more`; graph/timeline `hiddenCount` fixes (`HEAD`) |
 
 ---
 
@@ -64,10 +68,10 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ## P0b — cache layer (shipped) · `a78a6fe`
 
-- [x] Cache root: `.expgov/cache/` (configurable `cacheDir`)
+- [x] Cache root: `.expgov/cache/` (configurable `cache.dir`)
 - [x] Per-SHA dirs: `inventory.full.json`, `timeline.summary.json`
 - [x] Worktree key `__worktree__` for uncommitted barrel state
-- [x] Status: `hit` | `miss` | `refresh` | `bypass`
+- [x] Status: `hit` | `miss` | `refresh` | `bypass` | `disabled` (`cache.enabled: false`)
 - [x] CLI flags: `-f/--force` (rebuild + write), `--no-cache` (skip read/write)
 - [x] `cache/meta.json` heal + validation
 - [x] Profiles: `full` (inventory/graph/diff) vs `timeline` (lighter warm for log)
@@ -121,7 +125,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 ## P1a — CLI host polish (shipped) · `4d53612`
 
 - [x] `init` command — scaffold `expgov.config.ts`; monorepo vs single-package detection
-- [x] Init flags: `-y/--yes`, `-f/--force`, `-r/--rich` (commented `tiers.stable.exact` examples)
+- [x] Init flags: `-y/--yes`, `-f/--force`, `-r/--rich` (commented cache + tier opt-in examples)
 - [x] `@inquirer/prompts` confirm flows (CLI only); `shouldSkipInteractivePrompts` for CI/TTY
 - [x] `maybePrintCommandBanner` — box header per command (off under `--json` / `--silent`)
 - [x] `configureCliHelp` — colorized Usage/Options; `(default: …)` bright yellow (`style.highlight`)
@@ -136,7 +140,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 - [x] `TierRulesConfig` — `stable`, `internal`, `advanced` buckets (+ custom buckets later in P10)
 - [x] `config/tiers.ts` — `compilePrefixMatcher` (literal prefix vs `/regex/` / metachar)
 - [x] Classifier order: `@sdkTier` → internal → advanced → stable → `unclassified`
-- [x] Default prefix sets when tier bucket omitted entirely (init scaffold includes explicit lists)
+- [x] Default prefix sets when tier bucket **omitted**; explicit empty bucket opts out (P13)
 - [x] `init` template emits nested `tiers` block
 - [x] Validate messages reference `tiers.<tier>.exact` / `.prefix`
 - [x] Map: [`systems/tiers.md`](../systems/tiers.md), [`systems/config.md`](../systems/config.md)
@@ -276,6 +280,47 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
+## P12 — cache config + CI hygiene (shipped) · `d65429a`
+
+- [x] `cache: true | false | { enabled?, dir? }` — config-level disable (`disabled` cache status)
+- [x] `resolveCacheOptions` — merges CLI flags with `cache.enabled`
+- [x] Domain types under `packages/core/src/types/`; constants under `shared/constants/`
+- [x] `ci.yml` — typecheck, test, build, madge:circular, `expgov validate`
+- [x] `architecture.yml` — advisory knip + madge orphans/leaves
+- [x] Root `knip.json`, `vitest.config.ts`, `scripts/madge/run.mjs`
+- [x] `printCliHelp` scaffolding; `maintainer/phases/worktree.md` plan
+- [x] Workspace CLI package name `expgov` (publish root binary)
+
+---
+
+## P13 — conservative init (shipped) · `c5fcbab`
+
+- [x] Default `expgov init` — empty `stable` / `internal` / `advanced` buckets
+- [x] Explicit empty bucket opts out of built-in prefix merge (`resolveBucket`)
+- [x] `--rich` — commented `cache` + tier `exact`/`prefix` examples for opt-in
+- [x] Default init omits `cache` block (runtime defaults)
+
+---
+
+## P14 — Commander-first help / A5 (shipped)
+
+- [x] `expgov help` ≡ Commander `outputHelp` + **Workflows** appendix
+- [x] `expgov help <cmd>` ≡ `expgov <cmd> -h` (same box + colorized options)
+- [x] Usage errors → `printCliHelp(program, topic)` + `printHelpHint`
+- [x] `registerCommandHelpExtras` — per-command Examples / Related (`addHelpText`)
+- [x] `help` command skips per-command banner (box from `formatHelp` only)
+- [x] Core `printHelp` retained for programmatic use only — CLI does not call it
+
+---
+
+## P15 — list truncation hints / A1b (shipped)
+
+- [x] `formatListTruncationHint` — `…and N more (use -F/--full or -T/--top <n>)`
+- [x] Report-layer only — graph `topModules` no pre-slice in command host
+- [x] Timeline — full commit fetch; `hiddenCount` on display cap
+
+---
+
 ## Dogfood / integration receipts
 
 | Target | Status |
@@ -287,7 +332,6 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ## Explicitly not shipped (do not assume present)
 
-- [ ] Phase **A5** — workflow-oriented help sections
 - [ ] Phase **E** — rich command metadata (inline “next question” hints)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
@@ -317,5 +361,8 @@ See [`active-phase.md`](./active-phase.md) for current sprint focus.
 | `style` tokens (no chalk in reports) | P10 | `runtime/style.ts` |
 | Footer summary line | P2a | `runtime/footer.ts` |
 | `-T` / `-F` list limits | P6 | `shared/listing.ts`, `cli/utils/cli/listFlags.ts` |
+| Commander-first help | P14 | `cli/utils/help/printCliHelp.ts` |
+| `cache.enabled` / `disabled` status | P12 | `config/resolveCache.ts`, `cache/store/mode.ts` |
+| Conservative init tiers | P13 | `init/detect.ts`, `init/template.ts` |
 | `expgov version` | P8 | `commands/version.ts` |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

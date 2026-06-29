@@ -24,7 +24,7 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 | `-C, --cwd` | Project root |
 | `-c, --config` | Path to `expgov.config.ts` |
 | `-pn, --package-name` | Override package name |
-| `-cd, --cache-dir` | Override cache directory |
+| `-cd, --cache-dir` | Override `cache.dir` |
 | `-ncl, --no-color` | Plain output (also `NO_COLOR`, non-TTY) |
 | `-nlg, --no-log-prefix` | Omit `[expgov]` log prefix |
 | `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
@@ -51,7 +51,11 @@ After the report body, `finishCommand` emits optional `summary: key=val · …` 
 
 ## Help
 
-- `configureCliHelp.ts` — colorized Commander help
+- `configureCliHelp.ts` — colorized Commander help (box header + Usage/Options)
+- `printCliHelp.ts` — `expgov help` / usage errors; root help appends **Workflows** appendix
+- `commandHelp.ts` — per-command `Examples` / `Related` via `addHelpText`
+- `expgov help <cmd>` ≡ `expgov <cmd> -h`
+- Core `printHelp` — programmatic only; CLI does not use it for interactive help
 - `(default: …)` segments use `style.highlight` (bright yellow)
 - Box header skipped when `--json` or `--silent`
 

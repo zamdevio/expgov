@@ -160,42 +160,15 @@ See [`shipped-slices.md`](./shipped-slices.md) P9–P11. `tierProvenance`, custo
 
 ---
 
-### A5 — Help: Commander-first (`-h` styling)
+### A5 — Help: Commander-first (`-h` styling) — **shipped** (P14)
 
-**Decision:** `expgov help` and `expgov <cmd> -h` share **one renderer** — Commander `configureCliHelp` (`formatHelp` + `colorizeHelpText` + box header). The hand-written `packages/core/src/help/index.ts` manual is **retired** for interactive help; core keeps `printHelpHint` only.
-
-**Motivation:** Two help systems (`printHelp` vs `-h`) diverged in layout, color tokens, and flag sync. Users expect `expgov help init` ≡ `expgov init -h`.
-
-**User value:** One visual language; flags stay in sync with Commander metadata; less duplicate prose to maintain.
-
-**Approach:**
-
-1. **CLI `printCliHelp(program, topic?)`** — delegate to `program.outputHelp()` or `subcommand.outputHelp()`; skip `maybePrintCommandBanner` for the `help` command (box comes from `formatHelp`).
-2. **`expgov help` / `expgov help all`** — root `outputHelp()` plus a **Workflows** appendix (the only content not in Commander metadata).
-3. **`expgov help <cmd>`** — identical to `expgov <cmd> -h` (no generic “Help — command usage reference” banner).
-4. **Usage errors** — `handleError` calls `printCliHelp` instead of core `printHelp('all')`.
-5. **Enrichment (follow-up in same slice):** per-command `addHelpText('after', …)` for Examples / Related / See also — still using Commander’s styled body.
-6. **Core `printHelp`** — deprecated for CLI; may remain exported until a later cleanup PR.
-
-**Out of scope for A5:** `docs/*` and `systems/*` — implementation plan lives here only.
-
-**Risks:** Workflow appendix only on full help; per-command `-h` stays compact. Long `addHelpText` blocks need discipline.
+See [`shipped-slices.md`](./shipped-slices.md) P14.
 
 ---
 
-### A1b — List truncation hints (completeness)
+### A1b — List truncation hints (completeness) — **shipped** (P15)
 
-**Motivation:** `limitList` + `logListTruncation` must run at the **report** layer only. Pre-slicing in command hosts hides `hiddenCount` (graph `topModules` was slicing before `printGraphReport`).
-
-**Rule:** Every capped human list emits `…and N more (use -F/--full or -T/--top <n>)` when `hiddenCount > 0`, including when only one row is hidden.
-
-| Command | Lists | Fix |
-|---------|-------|-----|
-| `graph` | top source modules | Remove pre-slice in `commands/graph.ts`; report owns `limitList` |
-| `timeline` | commit rows | Fetch full barrel commit list (cheap `git log`); warm + display only visible rows; pass `hiddenCount` to report |
-| `inventory`, `diff`, `trend` | various | Already correct at report layer — verify only |
-
-**Dependencies:** A1 listing helper (shipped).
+See [`shipped-slices.md`](./shipped-slices.md) P15.
 
 ---
 

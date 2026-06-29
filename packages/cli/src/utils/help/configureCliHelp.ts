@@ -4,7 +4,7 @@ import { CLI_NAME, CLI_ROOT_TAGLINE } from '../../constants/cli.js';
 import { formatBoxHeader, style } from '@expgov/core';
 import { styleCommandHelpTerm } from './term.js';
 
-const SECTION_HEADER = /^(Options|Commands|Arguments|Global Options):$/;
+const SECTION_HEADER = /^(Options|Commands|Arguments|Global Options|Examples|Related):$/;
 const HELP_ROW = /^(\s{2})(.+?)(\s{2,})(.*)$/;
 
 function styleUsageLine(line: string): string {
@@ -42,6 +42,7 @@ export function colorizeHelpText(text: string): string {
       else if (line === 'Options:') section = 'options';
       else if (line === 'Arguments:') section = 'arguments';
       else if (line === 'Global Options:') section = 'global-options';
+      else if (line === 'Examples:' || line === 'Related:') section = 'none';
       out.push(styleSectionHeader(line));
       continue;
     }

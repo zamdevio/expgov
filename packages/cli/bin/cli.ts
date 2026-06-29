@@ -29,6 +29,7 @@ import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
 import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
 import { resolveNoColor } from '../src/utils/cli/noColor.js';
 import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
+import { registerCommandHelpExtras } from '../src/utils/help/commandHelp.js';
 import { printCliHelp } from '../src/utils/help/printCliHelp.js';
 import { printCurrentVersionLine, runVersionCheckCommand, runVersionResetCommand } from '../src/utils/version/index.js';
 
@@ -66,8 +67,9 @@ function handleError(err: unknown, program: Command): never {
   if (isExportError(err)) {
     if (err.code === 'usage') {
       if (err.exitCode !== 0) printExportError(err);
-      printCliHelp(program);
-      printHelpHint(typeof err.details.command === 'string' ? err.details.command : undefined);
+      const topic = typeof err.details.command === 'string' ? err.details.command : undefined;
+      printCliHelp(program, topic);
+      printHelpHint(topic);
       process.exit(err.exitCode);
     }
     printExportError(err);
@@ -353,6 +355,8 @@ function buildProgram(): Command {
       }
       printCliHelp(program, topic);
     });
+
+  registerCommandHelpExtras(program);
 
   return program;
 }
