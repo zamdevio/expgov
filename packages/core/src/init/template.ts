@@ -24,7 +24,8 @@ function formatStringList(items: string[], indent: string): string {
 
 function formatCommentedStringList(items: readonly string[], indent: string): string {
   if (!items.length) return '[]';
-  return `[\n${items.map((item) => `${indent}    // ${quote(item)},`).join('\n')}\n${indent}  ]`;
+  const itemIndent = `${indent}  `;
+  return `[\n${items.map((item) => `${itemIndent}// ${quote(item)},`).join('\n')}\n${indent}]`;
 }
 
 function formatTierBucket(

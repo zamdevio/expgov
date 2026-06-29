@@ -53,7 +53,7 @@ After the report body, `finishCommand` emits optional `summary: key=val · …` 
 
 - `configureCliHelp.ts` — colorized Commander help (box header + Usage/Options)
 - `printCliHelp.ts` — `expgov help` / usage errors; root help appends **Workflows** appendix
-- `commandHelp.ts` — per-command `Examples` / `Related` via `addHelpText`
+- `commandHelp.ts` — per-command `Examples` / `Related` merged in `formatHelp` (before colorize; not `addHelpText`)
 - `expgov help <cmd>` ≡ `expgov <cmd> -h`
 - Core `printHelp` — programmatic only; CLI does not use it for interactive help
 - `(default: …)` segments use `style.highlight` (bright yellow)

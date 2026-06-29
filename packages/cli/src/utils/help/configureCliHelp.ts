@@ -2,6 +2,7 @@ import { Help, type Command } from 'commander';
 
 import { CLI_NAME, CLI_ROOT_TAGLINE } from '../../constants/cli.js';
 import { formatBoxHeader, style } from '@expgov/core';
+import { formatCommandHelpExtras } from './commandHelp.js';
 import { styleCommandHelpTerm } from './term.js';
 
 const SECTION_HEADER = /^(Options|Commands|Arguments|Global Options|Examples|Related):$/;
@@ -31,7 +32,8 @@ function styleDescription(desc: string): string {
 export function colorizeHelpText(text: string): string {
   const lines = text.split('\n');
   const out: string[] = [];
-  let section: 'none' | 'arguments' | 'options' | 'commands' | 'global-options' = 'none';
+  let section: 'none' | 'arguments' | 'options' | 'commands' | 'global-options' | 'examples' | 'related' =
+    'none';
   for (const line of lines) {
     if (line.startsWith('Usage:')) {
       out.push(styleUsageLine(line));
@@ -42,11 +44,26 @@ export function colorizeHelpText(text: string): string {
       else if (line === 'Options:') section = 'options';
       else if (line === 'Arguments:') section = 'arguments';
       else if (line === 'Global Options:') section = 'global-options';
-      else if (line === 'Examples:' || line === 'Related:') section = 'none';
+      else if (line === 'Examples:') section = 'examples';
+      else if (line === 'Related:') section = 'related';
       out.push(styleSectionHeader(line));
       continue;
     }
-    if (line === '') section = 'none';
+    if (line === '') {
+      section = 'none';
+      out.push('');
+      continue;
+    }
+    if (section === 'examples' && /^\s{2}\S/.test(line)) {
+      out.push(`  ${style.bold(style.accent(line.trim()))}`);
+      continue;
+    }
+    if (section === 'related' && /^\s{2}\S/.test(line)) {
+      const parts = line.trim().split(/\s+·\s+/);
+      const styled = parts.map((part) => styleCommandHelpTerm(part.trim())).join(style.dim('  ·  '));
+      out.push(`  ${styled}`);
+      continue;
+    }
     const row = HELP_ROW.exec(line);
     if (row) {
       const [, indent, termRaw, gap, desc] = row;
@@ -60,10 +77,6 @@ export function colorizeHelpText(text: string): string {
         out.push(`${indent}${styleTerm(term, section)}${gap}${styleDescription(desc)}`);
         continue;
       }
-    }
-    if (line === '') {
-      out.push('');
-      continue;
     }
     out.push(styleDescription(line));
   }
@@ -107,7 +120,8 @@ export function configureCliHelp(program: Command): void {
   program.configureHelp({
     formatHelp(cmd: Command, helper: Help) {
       const raw = Help.prototype.formatHelp.call(helper, cmd, helper);
-      const colored = colorizeHelpText(raw);
+      const extras = formatCommandHelpExtras(cmd.name());
+      const colored = colorizeHelpText(extras ? `${raw}${extras}` : raw);
       const root = cmd.parent ?? cmd;
       const opts = root.opts<{ json?: boolean; silent?: boolean }>();
       if (opts.json || opts.silent) return colored;

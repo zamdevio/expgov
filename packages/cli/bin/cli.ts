@@ -29,7 +29,6 @@ import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
 import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
 import { resolveNoColor } from '../src/utils/cli/noColor.js';
 import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
-import { registerCommandHelpExtras } from '../src/utils/help/commandHelp.js';
 import { printCliHelp } from '../src/utils/help/printCliHelp.js';
 import { printCurrentVersionLine, runVersionCheckCommand, runVersionResetCommand } from '../src/utils/version/index.js';
 
@@ -355,8 +354,6 @@ function buildProgram(): Command {
       }
       printCliHelp(program, topic);
     });
-
-  registerCommandHelpExtras(program);
 
   return program;
 }

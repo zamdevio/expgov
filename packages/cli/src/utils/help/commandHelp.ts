@@ -1,5 +1,3 @@
-import type { Command } from 'commander';
-
 interface CommandHelpExtra {
   examples?: string[];
   related?: string[];
@@ -48,7 +46,11 @@ const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {
   },
 };
 
-function formatAfterText(extra: CommandHelpExtra): string {
+/** Raw Examples / Related appendix for Commander formatHelp (must run before colorize). */
+export function formatCommandHelpExtras(commandName: string): string {
+  const extra = COMMAND_HELP_EXTRAS[commandName];
+  if (!extra) return '';
+
   const lines: string[] = [];
   if (extra.examples?.length) {
     lines.push('', 'Examples:');
@@ -59,14 +61,4 @@ function formatAfterText(extra: CommandHelpExtra): string {
     lines.push(`  ${extra.related.join('  ·  ')}`);
   }
   return lines.length ? lines.join('\n') : '';
-}
-
-/** Per-command Examples / Related blocks (styled via configureCliHelp). */
-export function registerCommandHelpExtras(program: Command): void {
-  for (const cmd of program.commands) {
-    const extra = COMMAND_HELP_EXTRAS[cmd.name()];
-    if (!extra) continue;
-    const text = formatAfterText(extra);
-    if (text) cmd.addHelpText('after', text);
-  }
 }
