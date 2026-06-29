@@ -1,5 +1,6 @@
 import { getSnapshot } from '../cache/index.js';
 import { formatGitRunStats, resetGitRunStats, resolveSourceRef } from '../git/index.js';
+import { tierCountsFooterFields } from '../inventory/index.js';
 import { printInventoryReport, printVerboseInventory } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
@@ -44,11 +45,7 @@ export function runExportsInventory(options: InventoryCliOptions): void {
     timer,
     status: 'ok',
     footer: {
-      counts: {
-        flat: root.flat,
-        stable: root.stable,
-        unclassified: root.unclassified,
-      },
+      counts: tierCountsFooterFields(root, { flat: root.flat }),
     },
   });
 }

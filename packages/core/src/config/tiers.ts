@@ -1,4 +1,4 @@
-import type { TierBucket, TierRulesConfig } from './types.js';
+import type { TierBucket, TierRulesConfig } from '../types/config/tiers.js';
 
 export type PrefixMatcher =
   | { kind: 'prefix'; value: string }

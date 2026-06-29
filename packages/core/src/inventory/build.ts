@@ -23,10 +23,7 @@ import type {
   SubpathRollup,
   TierCounts,
 } from './types.js';
-
-function emptyTierCounts(): TierCounts {
-  return { stable: 0, advanced: 0, internal: 0, unclassified: 0, custom: {} };
-}
+import { emptyTierCounts } from './tierCounts.js';
 
 function rollTier(counts: TierCounts, tier: InventorySymbol['tier']): void {
   if (tier === 'unclassified') {
@@ -113,7 +110,9 @@ function enrichBarrel(input: {
 
     const declared = resolveDeclaredTierTag({
       name: item.name,
-      moduleContent,
+      barrelRepoPath: input.barrelRepoPath,
+      sourceSpecifier: item.sourceSpecifier,
+      readAtPath: (repoPath) => readCached(repoPath),
     });
     const classification = classifySymbolTierWithProvenance(item.name, {
       declaredTierTag: declared?.tier,
@@ -170,38 +169,20 @@ function classifySubpathExportTier(input: {
   reader: SourceReader;
   subpathHint?: string;
 }): InventorySymbol['tier'] {
-  const mod = input.sourceSpecifier
-    ? readModule(input.reader, input.barrelRepoPath, input.sourceSpecifier)
-    : null;
   const declared = resolveDeclaredTierTag({
     name: input.name,
-    moduleContent: mod?.content ?? null,
+    barrelRepoPath: input.barrelRepoPath,
+    sourceSpecifier: input.sourceSpecifier,
+    readAtPath: (repoPath) => {
+      const mod = readModuleAtPath(input.reader, repoPath);
+      return mod;
+    },
   });
   if (declared) return declared.tier;
   if (input.subpathHint) return input.subpathHint;
 
   const tier = classifySymbolTier(input.name);
   return tier;
-}
-
-export function sumSdkTierCounts(snapshot: Pick<InventorySnapshot, 'summary'>): TierCounts {
-  const totals = emptyTierCounts();
-  totals.stable = snapshot.summary.root.stable;
-  totals.advanced = snapshot.summary.root.advanced;
-  totals.internal = snapshot.summary.root.internal;
-  totals.unclassified = snapshot.summary.root.unclassified;
-
-  for (const subpath of snapshot.summary.subpaths) {
-    totals.stable += subpath.byTier.stable;
-    totals.advanced += subpath.byTier.advanced;
-    totals.internal += subpath.byTier.internal;
-    totals.unclassified += subpath.byTier.unclassified;
-    for (const [name, count] of Object.entries(subpath.byTier.custom)) {
-      totals.custom[name] = (totals.custom[name] ?? 0) + count;
-    }
-  }
-
-  return totals;
 }
 
 function buildSubpathRollups(reader: SourceReader): SubpathRollup[] {

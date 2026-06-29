@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-import type { ExpgovConfig } from '../config/types.js';
+import type { ExpgovConfig } from '../types/config/index.js';
 import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 import type { InitDetection } from '../types/init/detection.js';
 

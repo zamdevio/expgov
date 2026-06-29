@@ -1,8 +1,7 @@
 import path from 'node:path';
 
 import { resolveTierCatalog } from '../config/tierCatalog.js';
-import type { ExpgovConfig, ProjectContext } from '../config/types.js';
-import type { ExpgovConfigOverrides } from '../config/types.js';
+import type { ExpgovConfig, ExpgovConfigOverrides, ProjectContext } from '../types/config/index.js';
 import { resolveExpgovConfig } from '../config/load.js';
 import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 

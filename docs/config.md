@@ -54,7 +54,7 @@ Run `expgov init` to generate a working scaffold for your layout.
 | `git.tagPattern` | Version tag glob for `trend` (default `v*`) |
 | `git.timelineBarrelPath` | Barrel path for `timeline` git log scope |
 | `tiers` | Export classification buckets — see below |
-| `tiers.tag` | Optional JSDoc tag name — literals must match bucket names |
+| `tiers.tag` | Optional JSDoc tag name and tag-vs-config precedence |
 
 ## Tier buckets
 
@@ -62,7 +62,10 @@ Each bucket has optional `policy`, `precedence`, `exact` (literal export names),
 
 ```ts
 tiers: {
-  tag: { name: 'exportTier' }, // optional — default sdkTier
+  tag: {
+    name: 'sdkTier',
+    precedence: 'tag', // default — JSDoc wins when both tag and config match
+  },
   stable:   { policy: 'public', exact: ['MyType'], prefix: ['run'] },
   internal: { policy: 'maintainer', prefix: ['^internal[A-Z_]', 'Internal$'] },
   advanced: { policy: 'experimental', prefix: ['^experimental[A-Z_]', 'Unsafe$'] },
@@ -86,18 +89,22 @@ tiers: {
 2. Buckets by `precedence` (lower first; built-in defaults: internal 10, advanced 20, stable 100)
 3. `unclassified` → `validate` fails
 
+When **both** JSDoc and config match the same export, `tiers.tag.precedence` decides:
+- `tag` (default) — `@sdkTier` wins
+- `config` — `tiers.<bucket>.exact` / `.prefix` wins
+
 ### Custom tag name (`tiers.tag`)
 
 ```ts
 tiers: {
-  tag: { name: 'exportTier' },
+  tag: { name: 'sdkTier' },
   stable: { exact: ['MyType'] },
   beta: { policy: 'preview', prefix: ['^beta'] },
 }
 ```
 
 ```ts
-/** @exportTier beta */
+/** @sdkTier beta */
 export function previewApi() {}
 ```
 
@@ -109,7 +116,7 @@ Prefix forms:
 | `^internal[A-Z_]` | RegExp |
 | `/foo.*/i` | RegExp with optional flags |
 
-Tag a declaration in source:
+Tag a declaration on the **defining** export (works through barrel re-exports):
 
 ```ts
 /** @sdkTier stable */

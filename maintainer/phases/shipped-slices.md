@@ -2,7 +2,7 @@
 
 Closed work only. Check here before re-implementing. Durable engineering detail lives in [`systems/`](../systems/README.md).
 
-**Commits on `main`:** `a78a6fe` → `4d53612` → `daa4615` → `651bf29` (all **2026-W26**).
+**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `HEAD` (P7–P11, 2026-W26 cont.).
 
 ---
 
@@ -12,7 +12,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 |------|-------|---------|
 | 2026-W26 | **P0** — portable scaffold | Extract archlab `scripts/exports` → standalone `expgov`; tsup bundle; TypeScript-only config (`a78a6fe`) |
 | 2026-W26 | **P0a** — inventory engine | Barrel parse, symbol graph, tier/category rollup, `@sdkTier` JSDoc (`a78a6fe`) |
-| 2026-W26 | **P0b** — cache layer | Per-SHA `.exports/cache/` snapshots; hit/miss/refresh/bypass; worktree key (`a78a6fe`) |
+| 2026-W26 | **P0b** — cache layer | Per-SHA `.expgov/cache/` snapshots; hit/miss/refresh/bypass; worktree key (`a78a6fe`) |
 | 2026-W26 | **P0c** — git & refs | Worktree/HEAD/tag/commit refs; diff ranges; timeline log; version tags (`a78a6fe`) |
 | 2026-W26 | **P0d** — governance commands | `inventory`, `diff`, `validate`, `trend`, `timeline`, `graph` wired CLI + core (`a78a6fe`) |
 | 2026-W26 | **P1** — styled runtime | Log policy, JSON envelopes, global `-j/-q/-s`, banners, `init`, cache gitignore tip (`4d53612`) |
@@ -24,7 +24,12 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P4** — cache rename | Default cache dir `.exports/cache` → `.expgov/cache` |
 | 2026-W26 | **P4a** — `doctor` | Config discovery, cache gitignore, parity drift hints |
 | 2026-W26 | **P5** — `suggest` | Dry-run `tiers.stable.exact` suggestions for unclassified flats |
-| 2026-W26 | **P6** — CLI DX (A1–A3) | `--top`/`--full` listing, short aliases, TTY color defaults |
+| 2026-W26 | **P6** — CLI DX (A1–A3) | `-T/--top` / `-F/--full` listing, short aliases, TTY color defaults (`4ea5019`) |
+| 2026-W26 | **P7** — core layout refactor | `types/`, `shared/constants/`; thin `packages/cli/bin/cli.ts` entry (`d372532`) |
+| 2026-W26 | **P8** — `version` command | Build-time semver injection; `expgov version` / global `-V` (`e00cdf3`) |
+| 2026-W26 | **P9** — tier provenance (A4) | `tierProvenance` labels; logger `reports/` split; `-T/-F` list flags (`4f943b3`) |
+| 2026-W26 | **P10** — tier policies + style | Custom tier buckets + `policy`; `style` tokens only in `runtime/style.ts` (`1408c6e`) |
+| 2026-W26 | **P11** — tier rollup + config types | Custom tiers in rollups; JSDoc re-export chain; `types/config/` barrel |
 
 ---
 
@@ -39,7 +44,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 - [x] Config discovery: cwd / git root; `--config` override; merge CLI overrides (`-C`, `--package-name`, `--cache-dir`)
 - [x] `ExportError` + structured error codes; `printHelp` / `printHelpHint` long-form usage
 - [x] Human report formatters in `packages/core/src/logger/` (meta rows, tier colors, diff deltas)
-- [x] `.gitignore`: `dist`, `node_modules`, `.exports/cache`
+- [x] `.gitignore`: `dist`, `node_modules`, `.expgov/cache`
 
 ---
 
@@ -59,7 +64,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ## P0b — cache layer (shipped) · `a78a6fe`
 
-- [x] Cache root: `.exports/cache/` (configurable `cacheDir`)
+- [x] Cache root: `.expgov/cache/` (configurable `cacheDir`)
 - [x] Per-SHA dirs: `inventory.full.json`, `timeline.summary.json`
 - [x] Worktree key `__worktree__` for uncommitted barrel state
 - [x] Status: `hit` | `miss` | `refresh` | `bypass`
@@ -120,21 +125,20 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 - [x] `@inquirer/prompts` confirm flows (CLI only); `shouldSkipInteractivePrompts` for CI/TTY
 - [x] `maybePrintCommandBanner` — box header per command (off under `--json` / `--silent`)
 - [x] `configureCliHelp` — colorized Usage/Options; `(default: …)` bright yellow (`style.highlight`)
-- [x] Root `expgov.config.ts` dogfood — `@expgov/core` barrel, 80 classified exports, tsconfig path parity
-- [x] `tsconfig.json` paths: `@expgov/core` + `expgov/core` for config/types resolution
+- [x] Root `expgov.config.ts` dogfood — `@expgov/core` barrel, classified exports, tsconfig path parity
+- [x] `tsconfig.json` paths: `@expgov/core` + `expgov/core` for config resolution
 
 ---
 
 ## P2 — nested tier schema (shipped) · `daa4615`
 
 - [x] `TierBucket` — `{ exact?: string[]; prefix?: string[] }` per stability level
-- [x] `TierRulesConfig` — `stable`, `internal`, `advanced` buckets only (no flat legacy keys)
+- [x] `TierRulesConfig` — `stable`, `internal`, `advanced` buckets (+ custom buckets later in P10)
 - [x] `config/tiers.ts` — `compilePrefixMatcher` (literal prefix vs `/regex/` / metachar)
 - [x] Classifier order: `@sdkTier` → internal → advanced → stable → `unclassified`
 - [x] Default prefix sets when tier bucket omitted entirely (init scaffold includes explicit lists)
 - [x] `init` template emits nested `tiers` block
 - [x] Validate messages reference `tiers.<tier>.exact` / `.prefix`
-- [x] Public types exported: `TierBucket`, `TierRulesConfig`, `ExpgovConfig`, …
 - [x] Map: [`systems/tiers.md`](../systems/tiers.md), [`systems/config.md`](../systems/config.md)
 
 ---
@@ -163,12 +167,71 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
-## Dogfood / integration receipts
+## P6 — CLI DX Phase A1–A3 (shipped) · `4ea5019`
 
-| Target | Status |
-|--------|--------|
-| **expgov repo** | Root `expgov.config.ts`; `expgov validate` passes (80 stable root flats) |
-| **Global CLI** | `pnpm build && pnpm link --global` → `expgov` on PATH |
+- [x] `shared/listing.ts` — `resolveListLimit`, `limitList`, default top 10
+- [x] `-T, --top` / `-F, --full` on inventory, diff, graph, trend, timeline (dropped ambiguous `-l`)
+- [x] Truncation hints: `…and N more (use -F/--full or -T/--top <n>)`
+- [x] Global aliases: `-c`, `-pn`, `-cd`, `-ncl`, `-nlg`, `-nlc`; `-nch` for `--no-cache`
+- [x] Color: TTY + no `NO_COLOR` default; removed positive `--color` flag
+- [x] Empty section messages in graph/inventory verbose lists
+
+---
+
+## P7 — core layout refactor (shipped) · `d372532`
+
+- [x] `packages/core/src/types/` — commands, cli, init, inventory, json, config barrels
+- [x] `packages/core/src/shared/constants/` — cache, list, init, inventory, tiers
+- [x] Logic files stop re-exporting types; import from `types/*` barrels
+- [x] Single CLI entry: `packages/cli/bin/cli.ts` (`bootstrapRuntime` + `buildProgram().parse`)
+- [x] Conventional commit message rules in `maintainer/agents/rules.md`
+
+---
+
+## P8 — `version` command (shipped) · `e00cdf3`
+
+- [x] `expgov version` — CLI + `@expgov/core` SDK semver lines
+- [x] Global `-V` when no subcommand (Commander version flag)
+- [x] Build-time defines `__EXPGOV_CLI_VERSION__` / `__EXPGOV_SDK_VERSION__` via tsup
+- [x] `--check` / `--reset` for npm registry update hint + cached state
+
+---
+
+## P9 — tier provenance + logger split (A4) (shipped) · `4f943b3`
+
+- [x] `tierProvenance` on snapshot symbols — `{ kind, label, bucket? }` (replaced `tierSource`)
+- [x] `classifySymbolTierWithProvenance()` — tag, config-exact, config-prefix, default-prefix labels
+- [x] Validate notes: `tier sources: @tag=N · config=N · default-prefix=N`
+- [x] Verbose inventory shows provenance in brackets
+- [x] Logger split: `logger/report.ts` + `logger/reports/{inventory,diff,validate,…}.ts`
+- [x] Graph module edge provenance in verbose output
+- [x] `types/inventory/` barrel for tier types
+
+---
+
+## P10 — tier policies + style boundary (shipped) · `1408c6e`
+
+- [x] **Custom tier buckets** at top level (`beta`, `deprecated`, `preview`, …) with `policy` + optional `precedence`
+- [x] `config/tierCatalog.ts` — `resolveTierCatalog()`; built-in defaults: internal 10, advanced 20, stable 100
+- [x] `config/tierPolicy.ts` — `public` / `maintainer` / `experimental` / `preview` / `deprecated`
+- [x] Tag literals = bucket names directly (removed `tiers.tag.values` remap)
+- [x] `TierCounts.custom` for non-built-in tier rollups
+- [x] **Chalk only in** `runtime/style.ts` — logger/help use `style.*` tokens via `emitLog`
+- [x] Policy-driven validate/diff root-flat violations (`maintainer` / `experimental` block flat on root)
+
+---
+
+## P11 — tier rollup + config types (shipped) · 2026-W26
+
+- [x] `sumSdkTierCounts()` merges `root.custom` (SDK-wide rollups were missing custom tiers)
+- [x] Root barrel + SDK-wide inventory sections show custom tier rows (`printTierRollupLines`)
+- [x] `tierCountsFooterFields` / `formatTierCountsNote` — inventory + validate footers/notes include custom buckets
+- [x] Diff report: custom tier count deltas
+- [x] `inventory/reexport-chain.ts` — follow `export` / `export type` re-exports for JSDoc tier tags (max 12 hops)
+- [x] `tiers.tag.precedence` — `tag` (default) vs `config` when both match
+- [x] `types/config/` barrel — `ExpgovConfig`, `TierBucket`, `ProjectContext`, … (`config/types.ts` removed)
+- [x] `MAX_REEXPORT_DEPTH` in `shared/constants/inventory.ts`
+- [x] Validate note: `tier by bucket` (tag + config counts per bucket name)
 
 ---
 
@@ -176,7 +239,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 - [x] `docs/README.md` — index + quick start
 - [x] `docs/install.md` — requirements, init, local dev, cache
-- [x] `docs/config.md` — `expgov.config.ts` fields, nested tiers, `@sdkTier`
+- [x] `docs/config.md` — `expgov.config.ts` fields, tiers, policies, `@sdkTier`
 - [x] `docs/commands.md` — all wired verbs + global flags
 - [x] `docs/json.md` — `--json` contract, `kind` values, CI examples
 
@@ -213,23 +276,23 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
-## P6 — CLI DX Phase A1–A3 (shipped) · 2026-W26
+## Dogfood / integration receipts
 
-- [x] `shared/listing.ts` — `resolveListLimit`, `limitList`, default top 10
-- [x] `--top` / `--full` on inventory, diff, graph, trend, timeline (`--limit` deprecated alias)
-- [x] Truncation hints: `…and N more (expgov <cmd> --full)`
-- [x] Global aliases: `-c`, `-pn`, `-cd`, `-ncl`, `-nlg`, `-nlc`; `-nch` for `--no-cache`
-- [x] Color: TTY + no `NO_COLOR` default; removed positive `--color` flag
+| Target | Status |
+|--------|--------|
+| **expgov repo** | Root `expgov.config.ts`; custom tiers (`beta`, `deprecated`); `expgov validate` passes |
+| **Global CLI** | `pnpm build && pnpm link --global` → `expgov` on PATH |
 
 ---
 
 ## Explicitly not shipped (do not assume present)
 
-- [ ] Phase A4 — tier provenance labels in inventory output
-- [ ] Phase A5 — workflow-oriented help sections
+- [ ] Phase **A5** — workflow-oriented help sections
+- [ ] Phase **E** — rich command metadata (inline “next question” hints)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache
+- [ ] `trend` columns for custom tier buckets (still stable/adv/int only)
 
 See [`active-phase.md`](./active-phase.md) for current sprint focus.
 
@@ -246,5 +309,13 @@ See [`active-phase.md`](./active-phase.md) for current sprint focus.
 | `-q` / `-s` gates | P1 | `runtime/policy.ts` |
 | `expgov init` | P1a | `cli/commands/init/` |
 | Nested `tiers.*` | P2 | `config/tiers.ts` |
+| Custom tier + policy | P10 | `config/tierCatalog.ts`, `config/tierPolicy.ts` |
+| Tier provenance labels | P9 | `inventory/tiers.ts` |
+| JSDoc through re-exports | P11 | `inventory/reexport-chain.ts` |
+| Custom tier rollups | P11 | `inventory/tierCounts.ts`, `logger/reports/tierRollup.ts` |
+| Config types barrel | P11 | `types/config/index.ts` |
+| `style` tokens (no chalk in reports) | P10 | `runtime/style.ts` |
 | Footer summary line | P2a | `runtime/footer.ts` |
+| `-T` / `-F` list limits | P6 | `shared/listing.ts`, `cli/utils/cli/listFlags.ts` |
+| `expgov version` | P8 | `commands/version.ts` |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

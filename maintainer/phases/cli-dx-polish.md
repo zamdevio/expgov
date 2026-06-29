@@ -154,42 +154,9 @@ Global aliases and color simplification are low-risk, high-frequency DX wins. Pr
 
 ---
 
-### A4 — Output provenance polish
+### A4 — Output provenance polish — **shipped** (P9 + P10 + P11)
 
-**Motivation:** `[fallback]` and `tagged=N fallback=M` do not tell maintainers *which rule* classified an export.
-
-**User value:** Immediate trust in inventory/diff/validate output.
-
-**Current state:**
-
-- `tierSource: 'tag' | 'fallback'` in `InventorySymbol` (`inventory/build.ts`).
-- Verbose inventory prints `[tag]` or dim `[fallback]` (`logger/index.ts`).
-- Validate notes: `root tier sources: tagged=… fallback=…`.
-
-**Approach:**
-
-1. Extend tier classification to record **provenance detail** at build time (internal field, optional in JSON):
-
-   | `tierSource` | Human label examples |
-   |--------------|---------------------|
-   | `tag` | `@sdkTier internal` |
-   | `config-exact` | `tiers.stable.exact` |
-   | `config-prefix` | `tiers.advanced.prefix` |
-   | `default-prefix` | `default stable prefix` (when bucket omitted) |
-
-2. Replace `[fallback]` with dim bracketed provenance: `[tiers.stable.exact]`.
-3. Namespace lines: show `derived from packages/core/src/runtime/index.ts` via existing `compactCoreSourcePath`.
-4. Graph module lines: `resolved from namespace analysis` vs `root barrel re-export`.
-5. Cache line: keep `hit · .exports/cache/abc123/` — already good.
-6. Validate notes: `tier sources: @sdkTier=12 · config=68` with verbose breakdown per bucket.
-
-**Dependencies:** `inventory/tiers.ts` classifier must return matched rule id (small refactor).
-
-**Complexity:** Medium.
-
-**Risks:** Wider verbose columns; use compact tokens in default view, full provenance in `-v`.
-
-**Future extensions:** Provenance in `--json` `symbols[].tierProvenance` for tooling.
+See [`shipped-slices.md`](./shipped-slices.md) P9–P11. `tierProvenance`, custom tier rollups, JSDoc re-export chain, `tiers.tag.precedence`.
 
 ---
 

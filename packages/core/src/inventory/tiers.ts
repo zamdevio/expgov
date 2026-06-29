@@ -1,5 +1,4 @@
 import { getProjectContext } from '../context/index.js';
-import type { TierBucket } from '../config/types.js';
 import { formatTierTagProvenance, tierFromTagLiteral } from '../config/tierTag.js';
 import {
   compilePrefixMatcher,
@@ -10,39 +9,33 @@ import {
   DEFAULT_INTERNAL_PREFIXES,
   DEFAULT_STABLE_PREFIXES,
 } from '../config/tiers.js';
+import type { TierBucket } from '../types/config/tiers.js';
+import {
+  declarationPatternFor,
+  findNamedReexportSpecifier,
+  readModuleFromBarrel,
+} from './reexport-chain.js';
 import type {
   StabilityTier,
   SymbolTierClassification,
   TierBucketName,
   TierProvenance,
 } from '../types/inventory/tiers.js';
+import { MAX_REEXPORT_DEPTH } from '../shared/constants/inventory.js';
+
 
 const BUILTIN_DEFAULT_PREFIXES: Record<string, readonly string[]> = {
   stable: DEFAULT_STABLE_PREFIXES,
   internal: DEFAULT_INTERNAL_PREFIXES,
   advanced: DEFAULT_ADVANCED_PREFIXES,
 };
-
-function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/**
- * Reads the configured export-tier JSDoc tag from the declaration block of a symbol.
- */
-export function resolveDeclaredTierTag(input: {
+function resolveDeclaredTierTagInContent(input: {
   name: string;
-  moduleContent: string | null;
+  moduleContent: string;
 }): { tier: string; tagLiteral: string } | undefined {
   const { name, moduleContent } = input;
-  if (!moduleContent) return undefined;
-
   const { tierTag } = getProjectContext();
-  const escapedName = escapeRegExp(name);
-  const declarationPattern = new RegExp(
-    String.raw`export\s+(?:declare\s+)?(?:async\s+)?(?:const|let|var|function|class|interface|type|enum)\s+${escapedName}\b`,
-    'g',
-  );
+  const declarationPattern = declarationPatternFor(name);
 
   let match: RegExpExecArray | null = declarationPattern.exec(moduleContent);
   while (match) {
@@ -67,6 +60,43 @@ export function resolveDeclaredTierTag(input: {
     }
 
     match = declarationPattern.exec(moduleContent);
+  }
+
+  return undefined;
+}
+
+/**
+ * Follow re-export chains to the declaring module and read the configured tier JSDoc tag.
+ */
+export function resolveDeclaredTierTag(input: {
+  name: string;
+  barrelRepoPath: string;
+  sourceSpecifier: string | null;
+  barrelContent?: string | null;
+  readAtPath: (repoPath: string) => string | null;
+}): { tier: string; tagLiteral: string } | undefined {
+  if (!input.sourceSpecifier) {
+    if (!input.barrelContent) return undefined;
+    return resolveDeclaredTierTagInContent({ name: input.name, moduleContent: input.barrelContent });
+  }
+
+  let barrelPath = input.barrelRepoPath;
+  let symbolName = input.name;
+  let specifier = input.sourceSpecifier;
+
+  for (let depth = 0; depth < MAX_REEXPORT_DEPTH; depth++) {
+    const mod = readModuleFromBarrel(input.readAtPath, barrelPath, specifier);
+    if (!mod) return undefined;
+
+    const declared = resolveDeclaredTierTagInContent({ name: symbolName, moduleContent: mod.content });
+    if (declared) return declared;
+
+    const next = findNamedReexportSpecifier(mod.content, mod.repoPath, symbolName);
+    if (!next) return undefined;
+
+    barrelPath = mod.repoPath;
+    specifier = next.specifier;
+    symbolName = next.sourceSymbol;
   }
 
   return undefined;
@@ -108,30 +138,7 @@ function matchTierBucketProvenance(
   return null;
 }
 
-/**
- * Tier classifier with provenance for SDK export governance.
- *
- * Priority:
- * 1) configured JSDoc tier tag (default `@sdkTier <bucket>`)
- * 2) tier buckets in catalog precedence order
- * 3) unclassified (forces explicit governance decision)
- */
-export function classifySymbolTierWithProvenance(
-  name: string,
-  options?: { declaredTierTag?: string; declaredTagLiteral?: string },
-): SymbolTierClassification {
-  if (options?.declaredTierTag) {
-    const { tierTag } = getProjectContext();
-    const tagLiteral = options.declaredTagLiteral ?? options.declaredTierTag;
-    return {
-      tier: options.declaredTierTag,
-      provenance: {
-        kind: 'tag',
-        label: formatTierTagProvenance(tierTag, tagLiteral),
-      },
-    };
-  }
-
+function classifyConfigTierWithProvenance(name: string): SymbolTierClassification | null {
   const { tierCatalog, tierConfig } = getProjectContext();
 
   for (const entry of tierCatalog.entries) {
@@ -145,6 +152,41 @@ export function classifySymbolTierWithProvenance(
       return { tier: entry.name, provenance };
     }
   }
+
+  return null;
+}
+
+function tagTierClassification(tier: string, tagLiteral: string): SymbolTierClassification {
+  const { tierTag } = getProjectContext();
+  return {
+    tier,
+    provenance: {
+      kind: 'tag',
+      label: formatTierTagProvenance(tierTag, tagLiteral),
+    },
+  };
+}
+
+/**
+ * Tier classifier with provenance for SDK export governance.
+ *
+ * When both JSDoc tag and config match, `tiers.tag.precedence` decides (default: tag wins).
+ */
+export function classifySymbolTierWithProvenance(
+  name: string,
+  options?: { declaredTierTag?: string; declaredTagLiteral?: string },
+): SymbolTierClassification {
+  const tagResult = options?.declaredTierTag
+    ? tagTierClassification(options.declaredTierTag, options.declaredTagLiteral ?? options.declaredTierTag)
+    : null;
+  const configResult = classifyConfigTierWithProvenance(name);
+
+  if (tagResult && configResult) {
+    const { tierTag } = getProjectContext();
+    return tierTag.precedence === 'config' ? configResult : tagResult;
+  }
+  if (tagResult) return tagResult;
+  if (configResult) return configResult;
 
   return { tier: 'unclassified', provenance: null };
 }

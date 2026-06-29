@@ -10,7 +10,7 @@ Built-in buckets (`stable`, `internal`, `advanced`) plus any custom bucket names
 
 ```ts
 tiers: {
-  tag: { name: 'exportTier' }, // optional — default sdkTier
+  tag: { name: 'sdkTier' }, // optional — default sdkTier
   stable: {
     policy: 'public',
     exact: ['RESULT_API_VERSION', 'CliJsonEnvelope'],
@@ -57,7 +57,7 @@ Implemented in `packages/core/src/inventory/tiers.ts`:
 
 | Priority | Source |
 |----------|--------|
-| 1 | Configured JSDoc tier tag — literal must match a bucket name (`@exportTier beta`) |
+| 1 | Configured JSDoc tier tag — literal must match a bucket name (`@sdkTier beta`) |
 | 2 | Buckets sorted by `precedence` (lower first; defaults: internal 10, advanced 20, stable 100) |
 | 3 | `unclassified` → **validate fails** |
 
@@ -67,11 +67,17 @@ Implemented in `packages/core/src/inventory/tiers.ts`:
 
 Default tag name: **`sdkTier`** (override with `tiers.tag.name`).
 
+When **both** JSDoc and config bucket match, `tiers.tag.precedence` decides:
+- `tag` (default) — JSDoc wins
+- `config` — `tiers.<bucket>.exact` / `.prefix` wins
+
 Tag literals map **directly** to bucket names — no `tiers.tag.values` remap.
+
+JSDoc is read from the **declaring module**, following `export { … } from` / `export type { … } from` re-export chains (up to 12 hops).
 
 ```ts
 /**
- * @exportTier stable
+ * @sdkTier stable
  */
 export function myPublicApi() {}
 ```
@@ -111,7 +117,7 @@ If you define `tiers.stable` (even empty `exact`/`prefix`), built-in defaults ar
 ## Inventory metadata
 
 - `tierProvenance` on each symbol: `{ kind, label, bucket? }`
-- Tag kind label reflects configured tag name (e.g. `@sdkTier stable`, `@exportTier beta`)
+- Tag kind label reflects configured tag name (e.g. `@sdkTier stable`, `@sdkTier beta`)
 - Config kinds: `tiers.stable.exact`, `tiers.advanced.prefix`, `default stable prefix`, etc.
 - Custom tier counts roll into `TierCounts.custom` in snapshots
 

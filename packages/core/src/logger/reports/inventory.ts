@@ -1,8 +1,8 @@
-
+import { VERBOSE_INVENTORY_ROW_PREFIX } from '../../shared/constants/inventory.js';
 import { boldDim, style, tierStyle } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../cache/index.js';
 import type { SourceRef } from '../../git/index.js';
-import type { InventorySnapshot, SubpathRollup, TierCounts } from '../../inventory/index.js';
+import type { InventorySnapshot, SubpathRollup } from '../../inventory/index.js';
 import { sumSdkTierCounts } from '../../inventory/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
@@ -25,11 +25,9 @@ import {
   padLabel,
   printMeta,
   refLine,
-  tierColor,
   canEmitVerboseReport,
 } from '../report.js';
-
-const VERBOSE_INVENTORY_ROW_PREFIX = '       · ';
+import { printSdkWideTiers, printTierRollupLines } from './tierRollup.js';
 
 function formatSubpathRollupLine(sp: SubpathRollup): string {
   const tierParts = [
@@ -43,18 +41,6 @@ function formatSubpathRollupLine(sp: SubpathRollup): string {
   ].filter(Boolean);
   const tiers = tierParts.length ? style.dim(` · ${tierParts.join(' · ')}`) : '';
   return `       ${style.dim('·')} ${sp.npmSubpath.padEnd(32)} flat ${String(sp.flat).padStart(4)}  ns ${String(sp.namespace).padStart(3)}${tiers}`;
-}
-
-export function printSdkWideTiers(tiers: TierCounts): void {
-  logLine('');
-  logLine(boldDim('       SDK-wide tiers (root + published subpaths)'));
-  logLine(`       ${padLabel('stable')} ${tierColor('stable', tiers.stable)}`);
-  logLine(`       ${padLabel('advanced')} ${tierColor('advanced', tiers.advanced)}`);
-  logLine(`       ${padLabel('internal')} ${tierColor('internal', tiers.internal)}`);
-  logLine(`       ${padLabel('unclassified')} ${tierColor('unclassified', tiers.unclassified)}`);
-  for (const [name, count] of Object.entries(tiers.custom).sort(([a], [b]) => a.localeCompare(b))) {
-    if (count > 0) logLine(`       ${padLabel(name)} ${tierColor(name, count)}`);
-  }
 }
 
 export function printPublishedSubpathRollups(subpaths: SubpathRollup[], title = 'Published subpaths (rollup)'): void {
@@ -89,10 +75,7 @@ export function printInventoryReport(input: {
   const r = snapshot.summary.root;
   logLine(`       ${padLabel('root flat')} ${style.white(String(r.flat))}`);
   logLine(`       ${padLabel('namespace')} ${style.white(String(r.namespace))}`);
-  logLine(`       ${padLabel('stable')} ${tierColor('stable', r.stable)}`);
-  logLine(`       ${padLabel('advanced')} ${tierColor('advanced', r.advanced)}`);
-  logLine(`       ${padLabel('internal')} ${tierColor('internal', r.internal)}`);
-  logLine(`       ${padLabel('unclassified')} ${tierColor('unclassified', r.unclassified)}`);
+  printTierRollupLines(r);
 
   printSdkWideTiers(sumSdkTierCounts(snapshot));
   printPublishedSubpathRollups(snapshot.summary.subpaths);

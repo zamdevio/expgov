@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { createJiti } from 'jiti';
-import type { ExpgovConfig, ExpgovConfigOverrides } from './types.js';
+import type { ExpgovConfig, ExpgovConfigOverrides } from '../types/config/index.js';
 
 const CONFIG_FILENAME = 'expgov.config.ts';
 
@@ -103,5 +103,5 @@ export function formatConfigDiscoveryHint(cwd: string): string {
   return `Looked in ${repoRoot} for ${CONFIG_FILENAME}`;
 }
 
-export type { ExpgovConfigOverrides } from './types.js';
+export type { ExpgovConfigOverrides } from '../types/config/index.js';
 export { defineConfig } from './define.js';

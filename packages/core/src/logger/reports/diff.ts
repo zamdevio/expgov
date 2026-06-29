@@ -4,7 +4,18 @@ import type { InventorySnapshot } from '../../inventory/index.js';
 import type { DiffResult } from '../../format/diff.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
+import type { TierCounts } from '../../inventory/types.js';
 import { formatDelta, logLine, logListTruncation, padLabel, printMeta, snapshotShaLabel, cacheLabel, canEmitVerboseReport } from '../report.js';
+
+function printCustomTierDeltas(left: TierCounts, right: TierCounts): void {
+  const names = new Set([...Object.keys(left.custom), ...Object.keys(right.custom)]);
+  for (const name of [...names].sort()) {
+    const lv = left.custom[name] ?? 0;
+    const rv = right.custom[name] ?? 0;
+    if (lv === 0 && rv === 0) continue;
+    logLine(`       ${padLabel(name)} ${formatDelta(lv, rv)}`);
+  }
+}
 
 export function printDiffReport(input: {
   rangeLabel: string;
@@ -30,6 +41,7 @@ export function printDiffReport(input: {
   logLine(`       ${padLabel('stable')} ${formatDelta(dl.stable, dr.stable)}`);
   logLine(`       ${padLabel('advanced')} ${formatDelta(dl.advanced, dr.advanced)}`);
   logLine(`       ${padLabel('internal')} ${formatDelta(dl.internal, dr.internal)}`);
+  printCustomTierDeltas(dl, dr);
 
   logLine('');
   if (diff.added.length) {

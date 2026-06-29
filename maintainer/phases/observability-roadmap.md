@@ -112,7 +112,7 @@ flowchart TD
 
 ### Wave 2 — Surface quality (3–4 PRs)
 
-4. Phase **A4** tier provenance + **A5** help workflows
+4. ~~Phase **A4** tier provenance~~ (shipped) + Phase **A5** help workflows
 5. Phase **E** insights module + inventory/validate/diff/trend
 6. Phase **F** glossary + indent constants (from audit)
 

@@ -7,7 +7,7 @@ import {
 } from './tiers.js';
 import { resolveBucketPolicy } from './tierPolicy.js';
 import { resolveTierTagPolicy, type ResolvedTierTagPolicy } from './tierTag.js';
-import type { TierBucket, TierRulesConfig, TierTagConfig } from './types.js';
+import type { TierBucket, TierRulesConfig, TierTagConfig } from '../types/config/tiers.js';
 import type { TierPolicy } from '../types/inventory/tiers.js';
 
 const BUILTIN_BUCKET_NAMES = ['stable', 'internal', 'advanced'] as const;

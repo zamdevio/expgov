@@ -1,10 +1,12 @@
 import { DEFAULT_TIER_TAG_NAME } from '../shared/constants/tiers.js';
-import type { TierTagConfig } from './types.js';
+import type { TierTagConfig } from '../types/config/tiers.js';
 
 export interface ResolvedTierTagPolicy {
   name: string;
   bucketNames: readonly string[];
   tagPattern: RegExp;
+  /** When tag and config both match: `tag` (default) or `config`. */
+  precedence: 'tag' | 'config';
 }
 
 function escapeRegExp(text: string): string {
@@ -27,7 +29,12 @@ export function resolveTierTagPolicy(
     ? new RegExp(String.raw`@${escapeRegExp(name)}\s+(${labels})\b`)
     : /$^/;
 
-  return { name, bucketNames, tagPattern };
+  return {
+    name,
+    bucketNames,
+    tagPattern,
+    precedence: config?.precedence === 'config' ? 'config' : 'tag',
+  };
 }
 
 export function formatTierTagProvenance(policy: ResolvedTierTagPolicy, tagLiteral: string): string {

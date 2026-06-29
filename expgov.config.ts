@@ -19,7 +19,8 @@ export default defineConfig({
   },
   tiers: {
     tag: {
-      name: 'exportTier',
+      name: 'sdkTier',
+      precedence: 'tag'
     },
     stable: {
       exact: [
@@ -52,6 +53,7 @@ export default defineConfig({
         'ProjectContext',
         'RESULT_API_VERSION',
         'ResultMeta',
+        'ResolvedTierBucket',
         'RunOptions',
         'SDK_PACKAGE_NAME',
         'SDK_VERSION',
@@ -111,6 +113,14 @@ export default defineConfig({
     },
     advanced: {
       prefix: ['^experimental[A-Z_]', '^beta[A-Z_]', '^advanced[A-Z_]', 'Unsafe$'],
+    },
+    beta: {
+      policy: 'preview',
+      prefix: ['^beta'],
+    },
+    deprecated: {
+      policy: 'deprecated',
+      prefix: ['^deprecated[A-Z_]', 'Deprecated$'],
     },
   },
 } satisfies ExpgovConfig);

@@ -6,7 +6,7 @@ import {
   packageNamePathPrefix,
   wildcardPackageTsconfigPath,
 } from '../context/index.js';
-import { sumSdkTierCounts } from '../inventory/index.js';
+import { formatTierCountsNote, sumSdkTierCounts, tierCountsFooterFields } from '../inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { policyViolatesRootFlat } from '../config/tierPolicy.js';
 import { printValidateReport } from '../logger/index.js';
@@ -41,7 +41,9 @@ function tsconfigPackagePaths(paths: Record<string, string[]>): string[] {
   return Object.keys(paths).filter((key) => isPackageTsconfigPath(key));
 }
 
-function summarizeTierSources(symbols: { exportKind: string; tierProvenance?: { kind: string; bucket?: string } }[]): {
+function summarizeTierSources(
+  symbols: { exportKind: string; tier: string; tierProvenance?: { kind: string; bucket?: string } }[],
+): {
   tag: number;
   config: number;
   defaultPrefix: number;
@@ -58,6 +60,7 @@ function summarizeTierSources(symbols: { exportKind: string; tierProvenance?: { 
     if (!p) continue;
     if (p.kind === 'tag') {
       tag += 1;
+      byBucket[sym.tier] = (byBucket[sym.tier] ?? 0) + 1;
       continue;
     }
     if (p.kind === 'default-prefix') {
@@ -139,15 +142,9 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([bucket, count]) => `${bucket}=${count}`)
       .join(' ');
-    if (bucketSummary) notes.push(`tier config by bucket: ${bucketSummary}`);
+    if (bucketSummary) notes.push(`tier by bucket: ${bucketSummary}`);
   }
-  const customTierSummary = Object.entries(sdkTiers.custom)
-    .filter(([, count]) => count > 0)
-    .map(([name, count]) => `${name}=${count}`)
-    .join(' ');
-  notes.push(
-    `sdk-wide tiers: stable=${sdkTiers.stable} advanced=${sdkTiers.advanced} internal=${sdkTiers.internal} unclassified=${sdkTiers.unclassified}${customTierSummary ? ` · ${customTierSummary}` : ''}`,
-  );
+  notes.push(formatTierCountsNote(sdkTiers));
 
   for (const subpath of snapshot.summary.subpaths) {
     if (subpath.byTier.unclassified > 0) {
@@ -156,9 +153,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
       );
     }
     if (options.verbose && subpath.flat > 0) {
-      notes.push(
-        `${subpath.npmSubpath}: flat=${subpath.flat} stable=${subpath.byTier.stable} advanced=${subpath.byTier.advanced} internal=${subpath.byTier.internal}`,
-      );
+      notes.push(formatTierCountsNote(subpath.byTier, subpath.npmSubpath));
     }
   }
 
@@ -216,11 +211,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     status: passed ? 'ok' : 'fail',
     exitCode,
     footer: {
-      counts: {
-        violations: violations.length,
-        stable: sdkTiers.stable,
-        unclassified: sdkTiers.unclassified,
-      },
+      counts: tierCountsFooterFields(sdkTiers, { violations: violations.length }),
     },
   });
   return exitCode;

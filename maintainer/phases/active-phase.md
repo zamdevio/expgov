@@ -14,7 +14,7 @@
 
 | Priority | Slice | Goal |
 |----------|-------|------|
-| **Now** | Phase **A** (cont.) | Tier provenance labels (A4) + help workflows (A5) |
+| **Now** | Phase **A5** | Workflow-oriented help sections |
 
 Check [`shipped-slices.md`](./shipped-slices.md) before re-implementing runtime, init, or CLI styling.
 
@@ -28,7 +28,8 @@ Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parent
 |---|-------|------|------------|-----|
 | ~~1~~ | ~~**`suggest`**~~ | ~~Dry-run `tiers.stable.exact` suggestions~~ | shipped | [`shipped-slices.md`](./shipped-slices.md) |
 | ~~2~~ | ~~Phase **A** — listing + aliases + color~~ | ~~`--top`/`--full`, short aliases, TTY color~~ | shipped (A1–A3) | [`cli-dx-polish.md`](./cli-dx-polish.md) |
-| **2b** | Phase **A** — provenance + help | Tier rule labels, workflow help | A1 (shipped) | [`cli-dx-polish.md`](./cli-dx-polish.md) |
+| ~~2b~~ | ~~Phase **A** — provenance + policies~~ | ~~Tier provenance, custom buckets, JSDoc chain~~ | shipped (A4) | [`shipped-slices.md`](./shipped-slices.md) |
+| **2c** | Phase **A5** — help workflows | Workflow blocks in `expgov help` | A4 (shipped) | [`cli-dx-polish.md`](./cli-dx-polish.md) |
 | 3 | Phase **E** — Rich command metadata | Answer the “next question” per command inline | A (listing contract) | [`rich-command-metadata.md`](./rich-command-metadata.md) |
 | 4 | Phase **B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries | A (listing), cache (shipped) | [`timeline-2.md`](./timeline-2.md) |
 | 5 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | A (listing) | [`graph-2.md`](./graph-2.md) |

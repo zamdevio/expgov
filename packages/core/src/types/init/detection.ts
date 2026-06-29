@@ -1,4 +1,4 @@
-import type { ExpgovCoreConfig } from '../../config/types.js';
+import type { ExpgovCoreConfig } from '../config/expgov.js';
 
 export type InitLayout = 'monorepo-core' | 'single-package' | 'generic';
 

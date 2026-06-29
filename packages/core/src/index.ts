@@ -48,7 +48,8 @@ export type {
   TierTagConfig,
   TierBucket,
   TierPolicy,
-} from './config/types.js';
+} from './types/config/index.js';
+export type { ResolvedTierBucket } from './config/tiers.js';
 
 export {
   bootstrapRuntime,
