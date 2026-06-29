@@ -34,7 +34,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 | 2026-W26 | **P13** — conservative init | Empty built-in tier buckets; `--rich` commented opt-in hints (`c5fcbab`) |
 | 2026-W26 | **P14** — Commander-first help (A5) | `printCliHelp`; workflows appendix; per-command Examples/Related (`HEAD`) |
 | 2026-W26 | **P15** — list truncation hints (A1b) | Report-layer `…and N more`; graph/timeline `hiddenCount` fixes (`HEAD`) |
-| 2026-W26 | **P16** — worktree files index (2e) | `files.json` + `inputFilesEpoch` hash gate under `__worktree__/` (`HEAD`) |
+| 2026-W26 | **P16** — worktree files index (2e) | `files.json` + `inputFilesEpoch` hash gate under `__worktree__/` (`e74abeb`) |
 
 ---
 
@@ -322,7 +322,7 @@ Closed work only. Check here before re-implementing. Durable engineering detail 
 
 ---
 
-## P16 — worktree files index / 2e (shipped)
+## P16 — worktree files index / 2e (shipped) · `e74abeb`
 
 - [x] `files.json` under `.expgov/cache/__worktree__/` — per-file content hashes
 - [x] `inputFilesEpoch` on worktree snapshots — bound to tracked file set
