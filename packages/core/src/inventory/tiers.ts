@@ -111,8 +111,8 @@ function matchTierBucketProvenance(
     }
   }
 
-  const hasConfig = Boolean(nested && (exact.length || configPrefixes.length));
-  if (!hasConfig) {
+  const hasExplicitBucket = nested !== undefined;
+  if (!hasExplicitBucket) {
     for (const prefix of defaultPrefixes) {
       const matcher = compilePrefixMatcher(prefix);
       if (testPrefixMatcher(name, matcher)) {

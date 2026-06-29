@@ -39,8 +39,8 @@ export function resolveBucket(
   nested: TierBucket | undefined,
   defaultPrefixes: readonly string[],
 ): ResolvedTierBucket {
-  const hasConfig = Boolean(nested && (nested.exact?.length || nested.prefix?.length));
-  const prefixSources = [...(nested?.prefix ?? []), ...(hasConfig ? [] : defaultPrefixes)];
+  const hasExplicitBucket = nested !== undefined;
+  const prefixSources = [...(nested?.prefix ?? []), ...(hasExplicitBucket ? [] : defaultPrefixes)];
   return {
     exact: new Set(nested?.exact ?? []),
     matchers: prefixSources.map(compilePrefixMatcher),

@@ -104,31 +104,9 @@ export function detectionToConfig(detection: InitDetection): ExpgovConfig {
       timelineBarrelPath: detection.rootBarrel,
     },
     tiers: {
-      stable: {
-        exact: [],
-        prefix: [
-          'run',
-          'build',
-          'emit',
-          'get',
-          'set',
-          'reset',
-          'is',
-          'format',
-          'resolve',
-          'walk',
-          'directory',
-          'normalize',
-          'rethrow',
-          'noop',
-        ],
-      },
-      internal: {
-        prefix: ['^internal[A-Z_]', 'Internal$'],
-      },
-      advanced: {
-        prefix: ['^experimental[A-Z_]', '^beta[A-Z_]', '^advanced[A-Z_]', 'Unsafe$'],
-      },
+      stable: { exact: [], prefix: [] },
+      internal: { exact: [], prefix: [] },
+      advanced: { exact: [], prefix: [] },
     },
   };
 }

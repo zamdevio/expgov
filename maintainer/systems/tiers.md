@@ -110,7 +110,7 @@ When a built-in bucket is **omitted entirely** from config:
 
 Custom buckets have **no** default prefixes — define `exact` and/or `prefix` explicitly.
 
-If you define `tiers.stable` (even empty `exact`/`prefix`), built-in defaults are **not** merged — init scaffold includes explicit prefixes.
+If you define a built-in bucket key (even with empty `exact`/`prefix` arrays), built-in defaults are **not** merged — `expgov init` scaffolds empty buckets; use `expgov init --rich` for commented opt-in examples.
 
 ---
 

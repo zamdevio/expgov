@@ -133,7 +133,7 @@ function buildProgram(): Command {
     .command('init')
     .description(`create ${CLI_NAME}.config.ts when missing (interactive unless --yes)`)
     .option('-y, --yes', 'write config without prompting')
-    .option('-r, --rich', 'include commented tiers.stable.exact examples', false)
+    .option('-r, --rich', 'commented cache + tier examples (stable, internal, advanced)', false)
     .option('-f, --force', 'overwrite existing config file')
     .action(async (opts: { yes?: boolean; rich?: boolean; force?: boolean }, _cmd, cmd) => {
       try {

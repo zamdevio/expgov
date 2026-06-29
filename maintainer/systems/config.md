@@ -45,7 +45,7 @@ export default defineConfig({
 
 `expgov init` detects monorepo `packages/core` vs single-package `src/index.ts` and writes defaults.
 
-Flags: `-y/--yes`, `-f/--force`, `-r/--rich` (commented `tiers.stable.exact` examples).
+Flags: `-y/--yes`, `-f/--force`, `-r/--rich` (commented cache + tier examples).
 
 ## Overrides (CLI)
 

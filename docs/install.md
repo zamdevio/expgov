@@ -28,13 +28,13 @@ From your SDK repo root:
 pnpm exec expgov init
 ```
 
-Creates `expgov.config.ts` with safe defaults. Detects monorepo `packages/core` vs single-package `src/index.ts` layouts.
+Creates `expgov.config.ts` with **conservative tier defaults** (empty `stable` / `internal` / `advanced` buckets — classify via `@sdkTier` or `tiers.*.exact`, then `expgov suggest`). Detects monorepo `packages/core` vs single-package `src/index.ts` layouts.
 
 | Flag | Role |
 |------|------|
 | `-y, --yes` | Write without prompts (CI / non-TTY) |
 | `-f, --force` | Overwrite existing config |
-| `-r, --rich` | Include commented `tiers.stable.exact` examples |
+| `-r, --rich` | Commented `cache` block and `tiers.*` exact/prefix examples to opt into |
 
 ## Run commands
 
