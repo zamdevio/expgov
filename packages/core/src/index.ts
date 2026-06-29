@@ -79,3 +79,4 @@ export {
 } from './runtime/index.js';
 export type { RunOptions, LogEvent, LogSink, LogLevel, CommandTimer, CommandStatus } from './runtime/index.js';
 export type { CliJsonEnvelope, Issue, IssueSeverity, ResultMeta } from './types/json/envelope.js';
+export { SDK_PACKAGE_NAME, SDK_VERSION } from './shared/constants/sdk.js';

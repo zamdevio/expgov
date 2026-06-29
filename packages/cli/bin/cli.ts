@@ -24,12 +24,14 @@ import {
 } from '@expgov/core';
 
 import { ensureConfig } from '../src/commands/init/index.js';
+import { preprocessArgv } from '../src/argv/index.js';
 import { CLI_NAME, CLI_ROOT_DESCRIPTION } from '../src/constants/cli.js';
 import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from '../src/shared/context/globals.js';
 import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
 import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
 import { resolveNoColor } from '../src/utils/cli/noColor.js';
 import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
+import { printCurrentVersionLine, runVersionCheckCommand, runVersionResetCommand } from '../src/utils/version/index.js';
 
 interface GlobalOpts {
   cwd?: string;
@@ -87,7 +89,7 @@ function withContext(cmd: Command, verbose: boolean | undefined, fn: () => void 
   }
 }
 
-export function buildProgram(): Command {
+function buildProgram(): Command {
   const program = new Command();
 
   configureCliHelp(program);
@@ -95,7 +97,6 @@ export function buildProgram(): Command {
   program
     .name(CLI_NAME)
     .description(CLI_ROOT_DESCRIPTION)
-    .version('0.1.0')
     .option('-C, --cwd <dir>', 'project root')
     .option('-c, --config <path>', 'path to expgov.config.ts')
     .option('-pn, --package-name <name>', 'override package name')
@@ -324,6 +325,24 @@ export function buildProgram(): Command {
   );
 
   program
+    .command('version')
+    .description(
+      'Print the CLI version; use --check to query npm; use --reset to clear local update state',
+    )
+    .option('--check', 'fetch latest from the npm registry and show install instructions', false)
+    .option('--reset', 'clear cached npm update check', false)
+    .action(async (opts: { check?: boolean; reset?: boolean }) => {
+      if (opts.reset) {
+        runVersionResetCommand();
+      }
+      if (opts.check) {
+        await runVersionCheckCommand();
+      } else {
+        printCurrentVersionLine();
+      }
+    });
+
+  program
     .command('help')
     .argument('[topic]', 'command topic')
     .description('show usage')
@@ -344,6 +363,7 @@ export function buildProgram(): Command {
         'trend',
         'timeline',
         'graph',
+        'version',
         'help',
       ];
       printHelp(topics.includes(topic as HelpTopic) ? (topic as HelpTopic) : 'all');
@@ -352,7 +372,9 @@ export function buildProgram(): Command {
   return program;
 }
 
-export function runCli(argv: string[]): void {
-  bootstrapRuntime();
-  buildProgram().parse(argv);
-}
+bootstrapRuntime();
+buildProgram()
+  .parseAsync(preprocessArgv(process.argv))
+  .catch((err: unknown) => {
+    handleError(err);
+  });

@@ -27,6 +27,7 @@ export type HelpTopic =
   | 'trend'
   | 'timeline'
   | 'graph'
+  | 'version'
   | 'help';
 
 export function printHelp(topic: HelpTopic = 'all'): void {
@@ -220,13 +221,27 @@ export function printHelp(topic: HelpTopic = 'all'): void {
     ]);
   }
 
+  if (topic === 'all' || topic === 'version') {
+    section('version — CLI and SDK versions', [
+      cmd('version', '[flags]'),
+      '',
+      `  ${chalk.dim('Prints')} current CLI and @expgov/core SDK semver lines.`,
+      `  ${chalk.dim('Alias')} ${chalk.white('expgov -V')} when no subcommand is present.`,
+      '',
+      `  ${chalk.bold('Flags')}`,
+      `    --check         fetch latest from npm registry; show upgrade hint when newer`,
+      `    --reset         clear cached update check (~/.expgov/state/version.json)`,
+      `    ${chalk.dim('Env')} ${chalk.white('EXPGOV_NO_UPDATE_CHECK=1')} skips registry fetch on --check`,
+    ]);
+  }
+
   if (topic === 'all' || topic === 'help') {
     section('help', [cmd('help'), '', `  ${chalk.dim('Prints')} full usage.`]);
   }
 
   if (topic === 'all') {
     section('global', [
-      `  ${chalk.bold('Commands')} init, inventory, diff, validate, doctor, suggest, trend, timeline, graph, help`,
+      `  ${chalk.bold('Commands')} init, inventory, diff, validate, doctor, suggest, trend, timeline, graph, version, help`,
       `  ${chalk.bold('Global flags')}`,
       `    -j, --json      machine-readable JSON envelope (stdout)`,
       `    -q, --quiet     suppress info logs and tips; keep primary command output`,

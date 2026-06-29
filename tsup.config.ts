@@ -1,9 +1,21 @@
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const coreSrc = path.join(root, 'packages/core/src');
+
+function readPackageVersion(packageJsonPath: string): string {
+  const version = (JSON.parse(readFileSync(packageJsonPath, 'utf8')) as { version?: string }).version;
+  if (!version) {
+    throw new Error(`Missing "version" in ${packageJsonPath}`);
+  }
+  return version;
+}
+
+const rootPackageVersion = readPackageVersion(path.join(root, 'package.json'));
+const corePackageVersion = readPackageVersion(path.join(root, 'packages/core/package.json'));
 
 export default defineConfig({
   entry: {
@@ -23,6 +35,11 @@ export default defineConfig({
   treeshake: true,
   external: ['commander', 'chalk', 'jiti', 'typescript', '@inquirer/prompts'],
   esbuildOptions(options) {
+    options.define = {
+      ...options.define,
+      __EXPGOV_CLI_VERSION__: JSON.stringify(rootPackageVersion),
+      __EXPGOV_SDK_VERSION__: JSON.stringify(corePackageVersion),
+    };
     options.alias = {
       '@expgov/core': coreSrc,
     };

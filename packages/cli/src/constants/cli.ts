@@ -1,3 +1,5 @@
+import { resolveCliVersion } from './version.js';
+
 export const CLI_NAME = 'expgov';
 
 export const CONFIG_BASE_NAME = `${CLI_NAME}.config`;
@@ -10,6 +12,9 @@ export const CLI_ROOT_TAGLINE = 'Portable export-governance for TypeScript SDK b
 
 export const CLI_ROOT_DESCRIPTION =
   'Inventory, diff, validate, and trend public export surfaces on TypeScript barrel files.';
+
+/** Semantic version from root `package.json` (injected at `cli:build`; see `version.ts`). */
+export const CLI_VERSION = resolveCliVersion();
 
 export const ENV_CI = 'CI';
 export const ENV_EXPGOV_NO_INIT = 'EXPGOV_NO_INIT';

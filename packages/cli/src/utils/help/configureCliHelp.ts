@@ -98,6 +98,7 @@ const COMMAND_SUBTITLES: Record<string, string> = {
   trend: 'export counts across release tags',
   timeline: 'commits that changed the root export barrel',
   graph: 're-export governance map',
+  version: 'CLI and SDK versions',
   help: 'command usage reference',
 };
 

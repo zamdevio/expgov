@@ -50,6 +50,8 @@ export default defineConfig({
         'RESULT_API_VERSION',
         'ResultMeta',
         'RunOptions',
+        'SDK_PACKAGE_NAME',
+        'SDK_VERSION',
         'TierRulesConfig',
         'TierBucket',
         'TimelineCliOptions',
