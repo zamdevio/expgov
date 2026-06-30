@@ -116,3 +116,21 @@ Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14).
 - [x] `-v` / `--verbose` — all per-commit warm lines under `Snapshot warm` + summary row
 - [x] JSON: `data.warmStats` includes `entries[]` for machine consumers
 - [x] Removed duplicate `warm` meta row (summary lives in warm section)
+
+---
+
+## P21 — listing policy extension (shipped) · `c5a5342`
+
+- [x] Custom tier rollup rows in inventory use same default-10 / `-T` / `-F` contract as symbol lists
+- [x] Diff tier violations + custom tier deltas truncated with `formatListTruncationHint`
+- [x] Suggest / doctor gain `addListFlags` + report-layer `limitList`
+
+---
+
+## P22 — meta endpoints + range help + CLI types (shipped) · `ab8cb85`
+
+- [x] `formatMetaEndpoint(label, sha)` — unified `ref` / `left` / `right` meta lines (`logger/report.ts`)
+- [x] Timeline ref ranges show resolved short SHA in meta (`HEAD~30 (902bd6c)`)
+- [x] Commander `Range formats:` section wired via `commandHelp.ts` (diff + timeline grammar)
+- [x] `packages/cli/src/types/` barrel — global, commands, help, init, ansi; removed dead `printHelp` range sections from CLI path
+- [x] Shared `COMMAND_SUBTITLES` for banners

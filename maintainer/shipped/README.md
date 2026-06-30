@@ -2,7 +2,7 @@
 
 Closed slices only — check here before re-implementing. Durable engineering detail lives in [`systems/`](../systems/README.md).
 
-**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `e74abeb` (P7–P16) · `006b45a` → `0b7f5f0` (P17–P20) · `5492383` → `7698189` (P18–P19) · `b8ccbdb` (Phase I1/I3).
+**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `e74abeb` (P7–P16) · `006b45a` → `0b7f5f0` (P17–P20) · `5492383` → `7698189` (P18–P19) · `b8ccbdb` (Phase I1/I3) · `495f6ec` → `31d8ded` (B1, P21–P23).
 
 ---
 
@@ -41,7 +41,10 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **P20** — timeline warm log | Report-layer `Snapshot warm` below meta; latest line default, all with `-v` (`5000073`) |
 | 2026-W26 | **I1** — SDK example | `examples/sdk/` teaching fixture (`b8ccbdb`) |
 | 2026-W26 | **I3** — example SDK CI | `expgov -C examples/sdk validate` in `ci.yml` (`b8ccbdb`) |
-| 2026-W26 | **B1** — timeline ref ranges | Git ref grammar on `timeline`; `TimelineRange` time \| ref (`timelineRange.test.ts`) |
+| 2026-W26 | **B1** — timeline ref ranges | Git ref grammar on `timeline`; `TimelineRange` time \| ref (`495f6ec`) |
+| 2026-W26 | **P21** — listing policy (tiers) | Custom tier rollup rows + diff violations/deltas; suggest/doctor `-T/-F` (`c5a5342`) |
+| 2026-W26 | **P22** — meta + range help | `formatMetaEndpoint`; Commander `Range formats:`; CLI `types/` (`ab8cb85`) |
+| 2026-W26 | **P23** — tier policy engine | `tiers.policies` registry; composable `rootFlat` rules (`31d8ded`) |
 
 ---
 
@@ -52,8 +55,8 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
 | Inventory & cache | P0a, P0b, P4, P16 | [`inventory-cache.md`](./inventory-cache.md) |
 | Git & commands | P0c, P0d, P4a, P5, P8 | [`git-commands.md`](./git-commands.md) |
-| Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20 | [`runtime-cli.md`](./runtime-cli.md) |
-| Tiers & config | P2 tiers, P9–P11, P13 | [`tiers-config.md`](./tiers-config.md) |
+| Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
+| Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3 | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) |
 
 ---
@@ -89,7 +92,10 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | `-q` / `-s` gates | P1 | `runtime/policy.ts` |
 | `expgov init` | P1a | `cli/commands/init/` |
 | Nested `tiers.*` | P2 | `config/tiers.ts` |
-| Custom tier + policy | P10 | `config/tierCatalog.ts`, `config/tierPolicy.ts` |
+| Custom tier + policy | P10, P23 | `config/tierCatalog.ts`, `config/tierPolicy.ts` |
+| `tiers.policies` registry | P23 | `types/config/policies.ts`, `shared/constants/tierPolicies.ts` |
+| Listing on custom tier rows | P21 | `logger/reports/tierRollup.ts`, `shared/listing.ts` |
+| Commander range formats help | P22 | `cli/utils/help/commandHelp.ts`, `formatMetaEndpoint` |
 | Tier provenance labels | P9 | `inventory/tiers.ts` |
 | JSDoc through re-exports | P11 | `inventory/reexport-chain.ts` |
 | Custom tier rollups | P11 | `inventory/tierCounts.ts`, `logger/reports/tierRollup.ts` |

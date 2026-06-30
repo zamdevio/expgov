@@ -62,3 +62,27 @@ Engineering map: [`systems/tiers.md`](../systems/tiers.md), [`systems/config.md`
 - [x] Explicit empty bucket opts out of built-in prefix merge (`resolveBucket`)
 - [x] `--rich` — commented `cache` + tier `exact`/`prefix` examples for opt-in
 - [x] Default init omits `cache` block (runtime defaults)
+
+---
+
+## P21 — listing policy for tier rows (shipped) · `c5a5342`
+
+- [x] `printTierRollupLines` — built-in tier rows always shown; **custom** bucket rows use `limitList` + `…and N more`
+- [x] Inventory root + SDK-wide sections pass `listLimit` to tier rollup
+- [x] Diff — tier violations + custom tier count deltas respect `-T` / `-F`
+- [x] Suggest / doctor — `-T/--top` / `-F/--full` on CLI; truncated names/hints/check lines
+- [x] `DEFAULT_LIST_TOP = 10` in `shared/listing.ts` (default only — not a hard cap)
+
+---
+
+## P23 — tier policy engine (shipped) · `31d8ded`
+
+- [x] `tiers.policies` — registry for built-in overrides + custom policy presets
+- [x] Composable rule `rootFlat: 'allow' | 'deny'` — validate/diff root-flat violations
+- [x] Built-ins (`public`, `maintainer`, `experimental`, `preview`, `deprecated`) ship with internal defaults; config merges overrides
+- [x] Buckets reference policies by name (`policy: 'partnerApi'`)
+- [x] `resolveTierPolicies()` + `ResolvedTierEntry.policyRules` on catalog entries
+- [x] Validate — unknown policy refs fail; `listUnknownPolicyRefs()`
+- [x] Public exports: `TierPolicyDefinition`, `TierPolicyRules`, `resolveTierPolicies`, `policyViolatesRootFlat`
+- [x] `expgov init --rich` — commented `tiers.policies` authoring hints
+- [x] Tests: `config/__tests__/tierPolicy.test.ts`
