@@ -147,9 +147,11 @@ Git log of commits that edited the root barrel. Default range: `@4w`.
 expgov timeline
 expgov timeline @3m
 expgov timeline 2025-01-01..2025-06-01
+expgov timeline v1.0.0..HEAD
+expgov timeline v1.0.0
 ```
 
-Range formats: `@4w`, `@3m`, ISO dates. Shows flat count and Δ between consecutive barrel edits.
+Range formats: `@4w`, `@3m`, ISO dates, and git refs (`v1.0.0..HEAD`, single ref → `ref..HEAD`). Shows flat count and Δ between consecutive barrel edits.
 
 Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → insights.
 

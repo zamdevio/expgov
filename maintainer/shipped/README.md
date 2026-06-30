@@ -41,6 +41,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **P20** — timeline warm log | Report-layer `Snapshot warm` below meta; latest line default, all with `-v` (`5000073`) |
 | 2026-W26 | **I1** — SDK example | `examples/sdk/` teaching fixture (`b8ccbdb`) |
 | 2026-W26 | **I3** — example SDK CI | `expgov -C examples/sdk validate` in `ci.yml` (`b8ccbdb`) |
+| 2026-W26 | **B1** — timeline ref ranges | Git ref grammar on `timeline`; `TimelineRange` time \| ref (`timelineRange.test.ts`) |
 
 ---
 

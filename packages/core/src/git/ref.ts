@@ -45,7 +45,7 @@ export function resolveSourceRef(input: string | undefined): SourceRef {
   return { kind: 'commit', sha, label: input };
 }
 
-function splitRangeToken(token: string): { left: string; right: string } | null {
+export function splitRangeToken(token: string): { left: string; right: string } | null {
   const idx = token.indexOf('..');
   if (idx <= 0 || idx >= token.length - 2) return null;
   const left = token.slice(0, idx).trim();

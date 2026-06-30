@@ -30,7 +30,27 @@ export function listBarrelCommits(input: {
   );
   const result = runGit(args);
   if (!result.ok || !result.stdout) return [];
-  return result.stdout
+  return parseGitLogLines(result.stdout);
+}
+
+/** Commits touching the root barrel between two refs (`left..right`, newest first). */
+export function listBarrelCommitsByRef(input: {
+  leftSha: string;
+  rightSha: string;
+  limit?: number;
+}): GitCommitRow[] {
+  const args = ['log', `${input.leftSha}..${input.rightSha}`];
+  if (input.limit !== undefined && Number.isFinite(input.limit) && input.limit > 0) {
+    args.push(`-n${input.limit}`);
+  }
+  args.push('--format=%H|%cI|%s', '--', getTimelineBarrelPath());
+  const result = runGit(args);
+  if (!result.ok || !result.stdout) return [];
+  return parseGitLogLines(result.stdout);
+}
+
+function parseGitLogLines(stdout: string): GitCommitRow[] {
+  return stdout
     .split('\n')
     .filter(Boolean)
     .map((line) => {

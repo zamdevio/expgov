@@ -4,6 +4,8 @@ import { style } from '../../../runtime/style.js';
 import type { CacheStatus } from '../../../types/cache/index.js';
 import { getRootIndexRepoPath } from '../../../context/paths.js';
 import { computeTimelineInsights } from '../../../insights/index.js';
+import { timelineRangeEndpoints } from '../../../time/index.js';
+import type { TimelineRange } from '../../../types/time/range.js';
 import { formatSubject } from '../../format.js';
 import { logLine, logListTruncation, printMeta } from '../../report.js';
 import { printInsightsBlock } from '../insights.js';
@@ -11,7 +13,7 @@ import { printTimelineWarmSection } from './warm.js';
 import type { TimelineWarmStats } from '../../../types/timeline/warm.js';
 
 export function printTimelineReport(input: {
-  range: { label: string; since: string; until: string };
+  range: TimelineRange;
   top: number;
   rows: {
     date: string;
@@ -28,10 +30,11 @@ export function printTimelineReport(input: {
   insights?: ReturnType<typeof computeTimelineInsights>;
 }): void {
   const topLabel = Number.isFinite(input.top) ? String(input.top) : 'all';
+  const endpoints = timelineRangeEndpoints(input.range);
   printMeta({
     range: input.range.label,
-    from: style.dim(input.range.since),
-    to: style.dim(input.range.until),
+    from: style.dim(endpoints.from),
+    to: style.dim(endpoints.to),
     top: style.dim(topLabel),
     barrel: style.dim(`${input.rows.length} commits · ${getRootIndexRepoPath()}`),
     git: input.gitStats ? style.dim(input.gitStats) : undefined,

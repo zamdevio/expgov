@@ -18,20 +18,20 @@
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
-| **→ 1** | **B1** — Ref ranges | **Next PR** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
-| 2 | **B2** — Release markers | Pending | Dim `── v1.1.0 ──` rows when commit matches version tag |
+| 1 | **B1** — Ref ranges | **Shipped** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
+| **→ 2** | **B2** — Release markers | **Next PR** | Dim `── v1.1.0 ──` rows when commit matches version tag |
 | 3 | **B3** — Per-step metadata | Pending | `diffSnapshots` shorthand (+added −removed ns) on `-v` / JSON |
 | 4 | **B4** — Summary block | Pending | API growth, largest expansion/reduction, most active period |
 | 5 | **B5** — Cache insights | Optional | Cache-derived series metrics or `--cache-insights` flag |
 
-**B1 exit (ship before B2):**
+**B1 exit (shipped):**
 
-- [ ] `parseTimelineRange` accepts ref ranges (`..`) via `splitRangeToken` / `gitRevParse`
-- [ ] Single ref `timeline v1.0.0` → commits from tag to HEAD (symmetric to `diff`)
-- [ ] Time tokens (`@4w`, ISO week, date range) unchanged
-- [ ] `listBarrelCommits` or new walker for `git log left..right -- <barrelPath>`
-- [ ] Human + `--json` output; help + [`commands.md`](./commands.md) updated
-- [ ] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
+- [x] `parseTimelineRange` accepts ref ranges (`..`) via `splitRangeToken` / `gitRevParse`
+- [x] Single ref `timeline v1.0.0` → commits from tag to HEAD (symmetric to `diff`)
+- [x] Time tokens (`@4w`, ISO week, date range) unchanged
+- [x] `listBarrelCommitsByRef` for `git log left..right -- <barrelPath>`
+- [x] Human + `--json` output; help + [`commands.md`](./commands.md) updated
+- [x] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
 
 **Phase B complete when:** B1–B4 done (B5 optional / defer with reason in `timeline-2.md`).
 

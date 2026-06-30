@@ -1,7 +1,13 @@
 import { ExportError } from '../errors/index.js';
 import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
-import { formatGitRunStats, listBarrelCommits, resetGitRunStats, shortSha } from '../git/index.js';
+import {
+  formatGitRunStats,
+  listBarrelCommits,
+  listBarrelCommitsByRef,
+  resetGitRunStats,
+  shortSha,
+} from '../git/index.js';
 import { printTimelineReport } from '../logger/index.js';
 import { computeTimelineInsights } from '../insights/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
@@ -26,10 +32,16 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     });
   }
 
-  const allCommits = listBarrelCommits({
-    sinceIso: range.sinceIso,
-    untilIso: range.untilIso,
-  });
+  const allCommits =
+    range.kind === 'time'
+      ? listBarrelCommits({
+          sinceIso: range.sinceIso,
+          untilIso: range.untilIso,
+        })
+      : listBarrelCommitsByRef({
+          leftSha: range.left.sha,
+          rightSha: range.right.sha,
+        });
   const { items: commits, hiddenCount } = limitList(allCommits, listLimit);
 
   const warmer = new TimelineWarmer(commits.length);
