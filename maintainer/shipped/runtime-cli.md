@@ -2,7 +2,7 @@
 
 Logging policy, human reports, listing contract, help, insights, and timeline warm log.
 
-**Observability phases shipped here:** **A** (P6, P9–P15 — listing, provenance, help, truncation) · **E** (P17 — command insights). Program index: [`phases/observability-roadmap.md`](../phases/observability-roadmap.md).
+**Observability phases shipped here:** **A** (P6, P9–P15 — listing, provenance, help, truncation) · **E** (P17 — command insights). Backlog: [`phases/active-phase.md`](../phases/active-phase.md).
 
 ---
 

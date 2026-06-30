@@ -11,7 +11,6 @@
 | [`active-phase.md`](./active-phase.md) | **Current sprint + ordered backlog** |
 | [`../shipped/README.md`](../shipped/README.md) | **Closed work** — ISO week timeline + receipts |
 | [`commands.md`](./commands.md) | Command roadmap — wired verbs + deferred future commands |
-| [`observability-roadmap.md`](./observability-roadmap.md) | Program index (A/E shipped; B–G open) |
 
 Scratch / spikes: **`maintainer/temp/`** (gitignored).
 
@@ -33,7 +32,9 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 | [`graph-2.md`](./graph-2.md) | C — Graph 2.0 |
 | [`../api-chain.md`](../api-chain.md) | D — API chain |
 | [`cli-output-audit.md`](./cli-output-audit.md) | F — CLI output audit |
+| [`severity.md`](./severity.md) | Severity — tier policy rule + graded issues (ASAP) |
+| [`suggest.md`](./suggest.md) | Suggest — violation detection + fix suggestions (standalone) |
 | [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (deferred) |
 | [`test-expansion.md`](./test-expansion.md) | Test coverage backlog |
 
-**Removed after ship:** Phase E (`rich-command-metadata.md`) → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I plan → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Timeline B1–B3 detail → [`shipped/git-commands.md`](../shipped/git-commands.md) + trimmed [`timeline-2.md`](./timeline-2.md).
+**Removed after ship:** Phase E (`rich-command-metadata.md`) → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I plan → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Timeline B1–B3 detail → [`shipped/git-commands.md`](../shipped/git-commands.md) + trimmed [`timeline-2.md`](./timeline-2.md). Program index (`observability-roadmap.md`) — folded into [`active-phase.md`](./active-phase.md).

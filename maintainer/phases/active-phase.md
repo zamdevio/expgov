@@ -6,8 +6,6 @@
 
 **Engineering maps:** [`../systems/README.md`](../systems/README.md)
 
-**Observability program:** [`observability-roadmap.md`](./observability-roadmap.md) (B/C open; A/E shipped)
-
 ---
 
 ## Focus now — Phase B (Timeline 2.0)
@@ -63,6 +61,8 @@ Work top-to-bottom once Phase B rows above are done.
 | 2 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
 | 3 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
 | 4 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
+| 5 | **Severity** | Policy `severity` rule + graded `issues[]` on all violation commands | [`severity.md`](./severity.md) |
+| 6 | **Suggest** | Standalone violation detection + fix suggestions | [`suggest.md`](./suggest.md) |
 
 **One slice per PR** — finish the current Phase B row before starting C.
 
@@ -72,7 +72,7 @@ Work top-to-bottom once Phase B rows above are done.
 
 | Slice | Why deferred |
 |-------|----------------|
-| Auto-fix PR bot | Needs stable `suggest` output + policy; out of scope for dry-run CLI |
+| Auto-fix PR bot | Needs stable suggest JSON + kinds — blocked on [`suggest.md`](./suggest.md) |
 | JSON config (`expgov.config.json`) | Config-as-code only — see [`../systems/principles.md`](../systems/principles.md) |
 | Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
 | Source profiles (H) | `.ts` sufficient for v1 — see [`sourceProfiles.md`](./sourceProfiles.md) |

@@ -43,7 +43,7 @@ Cache layout: [`cache.md`](./cache.md). Insights (shipped partial): [`cli.md`](.
 
 ## Phase G metric catalog (planned)
 
-Full sequencing: [`phases/observability-roadmap.md`](../phases/observability-roadmap.md).
+Full sequencing: [`phases/active-phase.md`](../phases/active-phase.md).
 
 | ID | Metric | Source | Depends on |
 |----|--------|--------|------------|
