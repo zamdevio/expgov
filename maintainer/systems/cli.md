@@ -30,7 +30,7 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 | `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
 | `-y, --yes` | Non-interactive init |
 
-Per-command list flags (`inventory`, `diff`, `graph`, `trend`, `timeline`, `validate`): `-T, --top <n>` (default 10, min 1), `-F, --full`.
+Per-command list flags (`inventory`, `diff`, `graph`, `trend`, `timeline`, `validate`, `suggest`, `doctor`): `-T, --top <n>` (default 10, min 1), `-F, --full`.
 
 Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode never applies ANSI.
 
@@ -40,7 +40,7 @@ Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style 
 
 - Shared helper: `packages/core/src/shared/listing.ts` — `resolveListLimit`, `limitList`, `formatListTruncationHint`.
 - Default cap: 10 rows; `-F` removes cap; truncation hint: `…and N more (use -F/--full or -T/--top <n>)`.
-- Applied in report layer (`logger/reports/*`), not command hosts slicing early.
+- Applied in report layer (`logger/reports/*`), including diff tier violations, custom tier deltas, inventory custom tier rollup rows, suggest names, and doctor check lines.
 
 ## Output flow
 

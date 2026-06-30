@@ -1,17 +1,24 @@
 
 import { boldDim, style } from '../../runtime/style.js';
+import { limitList, resolveListLimit } from '../../shared/listing.js';
+import type { ListViewOptions } from '../../types/cli/list.js';
 
-import { logLine, printMeta } from '../report.js';
+import { logLine, logListTruncation, printMeta } from '../report.js';
+
+function stableExactSnippetLines(names: string[]): string[] {
+  if (!names.length) return [];
+  return ['      exact: [', ...names.map((name) => `        ${JSON.stringify(name)},`), '      ],'];
+}
 
 export function printSuggestReport(input: {
   suggestion: { bucket: 'stable'; names: string[] };
-  snippet: string;
   hints: string[];
   verbose?: boolean;
   ref?: string;
+  listView?: ListViewOptions;
 }): void {
-  const { suggestion, snippet, hints, verbose } = input;
-  const hintLimit = verbose ? hints.length : 3;
+  const { suggestion, hints } = input;
+  const listLimit = resolveListLimit(input.listView);
 
   if (input.ref) {
     printMeta({ ref: input.ref });
@@ -23,22 +30,27 @@ export function printSuggestReport(input: {
     return;
   }
 
-  logLine(`       ${style.warn('!')} ${suggestion.names.length} unclassified flat export(s) — add to tiers.${suggestion.bucket}.exact`);
+  logLine(
+    `       ${style.warn('!')} ${suggestion.names.length} unclassified flat export(s) — add to tiers.${suggestion.bucket}.exact`,
+  );
   logLine('');
   logLine(boldDim('       Suggested names'));
-  for (const name of suggestion.names) logLine(`       ${style.accent('·')} ${name}`);
+  const names = limitList(suggestion.names, listLimit);
+  for (const name of names.items) logLine(`       ${style.accent('·')} ${name}`);
+  logListTruncation(names.hiddenCount);
 
-  if (snippet) {
+  if (names.items.length) {
     logLine('');
     logLine(boldDim('       Paste into expgov.config.ts'));
-    for (const line of snippet.split('\n')) logLine(`       ${style.dim(line)}`);
+    for (const line of stableExactSnippetLines(names.items)) {
+      logLine(`       ${style.dim(line)}`);
+    }
   }
 
   if (hints.length) {
     logLine('');
-    for (const hint of hints.slice(0, hintLimit)) logLine(`       ${style.dim('·')} ${hint}`);
-    if (!verbose && hints.length > hintLimit) {
-      logLine(`       ${style.dim(`…and ${hints.length - hintLimit} more hints (use -v)`)}`);
-    }
+    const limitedHints = limitList(hints, listLimit);
+    for (const hint of limitedHints.items) logLine(`       ${style.dim('·')} ${hint}`);
+    logListTruncation(limitedHints.hiddenCount);
   }
 }

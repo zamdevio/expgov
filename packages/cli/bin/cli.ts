@@ -29,6 +29,7 @@ import type {
   CacheListVerboseOpts,
   GlobalOpts,
   InitCommandOpts,
+  ListFlagOpts,
   TrendCommandOpts,
   ValidateCommandOpts,
   VerboseOpts,
@@ -207,23 +208,31 @@ function buildProgram(): Command {
       }),
   );
 
-  program
-    .command('doctor')
-    .description('config discovery and cache hygiene checks')
-    .option('-v, --verbose', 'verbose output')
-    .action((_opts, cmd) => {
-      const local = cmd.opts() as VerboseOpts;
-      withContext(cmd, local.verbose, program, () => runExportsDoctor({ verbose: local.verbose }));
-    });
+  addListFlags(
+    program
+      .command('doctor')
+      .description('config discovery and cache hygiene checks')
+      .option('-v, --verbose', 'verbose output')
+      .action((_opts, cmd) => {
+        const local = cmd.opts() as VerboseOpts & ListFlagOpts;
+        withContext(cmd, local.verbose, program, () =>
+          runExportsDoctor({ verbose: local.verbose, top: local.top, full: local.full }),
+        );
+      }),
+  );
 
-  program
-    .command('suggest')
-    .description('suggest tiers.stable.exact additions for unclassified exports (dry-run)')
-    .option('-v, --verbose', 'verbose output')
-    .action((_opts, cmd) => {
-      const local = cmd.opts() as VerboseOpts;
-      withContext(cmd, local.verbose, program, () => runExportsSuggest({ verbose: local.verbose }));
-    });
+  addListFlags(
+    program
+      .command('suggest')
+      .description('suggest tiers.stable.exact additions for unclassified exports (dry-run)')
+      .option('-v, --verbose', 'verbose output')
+      .action((_opts, cmd) => {
+        const local = cmd.opts() as VerboseOpts & ListFlagOpts;
+        withContext(cmd, local.verbose, program, () =>
+          runExportsSuggest({ verbose: local.verbose, top: local.top, full: local.full }),
+        );
+      }),
+  );
 
   addListFlags(
     addCacheFlags(

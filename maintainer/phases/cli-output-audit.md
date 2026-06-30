@@ -70,7 +70,7 @@ banner (CLI) → meta rows → report body → verbose sections → insights (Ph
 | Delta lines | Color semantics (+ yellow, − green) | Document: growth warning vs shrink ok |
 | Added/removed | Unbounded list | Phase A `--top`; sort alpha (keep) |
 | Empty state | “No flat export additions” | Add “namespaces not compared” reminder |
-| Tier violations | Always full list | Good for governance |
+| Tier violations | Was full list (Phase F audit) | **Now** `-T` / `-F` like validate |
 | Verbose detail | Arrow `name → tier · cat` | Use consistent `·` separator (match inventory) |
 | Missing insight | No module delta | Phase E |
 

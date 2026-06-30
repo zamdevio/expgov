@@ -91,10 +91,10 @@ export function runExportsSuggest(options: SuggestCliOptions = {}): number {
 
   printSuggestReport({
     suggestion,
-    snippet: formatStableExactSnippet(suggestion.names),
     hints,
     verbose: options.verbose,
     ref: refLine({ kind: 'worktree', label: 'working tree' }, snapshot),
+    listView: options,
   });
 
   finishCommand({

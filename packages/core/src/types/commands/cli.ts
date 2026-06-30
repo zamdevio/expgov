@@ -7,7 +7,7 @@ export interface DiffCliOptions extends ListViewOptions {
   verbose?: boolean;
 }
 
-export interface DoctorCliOptions {
+export interface DoctorCliOptions extends ListViewOptions {
   verbose?: boolean;
 }
 
@@ -25,7 +25,7 @@ export interface InventoryCliOptions extends ListViewOptions {
   force?: boolean;
 }
 
-export interface SuggestCliOptions {
+export interface SuggestCliOptions extends ListViewOptions {
   verbose?: boolean;
 }
 

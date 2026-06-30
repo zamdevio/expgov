@@ -174,7 +174,7 @@ export function runExportsDoctor(options: DoctorCliOptions = {}): number {
     return exitCode;
   }
 
-  printDoctorReport({ healthy, ok, warnings, hints, verbose: options.verbose });
+  printDoctorReport({ healthy, ok, warnings, hints, verbose: options.verbose, listView: options });
 
   finishCommand({
     command: 'doctor',

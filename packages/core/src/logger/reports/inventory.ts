@@ -76,12 +76,12 @@ export function printInventoryReport(input: {
   const r = snapshot.summary.root;
   logLine(`       ${padLabel('root flat')} ${style.white(String(r.flat))}`);
   logLine(`       ${padLabel('namespace')} ${style.white(String(r.namespace))}`);
-  printTierRollupLines(r);
+  const listLimit = resolveListLimit(input.listView);
+  printTierRollupLines(r, listLimit);
 
-  printSdkWideTiers(sumSdkTierCounts(snapshot));
+  printSdkWideTiers(sumSdkTierCounts(snapshot), listLimit);
   printPublishedSubpathRollups(snapshot.summary.subpaths);
 
-  const listLimit = resolveListLimit(input.listView);
   const topCategories = limitList(
     Object.entries(r.byCategory ?? {}).sort((a, b) => b[1] - a[1]),
     listLimit,

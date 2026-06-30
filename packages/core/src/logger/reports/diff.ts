@@ -9,14 +9,24 @@ import type { TierCounts } from '../../types/inventory/snapshot.js';
 import { formatDelta, formatSnapshotMetaEndpoint, logLine, logListTruncation, padLabel, printMeta, cacheLabel, canEmitVerboseReport } from '../report.js';
 import { printInsightsBlock } from './insights.js';
 
-function printCustomTierDeltas(left: TierCounts, right: TierCounts): void {
+function printCustomTierDeltas(left: TierCounts, right: TierCounts, listLimit: number): void {
   const names = new Set([...Object.keys(left.custom), ...Object.keys(right.custom)]);
-  for (const name of [...names].sort()) {
+  const rows = [...names]
+    .sort()
+    .filter((name) => {
+      const lv = left.custom[name] ?? 0;
+      const rv = right.custom[name] ?? 0;
+      return lv !== 0 || rv !== 0;
+    });
+  if (!rows.length) return;
+
+  const limited = limitList(rows, listLimit);
+  for (const name of limited.items) {
     const lv = left.custom[name] ?? 0;
     const rv = right.custom[name] ?? 0;
-    if (lv === 0 && rv === 0) continue;
     logLine(`       ${padLabel(name)} ${formatDelta(lv, rv)}`);
   }
+  logListTruncation(limited.hiddenCount);
 }
 
 export function printDiffReport(input: {
@@ -43,7 +53,7 @@ export function printDiffReport(input: {
   logLine(`       ${padLabel('stable')} ${formatDelta(dl.stable, dr.stable)}`);
   logLine(`       ${padLabel('advanced')} ${formatDelta(dl.advanced, dr.advanced)}`);
   logLine(`       ${padLabel('internal')} ${formatDelta(dl.internal, dr.internal)}`);
-  printCustomTierDeltas(dl, dr);
+  printCustomTierDeltas(dl, dr, listLimit);
 
   logLine('');
   if (diff.added.length) {
@@ -68,8 +78,10 @@ export function printDiffReport(input: {
   }
 
   if (diff.tierViolations.length) {
+    const violations = limitList(diff.tierViolations, listLimit);
     logLine(style.bold(style.warn('       Tier violations')));
-    for (const v of diff.tierViolations) logLine(`       ${style.warn('!')} ${v}`);
+    for (const v of violations.items) logLine(`       ${style.warn('!')} ${v}`);
+    logListTruncation(violations.hiddenCount);
   } else {
     logLine(`       ${style.ok('✓')} ${style.dim('No tier violations')}`);
   }
