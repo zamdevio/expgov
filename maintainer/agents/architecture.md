@@ -28,7 +28,7 @@ expgov/
 packages/core/src/
 ├── commands/       # runExports* — beginCommand/finishCommand + reports
 ├── config/         # load.ts, tiers.ts, tierCatalog, tierPolicy
-├── context/        # ProjectContext from expgov.config.ts
+├── context/        # ProjectContext from expgov.config.ts; path accessors (paths.ts)
 ├── cache/          # snapshot warm/read, worktree files.json
 ├── inventory/      # barrel snapshot + classifySymbolTier
 ├── init/           # detect + template for init command

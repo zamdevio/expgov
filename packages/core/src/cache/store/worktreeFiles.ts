@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 
 import type { WorktreeFileRecord, WorktreeFilesState } from '../../types/cache/worktreeFiles.js';
 import { WORKTREE_CACHE_KEY, WORKTREE_FILES_VERSION } from '../../shared/constants/cache.js';
-import { cacheDirForSha, worktreeFilesPath } from '../../paths.js';
+import { cacheDirForSha, worktreeFilesPath } from '../../context/paths.js';
 import { readJsonFile, writeJsonAtomic } from './io.js';
 
 function isValidWorktreeFilesState(value: unknown): value is WorktreeFilesState {

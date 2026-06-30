@@ -1,7 +1,7 @@
 import { existsSync, unlinkSync } from 'node:fs';
 
 import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
-import { fullSnapshotPathForSha, timelineSnapshotPathForSha } from '../../paths.js';
+import { fullSnapshotPathForSha, timelineSnapshotPathForSha } from '../../context/paths.js';
 import type { CacheProfile } from '../../types/cache/store.js';
 import { readJsonFile } from './io.js';
 import { isTimelineSnapshot, isValidSnapshot, snapshotMatchesSha } from './validation.js';

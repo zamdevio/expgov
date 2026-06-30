@@ -5,7 +5,7 @@ import {
   buildSnapshot,
 } from '../../inventory/index.js';
 import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
-import { cacheDirForSha } from '../../paths.js';
+import { cacheDirForSha } from '../../context/paths.js';
 import { writePathForProfile } from './files.js';
 import { writeJsonAtomic } from './io.js';
 import { loadCacheMeta, touchMetaEntry } from './meta.js';

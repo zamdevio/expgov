@@ -7,7 +7,7 @@ import { WORKTREE_CACHE_KEY } from '../../shared/constants/cache.js';
 import {
   getRootIndexAbsPath,
   getRootIndexRepoPath,
-} from '../../paths.js';
+} from '../../context/paths.js';
 import { readCachedForProfile } from './files.js';
 import { loadCacheMeta } from './meta.js';
 import {

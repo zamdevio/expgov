@@ -1,12 +1,12 @@
 import path from 'node:path';
 
-import { getProjectContext } from './context/index.js';
+import { getProjectContext } from './index.js';
 import {
   FULL_SNAPSHOT_FILENAME,
   TIMELINE_SNAPSHOT_FILENAME,
   WORKTREE_CACHE_KEY,
   WORKTREE_FILES_FILENAME,
-} from './shared/constants/cache.js';
+} from '../shared/constants/cache.js';
 
 export function getRepoRoot(): string {
   return getProjectContext().repoRoot;

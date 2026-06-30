@@ -62,4 +62,4 @@ Cache must not be committed. `git/gitignore-tip.ts` suggests adding the configur
 
 ## Meta
 
-`meta.json` tracks cache version (`CACHE_META_VERSION` in `paths.ts`).
+`meta.json` tracks cache version (`CACHE_META_VERSION` in `shared/constants/cache.ts`).

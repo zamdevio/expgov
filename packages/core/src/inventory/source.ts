@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { npmSubpathKey } from '../context/index.js';
 import { gitShowFile } from '../git/index.js';
-import { coreRepoPath, getRepoRoot, getSubpathSourceEntries } from '../paths.js';
+import { coreRepoPath, getRepoRoot, getSubpathSourceEntries } from '../context/paths.js';
 
 import type { SourceReader } from '../types/inventory/source.js';
 

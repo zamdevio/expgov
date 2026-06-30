@@ -11,7 +11,7 @@ import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { computeValidateInsights } from '../insights/index.js';
 import { policyViolatesRootFlat } from '../config/tierPolicy.js';
 import { printValidateReport } from '../logger/index.js';
-import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
+import { getCorePkgPath, getRootIndexRepoPath } from '../context/paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { ValidateOptions } from '../types/commands/cli.js';

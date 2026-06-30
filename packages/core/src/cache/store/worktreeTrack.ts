@@ -15,7 +15,7 @@ import {
   getRepoRoot,
   getRootIndexRepoPath,
   getTimelineBarrelPath,
-} from '../../paths.js';
+} from '../../context/paths.js';
 
 export function fingerprintFileContent(content: string | Buffer): string {
   return fingerprintSource(typeof content === 'string' ? content : content.toString('utf8'));

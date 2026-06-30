@@ -4,7 +4,7 @@ import type { CacheStatus } from '../types/cache/index.js';
 import { gitRevParse, shortSha } from '../git/index.js';
 import type { SourceRef } from '../types/git/ref.js';
 import type { InventorySnapshot } from '../types/inventory/index.js';
-import { cacheDirForSha, getRepoRoot } from '../paths.js';
+import { cacheDirForSha, getRepoRoot } from '../context/paths.js';
 import { WORKTREE_CACHE_KEY } from '../shared/constants/cache.js';
 import { formatListTruncationHint } from '../shared/listing.js';
 import { emitLog } from '../runtime/emitter.js';

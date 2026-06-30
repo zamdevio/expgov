@@ -1,6 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-import { getExportsCacheRoot } from '../../paths.js';
+import { getExportsCacheRoot } from '../../context/paths.js';
 
 export function readJsonFile<T>(filePath: string): T | undefined {
   try {

@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { getRepoRoot } from '../paths.js';
+import { getRepoRoot } from '../context/paths.js';
 import type { GitRunResult, GitRunStats } from '../types/git/run.js';
 
 let sessionStats: GitRunStats = { invocations: 0, totalMs: 0 };

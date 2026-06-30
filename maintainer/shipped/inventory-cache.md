@@ -12,7 +12,7 @@ Barrel snapshot engine and local cache layer.
 - [x] Export categories (`categories.ts`) — run/type/config/other heuristics
 - [x] `@sdkTier` JSDoc on declarations (`inventory/tiers.ts`) — highest classifier priority
 - [x] Fingerprinting for cache invalidation (`fingerprint.ts`)
-- [x] Snapshot schema version (`SNAPSHOT_VERSION`, `TOOL_VERSION` in `paths.ts`)
+- [x] Snapshot schema version (`SNAPSHOT_VERSION`, `TOOL_VERSION` in `shared/constants/cache.ts`)
 - [x] Diff engine (`format/diff.ts`) — added/removed flats, tier violation notes, summary deltas
 
 Engineering map: [`systems/exports.md`](../systems/exports.md), [`systems/tiers.md`](../systems/tiers.md).
@@ -35,7 +35,7 @@ Engineering map: [`systems/cache.md`](../systems/cache.md).
 
 ## P4 — cache rename (shipped) · 2026-W26
 
-- [x] Default `cacheDir`: `.expgov/cache` (`DEFAULT_CACHE_DIR` in `paths.ts`)
+- [x] Default `cacheDir`: `.expgov/cache` (`DEFAULT_CACHE_DIR` in `shared/constants/cache.ts`)
 - [x] Init scaffold, gitignore tip, help text, dogfood config, `.gitignore`
 - [x] `doctor` warns when legacy `.exports/cache/` still present
 

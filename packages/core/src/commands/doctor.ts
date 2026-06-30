@@ -9,7 +9,7 @@ import {
 } from '../context/index.js';
 import { shouldSuggestCacheGitignore } from '../git/gitignore-tip.js';
 import { printDoctorReport } from '../logger/index.js';
-import { getCorePkgPath, getRootIndexRepoPath } from '../paths.js';
+import { getCorePkgPath, getRootIndexRepoPath } from '../context/paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import {

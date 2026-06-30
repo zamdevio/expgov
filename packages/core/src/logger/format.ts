@@ -1,5 +1,5 @@
 /** Truncate/pad inventory verbose columns. */
-import { getCoreSrcPrefix } from '../paths.js';
+import { getCoreSrcPrefix } from '../context/paths.js';
 import {
   INVENTORY_CATEGORY_WIDTH,
   INVENTORY_NAME_WIDTH,

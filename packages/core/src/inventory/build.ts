@@ -12,7 +12,7 @@ import {
 import type { SourceReader } from '../types/inventory/source.js';
 import { classifySymbolTier, classifySymbolTierWithProvenance, resolveDeclaredTierTag } from './tiers.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../shared/constants/cache.js';
-import { getRootIndexRepoPath } from '../paths.js';
+import { getRootIndexRepoPath } from '../context/paths.js';
 import { gitCommitMeta } from '../git/commit-meta.js';
 import type {
   GraphEdge,

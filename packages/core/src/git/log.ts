@@ -1,4 +1,4 @@
-import { getTagPattern, getTimelineBarrelPath } from '../paths.js';
+import { getTagPattern, getTimelineBarrelPath } from '../context/paths.js';
 import type { GitCommitRow } from '../types/git/commits.js';
 import { runGit } from './run.js';
 

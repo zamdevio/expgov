@@ -2,7 +2,7 @@
 import { style } from '../../runtime/style.js';
 
 import type { CacheStatus } from '../../types/cache/index.js';
-import { getRootIndexRepoPath } from '../../paths.js';
+import { getRootIndexRepoPath } from '../../context/paths.js';
 import { formatSubject } from '../format.js';
 import { logLine, logListTruncation, printMeta } from '../report.js';
 

@@ -3,7 +3,7 @@ import { createGitReader } from '../../inventory/source.js';
 import { ExportError } from '../../errors/index.js';
 import { gitShowFile, shortSha } from '../../git/index.js';
 import type { SourceRef } from '../../types/git/ref.js';
-import { getRootIndexRepoPath } from '../../paths.js';
+import { getRootIndexRepoPath } from '../../context/paths.js';
 import { readCachedForProfile, purgeStaleCacheForSha } from './files.js';
 import { loadCacheMeta, touchMetaEntry } from './meta.js';
 import {

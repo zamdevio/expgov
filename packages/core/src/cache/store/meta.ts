@@ -7,7 +7,7 @@ import {
   getExportsCacheRoot,
   getExportsMetaPath,
   fullSnapshotPathForSha,
-} from '../../paths.js';
+} from '../../context/paths.js';
 import { readJsonFile, writeJsonAtomic } from './io.js';
 import { purgeStaleCacheForSha } from './files.js';
 import type { CacheMeta, CacheMetaEntry } from '../../types/cache/store.js';
