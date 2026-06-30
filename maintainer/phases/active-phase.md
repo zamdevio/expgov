@@ -6,35 +6,51 @@
 
 **Engineering maps:** [`../systems/README.md`](../systems/README.md)
 
-**Observability program:** [`observability-roadmap.md`](./observability-roadmap.md) (Phases A–G)
+**Observability program:** [`observability-roadmap.md`](./observability-roadmap.md) (B/C open; A/E shipped)
 
 ---
 
-## Focus now
+## Focus now — Phase B (Timeline 2.0)
 
-| Priority | Slice | Goal |
-|----------|-------|------|
-| **Now** | **Phase B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries |
+**Doc:** [`timeline-2.md`](./timeline-2.md) · **Command:** `packages/core/src/commands/timeline.ts` · **Ranges:** `packages/core/src/time/ranges.ts`
 
-Check [`../shipped/README.md`](../shipped/README.md) before re-implementing runtime, init, or CLI styling.
+**v1 already shipped:** time windows (`@4w`, `@3m`, ISO dates), flat Δ table, insights (P17), warm log (P20).
+
+| # | Slice | Status | Goal |
+|---|-------|--------|------|
+| **→ 1** | **B1** — Ref ranges | **Next PR** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
+| 2 | **B2** — Release markers | Pending | Dim `── v1.1.0 ──` rows when commit matches version tag |
+| 3 | **B3** — Per-step metadata | Pending | `diffSnapshots` shorthand (+added −removed ns) on `-v` / JSON |
+| 4 | **B4** — Summary block | Pending | API growth, largest expansion/reduction, most active period |
+| 5 | **B5** — Cache insights | Optional | Cache-derived series metrics or `--cache-insights` flag |
+
+**B1 exit (ship before B2):**
+
+- [ ] `parseTimelineRange` accepts ref ranges (`..`) via `splitRangeToken` / `gitRevParse`
+- [ ] Single ref `timeline v1.0.0` → commits from tag to HEAD (symmetric to `diff`)
+- [ ] Time tokens (`@4w`, ISO week, date range) unchanged
+- [ ] `listBarrelCommits` or new walker for `git log left..right -- <barrelPath>`
+- [ ] Human + `--json` output; help + [`commands.md`](./commands.md) updated
+- [ ] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
+
+**Phase B complete when:** B1–B4 done (B5 optional / defer with reason in `timeline-2.md`).
+
+Check [`../shipped/README.md`](../shipped/README.md) before re-implementing listing, help, cache, or insights.
 
 ---
 
-## Backlog queue (dependency order)
+## Program backlog (after Phase B)
 
-Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parentheses.
+Work top-to-bottom once Phase B rows above are done.
 
-| # | Slice | Goal | Depends on | Doc |
-|---|-------|------|------------|-----|
-| 1 | Phase **B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries | A (listing), cache (shipped) | [`timeline-2.md`](./timeline-2.md) |
-| 2 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | A (listing) | [`graph-2.md`](./graph-2.md) |
-| 3 | Phase **D** — API chain | Execution introspection / tier rule trace | inventory snapshot (shipped) | [`../api-chain.md`](../api-chain.md) |
-| 4 | Phase **F** — CLI output audit | UX audit receipt; close gaps from A + E | A, E | [`cli-output-audit.md`](./cli-output-audit.md) |
-| 5 | Phase **G** — Long-term observability | Metrics/views over cached snapshots | B, C | [`../systems/observability.md`](../systems/observability.md) |
+| # | Slice | Goal | Doc |
+|---|-------|------|-----|
+| 1 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | [`graph-2.md`](./graph-2.md) |
+| 2 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
+| 3 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
+| 4 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
 
-**Wave 1 entry** (governance + CI + docs) is **complete** — see [`observability-roadmap.md`](./observability-roadmap.md#entry-criteria-when-to-start-wave-1).
-
-**One slice per PR** — pick the next open row only.
+**One slice per PR** — finish the current Phase B row before starting C.
 
 ---
 
@@ -46,7 +62,7 @@ Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parent
 | JSON config (`expgov.config.json`) | Config-as-code only — see [`../systems/principles.md`](../systems/principles.md) |
 | Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
 | Source profiles (H) | `.ts` sufficient for v1 — see [`sourceProfiles.md`](./sourceProfiles.md) |
-| SDK example workspace (I) | I1 skeleton shipped — see [`sdk.md`](./sdk.md) · [`examples/sdk/`](../../examples/sdk/) |
+| SDK monorepo example (I2) | I1 + I3 shipped — see [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) |
 
 ---
 

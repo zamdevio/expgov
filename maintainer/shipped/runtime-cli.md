@@ -1,6 +1,8 @@
 # Runtime & CLI output
 
-Logging policy, human reports, listing contract, help, and insights.
+Logging policy, human reports, listing contract, help, insights, and timeline warm log.
+
+**Observability phases shipped here:** **A** (P6, P9–P15 — listing, provenance, help, truncation) · **E** (P17 — command insights). Program index: [`phases/observability-roadmap.md`](../phases/observability-roadmap.md).
 
 ---
 
@@ -75,18 +77,24 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 
 ---
 
-## P17 — command insights / Phase E (shipped) · `006b45a`, `b60faad`
+## P17 — command insights / Phase E (shipped) · `006b45a`, `b60faad`, `0b7f5f0`
 
-- [x] `packages/core/src/insights/` — pure aggregations over snapshots (all governance commands)
-- [x] `logger/reports/insights.ts` — dim `◇` block before footer; max 5 lines; `--quiet` ok, `--silent` off
-- [x] JSON: additive `data.insights` on inventory, validate, diff, trend, graph, timeline
+**Design:** answer the *next question* inline — max 5 lines; pure functions over data already in memory (`packages/core/src/insights/`).
+
+- [x] `logger/reports/insights.ts` — dim `◇` block before footer; shown under `--quiet`; off under `--silent`
+- [x] JSON: additive `data.insights` on all governance list commands
 - [x] `inventory` — largest module (edges), median exports/module, unclassified warnings
 - [x] `validate` — hot spot / worst subpath on failure; internal/advanced counts on `-v`
 - [x] `diff` — module edge delta, tier movement, new advanced, truncated add/remove samples
 - [x] `trend` — largest tag-pair jump/drop, stable % shift
-- [x] `graph` — densest module, target fan-out, category mix
-- [x] `timeline` — flat churn, net window delta, largest step, busiest week
+- [x] `graph` — densest module, target fan-out, category mix (`0b7f5f0`)
+- [x] `timeline` — flat churn, net window delta, largest step, busiest week (`0b7f5f0`)
+- [x] `init` — workflow tips only (no insights block; by design)
 - [x] Tests: `shared/__tests__/insights.test.ts`
+
+Engineering map: [`systems/cli.md`](../systems/cli.md#insights-phase-e--shipped).
+
+**Future (not shipped):** config toggle, `--insights none`, CI gates on insight fields.
 
 ---
 
@@ -102,9 +110,9 @@ Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14).
 
 ## P20 — timeline warm log layout (shipped)
 
-- [x] `TimelineWarmer` collects per-commit timings (`timeline/warmer.ts`) — no `console.*` in verbose mode
-- [x] Non-verbose: stderr `\r` spinner only during warm; cleared before report
+- [x] `TimelineWarmer` collects per-commit timings (`timeline/warmer.ts`) — no `console.*`, no stderr spinner
+- [x] Non-verbose: `Snapshot warm` with latest commit line + `warmed` summary below meta
 - [x] `printTimelineWarmSection` — warm log **below** meta (`logger/reports/timeline/warm.ts`); `warmed` row matches meta indent (`       key      value`)
-- [x] `-v` / `--verbose` — `Snapshot warm` section with per-commit `· N/M  sha  hit  Nms` lines + summary row
+- [x] `-v` / `--verbose` — all per-commit warm lines under `Snapshot warm` + summary row
 - [x] JSON: `data.warmStats` includes `entries[]` for machine consumers
 - [x] Removed duplicate `warm` meta row (summary lives in warm section)

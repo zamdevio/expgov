@@ -2,7 +2,7 @@
 
 **Status:** Planning only.
 
-**Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Phase E [`rich-command-metadata.md`](./rich-command-metadata.md)
+**Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Insights shipped [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17
 
 ---
 

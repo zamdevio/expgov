@@ -2,7 +2,7 @@
 
 Closed slices only — check here before re-implementing. Durable engineering detail lives in [`systems/`](../systems/README.md).
 
-**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `e74abeb` (P7–P16) · `006b45a` → `b60faad` (P17) · `5492383` → `7698189` (P18–P19).
+**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `e74abeb` (P7–P16) · `006b45a` → `0b7f5f0` (P17–P20) · `5492383` → `7698189` (P18–P19) · `b8ccbdb` (Phase I1/I3).
 
 ---
 
@@ -35,9 +35,12 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **P14** — Commander-first help (A5) | `printCliHelp`; workflows appendix; per-command Examples/Related (`7a580d1`, `2845c79`) |
 | 2026-W26 | **P15** — list truncation hints (A1b) | Report-layer `…and N more`; graph/timeline `hiddenCount` fixes (`4f943b3`, `55eab70`) |
 | 2026-W26 | **P16** — worktree files index (2e) | `files.json` + `inputFilesEpoch` hash gate under `__worktree__/` (`e74abeb`) |
-| 2026-W26 | **P17** — command insights (E partial) | `inventory` / `validate` / `diff` / `trend` metadata + JSON `data.insights` (`006b45a`, `b60faad`) |
+| 2026-W26 | **P17** — command insights (Phase E) | All governance commands + JSON `data.insights` (`006b45a`, `b60faad`, `0b7f5f0`) |
 | 2026-W26 | **P18** — help path polish | Bare invoke help exit 0; Workflows on all `-h` / `--help` / `help` (`5492383`, `42ed91d`) |
 | 2026-W26 | **P19** — CI job split | Parallel typecheck/test; `core:build` before CLI typecheck (`7698189`) |
+| 2026-W26 | **P20** — timeline warm log | Report-layer `Snapshot warm` below meta; latest line default, all with `-v` (`5000073`) |
+| 2026-W26 | **I1** — SDK example | `examples/sdk/` teaching fixture (`b8ccbdb`) |
+| 2026-W26 | **I3** — example SDK CI | `expgov -C examples/sdk validate` in `ci.yml` (`b8ccbdb`) |
 
 ---
 
@@ -50,7 +53,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Git & commands | P0c, P0d, P4a, P5, P8 | [`git-commands.md`](./git-commands.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tiers & config | P2 tiers, P9–P11, P13 | [`tiers-config.md`](./tiers-config.md) |
-| Tooling & docs | P2 hub, P3, P3a, P12, P19 | [`tooling-docs.md`](./tooling-docs.md) |
+| Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3 | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) |
 
 ---
 
@@ -98,5 +101,7 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | Conservative init tiers | P13 | `init/detect.ts`, `init/template.ts` |
 | Worktree `files.json` gate | P16 | `cache/store/worktreeTrack.ts`, `worktreeFiles.ts` |
 | Command insights (`data.insights`) | P17 | `insights/`, `logger/reports/insights.ts` |
+| Timeline warm log | P20 | `timeline/warmer.ts`, `logger/reports/timeline/` |
 | `expgov version` | P8 | `commands/version.ts` |
+| SDK example workspace | I1, I3 | [`examples-sdk.md`](./examples-sdk.md) · [`examples/sdk/`](../../examples/sdk/) |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

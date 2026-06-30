@@ -4,7 +4,7 @@ import { TimelineWarmer } from '../../timeline/warmer.js';
 
 describe('TimelineWarmer', () => {
   it('collects warm entries for report rendering', () => {
-    const warmer = new TimelineWarmer(2, true);
+    const warmer = new TimelineWarmer(2);
     warmer.tick('abc1234567890abcdef1234567890abcd', 7, 'hit');
     warmer.tick('def1234567890abcdef1234567890abcd', 0, 'hit');
     const stats = warmer.finish();

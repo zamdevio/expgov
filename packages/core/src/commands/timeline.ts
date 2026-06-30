@@ -32,7 +32,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   });
   const { items: commits, hiddenCount } = limitList(allCommits, listLimit);
 
-  const warmer = new TimelineWarmer(commits.length, Boolean(options.verbose));
+  const warmer = new TimelineWarmer(commits.length);
   const rows = commits.map((commit) => {
     const warmT0 = performance.now();
     const { snapshot, cache } = getSnapshot(

@@ -1,8 +1,8 @@
 # Phase B — Timeline 2.0
 
-**Status:** Planning only.
+**Status:** In progress — **B1 next** (ref ranges). v1 + P17 insights + P20 warm log shipped.
 
-**Companion:** [`commands.md`](./commands.md) · [`../systems/cli.md`](../systems/cli.md) (Phase A shipped)
+**Active sprint:** [`active-phase.md`](./active-phase.md#focus-now--phase-b-timeline-20)
 
 ---
 
@@ -85,7 +85,7 @@ interface TimelineStepMeta {
 
 ### Core purity note
 
-`TimelineWarmer` verbose warm lines now render via the report layer (`printTimelineWarmSection`) — no `console.*`. Non-verbose in-flight progress still uses `coreLogRaw` `\r` on stderr during warm (cleared before the report). Phase B may fold spinner into `emitLog` if needed.
+`TimelineWarmer` verbose warm lines render via the report layer (`printTimelineWarmSection`) — no `console.*` and no stderr spinner. Phase B may add live progress if ref-range warms grow longer.
 
 ---
 

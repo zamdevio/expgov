@@ -182,7 +182,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       '',
       `  ${style.bold('Flags')}`,
       `    -T, --top <n>   max commits to show (default 10, min 1); -F/--full for all in range`,
-      `    -v, --verbose   full subjects; per-commit snapshot warm log after meta`,
+      `    -v, --verbose   full subjects; all per-commit snapshot warm lines (default: latest only)`,
       `    -f, --force     rebuild every commit snapshot and overwrite cache`,
       `    --no-cache      build fresh without reading or writing cache`,
       `    -h, --help      show this section`,

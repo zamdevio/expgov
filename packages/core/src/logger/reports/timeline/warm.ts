@@ -15,9 +15,12 @@ export function printTimelineWarmSection(
 
   logLine('');
 
-  if (verbose && warmStats.entries.length > 0) {
+  if (warmStats.entries.length > 0) {
     logLine(boldDim('       Snapshot warm'));
-    for (const entry of warmStats.entries) {
+    const entries = verbose
+      ? warmStats.entries
+      : [warmStats.entries[warmStats.entries.length - 1]!];
+    for (const entry of entries) {
       logLine(`       ${formatWarmEntry(entry)}`);
     }
   }

@@ -1,8 +1,10 @@
 # Observability & CLI DX Roadmap
 
-**Status:** Phase A + P16 + P17 (partial E) shipped — active work on Phase E remainder, then B/C.
+**Status:** Phases **A** and **E** shipped — active work **B** (timeline 2.0) and **C** (graph 2.0).
 
 **Audience:** Maintainers sequencing the next evolution of expgov.
+
+**Shipped detail:** Phase A → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) (P6, P9–P15). Phase E → same (P17). Phase I → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md).
 
 ---
 
@@ -17,19 +19,18 @@ Evolve expgov from **export-governance CLI** to **polished SDK observability too
 
 ---
 
-## Planning documents
+## Planning documents (open work only)
 
 | Phase | Status | Document / map |
 |-------|--------|----------------|
-| **A** | Shipped (P6, P9–P15) | [`systems/cli.md`](../systems/cli.md) |
 | **B** | Planned | [`timeline-2.md`](./timeline-2.md) |
 | **C** | Planned | [`graph-2.md`](./graph-2.md) |
 | **D** | Planned | [`../api-chain.md`](../api-chain.md) |
-| **E** | In progress (P17 partial) | [`rich-command-metadata.md`](./rich-command-metadata.md) |
 | **F** | Planned | [`cli-output-audit.md`](./cli-output-audit.md) |
-| **G** | Planned | [`systems/observability.md`](../systems/observability.md) |
+| **G** | Planned | [`../systems/observability.md`](../systems/observability.md) |
+| **H** | Deferred | [`sourceProfiles.md`](./sourceProfiles.md) |
 
-Worktree cache gate (2e): shipped P16 — [`systems/cache.md`](../systems/cache.md).
+**Shipped (receipts, not phase plans):** A · E · P16 worktree gate · I1/I3 — [`shipped/README.md`](../shipped/README.md).
 
 ---
 
@@ -43,8 +44,8 @@ Worktree cache gate (2e): shipped P16 — [`systems/cache.md`](../systems/cache.
 | `diff` | full ×2 | yes | shipped |
 | `validate` | worktree bypass | yes | shipped |
 | `trend` | per tag | yes | shipped |
-| `timeline` | timeline profile | yes | pending (Phase B) |
-| `graph` | full | yes | pending (Phase C) |
+| `graph` | full | yes | shipped |
+| `timeline` | timeline profile | yes | shipped |
 | `init` | — | — | tips only |
 
 ### Global flags
@@ -57,9 +58,9 @@ Worktree cache gate (2e): shipped P16 — [`systems/cache.md`](../systems/cache.
 
 ### Still open (B/C/D)
 
-- Timeline: time ranges only — not `v1..v2` git ref ranges; no release markers.
-- Graph: subpath groups + top modules — not namespace-first analytics.
-- API chain trace: not wired to CLI.
+- Timeline: time ranges only — not `v1..v2` git ref ranges; no release markers (B).
+- Graph: subpath groups + top modules — not namespace-first analytics (C).
+- API chain trace: not wired to CLI (D).
 
 ---
 
@@ -71,21 +72,19 @@ flowchart TD
   B[Phase B Timeline 2]
   C[Phase C Graph 2]
   D[Phase D API Chain]
-  E[Phase E Rich Metadata]
+  E[Phase E Rich Metadata - shipped]
   F[Phase F Output Audit]
   G[Phase G Observability]
 
   A --> B
   A --> C
-  A --> E
-  B --> E
-  C --> E
+  B --> F
+  C --> F
   D --> A
   A --> F
   E --> F
   B --> G
   C --> G
-  E --> G
 ```
 
 ---
@@ -97,16 +96,16 @@ flowchart TD
 - Phase **A** (listing, aliases, color, provenance, help, truncation)
 - Worktree **files.json** gate (P16)
 - Phase **E** — command insights on all governance commands (P17)
+- Phase **I** partial — SDK example + CI smoke (I1, I3)
 
 ### Next
 
-1. Finish Phase **E** — graph + timeline insights (after / with B/C analytics)
-2. Phase **B1** timeline ref ranges + **B2** release markers
-3. Phase **C2** graph analytics + **C1** namespace-centric report
-4. Phase **B3–B4** timeline metadata + summaries
-5. Phase **F** glossary + indent constants (from audit)
-6. Phase **D** trace bus + `TimelineWarmer` emitter migration
-7. Phase **G** metrics one family per PR
+1. Phase **B1** timeline ref ranges + **B2** release markers
+2. Phase **C2** graph analytics + **C1** namespace-centric report
+3. Phase **B3–B4** timeline metadata + summaries
+4. Phase **F** glossary + indent constants (from audit)
+5. Phase **D** trace bus
+6. Phase **G** metrics one family per PR
 
 ---
 
@@ -122,13 +121,13 @@ flowchart TD
 
 ## Entry criteria (Wave 1)
 
-From [`active-phase.md`](./active-phase.md) — **complete**:
+**Complete:**
 
 - [x] Nested tier schema shipped (dogfood config)
 - [x] `expgov validate` CI gate
 - [x] User `docs/` stubs for flag contracts
 
-**Current focus:** Phase **B** / **C** (timeline + graph 2.0).
+**Current focus:** Phase **B** / **C**.
 
 ---
 
@@ -140,7 +139,7 @@ From [`active-phase.md`](./active-phase.md) — **complete**:
 - `-v` shows execution chain (or `-vv` for detail)
 - Each command answers ≥1 “next question” inline — **done** (P17)
 - Phase F audit items owned or explicitly deferred with reason
-- Phase G metric catalog defined in [`systems/observability.md`](../systems/observability.md) — all G slices **planned** (post B/C/E)
+- Phase G metric catalog defined in [`systems/observability.md`](../systems/observability.md) — all G slices **planned**
 
 ---
 

@@ -9,7 +9,7 @@
 | Area | Test file | What it locks |
 |------|-----------|---------------|
 | Listing contract | `shared/__tests__/listing.test.ts` | `resolveListLimit`, `limitList`, truncation hint |
-| Insights (Phase E) | `shared/__tests__/insights.test.ts` | inventory, validate, diff, trend insight shapes |
+| Insights (Phase E) | `shared/__tests__/insights.test.ts` | inventory, validate, diff, trend, graph, timeline |
 | Worktree cache gate | `shared/__tests__/worktreeSnapshot.test.ts`, `worktreeTrack.test.ts` | `files.json` epoch, barrel + re-export closure |
 | Cache mode | `shared/__tests__/cacheMode.test.ts`, `resolveCache.test.ts` | hit/miss/bypass, `cache.enabled` |
 | Tier classifier | `shared/__tests__/tiers.test.ts` | tag vs config precedence, provenance |

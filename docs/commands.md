@@ -151,7 +151,7 @@ expgov timeline 2025-01-01..2025-06-01
 
 Range formats: `@4w`, `@3m`, ISO dates. Shows flat count and Δ between consecutive barrel edits.
 
-Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`warmed` summary; per-commit lines with `-v`) → commit table → insights.
+Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → insights.
 
 JSON: `data.warmStats` includes `{ warmed, totalMs, entries[] }`.
 

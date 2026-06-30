@@ -97,8 +97,8 @@ JSON: additive `data.insights`. Shown under `--quiet`; suppressed under `--silen
 
 - Collector: `packages/core/src/timeline/warmer.ts` — records per-commit cache warm timings.
 - Renderer: `logger/reports/timeline/warm.ts` — prints **below** meta rows, before commit table.
-- Default: `warmed` summary row only (`       warmed     10/10 · 7ms total`); stderr `\r` spinner during warm (cleared before report).
-- `-v`: `Snapshot warm` section with `· N/M  <sha>  <cache>  <ms>` lines, then the same `warmed` summary row.
+- Default: `Snapshot warm` with **latest** commit line + `warmed` summary; no stderr spinner.
+- `-v`: all per-commit `· N/M  <sha>  <cache>  <ms>` lines under `Snapshot warm`, then `warmed` summary.
 - JSON: `data.warmStats` with `{ warmed, totalMs, entries[] }`.
 
 ## Banners

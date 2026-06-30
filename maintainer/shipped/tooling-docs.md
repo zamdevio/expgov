@@ -52,3 +52,10 @@ Maintainer hub, user docs, CI, and project hygiene.
 - [x] `ci.yml` — parallel `typecheck` and `test` jobs; `build` → madge → dogfood `validate`
 - [x] Typecheck job: `core:typecheck` → `core:build` (declarations) → `cli:typecheck`
 - [x] `architecture.yml` — advisory knip + madge orphans/leaves (unchanged role)
+
+---
+
+## Phase I — SDK example CI (shipped) · `b8ccbdb`
+
+- [x] `ci.yml` — `node dist/cli.js -C examples/sdk validate` after dogfood validate
+- [x] Receipt: [`examples-sdk.md`](./examples-sdk.md)
