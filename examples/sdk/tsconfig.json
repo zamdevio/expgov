@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@example/sdk-demo": ["./src/index.ts"],
+      "expgov/core": ["../../dist/core.d.ts", "../../dist/core.js"]
+    }
+  },
+  "include": ["src/**/*.ts", "expgov.config.ts"]
+}

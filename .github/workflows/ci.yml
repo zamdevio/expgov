@@ -1,6 +1,6 @@
 # CI — build gate on every push and PR
 #
-# typecheck ∥ test → build → madge → dogfood validate
+# typecheck ∥ test → build → madge → dogfood validate + examples/sdk validate
 # Engineering map: maintainer/systems/README.md · Build gate in .cursor/rules
 
 name: CI
@@ -90,3 +90,6 @@ jobs:
 
       - name: Dogfood validate
         run: node dist/cli.js validate
+
+      - name: Example SDK validate
+        run: node dist/cli.js -C examples/sdk validate

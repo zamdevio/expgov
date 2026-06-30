@@ -1,6 +1,6 @@
 # Phase I — SDK example workspace (`examples/sdk/`)
 
-**Status:** Planning only — dogfood root `expgov.config.ts` covers the monorepo; a dedicated example tree helps external SDK adopters copy a minimal layout without reading expgov’s own internals.
+**Status:** I1 shipped — skeleton + README in [`examples/sdk/`](../../examples/sdk/). I2/I3 optional.
 
 **Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/config.md`](../systems/config.md) · [`sourceProfiles.md`](./sourceProfiles.md) (Phase H)
 
@@ -55,11 +55,11 @@ examples/sdk/
 
 ### I1 — Skeleton + README
 
-- [ ] Create `examples/sdk/` tree (barrel + 3–4 modules, `@sdkTier` on some symbols)
-- [ ] `expgov.config.ts` with conservative `tiers.stable.exact` (match P13 init defaults + a few entries)
-- [ ] `README.md`: install expgov, `cd examples/sdk`, `expgov inventory`, `expgov validate`, link to `docs/config.md`
-- [ ] Root `package.json` / workspace: include `examples/sdk` if pnpm workspace (or document standalone `cd` flow)
-- [ ] `.gitignore` entry for `examples/sdk/.expgov/` if cache enabled
+- [x] Create `examples/sdk/` tree (barrel + 3–4 modules, `@sdkTier` on some symbols)
+- [x] `expgov.config.ts` with conservative `tiers.stable.exact` (match P13 init defaults + a few entries)
+- [x] `README.md`: install expgov, `cd examples/sdk`, `expgov inventory`, `expgov validate`, link to `docs/config.md`
+- [x] Root `package.json` / workspace: include `examples/sdk` via `pnpm-workspace.yaml` (`examples/*`)
+- [x] `.gitignore` entry for `examples/sdk/.expgov/` if cache enabled (covered by root `.expgov/cache`)
 
 **Exit:** From repo root, `pnpm build && cd examples/sdk && expgov validate` passes.
 
@@ -70,7 +70,7 @@ examples/sdk/
 
 ### I3 — CI smoke (optional)
 
-- [ ] `ci.yml` job or step: build → `expgov validate` with `-C examples/sdk`
+- [x] `ci.yml` job step: build → `expgov -C examples/sdk validate` (after dogfood validate)
 - [ ] Document in [`tooling-docs.md`](../shipped/tooling-docs.md) when shipped
 
 ---
@@ -88,8 +88,10 @@ export default defineConfig({
     subpaths: { '.': 'src/index.ts' },
   },
   tiers: {
-    stable: { exact: ['greet', 'SDK_VERSION'] },
-    internal: { prefix: ['_'] },
+    tag: { name: 'sdkTier', precedence: 'tag' },
+    stable: { exact: ['greet', 'SDK_VERSION', 'GreetOptions'], prefix: ['format'] },
+    internal: { prefix: ['_', '^internal[A-Z_]'] },
+    advanced: { prefix: ['^beta[A-Z_]', 'experimental'] },
   },
 });
 ```
@@ -122,7 +124,7 @@ Adjust names to match the fixture barrel. Keep tier lists small so `suggest` and
 
 ## Open questions
 
-1. **Workspace membership** — add `examples/sdk` to `pnpm-workspace.yaml` or keep standalone (no workspace `package.json` deps)?
+1. **Workspace membership** — `examples/*` in `pnpm-workspace.yaml`; example depends on root via `"expgov": "link:../.."` (avoids duplicate `expgov` name clash with `packages/cli`).
 2. **Package name** — `@example/sdk-demo` vs `@expgov/example-sdk` for npm collision safety.
 3. **Committed cache** — never; same as dogfood (`.expgov/cache` gitignored).
 

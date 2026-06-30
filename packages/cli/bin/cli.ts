@@ -52,9 +52,8 @@ function globalOpts(cmd: Command): GlobalOpts {
 
 function initFromCommand(cmd: Command, verbose?: boolean): void {
   const g = globalOpts(cmd);
-  if (g.cwd) process.chdir(path.resolve(g.cwd));
   initProjectContext({
-    cwd: g.cwd ?? process.cwd(),
+    cwd: process.cwd(),
     configPath: g.config,
     packageName: g.packageName,
     cacheDir: g.cacheDir,

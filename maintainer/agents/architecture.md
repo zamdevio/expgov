@@ -6,6 +6,8 @@
 expgov/
 ├── package.json              # published npm pkg; bin → dist/cli.js; exports ./core
 ├── expgov.config.ts          # dogfood tier config for @expgov/core
+├── examples/
+│   └── sdk/                  # consumer-shaped SDK example (Phase I)
 ├── tsup.config.ts
 ├── tsconfig.json
 ├── packages/

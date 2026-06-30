@@ -20,6 +20,16 @@ pnpm link --global
 expgov validate
 ```
 
+**Try the example SDK** (in this repo):
+
+```bash
+pnpm build
+cd examples/sdk
+pnpm exec expgov validate
+```
+
+See [`examples/sdk/README.md`](../examples/sdk/README.md).
+
 ## Scaffold config
 
 From your SDK repo root:

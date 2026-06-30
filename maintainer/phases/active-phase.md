@@ -47,7 +47,7 @@ Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parent
 | JSON config (`expgov.config.json`) | Config-as-code only — see [`../systems/principles.md`](../systems/principles.md) |
 | Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
 | Source profiles (H) | `.ts` sufficient for v1 — see [`sourceProfiles.md`](./sourceProfiles.md) |
-| SDK example workspace (I) | After Phase E or parallel — see [`sdk.md`](./sdk.md) |
+| SDK example workspace (I) | I1 skeleton shipped — see [`sdk.md`](./sdk.md) · [`examples/sdk/`](../../examples/sdk/) |
 
 ---
 
