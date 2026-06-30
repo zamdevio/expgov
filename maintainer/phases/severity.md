@@ -2,7 +2,7 @@
 
 **Status:** Planned — after Phase **G** (per [`active-phase.md`](./active-phase.md) backlog).
 
-**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) (suggestion engine + full fixes) · [`commands.md`](./commands.md)
+**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) · [`fix.md`](./fix.md) · [`issues.md`](./issues.md) · [`commands.md`](./commands.md)
 
 ---
 
@@ -114,6 +114,9 @@ When ≥1 finding exists and **`-ns` is not set**:
 ```txt
        ✗ 9 internal-tier (maintainer) symbol(s) still flat on root
 
+       Tip:
+       · internal tier cannot be exposed at root (policy: maintainer)
+
        Suggested fixes (preview):
        · move CLI_NAME → ./internal
        · move style → ./internal
@@ -161,6 +164,24 @@ Preview is truncated (reuse `-T` / `-F` listing contract). Label `Suggested fixe
 - `--json` default: omit `suggestionPreview` (CI lean) unless `-v` or explicit opt-in documented in `docs/json.md`.
 - `-ns` + `--json`: no `suggestionPreview`; hints may still include suggest pointer.
 
+### Grouped violations (optional, V7+)
+
+For machine-actionable batch fixes (feeds future [`fix.md`](./fix.md) appliers):
+
+```json
+"violationGroups": [
+  {
+    "type": "rootFlatViolation",
+    "tier": "internal",
+    "policy": "maintainer",
+    "severity": "error",
+    "symbols": ["CLI_NAME", "style"]
+  }
+]
+```
+
+Flat `issues[]` remains canonical for CI; `violationGroups` is aggregated view in `data` — does not replace `issues[]`.
+
 ---
 
 ## Trigger flags (violation commands)
@@ -186,8 +207,8 @@ Per-command only — not a global flag (`expgov -ns validate` is invalid).
 | **V4** | `validate` integration | Graded `issues[]`; grouped human output; tip line |
 | **V5** | `diff` integration | Tier violations → findings + `issues[]` + tip |
 | **V6** | `doctor` + parity | Reuse codes; suggest tip when tier-related warnings likely |
-| **V7** | Exit / CI contract | Errors → `1`; warnings/info → `0`; `--strict`; `docs/json.md` |
-| **V8** | Preview + `-ns` | Wire `collectFixSuggestions` preview on triggers; `-ns, --no-suggestions` |
+| **V7** | Exit / CI contract | Errors → `1`; warnings/info → `0`; `--strict`; `docs/json.md`; optional `violationGroups` |
+| **V8** | Preview + `-ns` | Policy context tip + `collectFixSuggestions` preview; `-ns, --no-suggestions` |
 
 **Phase complete when:** V1–V8 shipped.
 
@@ -260,11 +281,12 @@ deprecated:   { rootFlat: 'allow', severity: 'warning' },
 **Human:**
 
 - Group: **Errors** (✗) → **Warnings** (!) → **Info** (·).
-- Tip when findings exist: `run expgov suggest for fix suggestions` (preview added in V8).
+- **Policy context** line per grouped finding when `policy` present (V8).
+- Tip when findings exist: `run expgov suggest for fix suggestions` (add `expgov fix tags` after [`fix.md`](./fix.md) F2).
 
 **JSON:**
 
-- `issues[]` with `severity`, `code`, `message`.
+- `issues[]` with `severity`, `code` from [`issues.md`](./issues.md) registry, `message`.
 - `data.hints[]` includes suggest pointer.
 - `data.violations` retained for compat or deprecated in same PR (note in `docs/json.md`).
 
@@ -370,8 +392,8 @@ flowchart LR
 |------|-----|
 | Duplicate fix heuristics in validate/diff | Preview must call suggest engine only |
 | `-k` / `-d` on validate/diff | Filter on `expgov suggest` only |
-| `suggest --apply` / auto-fix | Deferred — mention in docs only when implemented |
-| Auto-fix PR bot | Deferred — [`active-phase.md`](./active-phase.md) |
+| Writes / `--apply` on `suggest` | [`fix.md`](./fix.md) — suggest stays read-only |
+| Auto-fix PR bot | Deferred — after `fix tags` / `fix config` — [`fix.md`](./fix.md) |
 | Changing tier classifier priority | [`../systems/tiers.md`](../systems/tiers.md) unchanged |
 
 ---

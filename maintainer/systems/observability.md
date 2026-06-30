@@ -36,7 +36,7 @@ Cache layout: [`cache.md`](./cache.md). Insights (shipped partial): [`cli.md`](.
 |------|-----------|
 | Remote telemetry / SaaS | Local-only cache principle |
 | Runtime API usage tracking | Needs consumer instrumentation |
-| Auto-fix tier PR bot | Deferred — dry-run `suggest` only |
+| Auto-fix tier PR bot | Deferred — after [`phases/fix.md`](../phases/fix.md) (`fix tags`, `fix config`) |
 | JSON config | TypeScript-only config principle |
 
 ---

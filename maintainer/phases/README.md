@@ -34,7 +34,10 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 | [`cli-output-audit.md`](./cli-output-audit.md) | F — CLI output audit |
 | [`severity.md`](./severity.md) | Severity — policy rule, graded issues, preview + `-ns` on triggers |
 | [`suggest.md`](./suggest.md) | Suggest — engine, full fixes, `-k` / `-d` filters |
-| [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (deferred) |
+| [`fix.md`](./fix.md) | Fix — apply subcommands (`tags`, `config`; subpath postponed) |
+| [`config.md`](./config.md) | Config — show, export, convert, parse layer, JSON load |
+| [`issues.md`](./issues.md) | Issues — `issues[]` registry + doc links (i18nprune-style) |
+| [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (barrel module formats) |
 | [`test-expansion.md`](./test-expansion.md) | Test coverage backlog |
 
 **Removed after ship:** Phase E (`rich-command-metadata.md`) → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I plan → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Timeline B1–B3 detail → [`shipped/git-commands.md`](../shipped/git-commands.md) + trimmed [`timeline-2.md`](./timeline-2.md). Program index (`observability-roadmap.md`) — folded into [`active-phase.md`](./active-phase.md).

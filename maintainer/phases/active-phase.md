@@ -63,6 +63,9 @@ Work top-to-bottom once Phase B rows above are done.
 | 4 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
 | 5 | **Severity** | Policy `severity` rule, graded `issues[]`, preview + `-ns` on triggers | [`severity.md`](./severity.md) |
 | 6 | **Suggest** | Suggestion engine, full fixes, `-k` / `-d` filters | [`suggest.md`](./suggest.md) |
+| 7 | **Fix** | Apply fixes (`fix tags`, `fix config`); hard subcmds postponed | [`fix.md`](./fix.md) |
+| 8 | **Config** | `config show` / `export` / `convert`, parse layer, JSON load | [`config.md`](./config.md) |
+| 9 | **Issues** | `issues/` registry, doc links, `issues[]` parity | [`issues.md`](./issues.md) |
 
 **One slice per PR** — finish the current Phase B row before starting C.
 
@@ -72,17 +75,18 @@ Work top-to-bottom once Phase B rows above are done.
 
 | Slice | Why deferred |
 |-------|----------------|
-| Auto-fix PR bot | Needs stable suggest JSON + kinds — blocked on [`suggest.md`](./suggest.md) |
-| JSON config (`expgov.config.json`) | Config-as-code only — see [`../systems/principles.md`](../systems/principles.md) |
+| Auto-fix PR bot | Needs stable `fix tags` / `fix config` — blocked on [`fix.md`](./fix.md) |
+| `fix subpath` / barrel moves | Dedicated engine + parser; postponed in [`fix.md`](./fix.md) until upstream stable |
+| JSON config (`expgov.config.json`) | [`config.md`](./config.md) — export before load; TS stays primary |
 | Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
-| Source profiles (H) | `.ts` sufficient for v1 — see [`sourceProfiles.md`](./sourceProfiles.md) |
+| Source profiles (H-src) | Barrel formats only — [`sourceProfiles.md`](./sourceProfiles.md) |
 | SDK monorepo example (I2) | I1 + I3 shipped — see [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) |
 
 ---
 
 ## Guiding rules
 
-- **Config is TypeScript only:** `expgov.config.ts` via jiti — no JSON config.
+- **Config is TypeScript first:** `expgov.config.ts` via jiti — JSON load planned ([`config.md`](./config.md)).
 - **Core purity:** `packages/core` never imports CLI, prompts, or chalk.
 - **CLI is thin:** Commander host, banners, help colorization, `init` prompts only.
 - **Tier sources:** `@sdkTier` JSDoc + nested config buckets — see [`systems/tiers.md`](../systems/tiers.md).

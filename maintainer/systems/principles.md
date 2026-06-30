@@ -8,7 +8,7 @@ Stable constraints for expgov design — not sprint plans.
 
 | Principle | Rule |
 |-----------|------|
-| Config as code | `expgov.config.ts` only — typed via `defineConfig` |
+| Config as code | `expgov.config.ts` primary — [`phases/config.md`](../phases/config.md) for show/export + JSON load |
 | Core purity | Engine in `packages/core` — no TTY/chalk/prompts in command paths |
 | Thin CLI | `packages/cli` — Commander, banners, init prompts only |
 | Tier explicitness | `@sdkTier` or config bucket — `unclassified` fails validate |
@@ -35,9 +35,9 @@ Detail: [`tiers.md`](./tiers.md).
 
 ## Out of scope (deferred)
 
-- JSON config files (`expgov.config.json`)
+- JSON config as primary authoring format (load after [`phases/config.md`](../phases/config.md) CF4)
 - Remote cache / shared artifact store
-- Auto-fix PR bot for tier allowlists
+- Auto-fix PR bot for tier allowlists (after [`phases/fix.md`](../phases/fix.md))
 - Runtime API usage tracking (needs consumer instrumentation)
 - Real-time watch mode (separate tool)
 

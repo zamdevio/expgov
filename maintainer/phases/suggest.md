@@ -2,7 +2,7 @@
 
 **Status:** Planned — immediately after [`severity.md`](./severity.md) V1–V7 (shared findings + policy severity).
 
-**Companion:** [`severity.md`](./severity.md) · [`../systems/tiers.md`](../systems/tiers.md) · [`commands.md`](./commands.md)
+**Companion:** [`severity.md`](./severity.md) · [`fix.md`](./fix.md) (apply — deferred) · [`../systems/tiers.md`](../systems/tiers.md) · [`commands.md`](./commands.md)
 
 ---
 
@@ -286,12 +286,16 @@ Can land in same PR as S1 + severity V8.
 
 ---
 
-## Deferred (document later)
+## Deferred (apply path)
+
+All writes live in [`fix.md`](./fix.md) — **`suggest` never gains `--apply`**.
 
 | Item | Notes |
 |------|-------|
-| `suggest --apply` | Writes config / barrel — after dry-run + `--yes` story; do not mention in validate tip until shipped |
-| Auto-fix PR bot | Needs stable JSON + kinds — [`active-phase.md`](./active-phase.md) |
+| `expgov fix tags` | Safest automation — `@sdkTier` injection |
+| `expgov fix config` | Merge tier-exact / policy snippets |
+| `expgov fix subpath` | Postponed — needs dedicated engine; upstream must be stable |
+| Auto-fix PR bot | After `fix` v1 — [`fix.md`](./fix.md) |
 
 ---
 
@@ -332,6 +336,7 @@ flowchart LR
 | `-ns` on suggest | Trigger flag only |
 | `-k` / `-d` on validate/diff | User runs `suggest` to filter |
 | Fixes for unknown finding codes | Add code + engine rule in same PR |
+| Applying fixes / file writes | [`fix.md`](./fix.md) subcommands only |
 
 ---
 
