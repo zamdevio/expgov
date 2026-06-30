@@ -9,7 +9,7 @@ import {
 import { formatTierCountsNote, sumSdkTierCounts, tierCountsFooterFields } from '../inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { computeValidateInsights } from '../insights/index.js';
-import { policyViolatesRootFlat } from '../config/tierPolicy.js';
+import { listUnknownPolicyRefs, policyViolatesRootFlat } from '../config/tierPolicy.js';
 import { printValidateReport } from '../logger/index.js';
 import { refLine } from '../logger/report.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../context/paths.js';
@@ -112,6 +112,11 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
   const { snapshot } = getWorktreeSnapshot({ noCache: true });
   const { tierCatalog } = getProjectContext();
   const tierSources = summarizeTierSources(snapshot.symbols);
+
+  for (const message of listUnknownPolicyRefs(tierCatalog.entries, tierCatalog.policies)) {
+    violations.push(message);
+  }
+
   const rootFlatPolicyBlocks = new Map<string, string[]>();
 
   for (const sym of snapshot.symbols) {
@@ -125,7 +130,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
       continue;
     }
     const entry = tierCatalog.byName.get(sym.tier);
-    if (entry && policyViolatesRootFlat(entry.policy)) {
+    if (entry && policyViolatesRootFlat(entry.policyRules)) {
       const names = rootFlatPolicyBlocks.get(sym.tier) ?? [];
       names.push(sym.name);
       rootFlatPolicyBlocks.set(sym.tier, names);

@@ -1,11 +1,13 @@
 import type { TierPolicy } from '../inventory/tiers.js';
+import type { TierPolicyDefinition } from './policies.js';
 
 export type { TierPolicy };
+export type { TierPolicyDefinition, TierPolicyRules, TierRootFlatRule } from './policies.js';
 
 /** One tier bucket — policy, matchers, and optional classifier precedence. */
 export interface TierBucket {
-  /** Governance policy preset (built-ins default when omitted). */
-  policy?: TierPolicy;
+  /** Policy name — built-in preset or key under `tiers.policies`. */
+  policy?: string;
   /** Lower runs first in the classifier (built-ins have defaults). */
   precedence?: number;
   exact?: string[];
@@ -28,8 +30,10 @@ export interface TierTagConfig {
 
 export interface TierRulesConfig {
   tag?: TierTagConfig;
+  /** Policy registry — override built-in presets or define custom policies for buckets. */
+  policies?: Record<string, TierPolicyDefinition>;
   stable?: TierBucket;
   internal?: TierBucket;
   advanced?: TierBucket;
-  [bucketName: string]: TierBucket | TierTagConfig | undefined;
+  [bucketName: string]: TierBucket | TierTagConfig | Record<string, TierPolicyDefinition> | undefined;
 }

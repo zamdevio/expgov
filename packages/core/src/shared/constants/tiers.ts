@@ -35,6 +35,9 @@ export const BUILTIN_BUCKET_NAMES = ['stable', 'internal', 'advanced'] as const;
 /** `tiers` config key for JSDoc tag settings (not a bucket). */
 export const TIER_TAG_CONFIG_KEY = 'tag';
 
+/** `tiers` config key for the policy registry (not a bucket). */
+export const TIER_POLICIES_CONFIG_KEY = 'policies';
+
 export const DEFAULT_BUCKET_PRECEDENCE: Record<string, number> = {
   internal: 10,
   advanced: 20,

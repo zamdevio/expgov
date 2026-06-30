@@ -76,15 +76,28 @@ tiers: {
 }
 ```
 
-**Policies** (built-ins default when `policy` is omitted):
+**Policies** — built-in presets default when `policy` is omitted on a bucket. Override or define custom policies under `tiers.policies`; buckets reference them by name:
 
-| Policy | Default bucket | Root flat behavior |
-|--------|----------------|-------------------|
-| `public` | `stable` | allowed |
-| `maintainer` | `internal` | validate fails |
-| `experimental` | `advanced` | validate fails |
-| `preview` | custom | allowed (notes only) |
-| `deprecated` | custom | allowed (notes only) |
+```ts
+tiers: {
+  policies: {
+    // optional override of built-in preset
+    experimental: { rules: { rootFlat: 'allow' } },
+    partnerApi: { rules: { rootFlat: 'deny' } },
+  },
+  beta: { policy: 'partnerApi', prefix: ['^beta'] },
+}
+```
+
+| Policy | Default bucket | `rootFlat` rule |
+|--------|----------------|-----------------|
+| `public` | `stable` | allow |
+| `maintainer` | `internal` | deny |
+| `experimental` | `advanced` | deny |
+| `preview` | custom | allow |
+| `deprecated` | custom | allow |
+
+Composable rules today: `rootFlat: 'allow' | 'deny'` — blocks flat root exports when `deny`.
 
 **Classifier priority** (first match wins):
 

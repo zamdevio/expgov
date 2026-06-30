@@ -1,6 +1,6 @@
 import type { InitDetection } from '../types/init/detection.js';
 import { detectionToConfig } from './detect.js';
-import { RICH_INIT_CACHE_HINT, RICH_INIT_TIER_HINTS } from './richHints.js';
+import { RICH_INIT_CACHE_HINT, RICH_INIT_POLICIES_HINT, RICH_INIT_TIER_HINTS } from './richHints.js';
 import {
   DEFAULT_INIT_CONFIG_IMPORT,
   INIT_CONFIG_FILE_NAME,
@@ -44,6 +44,16 @@ function formatTierBucket(
       ? formatCommentedStringList(richHints.prefix, `${indent}  `)
       : '[]';
   return `{\n${indent}  exact: ${exact},\n${indent}  prefix: ${prefix},\n${indent}}`;
+}
+
+function formatRichPoliciesBlock(indent: string): string {
+  const i = indent;
+  return [
+    `${i}// policies: {`,
+    ...RICH_INIT_POLICIES_HINT.map((line) => `${i}// ${line}`),
+    `${i}// },`,
+    '',
+  ].join('\n');
 }
 
 function formatRichCacheBlock(indent: string): string {
@@ -90,7 +100,7 @@ ${rich ? formatRichCacheBlock('  ') : ''}  git: {
     timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},
   },
   tiers: {
-    stable: ${formatTierBucket(tiers?.stable ?? { exact: [], prefix: [] }, '    ', rich ? RICH_INIT_TIER_HINTS.stable : undefined)},
+${rich ? formatRichPoliciesBlock('    ') : ''}    stable: ${formatTierBucket(tiers?.stable ?? { exact: [], prefix: [] }, '    ', rich ? RICH_INIT_TIER_HINTS.stable : undefined)},
     internal: ${formatTierBucket(tiers?.internal ?? { exact: [], prefix: [] }, '    ', rich ? RICH_INIT_TIER_HINTS.internal : undefined)},
     advanced: ${formatTierBucket(tiers?.advanced ?? { exact: [], prefix: [] }, '    ', rich ? RICH_INIT_TIER_HINTS.advanced : undefined)},
   },

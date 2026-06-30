@@ -38,6 +38,11 @@ export {
 export { resolveExpgovConfig, formatConfigDiscoveryHint, defineConfig } from './config/load.js';
 export { resolveCacheSettings } from './config/resolveCache.js';
 export {
+  isBuiltinPolicyName,
+  policyViolatesRootFlat,
+  resolveTierPolicies,
+} from './config/tierPolicy.js';
+export {
   buildInitConfigTemplate,
   detectInitProject,
   detectionToConfig,
@@ -54,6 +59,11 @@ export type {
   TierTagConfig,
   TierBucket,
   TierPolicy,
+  TierPolicyDefinition,
+  TierPolicyRules,
+  TierRootFlatRule,
+  ResolvedTierPolicy,
+  ResolvedTierPolicyRules,
   ResolvedTierBucket,
 } from './types/config/index.js';
 

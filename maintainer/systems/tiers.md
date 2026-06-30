@@ -39,13 +39,33 @@ Resolver: `packages/core/src/config/tierCatalog.ts` → `resolveTierCatalog()`.
 
 ## Policies
 
-| Policy | Default for | Root flat |
-|--------|-------------|-----------|
-| `public` | `stable` | allowed |
-| `maintainer` | `internal` | **validate fails** |
-| `experimental` | `advanced` | **validate fails** |
-| `preview` | custom | allowed |
-| `deprecated` | custom | allowed |
+Built-in presets ship with internal defaults and are always available. Override rules or register custom policies under `tiers.policies`; buckets reference a policy by name via `policy`:
+
+```ts
+tiers: {
+  policies: {
+    experimental: { rules: { rootFlat: 'allow' } }, // override built-in
+    partnerApi: { rules: { rootFlat: 'deny' } },
+  },
+  beta: { policy: 'partnerApi', prefix: ['^beta'] },
+}
+```
+
+| Policy | Default for | `rootFlat` |
+|--------|-------------|------------|
+| `public` | `stable` | allow |
+| `maintainer` | `internal` | deny |
+| `experimental` | `advanced` | deny |
+| `preview` | custom | allow |
+| `deprecated` | custom | allow |
+
+Resolver: `packages/core/src/config/tierPolicy.ts` → `resolveTierPolicies()`, `resolveTierCatalog()`.
+
+Composable rules (extend as governance checks ship):
+
+| Rule | Values | Effect |
+|------|--------|--------|
+| `rootFlat` | `allow` \| `deny` | Block flat exports on root barrel when `deny` |
 
 Implementation: `packages/core/src/config/tierPolicy.ts`.
 

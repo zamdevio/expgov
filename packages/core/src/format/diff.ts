@@ -20,7 +20,7 @@ export function diffSnapshots(left: InventorySnapshot, right: InventorySnapshot)
       continue;
     }
     const entry = tierCatalog.byName.get(sym.tier);
-    if (entry && policyViolatesRootFlat(entry.policy)) {
+    if (entry && policyViolatesRootFlat(entry.policyRules)) {
       tierViolations.push(`${sym.name} (${sym.tier}) exported flat on root`);
     }
   }
