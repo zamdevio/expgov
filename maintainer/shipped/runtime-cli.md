@@ -134,3 +134,13 @@ Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14).
 - [x] Commander `Range formats:` section wired via `commandHelp.ts` (diff + timeline grammar)
 - [x] `packages/cli/src/types/` barrel — global, commands, help, init, ansi; removed dead `printHelp` range sections from CLI path
 - [x] Shared `COMMAND_SUBTITLES` for banners
+
+---
+
+## B1–B3 — Timeline 2.0 slices (shipped)
+
+Receipts: [`git-commands.md`](./git-commands.md) (B1–B3). Plan trimmed: [`phases/timeline-2.md`](../phases/timeline-2.md).
+
+- [x] **B1** — git ref ranges on `timeline` (`495f6ec`)
+- [x] **B2** — release marker rows (`── v1.0.0 ──`)
+- [x] **B3** — per-step metadata (`rows[].step`, `-v` shorthand)

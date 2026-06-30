@@ -18,6 +18,7 @@ import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
 import { limitList, resolveListLimit } from '../shared/listing.js';
 import type { TimelineCliOptions } from '../types/commands/cli.js';
 import type { TimelineRow } from '../types/timeline/row.js';
+import { computeTimelineStepMeta } from '../timeline/stepMeta.js';
 import { TimelineWarmer } from '../timeline/warmer.js';
 
 export function runExportsTimeline(options: TimelineCliOptions = {}): void {
@@ -49,34 +50,49 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   const tagIndex = indexVersionTagsByCommit();
 
   const warmer = new TimelineWarmer(commits.length);
-  const rows: TimelineRow[] = commits.map((commit) => {
-    const warmT0 = performance.now();
-    const { snapshot, cache } = getSnapshot(
-      { kind: 'commit', sha: commit.sha, label: shortSha(commit.sha) },
-      resolveCacheOptions({
-        noCache: options.noCache,
-        force: options.force,
-        profile: 'timeline',
-        git: { commitDate: commit.date },
-      }),
-    );
-    warmer.tick(commit.sha, Math.round(performance.now() - warmT0), cache);
-    return {
-      date: commit.date.slice(0, 10),
-      sha: commit.sha,
-      subject: commit.subject,
-      cache,
-      rollup: trendRollupFromSnapshot(snapshot),
-      delta: null as number | null,
-      tags: versionTagsForCommit(commit.sha, tagIndex),
-    };
-  });
+  const built: { row: TimelineRow; snapshot: ReturnType<typeof getSnapshot>['snapshot'] }[] = commits.map(
+    (commit) => {
+      const warmT0 = performance.now();
+      const { snapshot, cache } = getSnapshot(
+        { kind: 'commit', sha: commit.sha, label: shortSha(commit.sha) },
+        resolveCacheOptions({
+          noCache: options.noCache,
+          force: options.force,
+          profile: 'timeline',
+          git: { commitDate: commit.date },
+        }),
+      );
+      warmer.tick(commit.sha, Math.round(performance.now() - warmT0), cache);
+      return {
+        snapshot,
+        row: {
+          date: commit.date.slice(0, 10),
+          sha: commit.sha,
+          subject: commit.subject,
+          cache,
+          rollup: trendRollupFromSnapshot(snapshot),
+          delta: null,
+          step: null,
+          tags: versionTagsForCommit(commit.sha, tagIndex),
+        },
+      };
+    },
+  );
+
+  const rows: TimelineRow[] = built.map((entry) => entry.row);
 
   const warmStats = warmer.finish();
 
   for (let i = 0; i < rows.length; i++) {
-    if (i === 0) continue;
+    if (i === 0) {
+      rows[i]!.delta = null;
+      rows[i]!.step = null;
+      continue;
+    }
+    const newer = built[i - 1]!.snapshot;
+    const older = built[i]!.snapshot;
     rows[i]!.delta = rows[i]!.rollup.rootFlat - rows[i - 1]!.rollup.rootFlat;
+    rows[i]!.step = computeTimelineStepMeta(newer, older);
   }
 
   const insights = computeTimelineInsights(rows);

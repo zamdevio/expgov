@@ -9,6 +9,10 @@ import { formatSubject } from '../../format.js';
 import { formatMetaEndpoint, logLine, logListTruncation, printMeta } from '../../report.js';
 import { printInsightsBlock } from '../insights.js';
 import { formatReleaseMarker, resolveDisplayTags } from './markers.js';
+import {
+  formatTimelineStepShorthand,
+  hasTimelineStepActivity,
+} from '../../../timeline/stepMeta.js';
 import { printTimelineWarmSection } from './warm.js';
 import type { TimelineWarmStats } from '../../../types/timeline/warm.js';
 
@@ -80,9 +84,13 @@ export function printTimelineReport(input: {
     else if (row.delta > 0) deltaStr = style.warn(` +${row.delta}`.padStart(4));
     else deltaStr = style.ok(` ${row.delta}`.padStart(4));
 
-    const subject = formatSubject(row.subject, 48, input.verbose);
+    const subject = formatSubject(row.subject, input.verbose ? 36 : 48, input.verbose);
+    const stepSuffix =
+      input.verbose && row.step && hasTimelineStepActivity(row.step)
+        ? style.dim(`  ${formatTimelineStepShorthand(row.step)}`)
+        : '';
     logLine(
-      `       ${row.date.padEnd(12)} ${row.sha.slice(0, 7).padEnd(9)} ${String(row.rollup.rootFlat).padStart(5)} ${deltaStr}  ${subject}`,
+      `       ${row.date.padEnd(12)} ${row.sha.slice(0, 7).padEnd(9)} ${String(row.rollup.rootFlat).padStart(5)} ${deltaStr}  ${subject}${stepSuffix}`,
     );
     const markerTags = resolveDisplayTags(row.tags, input.verbose);
     if (markerTags.length) {

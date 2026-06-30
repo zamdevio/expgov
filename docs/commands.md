@@ -206,7 +206,7 @@ Shows flat count and Δ between **consecutive barrel edits** (newest first). Whe
 
 Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → insights.
 
-JSON: `data.rows[].tags` lists version tags on each commit. `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
+JSON: `data.rows[].tags` lists version tags on each commit. `data.rows[].step` has per-step `added`, `removed`, `namespaceDelta`, `subpathDelta`, `tierDelta` (pairwise vs row above). Use `-v` for inline shorthand (`+2 −1 st +1`). `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
 
 ---
 

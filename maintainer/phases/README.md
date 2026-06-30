@@ -36,4 +36,4 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 | [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (deferred) |
 | [`test-expansion.md`](./test-expansion.md) | Test coverage backlog |
 
-**Removed after ship:** Phase E (`rich-command-metadata.md`) → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I plan → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md).
+**Removed after ship:** Phase E (`rich-command-metadata.md`) → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I plan → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Timeline B1–B3 detail → [`shipped/git-commands.md`](../shipped/git-commands.md) + trimmed [`timeline-2.md`](./timeline-2.md).

@@ -20,8 +20,8 @@
 |---|-------|--------|------|
 | 1 | **B1** — Ref ranges | **Shipped** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
 | 2 | **B2** — Release markers | **Shipped** | Dim `── v1.1.0 ──` rows when commit matches version tag |
-| **→ 3** | **B3** — Per-step metadata | **Next PR** | `diffSnapshots` shorthand (+added −removed ns) on `-v` / JSON |
-| 4 | **B4** — Summary block | Pending | API growth, largest expansion/reduction, most active period |
+| 3 | **B3** — Per-step metadata | **Shipped** | `diffSnapshots` step meta; `-v` shorthand; JSON `rows[].step` |
+| **→ 4** | **B4** — Summary block | **Next PR** | API growth, largest expansion/reduction, most active period |
 | 5 | **B5** — Cache insights | Optional | Cache-derived series metrics or `--cache-insights` flag |
 
 **B1 exit (shipped):**
@@ -39,6 +39,13 @@
 - [x] Dim `── v1.0.0 ──` marker row below tagged barrel commits (default: highest tag; `-v`: all tags)
 - [x] JSON `data.rows[].tags` on timeline rows
 - [x] Tests: `timelineReleaseMarkers.test.ts`
+
+**B3 exit (shipped):**
+
+- [x] Light timeline snapshots include flat symbol names (cache auto-rebuild when stale)
+- [x] `computeTimelineStepMeta(newer, older)` — added/removed, namespace/subpath/tier deltas
+- [x] JSON `data.rows[].step`; human `-v` shorthand (`+2 −1 ns +1`)
+- [x] Tests: `timelineStepMeta.test.ts`
 
 **Phase B complete when:** B1–B4 done (B5 optional / defer with reason in `timeline-2.md`).
 

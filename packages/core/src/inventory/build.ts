@@ -227,6 +227,22 @@ function buildSubpathRollups(reader: SourceReader): SubpathRollup[] {
   return rollups.sort((a, b) => a.npmSubpath.localeCompare(b.npmSubpath));
 }
 
+function buildLightSymbols(parsed: ParsedExport[]): InventorySymbol[] {
+  return parsed
+    .filter((item) => item.exportKind === 'flat')
+    .map((item) => ({
+      name: item.name,
+      tsKind: item.tsKind,
+      exportKind: 'flat' as const,
+      tier: classifySymbolTier(item.name),
+      category: classifyExportCategory(item.name, item.tsKind, 'flat'),
+      targetSubpath: '.',
+      symbolKind: 'unknown' as const,
+      sourceModule: null,
+      subpath: '.' as const,
+    }));
+}
+
 function buildLightRootSummary(parsed: ParsedExport[]): RootSummary {
   const summary: RootSummary = {
     flat: 0,
@@ -275,7 +291,7 @@ export function buildLightSnapshot(input: {
     git: git ?? undefined,
     barrel: getRootIndexRepoPath(),
     summary: { root: buildLightRootSummary(parsed), subpaths: [] },
-    symbols: [],
+    symbols: buildLightSymbols(parsed),
     namespaces: [],
     edges: [],
   };

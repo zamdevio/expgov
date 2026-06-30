@@ -12,6 +12,7 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 - [x] `listBarrelCommits` + `parseTimelineRange` — `@4w`, `@3m`, ISO dates (`time/ranges.ts`)
 - [x] **B1** — timeline git ref ranges — `v1.0.0..HEAD`, single ref → `ref..HEAD`; `listBarrelCommitsByRef` (`495f6ec`)
 - [x] **B2** — release markers — `indexVersionTagsByCommit`; dim `── v1.0.0 ──` below tagged commits; JSON `rows[].tags`
+- [x] **B3** — per-step metadata — `computeTimelineStepMeta`; JSON `rows[].step`; `-v` shorthand
 - [x] `TimelineWarmer` — per-commit cache warm; report-layer warm log below meta (`timeline/warmer.ts`, `logger/reports/timeline/warm.ts`)
 - [x] Git run stats for verbose inventory/timeline
 

@@ -6,6 +6,15 @@ import type { CacheProfile } from '../../types/cache/store.js';
 import { readJsonFile } from './io.js';
 import { isTimelineSnapshot, isValidSnapshot, snapshotMatchesSha } from './validation.js';
 
+/** Pre-B3 timeline caches omitted flat symbol names — rebuild for step diffs. */
+function timelineSnapshotNeedsRebuild(snapshot: InventorySnapshot): boolean {
+  return (
+    isTimelineSnapshot(snapshot) &&
+    snapshot.summary.root.flat > 0 &&
+    snapshot.symbols.length === 0
+  );
+}
+
 /** Canonical write target per profile (never cross-contaminate). */
 export function writePathForProfile(sha: string, profile: CacheProfile): string {
   return profile === 'timeline' ? timelineSnapshotPathForSha(sha) : fullSnapshotPathForSha(sha);
@@ -54,6 +63,10 @@ export function readCachedForProfile(sha: string, profile: CacheProfile): Invent
     return undefined;
   }
   if (profile === 'full' && isTimelineSnapshot(snapshot)) {
+    purgeStaleSnapshotFile(filePath, sha);
+    return undefined;
+  }
+  if (profile === 'timeline' && timelineSnapshotNeedsRebuild(snapshot)) {
     purgeStaleSnapshotFile(filePath, sha);
     return undefined;
   }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": ["expgov.config.ts"],
+  "ignore": ["**/expgov.config.ts"],
   "ignoreDependencies": [
     "@expgov/core",
     "@inquirer/prompts",
@@ -17,6 +17,10 @@
     "packages/cli": {
       "entry": ["bin/**/*.ts", "src/**/*.ts"],
       "project": ["bin/**/*.ts", "src/**/*.ts"]
+    },
+    "examples/sdk": {
+      "entry": ["expgov.config.ts"],
+      "project": ["src/**/*.ts"]
     }
   }
 }
