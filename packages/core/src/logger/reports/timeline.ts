@@ -3,8 +3,10 @@ import { style } from '../../runtime/style.js';
 
 import type { CacheStatus } from '../../types/cache/index.js';
 import { getRootIndexRepoPath } from '../../context/paths.js';
+import { computeTimelineInsights } from '../../insights/index.js';
 import { formatSubject } from '../format.js';
 import { logLine, logListTruncation, printMeta } from '../report.js';
+import { printInsightsBlock } from './insights.js';
 
 export function printTimelineReport(input: {
   range: { label: string; since: string; until: string };
@@ -21,6 +23,7 @@ export function printTimelineReport(input: {
   verbose?: boolean;
   warmStats?: { warmed: number; totalMs: number };
   gitStats?: string;
+  insights?: ReturnType<typeof computeTimelineInsights>;
 }): void {
   const topLabel = Number.isFinite(input.top) ? String(input.top) : 'all';
   printMeta({
@@ -61,4 +64,7 @@ export function printTimelineReport(input: {
     );
   }
   logListTruncation(input.hiddenCount ?? 0);
+
+  const insights = input.insights ?? computeTimelineInsights(input.rows);
+  if (insights) printInsightsBlock(insights.lines);
 }

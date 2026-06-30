@@ -77,7 +77,7 @@ API archaeology        timeline @3m → diff <sha>..HEAD
 Dependency map         graph → inventory -v
 ```
 
-## Insights (Phase E — partial)
+## Insights (Phase E — shipped)
 
 Module: `packages/core/src/insights/`. Renderer: `logger/reports/insights.ts` (`◇` prefix, before footer).
 
@@ -87,6 +87,8 @@ Module: `packages/core/src/insights/`. Renderer: `logger/reports/insights.ts` (`
 | `validate` | Hot spot / worst subpath on failure; internal/advanced counts on `-v` |
 | `diff` | Module edge delta, tier movement, new advanced, truncated add/remove samples |
 | `trend` | Largest tag-pair jump/drop, stable % shift |
+| `graph` | Densest module, target fan-out, category mix, edge mix |
+| `timeline` | Flat churn totals, net window delta, largest step, busiest week |
 
 JSON: additive `data.insights`. Shown under `--quiet`; suppressed under `--silent`. Max 5 lines per command.
 

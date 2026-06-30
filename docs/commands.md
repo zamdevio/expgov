@@ -36,7 +36,7 @@ Commit/SHA refs use immutable per-SHA cache dirs — no `files.json` needed.
 
 Several commands append an **Insights** block before the footer — answers to the likely next question (largest module, diff module deltas, trend jumps, validate hot spots, etc.). Shown in human output (including `--quiet`); available as `data.insights` in `--json`. Suppressed under `--silent`.
 
-Commands with insights today: `inventory`, `validate` (failure or `-v`), `diff`, `trend`.
+Commands with insights today: `inventory`, `validate` (failure or `-v`), `diff`, `trend`, `graph`, `timeline`.
 
 ---
 

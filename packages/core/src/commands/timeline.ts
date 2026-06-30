@@ -4,6 +4,7 @@ import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import type { CacheStatus } from '../types/cache/index.js';
 import { formatGitRunStats, listBarrelCommits, resetGitRunStats, shortSha } from '../git/index.js';
 import { printTimelineReport } from '../logger/index.js';
+import { computeTimelineInsights } from '../insights/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { CLI_NAME, style } from '../runtime/style.js';
@@ -62,6 +63,8 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     rows[i]!.delta = rows[i]!.rollup.rootFlat - rows[i - 1]!.rollup.rootFlat;
   }
 
+  const insights = computeTimelineInsights(rows);
+
   if (getRunOptions().json) {
     finishCommand({
       command: 'timeline',
@@ -70,7 +73,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
       json: {
         kind: 'timeline',
         ok: true,
-        data: { range, top: listLimit, rows, warmStats },
+        data: { range, top: listLimit, rows, warmStats, insights },
       },
     });
     return;
@@ -84,6 +87,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     verbose: options.verbose,
     warmStats,
     gitStats: formatGitRunStats(),
+    insights,
   });
 
   finishCommand({

@@ -65,7 +65,6 @@ Closed slices only — check here before re-implementing. Durable engineering de
 
 ## Explicitly not shipped
 
-- [ ] Phase **E** — `graph` / `timeline` insights (inventory, validate, diff, trend shipped — P17)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

@@ -1,6 +1,6 @@
 # Phase E — Rich Command Metadata
 
-**Status:** In progress — `inventory`, `validate`, `diff`, and `trend` shipped; `graph` / `timeline` pending (Phase B/C deps).
+**Status:** Shipped — all governance list commands include insights (`graph` / `timeline` completed Phase E).
 
 ---
 
@@ -12,6 +12,8 @@
 | `validate` | Hot spot / worst subpath on failure; internal/advanced counts on `-v` | `006b45a` |
 | `diff` | Module edge delta, tier movement, new advanced, truncated add/remove samples | `b60faad` |
 | `trend` | Largest tag-pair jump/drop, stable % shift | `b60faad` |
+| `graph` | Densest module, target fan-out, category mix | Phase E |
+| `timeline` | Flat churn, net window delta, largest step, busiest week | Phase E |
 
 **Module:** `packages/core/src/insights/` — pure functions over snapshots (no I/O).
 
@@ -55,39 +57,6 @@ If data requires a new git fetch or second snapshot, either:
 ---
 
 ## Per-command plan (remaining)
-
-### `graph [ref]`
-
-**Primary output:** Namespace / subpath / module map (Phase C).
-
-| Next question | Proposed answer | Source |
-|---------------|-----------------|--------|
-| Densest module? | `densest: …/logger/index.ts (42 edges)` | `graph/analytics` |
-| Largest fan-out? | `fan-out: runtime → 8 modules` | namespace → module edges |
-| Symbol composition? | `run 45% · type 30% · config 10%` | `byCategory` |
-
-**Placement:** Summary block under meta (Phase C2).
-
-**Complexity:** Low after Phase C analytics.
-
----
-
-### `timeline [range]`
-
-**Primary output:** Commit table with flat Δ.
-
-| Next question | Proposed answer | Source |
-|---------------|-----------------|--------|
-| Top changed module overall? | From B4 summary | step diffs |
-| Largest namespace in window? | aggregate namespace deltas | B3 |
-| Exports added/removed total? | `Σ +12 −4 over 8 commits` | sum step diffs |
-| Busiest week? | B4 most active period | dates |
-
-**Placement:** Timeline summary block (Phase B4) — merge E + B to avoid duplicate sections.
-
-**Complexity:** Medium (coordinate with Phase B).
-
----
 
 ### `init`
 
@@ -151,5 +120,5 @@ If data requires a new git fetch or second snapshot, either:
 
 ## Remaining execution order
 
-1. **graph** (after Phase C analytics).
-2. **timeline** (merge with Phase B4 summary).
+1. **`init`** tips only (static workflow — no stats block).
+2. Phase **B** / **C** may extend timeline/graph insights when module-level analytics ship (avoid duplicate metrics).

@@ -75,17 +75,18 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 
 ---
 
-## P17 — command insights / Phase E partial (shipped) · `006b45a`, `b60faad`
+## P17 — command insights / Phase E (shipped) · `006b45a`, `b60faad`
 
-- [x] `packages/core/src/insights/` — pure aggregations over snapshots (`inventory`, `validate`, `diff`, `trend`)
+- [x] `packages/core/src/insights/` — pure aggregations over snapshots (all governance commands)
 - [x] `logger/reports/insights.ts` — dim `◇` block before footer; max 5 lines; `--quiet` ok, `--silent` off
-- [x] JSON: additive `data.insights` on inventory, validate, diff, trend
+- [x] JSON: additive `data.insights` on inventory, validate, diff, trend, graph, timeline
 - [x] `inventory` — largest module (edges), median exports/module, unclassified warnings
 - [x] `validate` — hot spot / worst subpath on failure; internal/advanced counts on `-v`
 - [x] `diff` — module edge delta, tier movement, new advanced, truncated add/remove samples
 - [x] `trend` — largest tag-pair jump/drop, stable % shift
-- [x] Tests: `shared/__tests__/insights.test.ts` (9 cases)
-- [ ] `graph` / `timeline` insights — pending Phase C / B
+- [x] `graph` — densest module, target fan-out, category mix
+- [x] `timeline` — flat churn, net window delta, largest step, busiest week
+- [x] Tests: `shared/__tests__/insights.test.ts`
 
 ---
 

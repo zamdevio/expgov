@@ -14,7 +14,7 @@
 
 | Priority | Slice | Goal |
 |----------|-------|------|
-| **Now** | **Phase E** — Rich command metadata | Answer the “next question” per command inline (`graph` / `timeline` remaining) |
+| **Now** | **Phase B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries |
 
 Check [`../shipped/README.md`](../shipped/README.md) before re-implementing runtime, init, or CLI styling.
 
@@ -26,12 +26,11 @@ Work top-to-bottom. **Depends on** lists hard prerequisites; soft deps in parent
 
 | # | Slice | Goal | Depends on | Doc |
 |---|-------|------|------------|-----|
-| 1 | Phase **E** — Rich command metadata | Answer the “next question” per command inline | A (listing contract, shipped) | [`rich-command-metadata.md`](./rich-command-metadata.md) |
-| 2 | Phase **B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries | A (listing), cache (shipped) | [`timeline-2.md`](./timeline-2.md) |
-| 3 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | A (listing) | [`graph-2.md`](./graph-2.md) |
-| 4 | Phase **D** — API chain | Execution introspection / tier rule trace | inventory snapshot (shipped) | [`../api-chain.md`](../api-chain.md) |
-| 5 | Phase **F** — CLI output audit | UX audit receipt; close gaps from A + E | A, E | [`cli-output-audit.md`](./cli-output-audit.md) |
-| 6 | Phase **G** — Long-term observability | Metrics/views over cached snapshots | B, C | [`../systems/observability.md`](../systems/observability.md) |
+| 1 | Phase **B** — Timeline 2.0 | Git ref ranges, release markers, snapshot summaries | A (listing), cache (shipped) | [`timeline-2.md`](./timeline-2.md) |
+| 2 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | A (listing) | [`graph-2.md`](./graph-2.md) |
+| 3 | Phase **D** — API chain | Execution introspection / tier rule trace | inventory snapshot (shipped) | [`../api-chain.md`](../api-chain.md) |
+| 4 | Phase **F** — CLI output audit | UX audit receipt; close gaps from A + E | A, E | [`cli-output-audit.md`](./cli-output-audit.md) |
+| 5 | Phase **G** — Long-term observability | Metrics/views over cached snapshots | B, C | [`../systems/observability.md`](../systems/observability.md) |
 
 **Wave 1 entry** (governance + CI + docs) is **complete** — see [`observability-roadmap.md`](./observability-roadmap.md#entry-criteria-when-to-start-wave-1).
 

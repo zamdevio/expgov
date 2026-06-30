@@ -4,6 +4,8 @@ import { computeInventoryInsights } from '../../insights/inventory.js';
 import { computeValidateInsights } from '../../insights/validate.js';
 import { computeDiffInsights } from '../../insights/diff.js';
 import { computeTrendInsights } from '../../insights/trend.js';
+import { computeGraphInsights } from '../../insights/graph.js';
+import { computeTimelineInsights } from '../../insights/timeline.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../../shared/constants/cache.js';
 import type { InventorySnapshot } from '../../types/inventory/snapshot.js';
 import { emptyTierCounts } from '../../inventory/tierCounts.js';
@@ -161,5 +163,66 @@ describe('computeTrendInsights', () => {
 
   it('returns null with fewer than two tags', () => {
     expect(computeTrendInsights([{ tag: 'v0.1.0', rollup: { rootFlat: 1, stable: 1, advanced: 0, internal: 0 } }])).toBeNull();
+  });
+});
+
+describe('computeGraphInsights', () => {
+  it('reports densest module and fan-out', () => {
+    const snapshot = minimalSnapshot({
+      edges: [
+        { kind: 'flat-reexport', from: '.', symbol: 'a', toModule: 'src/a.ts', targetSubpath: '.' },
+        { kind: 'flat-reexport', from: '.', symbol: 'b', toModule: 'src/hub.ts', targetSubpath: '.' },
+        { kind: 'flat-reexport', from: '.', symbol: 'c', toModule: 'src/hub.ts', targetSubpath: '.' },
+        { kind: 'namespace-reexport', from: '.', symbol: 'ns', toModule: 'src/other.ts', targetSubpath: './extra' },
+      ],
+      summary: {
+        root: {
+          flat: 2,
+          namespace: 1,
+          stable: 3,
+          advanced: 0,
+          internal: 0,
+          unclassified: 0,
+          custom: {},
+          byTsKind: { value: 2, type: 0 },
+          bySymbolKind: {},
+          byCategory: { run: 1, type: 1, other: 1 },
+        },
+        subpaths: [],
+      },
+    });
+
+    const insights = computeGraphInsights(snapshot);
+    expect(insights?.densestModule?.path).toBe('src/hub.ts');
+    expect(insights?.lines.some((l) => l.key === 'densest-module')).toBe(true);
+    expect(insights?.lines.some((l) => l.key === 'fan-out')).toBe(true);
+    expect(insights?.lines.some((l) => l.key === 'category-mix')).toBe(true);
+  });
+
+  it('returns null without edges', () => {
+    expect(computeGraphInsights(minimalSnapshot())).toBeNull();
+  });
+});
+
+describe('computeTimelineInsights', () => {
+  it('reports churn, net flat, and busiest week', () => {
+    const rows = [
+      { date: '2026-06-14', rollup: { rootFlat: 12, stable: 10 }, delta: null },
+      { date: '2026-06-13', rollup: { rootFlat: 10, stable: 8 }, delta: -2 },
+      { date: '2026-06-07', rollup: { rootFlat: 14, stable: 11 }, delta: 4 },
+      { date: '2026-06-06', rollup: { rootFlat: 11, stable: 9 }, delta: -3 },
+    ];
+    const insights = computeTimelineInsights(rows);
+    expect(insights?.addedTotal).toBe(4);
+    expect(insights?.removedTotal).toBe(5);
+    expect(insights?.netFlat).toBe(1);
+    expect(insights?.lines.some((l) => l.key === 'flat-churn')).toBe(true);
+    expect(insights?.lines.some((l) => l.key === 'largest-step')).toBe(true);
+  });
+
+  it('returns null with fewer than two commits', () => {
+    expect(
+      computeTimelineInsights([{ date: '2026-06-01', rollup: { rootFlat: 1, stable: 1 }, delta: null }]),
+    ).toBeNull();
   });
 });

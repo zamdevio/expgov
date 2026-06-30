@@ -47,3 +47,20 @@ export interface TrendInsights {
   stableRatioFirst?: number;
   stableRatioLast?: number;
 }
+
+export interface GraphInsights {
+  lines: InsightLine[];
+  densestModule?: ModuleRef;
+  fanOut?: { targetSubpath: string; moduleCount: number };
+}
+
+export interface TimelineInsights {
+  lines: InsightLine[];
+  addedTotal?: number;
+  removedTotal?: number;
+  netFlat?: number;
+  largestStep?: { delta: number; date: string };
+  busiestWeek?: { week: string; commits: number };
+  stableRatioFirst?: number;
+  stableRatioLast?: number;
+}

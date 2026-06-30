@@ -12,8 +12,10 @@ import type {
   GraphTargetSubpathGroup,
 } from '../../types/commands/graph.js';
 import { formatNamespaceSourceLabel } from '../format.js';
+import { computeGraphInsights } from '../../insights/index.js';
 import { formatCacheMetaLine, logLine, logListSection, logListTruncation, logSectionEmpty, printMeta, refLine } from '../report.js';
 import { printPublishedSubpathRollups } from './inventory.js';
+import { printInsightsBlock } from './insights.js';
 
 export function printGraphReport(input: {
   ref: SourceRef;
@@ -24,6 +26,7 @@ export function printGraphReport(input: {
   namespaces: GraphNamespaceRow[];
   verbose?: boolean;
   listView?: ListViewOptions;
+  insights?: ReturnType<typeof computeGraphInsights>;
 }): void {
   const listLimit = resolveListLimit(input.listView);
   const targetGroups = limitList(input.targetGroups, listLimit);
@@ -83,4 +86,7 @@ export function printGraphReport(input: {
     },
     topModules.hiddenCount,
   );
+
+  const insights = input.insights ?? computeGraphInsights(input.snapshot);
+  if (insights) printInsightsBlock(insights.lines);
 }

@@ -4,6 +4,7 @@ import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import { resolveSourceRef } from '../git/index.js';
 import { formatModuleEdgeProvenance } from '../logger/format.js';
 import { printGraphReport } from '../logger/index.js';
+import { computeGraphInsights } from '../insights/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { GraphCliOptions } from '../types/commands/cli.js';
@@ -77,6 +78,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
   const targetGroups = groupByTargetSubpath(snapshot);
   const top = topModules(snapshot.edges);
   const namespaces = namespaceRows(snapshot.namespaces);
+  const insights = computeGraphInsights(snapshot);
 
   if (getRunOptions().json) {
     finishCommand({
@@ -94,6 +96,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
             flat: g.flat,
             namespace: g.namespace,
           })),
+          insights,
         },
       },
     });
@@ -109,6 +112,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
     namespaces,
     verbose: options.verbose,
     listView: options,
+    insights,
   });
 
   finishCommand({

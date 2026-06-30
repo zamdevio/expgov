@@ -96,7 +96,7 @@ flowchart TD
 
 - Phase **A** (listing, aliases, color, provenance, help, truncation)
 - Worktree **files.json** gate (P16)
-- Phase **E** partial — inventory, validate, diff, trend insights (P17)
+- Phase **E** — command insights on all governance commands (P17)
 
 ### Next
 
@@ -128,7 +128,7 @@ From [`active-phase.md`](./active-phase.md) — **complete**:
 - [x] `expgov validate` CI gate
 - [x] User `docs/` stubs for flag contracts
 
-**Current focus:** Phase **E** remainder → Phase **B** / **C**.
+**Current focus:** Phase **B** / **C** (timeline + graph 2.0).
 
 ---
 
@@ -138,7 +138,7 @@ From [`active-phase.md`](./active-phase.md) — **complete**:
 - `timeline` accepts git ref ranges and shows release markers
 - `graph` is namespace-first with documented analytics
 - `-v` shows execution chain (or `-vv` for detail)
-- Each command answers ≥1 “next question” inline — **partial** (P17)
+- Each command answers ≥1 “next question” inline — **done** (P17)
 - Phase F audit items owned or explicitly deferred with reason
 - Phase G metric catalog defined in [`systems/observability.md`](../systems/observability.md) — all G slices **planned** (post B/C/E)
 
