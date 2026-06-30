@@ -32,8 +32,8 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 | [`graph-2.md`](./graph-2.md) | C — Graph 2.0 |
 | [`../api-chain.md`](../api-chain.md) | D — API chain |
 | [`cli-output-audit.md`](./cli-output-audit.md) | F — CLI output audit |
-| [`severity.md`](./severity.md) | Severity — tier policy rule + graded issues (ASAP) |
-| [`suggest.md`](./suggest.md) | Suggest — violation detection + fix suggestions (standalone) |
+| [`severity.md`](./severity.md) | Severity — policy rule, graded issues, preview + `-ns` on triggers |
+| [`suggest.md`](./suggest.md) | Suggest — engine, full fixes, `-k` / `-d` filters |
 | [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (deferred) |
 | [`test-expansion.md`](./test-expansion.md) | Test coverage backlog |
 

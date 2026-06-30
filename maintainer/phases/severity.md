@@ -1,31 +1,38 @@
 # Phase — Severity (tier policy engine)
 
-**Status:** Planned — **implement ASAP** (next governance slice after active sprint allows).
+**Status:** Planned — after Phase **G** (per [`active-phase.md`](./active-phase.md) backlog).
 
-**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) (fix suggestions — separate phase) · [`commands.md`](./commands.md)
+**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) (suggestion engine + full fixes) · [`commands.md`](./commands.md)
 
 ---
 
 ## Mission
 
-Level up violation reporting from flat strings + exit `1` to **policy-aware severity** on every command that emits issues.
+Level up violation reporting from flat strings + exit `1` to **policy-aware severity** on every command that emits issues — with optional **suggestion previews** that call the shared suggest engine (no duplicated fix logic).
 
 Today: every `validate` violation → `error`; severity is not driven by tier policy.
 
 Target:
 
 1. **Severity as a tier policy rule** — new composable field on `tiers.policies.*.rules` (alongside `rootFlat`).
-2. **Shared findings** — one collector produces structured issues with stable codes + severity.
+2. **Shared findings** — one collector produces structured issues with stable codes, severity, and **domain**.
 3. **All violation commands adopt severity** — `validate`, `diff`, `doctor`, and later others emit graded `issues[]`.
-4. **Guide to `suggest`** — when issues are found, commands point the user at `expgov suggest` for fixes; **no inline suggestions** on validate/diff/doctor (that lives in [`suggest.md`](./suggest.md)).
+4. **Triggers, not fixers** — validate/diff surface violations + preview (top N fixes via engine) + tip; full fixes and filters live in [`suggest.md`](./suggest.md).
+
+### Architecture
 
 ```txt
-validate / diff / doctor          suggest (standalone)
-        │                                │
-        ├─ detect issues                 ├─ detect same issues
-        ├─ severity from policy          ├─ suggest fixes for each
-        └─ hint: "run expgov suggest"    └─ snippets, kinds, filters
+governance/findings.ts      →  what is wrong (severity, code, domain)
+governance/suggestions.ts   →  how to fix (kind, label, snippet)   ← suggest phase
+
+suggest     = engine owner + full report (-k, -d, snippets)
+validate    = trigger (findings + preview + tip)
+diff        = trigger (tier findings + preview + tip)
+doctor      = trigger (warnings + tip; preview optional)
+CLI         = orchestrator (flags, --json, exit codes)
 ```
+
+No duplication: validate **calls** `collectFixSuggestions(findings, { limit: N, primaryOnly: true })` for preview — it does not reimplement subpath/tier-exact heuristics.
 
 ---
 
@@ -45,7 +52,7 @@ validate / diff / doctor          suggest (standalone)
 - Built-in policy names: `public`, `maintainer`, `experimental`, `preview`, `deprecated`
 - `validate` / `diff` detection loops; `doctor` warning pattern
 
-**Gap:** severity is hardcoded per command, not config-driven; findings are opaque strings; no shared issue collector.
+**Gap:** severity is hardcoded per command; findings are opaque strings; no shared collector; no preview hook to suggest engine.
 
 ---
 
@@ -61,7 +68,7 @@ tiers: {
     partnerApi: {
       rules: {
         rootFlat: 'deny',
-        severity: 'warning', // new — default severity when this policy triggers a finding
+        severity: 'warning', // default severity when this policy triggers a finding
       },
     },
   },
@@ -85,9 +92,12 @@ Policy names drive severity — not just tier bucket id. A custom bucket with `p
 ### Structured findings
 
 ```ts
+type FindingDomain = 'tier' | 'parity' | 'policy' | 'subpath';
+
 type GovernanceFinding = {
   code: string;           // e.g. expgov.validate.root_flat_denied
   severity: IssueSeverity;
+  domain: FindingDomain;  // where the issue belongs (-d filter on suggest)
   message: string;
   symbol?: string;
   tier?: string;
@@ -95,27 +105,74 @@ type GovernanceFinding = {
 };
 ```
 
-Commands map findings → `issues[]`. Human output groups by severity (errors → warnings → info). JSON consumers filter on `issues[].severity` and `issues[].code`.
+Commands map findings → `issues[]`. Human output groups by severity (errors → warnings → info). JSON consumers filter on `issues[].severity`, `issues[].code`, and `data.findings[].domain`.
 
-### Guide line (not inline fixes)
+### Human output on triggers (default)
 
-When ≥1 finding is emitted, append a dim hint (human + optional `data.hints[]` in JSON):
+When ≥1 finding exists and **`-ns` is not set**:
 
 ```txt
+       ✗ 9 internal-tier (maintainer) symbol(s) still flat on root
+
+       Suggested fixes (preview):
+       · move CLI_NAME → ./internal
+       · move style → ./internal
+       · … +7 more (use -F/--full or -T/--top <n>)
+
+       · run expgov suggest for full list and snippets (-k subpath to filter)
+```
+
+With **`-ns, --no-suggestions`** (validate / diff / doctor only):
+
+```txt
+       ✗ 9 internal-tier (maintainer) symbol(s) still flat on root
        · run expgov suggest for fix suggestions
 ```
 
-No `Suggestion:` blocks on validate/diff — keeps report commands focused on **what failed** and **how serious it is**. Fixes are [`suggest.md`](./suggest.md).
+Preview is truncated (reuse `-T` / `-F` listing contract). Label `Suggested fixes (preview):` is dim so full output is clearly on `suggest`.
 
-**Example JSON `issues[]` entry (validate):**
+**`-ns` does not apply to `expgov suggest`** — filtering there uses `-k` / `-d` (see [`suggest.md`](./suggest.md)).
+
+### JSON on triggers
 
 ```json
 {
-  "severity": "error",
-  "code": "expgov.validate.root_flat_denied",
-  "message": "runFoo (internal) exported flat on root"
+  "issues": [
+    {
+      "severity": "error",
+      "code": "expgov.validate.root_flat_denied",
+      "message": "runFoo (internal) exported flat on root"
+    }
+  ],
+  "data": {
+    "hints": ["run expgov suggest for full fixes (-k subpath to filter)"],
+    "suggestionPreview": [
+      {
+        "findingCode": "expgov.validate.root_flat_denied",
+        "kind": "subpath",
+        "domain": "tier",
+        "label": "move runFoo → ./internal"
+      }
+    ]
+  }
 }
 ```
+
+- `--json` default: omit `suggestionPreview` (CI lean) unless `-v` or explicit opt-in documented in `docs/json.md`.
+- `-ns` + `--json`: no `suggestionPreview`; hints may still include suggest pointer.
+
+---
+
+## Trigger flags (violation commands)
+
+| Flag | Commands | Effect |
+|------|----------|--------|
+| `-ns, --no-suggestions` | `validate`, `diff`, `doctor` | Suppress `Suggested fixes (preview)` block |
+| `-T, --top <n>` | same + listing | Caps preview rows (default 10, shared listing helper) |
+| `-F, --full` | same | Show all preview rows |
+| `--strict` | `validate`, `diff` | Exit `1` on warnings (see V7) |
+
+Per-command only — not a global flag (`expgov -ns validate` is invalid).
 
 ---
 
@@ -123,17 +180,18 @@ No `Suggestion:` blocks on validate/diff — keeps report commands focused on **
 
 | # | Slice | Goal |
 |---|-------|------|
-| **V1** | Policy `severity` rule | Add `severity?: IssueSeverity` to `TierPolicyRules`; resolve in `tierPolicy.ts`; document in `systems/tiers.md` |
-| **V2** | Shared findings collector | `governance/findings.ts` — snapshot + context → `GovernanceFinding[]`; stable codes |
-| **V3** | Severity resolver | Map finding kind + policy rules → `IssueSeverity`; tests per built-in policy |
-| **V4** | `validate` integration | Findings + graded `issues[]`; group human output; `run expgov suggest` hint |
-| **V5** | `diff` integration | Tier violations → findings + `issues[]` + suggest hint |
-| **V6** | `doctor` + others | Reuse codes where applicable; suggest hint on warnings |
-| **V7** | Exit / CI contract | Errors → `1`; warnings/info → `0` by default; `--strict` → `1` on warnings; `docs/json.md` |
+| **V1** | Policy `severity` rule | `severity?: IssueSeverity` on `TierPolicyRules`; resolve in `tierPolicy.ts` |
+| **V2** | Shared findings collector | `governance/findings.ts` — codes, severity, **domain** |
+| **V3** | Severity resolver | Map finding + policy rules → `IssueSeverity`; tests per built-in policy |
+| **V4** | `validate` integration | Graded `issues[]`; grouped human output; tip line |
+| **V5** | `diff` integration | Tier violations → findings + `issues[]` + tip |
+| **V6** | `doctor` + parity | Reuse codes; suggest tip when tier-related warnings likely |
+| **V7** | Exit / CI contract | Errors → `1`; warnings/info → `0`; `--strict`; `docs/json.md` |
+| **V8** | Preview + `-ns` | Wire `collectFixSuggestions` preview on triggers; `-ns, --no-suggestions` |
 
-**Phase complete when:** V1–V7 shipped.
+**Phase complete when:** V1–V8 shipped.
 
-**Out of scope here:** fix suggestions, snippets, suggest filters — [`suggest.md`](./suggest.md) (depends on V2/V3).
+**V8 depends on:** [`suggest.md`](./suggest.md) **S1** (suggestion engine). V1–V7 can ship with tip-only; V8 lands with or immediately after suggest S1.
 
 ---
 
@@ -144,7 +202,7 @@ No `Suggestion:` blocks on validate/diff — keeps report commands focused on **
 ```ts
 export interface TierPolicyRules {
   rootFlat?: TierRootFlatRule;
-  severity?: IssueSeverity; // default severity for findings tied to this policy
+  severity?: IssueSeverity;
 }
 ```
 
@@ -171,14 +229,15 @@ deprecated:   { rootFlat: 'allow', severity: 'warning' },
 **New module:** `packages/core/src/governance/findings.ts`
 
 - Single pass over `InventorySnapshot` + project context.
-- Parity checks (tsconfig ↔ npm, wildcard, unknown policy refs).
-- Tier governance (unclassified, `rootFlat: 'deny'`).
+- Parity checks → `domain: 'parity'`.
+- Unknown policy refs → `domain: 'policy'`.
+- Tier governance (unclassified, `rootFlat: 'deny'`) → `domain: 'tier'` (subpath-specific findings → `'subpath'` when applicable).
 - Export tier-internal until classified in tiers config.
 
 **Exit:**
 
 - [ ] `collectGovernanceFindings(snapshot, opts)` — no CLI imports.
-- [ ] Tests: fixture snapshots → codes + severities.
+- [ ] Tests: fixture snapshots → codes + severities + domains.
 
 ---
 
@@ -201,7 +260,7 @@ deprecated:   { rootFlat: 'allow', severity: 'warning' },
 **Human:**
 
 - Group: **Errors** (✗) → **Warnings** (!) → **Info** (·).
-- Footer hint when findings exist: `run expgov suggest for fix suggestions`.
+- Tip when findings exist: `run expgov suggest for fix suggestions` (preview added in V8).
 
 **JSON:**
 
@@ -220,7 +279,7 @@ deprecated:   { rootFlat: 'allow', severity: 'warning' },
 - Right-snapshot tier violations → shared findings.
 - Human tier-violations section uses severity styling where applicable.
 - JSON `issues[]` aligned with validate shape.
-- Suggest hint when tier violations present.
+- Suggest tip when tier violations present.
 
 ---
 
@@ -228,6 +287,7 @@ deprecated:   { rootFlat: 'allow', severity: 'warning' },
 
 - Parity drift warnings reuse finding codes from collector where overlap exists.
 - Hint: `run expgov validate` for enforcement; `run expgov suggest` when tier issues likely.
+- Preview on doctor optional / minimal (parity-only findings may have weak previews until engine grows).
 
 Future commands that surface governance issues must use the same findings + severity — no one-off string arrays.
 
@@ -241,8 +301,36 @@ Future commands that surface governance issues must use the same findings + seve
 | `--strict` | any | any | — | `1` if ≥1 error or warning |
 
 - `ok` in JSON reflects errors only (warnings may yield `ok: true` with non-empty `issues`).
-- CI gate remains `expgov validate`.
+- CI gate remains `expgov validate` (often `validate --json` or `validate -ns` for quiet human runs).
 - Document in `docs/json.md` (pre-v1 argv change in PR description).
+
+---
+
+## V8 — Suggestion preview + `-ns`
+
+**Core:** validate/diff call:
+
+```ts
+const preview = collectFixSuggestions(findings, {
+  limit: resolveListLimit(listView),
+  primaryOnly: true, // one best fix per finding in preview
+});
+```
+
+**CLI:** register on `validate`, `diff`, `doctor`:
+
+```txt
+-ns, --no-suggestions   suppress Suggested fixes (preview) block
+```
+
+**Reports:** `printValidateReport` / `printDiffReport` accept optional `suggestionPreview`; render block between violations and tip.
+
+**Exit:**
+
+- [ ] Default human fail shows preview when engine returns fixes.
+- [ ] `validate -ns` shows violations + tip only.
+- [ ] `--json` omits preview unless documented opt-in.
+- [ ] Invalid state: preview never duplicates logic from `suggestions.ts`.
 
 ---
 
@@ -250,14 +338,15 @@ Future commands that surface governance issues must use the same findings + seve
 
 ```mermaid
 flowchart LR
-  V1[V1 policy rule]
+  V1[V1 policy]
   V2[V2 findings]
   V3[V3 resolver]
   V4[V4 validate]
   V5[V5 diff]
   V6[V6 doctor]
-  V7[V7 exit contract]
-  SG[suggest phase]
+  V7[V7 exit]
+  S1[suggest S1 engine]
+  V8[V8 preview -ns]
 
   V1 --> V3
   V2 --> V3
@@ -265,12 +354,13 @@ flowchart LR
   V3 --> V5
   V3 --> V6
   V4 --> V7
-  V3 --> SG
+  S1 --> V8
+  V4 --> V8
+  V5 --> V8
+  V3 --> S1
 ```
 
-**Schedule:** ASAP after **B4** or in parallel if governance is prioritized — does not block graph/timeline work.
-
-**Blocks:** [`suggest.md`](./suggest.md) S2+ (suggest needs shared findings + severity).
+**Schedule:** after Phase **G** per [`active-phase.md`](./active-phase.md) — then **Severity (V1–V7)** → **Suggest (S1–S8)** → **Severity V8** can ship in same PR as suggest S1 if convenient.
 
 ---
 
@@ -278,8 +368,10 @@ flowchart LR
 
 | Item | Why |
 |------|-----|
-| Inline fix suggestions on validate/diff | [`suggest.md`](./suggest.md) — standalone command |
-| Auto-fix / PR bot | Deferred — [`active-phase.md`](./active-phase.md) |
+| Duplicate fix heuristics in validate/diff | Preview must call suggest engine only |
+| `-k` / `-d` on validate/diff | Filter on `expgov suggest` only |
+| `suggest --apply` / auto-fix | Deferred — mention in docs only when implemented |
+| Auto-fix PR bot | Deferred — [`active-phase.md`](./active-phase.md) |
 | Changing tier classifier priority | [`../systems/tiers.md`](../systems/tiers.md) unchanged |
 
 ---
@@ -292,6 +384,7 @@ flowchart LR
 | Findings | `governance/findings.ts` (new) |
 | Commands | `commands/validate.ts`, `format/diff.ts`, `commands/doctor.ts` |
 | Reports | `logger/reports/validate.ts`, `logger/reports/diff.ts` |
+| CLI | `packages/cli/bin/cli.ts` (`-ns` on trigger commands) |
 | Docs | `systems/tiers.md`, `docs/json.md` |
 
 ---
@@ -299,5 +392,5 @@ flowchart LR
 ## Receipt checklist (on ship)
 
 - [ ] Row in [`../shipped/README.md`](../shipped/README.md).
-- [ ] Durable notes in [`../systems/tiers.md`](../systems/tiers.md).
+- [ ] Durable notes in [`../systems/tiers.md`](../systems/tiers.md) + [`../systems/cli.md`](../systems/cli.md) (`-ns`, preview).
 - [ ] Trim or delete per [`README.md`](./README.md) lifecycle.

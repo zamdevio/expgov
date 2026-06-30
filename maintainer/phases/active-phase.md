@@ -61,8 +61,8 @@ Work top-to-bottom once Phase B rows above are done.
 | 2 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
 | 3 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
 | 4 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
-| 5 | **Severity** | Policy `severity` rule + graded `issues[]` on all violation commands | [`severity.md`](./severity.md) |
-| 6 | **Suggest** | Standalone violation detection + fix suggestions | [`suggest.md`](./suggest.md) |
+| 5 | **Severity** | Policy `severity` rule, graded `issues[]`, preview + `-ns` on triggers | [`severity.md`](./severity.md) |
+| 6 | **Suggest** | Suggestion engine, full fixes, `-k` / `-d` filters | [`suggest.md`](./suggest.md) |
 
 **One slice per PR** — finish the current Phase B row before starting C.
 
