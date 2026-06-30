@@ -1,13 +1,14 @@
 
 import { style } from '../../../runtime/style.js';
 
-import type { CacheStatus } from '../../../types/cache/index.js';
 import { getRootIndexRepoPath } from '../../../context/paths.js';
 import { computeTimelineInsights } from '../../../insights/index.js';
 import type { TimelineRange } from '../../../types/time/range.js';
+import type { TimelineRow } from '../../../types/timeline/row.js';
 import { formatSubject } from '../../format.js';
 import { formatMetaEndpoint, logLine, logListTruncation, printMeta } from '../../report.js';
 import { printInsightsBlock } from '../insights.js';
+import { formatReleaseMarker, resolveDisplayTags } from './markers.js';
 import { printTimelineWarmSection } from './warm.js';
 import type { TimelineWarmStats } from '../../../types/timeline/warm.js';
 
@@ -24,14 +25,7 @@ function timelineMetaEndpoints(range: TimelineRange): { from: string; to: string
 export function printTimelineReport(input: {
   range: TimelineRange;
   top: number;
-  rows: {
-    date: string;
-    sha: string;
-    subject: string;
-    cache: CacheStatus;
-    rollup: { rootFlat: number; stable: number };
-    delta: number | null;
-  }[];
+  rows: TimelineRow[];
   hiddenCount?: number;
   verbose?: boolean;
   warmStats?: TimelineWarmStats;
@@ -90,6 +84,10 @@ export function printTimelineReport(input: {
     logLine(
       `       ${row.date.padEnd(12)} ${row.sha.slice(0, 7).padEnd(9)} ${String(row.rollup.rootFlat).padStart(5)} ${deltaStr}  ${subject}`,
     );
+    const markerTags = resolveDisplayTags(row.tags, input.verbose);
+    if (markerTags.length) {
+      logLine(formatReleaseMarker(markerTags));
+    }
   }
   logListTruncation(input.hiddenCount ?? 0);
 

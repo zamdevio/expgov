@@ -3,10 +3,12 @@ import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import {
   formatGitRunStats,
+  indexVersionTagsByCommit,
   listBarrelCommits,
   listBarrelCommitsByRef,
   resetGitRunStats,
   shortSha,
+  versionTagsForCommit,
 } from '../git/index.js';
 import { printTimelineReport } from '../logger/index.js';
 import { computeTimelineInsights } from '../insights/index.js';
@@ -15,6 +17,7 @@ import { getRunOptions } from '../runtime/runOptions.js';
 import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
 import { limitList, resolveListLimit } from '../shared/listing.js';
 import type { TimelineCliOptions } from '../types/commands/cli.js';
+import type { TimelineRow } from '../types/timeline/row.js';
 import { TimelineWarmer } from '../timeline/warmer.js';
 
 export function runExportsTimeline(options: TimelineCliOptions = {}): void {
@@ -43,9 +46,10 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
           rightSha: range.right.sha,
         });
   const { items: commits, hiddenCount } = limitList(allCommits, listLimit);
+  const tagIndex = indexVersionTagsByCommit();
 
   const warmer = new TimelineWarmer(commits.length);
-  const rows = commits.map((commit) => {
+  const rows: TimelineRow[] = commits.map((commit) => {
     const warmT0 = performance.now();
     const { snapshot, cache } = getSnapshot(
       { kind: 'commit', sha: commit.sha, label: shortSha(commit.sha) },
@@ -64,6 +68,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
       cache,
       rollup: trendRollupFromSnapshot(snapshot),
       delta: null as number | null,
+      tags: versionTagsForCommit(commit.sha, tagIndex),
     };
   });
 

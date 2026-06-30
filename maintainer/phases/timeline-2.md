@@ -1,6 +1,6 @@
 # Phase B — Timeline 2.0
 
-**Status:** In progress — **B2 next** (release markers). B1 ref ranges shipped.
+**Status:** In progress — **B3 next** (per-step metadata). B1 ref ranges + B2 release markers shipped.
 
 **Active sprint:** [`active-phase.md`](./active-phase.md#focus-now--phase-b-timeline-20)
 

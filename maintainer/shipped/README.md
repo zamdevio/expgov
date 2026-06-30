@@ -42,6 +42,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **I1** — SDK example | `examples/sdk/` teaching fixture (`b8ccbdb`) |
 | 2026-W26 | **I3** — example SDK CI | `expgov -C examples/sdk validate` in `ci.yml` (`b8ccbdb`) |
 | 2026-W26 | **B1** — timeline ref ranges | Git ref grammar on `timeline`; `TimelineRange` time \| ref (`495f6ec`) |
+| 2026-W26 | **B2** — release markers | Dim `── v1.0.0 ──` rows; JSON `rows[].tags` |
 | 2026-W26 | **P21** — listing policy (tiers) | Custom tier rollup rows + diff violations/deltas; suggest/doctor `-T/-F` (`c5a5342`) |
 | 2026-W26 | **P22** — meta + range help | `formatMetaEndpoint`; Commander `Range formats:`; CLI `types/` (`ab8cb85`) |
 | 2026-W26 | **P23** — tier policy engine | `tiers.policies` registry; composable `rootFlat` rules (`31d8ded`) |
@@ -109,6 +110,7 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | Worktree `files.json` gate | P16 | `cache/store/worktreeTrack.ts`, `worktreeFiles.ts` |
 | Command insights (`data.insights`) | P17 | `insights/`, `logger/reports/insights.ts` |
 | Timeline warm log | P20 | `timeline/warmer.ts`, `logger/reports/timeline/` |
+| Timeline release markers | B2 | `git/versionTags.ts`, `logger/reports/timeline/markers.ts` |
 | `expgov version` | P8 | `commands/version.ts` |
 | SDK example workspace | I1, I3 | [`examples-sdk.md`](./examples-sdk.md) · [`examples/sdk/`](../../examples/sdk/) |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

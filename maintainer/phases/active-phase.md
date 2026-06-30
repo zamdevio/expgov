@@ -19,8 +19,8 @@
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
 | 1 | **B1** — Ref ranges | **Shipped** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
-| **→ 2** | **B2** — Release markers | **Next PR** | Dim `── v1.1.0 ──` rows when commit matches version tag |
-| 3 | **B3** — Per-step metadata | Pending | `diffSnapshots` shorthand (+added −removed ns) on `-v` / JSON |
+| 2 | **B2** — Release markers | **Shipped** | Dim `── v1.1.0 ──` rows when commit matches version tag |
+| **→ 3** | **B3** — Per-step metadata | **Next PR** | `diffSnapshots` shorthand (+added −removed ns) on `-v` / JSON |
 | 4 | **B4** — Summary block | Pending | API growth, largest expansion/reduction, most active period |
 | 5 | **B5** — Cache insights | Optional | Cache-derived series metrics or `--cache-insights` flag |
 
@@ -32,6 +32,13 @@
 - [x] `listBarrelCommitsByRef` for `git log left..right -- <barrelPath>`
 - [x] Human + `--json` output; help + [`commands.md`](./commands.md) updated
 - [x] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
+
+**B2 exit (shipped):**
+
+- [x] `indexVersionTagsByCommit()` maps `git.tagPattern` tags to commit SHAs
+- [x] Dim `── v1.0.0 ──` marker row below tagged barrel commits (default: highest tag; `-v`: all tags)
+- [x] JSON `data.rows[].tags` on timeline rows
+- [x] Tests: `timelineReleaseMarkers.test.ts`
 
 **Phase B complete when:** B1–B4 done (B5 optional / defer with reason in `timeline-2.md`).
 

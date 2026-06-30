@@ -202,11 +202,11 @@ Only commits that **touched the root barrel file** in the chosen window. Other c
 - `expgov timeline HEAD~30..HEAD~1` — barrel history between two parent anchors, excluding the latest commit
 - A commit like `92e7f77` appears because it modified `packages/core/src/index.ts`, even when most files in that commit were docs or CLI
 
-Shows flat count and Δ between **consecutive barrel edits** (newest first).
+Shows flat count and Δ between **consecutive barrel edits** (newest first). When a commit is tagged with a version (`git.tagPattern`, default `v*`), a dim release marker row appears below it (`── v1.1.0 ──`). Use `-v` to show every tag when multiple tags point at the same commit.
 
 Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → insights.
 
-JSON: `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
+JSON: `data.rows[].tags` lists version tags on each commit. `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
 
 ---
 
