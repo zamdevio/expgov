@@ -11,6 +11,7 @@ import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { computeValidateInsights } from '../insights/index.js';
 import { policyViolatesRootFlat } from '../config/tierPolicy.js';
 import { printValidateReport } from '../logger/index.js';
+import { refLine } from '../logger/report.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../context/paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
@@ -210,6 +211,7 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     internalFlatSymbols,
     insights,
     listView: options,
+    ref: refLine({ kind: 'worktree', label: 'working tree' }, snapshot),
   });
 
   finishCommand({

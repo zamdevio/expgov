@@ -104,3 +104,13 @@ export function parseDiffRange(token: string | undefined): {
 export function shortSha(sha: string): string {
   return sha.slice(0, 7);
 }
+
+/** Shared git ref range lines for diff/timeline help (commit..commit grammar). */
+export function formatGitCommitRangeHelp(): string[] {
+  return [
+    'HEAD~20..HEAD            after HEAD~20 toward HEAD (older..newer)',
+    'HEAD~30..HEAD~1          two parent anchors',
+    'v1.0.0..HEAD             tag, branch, or sha .. tag, branch, or sha',
+    'a6caa74..HEAD            short sha or any git ref',
+  ];
+}

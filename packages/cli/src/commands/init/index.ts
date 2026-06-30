@@ -1,1 +1,1 @@
-export { ensureConfig, type EnsureConfigOptions } from './run.js';
+export { ensureConfig } from './run.js';

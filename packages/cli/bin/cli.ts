@@ -25,26 +25,21 @@ import { ensureConfig } from '../src/commands/init/index.js';
 import { preprocessArgv } from '../src/argv/index.js';
 import { CLI_NAME, CLI_ROOT_DESCRIPTION } from '../src/constants/cli.js';
 import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from '../src/shared/context/globals.js';
+import type {
+  CacheListVerboseOpts,
+  GlobalOpts,
+  InitCommandOpts,
+  TrendCommandOpts,
+  ValidateCommandOpts,
+  VerboseOpts,
+  VersionCommandOpts,
+} from '../src/types/cli/index.js';
 import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
 import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
 import { resolveNoColor } from '../src/utils/cli/noColor.js';
 import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
 import { printCliHelp } from '../src/utils/help/printCliHelp.js';
 import { printCurrentVersionLine, runVersionCheckCommand, runVersionResetCommand } from '../src/utils/version/index.js';
-
-interface GlobalOpts {
-  cwd?: string;
-  config?: string;
-  packageName?: string;
-  cacheDir?: string;
-  yes?: boolean;
-  json?: boolean;
-  quiet?: boolean;
-  silent?: boolean;
-  noColor?: boolean;
-  noLogPrefix?: boolean;
-  noLogChannel?: boolean;
-}
 
 function globalOpts(cmd: Command): GlobalOpts {
   return (cmd.parent ?? cmd).opts() as GlobalOpts;
@@ -135,7 +130,7 @@ function buildProgram(): Command {
     .option('-y, --yes', 'write config without prompting')
     .option('-r, --rich', 'commented cache + tier examples (stable, internal, advanced)', false)
     .option('-f, --force', 'overwrite existing config file')
-    .action(async (opts: { yes?: boolean; rich?: boolean; force?: boolean }, _cmd, cmd) => {
+    .action(async (opts: InitCommandOpts, _cmd, cmd) => {
       try {
         await ensureConfig({
           yes: Boolean(opts.yes) || getCliYesFlag(),
@@ -155,13 +150,7 @@ function buildProgram(): Command {
         .argument('[ref]', 'git ref (default: working tree)')
         .option('-v, --verbose', 'verbose output')
         .action((ref: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as {
-            verbose?: boolean;
-            force?: boolean;
-            cache?: boolean;
-            top?: number;
-            full?: boolean;
-          };
+          const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
             runExportsInventory({
               ref,
@@ -184,13 +173,7 @@ function buildProgram(): Command {
         .argument('[range]', 'ref or A..B range')
         .option('-v, --verbose', 'verbose output')
         .action((range: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as {
-            verbose?: boolean;
-            force?: boolean;
-            cache?: boolean;
-            top?: number;
-            full?: boolean;
-          };
+          const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
             runExportsDiff({
               range,
@@ -212,7 +195,7 @@ function buildProgram(): Command {
       .option('-v, --verbose', 'verbose output')
       .option('--since <ref>', 'reserved for future delta validation')
       .action((_opts, cmd) => {
-        const local = cmd.opts() as { verbose?: boolean; since?: string; top?: number; full?: boolean };
+        const local = cmd.opts() as ValidateCommandOpts;
         withContext(cmd, local.verbose, program, () =>
           runExportsValidate({
             since: local.since,
@@ -229,7 +212,7 @@ function buildProgram(): Command {
     .description('config discovery and cache hygiene checks')
     .option('-v, --verbose', 'verbose output')
     .action((_opts, cmd) => {
-      const local = cmd.opts() as { verbose?: boolean };
+      const local = cmd.opts() as VerboseOpts;
       withContext(cmd, local.verbose, program, () => runExportsDoctor({ verbose: local.verbose }));
     });
 
@@ -238,7 +221,7 @@ function buildProgram(): Command {
     .description('suggest tiers.stable.exact additions for unclassified exports (dry-run)')
     .option('-v, --verbose', 'verbose output')
     .action((_opts, cmd) => {
-      const local = cmd.opts() as { verbose?: boolean };
+      const local = cmd.opts() as VerboseOpts;
       withContext(cmd, local.verbose, program, () => runExportsSuggest({ verbose: local.verbose }));
     });
 
@@ -250,14 +233,7 @@ function buildProgram(): Command {
         .option('--tags <n>', 'last N version tags', (v) => Number(v), 12)
         .option('-v, --verbose', 'verbose output')
         .action((_opts, cmd) => {
-          const local = cmd.opts() as {
-            tags: number;
-            verbose?: boolean;
-            force?: boolean;
-            cache?: boolean;
-            top?: number;
-            full?: boolean;
-          };
+          const local = cmd.opts() as TrendCommandOpts;
           withContext(cmd, local.verbose, program, () => {
             runExportsTrend({
               tagLimit: local.tags,
@@ -280,13 +256,7 @@ function buildProgram(): Command {
         .argument('[range]', 'time range (default: @4w)')
         .option('-v, --verbose', 'verbose output')
         .action((range: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as {
-            verbose?: boolean;
-            force?: boolean;
-            cache?: boolean;
-            top?: number;
-            full?: boolean;
-          };
+          const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
             runExportsTimeline({
               range,
@@ -309,13 +279,7 @@ function buildProgram(): Command {
         .argument('[ref]', 'git ref')
         .option('-v, --verbose', 'verbose output')
         .action((ref: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as {
-            verbose?: boolean;
-            force?: boolean;
-            cache?: boolean;
-            top?: number;
-            full?: boolean;
-          };
+          const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
             runExportsGraph({
               ref,
@@ -337,7 +301,7 @@ function buildProgram(): Command {
     )
     .option('--check', 'fetch latest from the npm registry and show install instructions', false)
     .option('--reset', 'clear cached npm update check', false)
-    .action(async (opts: { check?: boolean; reset?: boolean }) => {
+    .action(async (opts: VersionCommandOpts) => {
       if (opts.reset) {
         runVersionResetCommand();
       }

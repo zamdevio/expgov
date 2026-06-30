@@ -24,7 +24,7 @@ suggest                  runExportsSuggest
 trend                    runExportsTrend
 timeline [range]         runExportsTimeline
 graph [ref]              runExportsGraph
-help [topic]             printHelp
+help [topic]             printCliHelp (Commander + commandHelp extras)
 ```
 
 Handlers live in `packages/cli/bin/cli.ts` (except `init` → `commands/init/`).

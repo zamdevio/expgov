@@ -22,6 +22,8 @@ export type {
 export { ExportError, isExportError } from './errors/index.js';
 export type { ExportErrorCode } from './types/errors/index.js';
 export { printHelp, printHelpHint } from './help/index.js';
+export { formatTimelineRangeHelp } from './time/index.js';
+export { formatGitCommitRangeHelp } from './git/index.js';
 export type { HelpTopic } from './types/help/index.js';
 export { printExportError, printUnexpected } from './logger/index.js';
 

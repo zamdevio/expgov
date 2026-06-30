@@ -2,6 +2,7 @@ import { getWorktreeSnapshot } from '../cache/index.js';
 import type { InventorySnapshot } from '../types/inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { printSuggestReport } from '../logger/index.js';
+import { refLine } from '../logger/report.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { Issue } from '../types/json/envelope.js';
@@ -93,6 +94,7 @@ export function runExportsSuggest(options: SuggestCliOptions = {}): number {
     snippet: formatStableExactSnippet(suggestion.names),
     hints,
     verbose: options.verbose,
+    ref: refLine({ kind: 'worktree', label: 'working tree' }, snapshot),
   });
 
   finishCommand({

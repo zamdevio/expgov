@@ -5,6 +5,7 @@ import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { canPrintTip } from '../runtime/policy.js';
 import { BRAND, style } from '../runtime/style.js';
+import { formatGitCommitRangeHelp } from '../git/index.js';
 import { formatTimelineRangeHelp } from '../time/index.js';
 import type { HelpTopic } from '../types/help/topic.js';
 
@@ -76,8 +77,9 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `  ${style.bold('Forms')}`,
       `    ${style.dim('(omit)')}           HEAD → working tree`,
       `    v0.1.4               v0.1.4 → working tree`,
-      `    v0.1.3..v0.1.4       tag range (two commits)`,
-      `    a6caa74..HEAD        SHA or tag .. SHA or tag`,
+      `    v0.1.3..v0.1.4       two commits (older..newer; order matters)`,
+      ...formatGitCommitRangeHelp().map((line) => `    ${style.dim(line)}`),
+      `    ${style.dim('Note')}   single ref compares that commit to the working tree, not HEAD`,
       '',
       `  ${style.bold('Flags')}`,
       `    -v, --verbose   category, symbolKind, targetSubpath for each added/removed symbol`,
@@ -168,8 +170,16 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       cmd('timeline', '[range] [flags]'),
       '',
       `  ${style.dim('Default range')} @4w (last 4 weeks, UTC).`,
-      `  ${style.dim('Scope')} git log on ${style.white(rootBarrel)} only — not every repo commit.`,
-      `  ${style.dim('Example')} @3m has ~330 repo commits but only commits that edit the root barrel appear.`,
+      `  ${style.dim('Scope')} only commits that edited ${style.white(rootBarrel)} — not every repo commit in the window.`,
+      `  ${style.dim('Example')} @3m may cover hundreds of repo commits but the table lists barrel edits only.`,
+      '',
+      `  ${style.bold('Git ref ranges')} ${style.dim('(same grammar as diff)')}`,
+      `    ${style.dim('Single ref')} HEAD~20  →  HEAD~20..HEAD`,
+      `    ${style.dim('Two refs')}   older..newer  — left is exclusive, right is the endpoint; order matters`,
+      `    ${style.dim('HEAD~N')}     the commit N parents back from HEAD (not “last N commits”)`,
+      `    ${style.dim('Filter')}     git log left..right on the barrel path; rows = commits that touched the barrel`,
+      `    ${style.dim('Example')}   HEAD~30..HEAD~1  — barrel history between those anchors, excluding tip`,
+      `    ${style.dim('Reversed')}   newer..older is usually empty; use older..newer`,
       '',
       `  ${style.bold('Range formats')}`,
       ...formatTimelineRangeHelp().map((line) => `    ${style.dim(line)}`),

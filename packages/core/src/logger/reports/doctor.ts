@@ -1,7 +1,8 @@
 
 import { style } from '../../runtime/style.js';
 
-import { logLine } from '../report.js';
+import { logLine, printMeta, formatMetaEndpoint } from '../report.js';
+import { gitRevParse } from '../../git/index.js';
 
 export function printDoctorReport(input: {
   healthy: boolean;
@@ -12,6 +13,8 @@ export function printDoctorReport(input: {
 }): void {
   const { healthy, ok, warnings, hints, verbose } = input;
   const hintLimit = verbose ? hints.length : 3;
+
+  printMeta({ ref: formatMetaEndpoint('HEAD', gitRevParse('HEAD')) });
 
   logLine('');
   for (const line of ok) logLine(`       ${style.ok('✓')} ${line}`);

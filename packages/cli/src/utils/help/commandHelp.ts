@@ -1,7 +1,5 @@
-interface CommandHelpExtra {
-  examples?: string[];
-  related?: string[];
-}
+import { formatGitCommitRangeHelp, formatTimelineRangeHelp } from '@expgov/core';
+import type { CommandHelpExtra } from '../../types/help/index.js';
 
 const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {
   init: {
@@ -13,7 +11,17 @@ const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {
     related: ['validate', 'graph', 'suggest'],
   },
   diff: {
-    examples: ['expgov diff HEAD', 'expgov diff v1.0.0..v2.0.0', 'expgov diff -F'],
+    examples: [
+      'expgov diff HEAD',
+      'expgov diff HEAD~30..HEAD~1',
+      'expgov diff v1.0.0..v2.0.0',
+      'expgov diff -F',
+    ],
+    rangeFormats: () => [
+      '(omit)                   HEAD → working tree',
+      'v0.1.4                   v0.1.4 → working tree',
+      ...formatGitCommitRangeHelp(),
+    ],
     related: ['validate', 'trend', 'timeline'],
   },
   validate: {
@@ -33,7 +41,14 @@ const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {
     related: ['diff', 'timeline', 'validate'],
   },
   timeline: {
-    examples: ['expgov timeline', 'expgov timeline @3m', 'expgov timeline -T 15'],
+    examples: [
+      'expgov timeline',
+      'expgov timeline @3m',
+      'expgov timeline HEAD~20',
+      'expgov timeline HEAD~30..HEAD~1',
+      'expgov timeline -T 15',
+    ],
+    rangeFormats: formatTimelineRangeHelp,
     related: ['diff', 'trend', 'graph'],
   },
   graph: {
@@ -46,7 +61,7 @@ const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {
   },
 };
 
-/** Raw Examples / Related appendix for Commander formatHelp (must run before colorize). */
+/** Raw Examples / Range formats / Related appendix for Commander formatHelp (before colorize). */
 export function formatCommandHelpExtras(commandName: string): string {
   const extra = COMMAND_HELP_EXTRAS[commandName];
   if (!extra) return '';
@@ -55,6 +70,10 @@ export function formatCommandHelpExtras(commandName: string): string {
   if (extra.examples?.length) {
     lines.push('', 'Examples:');
     for (const ex of extra.examples) lines.push(`  ${ex}`);
+  }
+  if (extra.rangeFormats) {
+    lines.push('', 'Range formats:');
+    for (const line of extra.rangeFormats()) lines.push(`  ${line}`);
   }
   if (extra.related?.length) {
     lines.push('', 'Related:');

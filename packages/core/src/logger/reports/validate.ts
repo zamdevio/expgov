@@ -3,7 +3,7 @@ import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import { boldDim, style } from '../../runtime/style.js';
 
-import { logLine, logListTruncation } from '../report.js';
+import { logLine, logListTruncation, printMeta } from '../report.js';
 import { printInsightsBlock } from './insights.js';
 
 export function printValidateReport(input: {
@@ -15,6 +15,7 @@ export function printValidateReport(input: {
   internalFlatSymbols?: string[];
   insights?: ReturnType<typeof computeValidateInsights>;
   listView?: ListViewOptions;
+  ref?: string;
 }): void {
   const {
     passed,
@@ -27,6 +28,10 @@ export function printValidateReport(input: {
     listView,
   } = input;
   const listLimit = resolveListLimit(listView);
+
+  if (input.ref) {
+    printMeta({ ref: input.ref });
+  }
 
   if (!passed) {
     logLine('');

@@ -4,13 +4,22 @@ import { style } from '../../../runtime/style.js';
 import type { CacheStatus } from '../../../types/cache/index.js';
 import { getRootIndexRepoPath } from '../../../context/paths.js';
 import { computeTimelineInsights } from '../../../insights/index.js';
-import { timelineRangeEndpoints } from '../../../time/index.js';
 import type { TimelineRange } from '../../../types/time/range.js';
 import { formatSubject } from '../../format.js';
-import { logLine, logListTruncation, printMeta } from '../../report.js';
+import { formatMetaEndpoint, logLine, logListTruncation, printMeta } from '../../report.js';
 import { printInsightsBlock } from '../insights.js';
 import { printTimelineWarmSection } from './warm.js';
 import type { TimelineWarmStats } from '../../../types/timeline/warm.js';
+
+function timelineMetaEndpoints(range: TimelineRange): { from: string; to: string } {
+  if (range.kind === 'time') {
+    return { from: style.dim(range.since), to: style.dim(range.until) };
+  }
+  return {
+    from: formatMetaEndpoint(range.left.label, range.left.sha),
+    to: formatMetaEndpoint(range.right.label, range.right.sha),
+  };
+}
 
 export function printTimelineReport(input: {
   range: TimelineRange;
@@ -30,11 +39,11 @@ export function printTimelineReport(input: {
   insights?: ReturnType<typeof computeTimelineInsights>;
 }): void {
   const topLabel = Number.isFinite(input.top) ? String(input.top) : 'all';
-  const endpoints = timelineRangeEndpoints(input.range);
+  const endpoints = timelineMetaEndpoints(input.range);
   printMeta({
     range: input.range.label,
-    from: style.dim(endpoints.from),
-    to: style.dim(endpoints.to),
+    from: endpoints.from,
+    to: endpoints.to,
     top: style.dim(topLabel),
     barrel: style.dim(`${input.rows.length} commits · ${getRootIndexRepoPath()}`),
     git: input.gitStats ? style.dim(input.gitStats) : undefined,
@@ -45,6 +54,21 @@ export function printTimelineReport(input: {
   if (!input.rows.length) {
     logLine('');
     logLine(style.dim('       No commits touching the root barrel in this range.'));
+    if (input.range.kind === 'ref') {
+      if (input.range.left.sha === input.range.right.sha) {
+        logLine(
+          style.dim(
+            '       Left and right resolve to the same commit — try older..newer (e.g. HEAD~30..HEAD).',
+          ),
+        );
+      } else {
+        logLine(
+          style.dim(
+            '       Git ref ranges are directional (older..newer), same as diff — reversed order is usually empty.',
+          ),
+        );
+      }
+    }
     return;
   }
   logLine(

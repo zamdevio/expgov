@@ -6,14 +6,9 @@ import { coreLog, coreLogTip, runInit } from '@expgov/core';
 
 import { CONFIG_FILE_NAME } from '../../constants/cli.js';
 import { getCliYesFlag } from '../../shared/context/globals.js';
+import type { EnsureConfigOptions } from '../../types/init/index.js';
 import { shouldSkipInteractivePrompts } from '../../utils/interactive/index.js';
 import { confirmOverwriteExisting, confirmWriteConfig } from './prompts.js';
-
-export interface EnsureConfigOptions {
-  yes?: boolean;
-  force?: boolean;
-  rich?: boolean;
-}
 
 function displayPath(cwd: string, target: string): string {
   const rel = path.relative(cwd, target);

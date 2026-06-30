@@ -1,15 +1,6 @@
 import { CLI_MARK, CLI_NAME } from '../../constants/cli.js';
+import type { HeaderOptions, LogLevel } from '../../types/ansi/index.js';
 import { style } from '../style/index.js';
-
-export { style };
-
-export type LogLevel = 'info' | 'notice' | 'warn' | 'error';
-
-export type HeaderOptions = {
-  subtitle?: string;
-  mark?: string;
-  minWidth?: number;
-};
 
 const levelColor: Record<LogLevel, (s: string) => string> = {
   info: style.ok,

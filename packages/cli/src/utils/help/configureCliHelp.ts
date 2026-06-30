@@ -1,12 +1,15 @@
 import { Help, type Command } from 'commander';
 
 import { CLI_NAME, CLI_ROOT_TAGLINE } from '../../constants/cli.js';
+import { COMMAND_SUBTITLES } from '../../constants/commandSubtitles.js';
 import { formatBoxHeader, style } from '@expgov/core';
+import type { HelpOutputOpts } from '../../types/cli/index.js';
+import type { HelpColorizeSection } from '../../types/help/index.js';
 import { formatCommandHelpExtras } from './commandHelp.js';
 import { styleCommandHelpTerm } from './term.js';
 import { formatWorkflowAppendix } from './workflowAppendix.js';
 
-const SECTION_HEADER = /^(Options|Commands|Arguments|Global Options|Examples|Related):$/;
+const SECTION_HEADER = /^(Options|Commands|Arguments|Global Options|Examples|Range formats|Related):$/;
 const HELP_ROW = /^(\s{2})(.+?)(\s{2,})(.*)$/;
 
 function styleUsageLine(line: string): string {
@@ -33,8 +36,7 @@ function styleDescription(desc: string): string {
 export function colorizeHelpText(text: string): string {
   const lines = text.split('\n');
   const out: string[] = [];
-  let section: 'none' | 'arguments' | 'options' | 'commands' | 'global-options' | 'examples' | 'related' =
-    'none';
+  let section: HelpColorizeSection = 'none';
   for (const line of lines) {
     if (line.startsWith('Usage:')) {
       out.push(styleUsageLine(line));
@@ -46,6 +48,7 @@ export function colorizeHelpText(text: string): string {
       else if (line === 'Arguments:') section = 'arguments';
       else if (line === 'Global Options:') section = 'global-options';
       else if (line === 'Examples:') section = 'examples';
+      else if (line === 'Range formats:') section = 'range-formats';
       else if (line === 'Related:') section = 'related';
       out.push(styleSectionHeader(line));
       continue;
@@ -57,6 +60,10 @@ export function colorizeHelpText(text: string): string {
     }
     if (section === 'examples' && /^\s{2}\S/.test(line)) {
       out.push(`  ${style.bold(style.accent(line.trim()))}`);
+      continue;
+    }
+    if (section === 'range-formats' && /^\s{2}\S/.test(line)) {
+      out.push(`  ${style.dim(line.trim())}`);
       continue;
     }
     if (section === 'related' && /^\s{2}\S/.test(line)) {
@@ -103,19 +110,6 @@ function toolDisplayTitle(cmd: Command): string {
 }
 
 
-const COMMAND_SUBTITLES: Record<string, string> = {
-  init: 'expgov.config.ts — export governance scaffold',
-  inventory: 'root barrel export summary',
-  diff: 'compare export surfaces between refs',
-  validate: 'tsconfig ↔ npm parity + tier governance',
-  doctor: 'config discovery and cache hygiene',
-  suggest: 'tier allowlist suggestions for unclassified exports',
-  trend: 'export counts across release tags',
-  timeline: 'commits that changed the root export barrel',
-  graph: 're-export governance map',
-  version: 'CLI and SDK versions',
-};
-
 export function configureCliHelp(program: Command): void {
   program.configureHelp({
     formatHelp(cmd: Command, helper: Help) {
@@ -123,7 +117,7 @@ export function configureCliHelp(program: Command): void {
       const extras = formatCommandHelpExtras(cmd.name());
       const colored = colorizeHelpText(extras ? `${raw}${extras}` : raw);
       const root = cmd.parent ?? cmd;
-      const opts = root.opts<{ json?: boolean; silent?: boolean }>();
+      const opts = root.opts<HelpOutputOpts>();
       if (opts.json || opts.silent) return colored;
       const title = toolDisplayTitle(cmd);
       const subtitle = COMMAND_SUBTITLES[cmd.name()] ?? CLI_ROOT_TAGLINE;

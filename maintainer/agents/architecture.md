@@ -42,6 +42,7 @@ packages/core/src/
 
 packages/cli/src/
 ├── bin/cli.ts      # thin entry — bootstrapRuntime + buildProgram
+├── types/          # CLI-only interfaces (global flags, help, init, update state)
 ├── commands/init/  # ensureConfig + prompts
 └── utils/          # help colorization, banners, list flags
 ```

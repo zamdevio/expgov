@@ -4,7 +4,7 @@ import { computeTrendInsights } from '../../insights/index.js';
 import type { CacheStatus } from '../../types/cache/index.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
-import { logLine, logListTruncation, padLabel, printMeta } from '../report.js';
+import { logLine, logListTruncation, padLabel, printMeta, formatMetaEndpoint } from '../report.js';
 import { printInsightsBlock } from './insights.js';
 
 export function printTrendReport(input: {
@@ -26,10 +26,18 @@ export function printTrendReport(input: {
 }): void {
   const listLimit = resolveListLimit(input.listView);
   const displayRows = limitList(input.rows, listLimit);
+  const windowFirst = input.rows[0];
+  const windowLast = input.rows[input.rows.length - 1];
 
   printMeta({
     tags: style.dim(String(input.rows.length)),
     window: style.dim(`last ${input.tagLimit} version tags`),
+    ...(windowFirst && windowLast
+      ? {
+          from: formatMetaEndpoint(windowFirst.tag, windowFirst.sha),
+          to: formatMetaEndpoint(windowLast.tag, windowLast.sha),
+        }
+      : {}),
   });
 
   if (!displayRows.items.length) {

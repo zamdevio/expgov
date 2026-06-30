@@ -136,20 +136,15 @@ export function parseTimelineRange(token: string): TimelineRange | null {
 
 export function formatTimelineRangeHelp(): string[] {
   return [
-    '2026-W24           ISO week (Mon–Sun, UTC)',
+    '2026-W24                 ISO week (Mon–Sun, UTC)',
     '2026-06-01..2026-06-14   inclusive date range',
-    '@7d                last 7 days',
-    '@4w                last 4 weeks',
-    '@3m                last 3 months',
-    'v1.0.0..HEAD       git ref range (tag, branch, sha)',
-    'v1.0.0             barrel edits since ref to HEAD',
+    '@7d                      last 7 days',
+    '@4w                      last 4 weeks',
+    '@3m                      last 3 months',
+    'HEAD~20..HEAD            git: after HEAD~20 toward HEAD (barrel edits only)',
+    'HEAD~20                  same as HEAD~20..HEAD',
+    'HEAD~30..HEAD~1          slice between two parent anchors',
+    'v1.0.0..HEAD             tag/branch/sha range (older..newer)',
+    'v1.0.0                   barrel edits since ref to HEAD',
   ];
-}
-
-/** Meta `from` / `to` labels for human timeline reports. */
-export function timelineRangeEndpoints(range: TimelineRange): { from: string; to: string } {
-  if (range.kind === 'time') {
-    return { from: range.since, to: range.until };
-  }
-  return { from: range.left.label, to: range.right.label };
 }

@@ -6,7 +6,7 @@ import type { DiffResult } from '../../types/format/diff.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import type { TierCounts } from '../../types/inventory/snapshot.js';
-import { formatDelta, logLine, logListTruncation, padLabel, printMeta, snapshotShaLabel, cacheLabel, canEmitVerboseReport } from '../report.js';
+import { formatDelta, formatSnapshotMetaEndpoint, logLine, logListTruncation, padLabel, printMeta, cacheLabel, canEmitVerboseReport } from '../report.js';
 import { printInsightsBlock } from './insights.js';
 
 function printCustomTierDeltas(left: TierCounts, right: TierCounts): void {
@@ -31,8 +31,8 @@ export function printDiffReport(input: {
 
   printMeta({
     range: rangeLabel,
-    from: `${left.snapshot.refLabel} ${style.dim(`(${snapshotShaLabel(left.snapshot)})`)}`,
-    to: `${right.snapshot.refLabel} ${style.dim(`(${snapshotShaLabel(right.snapshot)})`)}`,
+    from: formatSnapshotMetaEndpoint(left.snapshot),
+    to: formatSnapshotMetaEndpoint(right.snapshot),
     cache: `${cacheLabel(left.cache)} / ${cacheLabel(right.cache)}`,
   });
 

@@ -26,7 +26,7 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 | `trend` | `runExportsTrend` | Flat/stable/adv/int per tag; Δ footer between first/last in window |
 | `timeline [range]` | `runExportsTimeline` | Barrel-only git log; flat count + Δ per commit |
 | `graph [ref]` | `runExportsGraph` | Target subpath groups, namespaces, top source modules |
-| `help [topic]` | `printHelp` | Sectioned usage (all, per-command, global flags) |
+| `help [topic]` | `printCliHelp` | Commander help + Examples / Range formats / Related (`commandHelp.ts`) |
 
 - [x] Per-command `-v/--verbose` where applicable
 

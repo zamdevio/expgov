@@ -1,16 +1,21 @@
 
 import { boldDim, style } from '../../runtime/style.js';
 
-import { logLine } from '../report.js';
+import { logLine, printMeta } from '../report.js';
 
 export function printSuggestReport(input: {
   suggestion: { bucket: 'stable'; names: string[] };
   snippet: string;
   hints: string[];
   verbose?: boolean;
+  ref?: string;
 }): void {
   const { suggestion, snippet, hints, verbose } = input;
   const hintLimit = verbose ? hints.length : 3;
+
+  if (input.ref) {
+    printMeta({ ref: input.ref });
+  }
 
   logLine('');
   if (!suggestion.names.length) {

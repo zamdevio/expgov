@@ -89,11 +89,20 @@ export function snapshotShaLabel(snapshot: InventorySnapshot): string {
   return shortSha(snapshot.sha);
 }
 
+/** Meta row: `label (abc1234)` — shared by diff, timeline ref ranges, inventory, graph, trend. */
+export function formatMetaEndpoint(label: string, sha: string): string {
+  return `${label} ${style.dim(`(${shortSha(sha)})`)}`;
+}
+
+export function formatSnapshotMetaEndpoint(snapshot: InventorySnapshot): string {
+  return `${snapshot.refLabel} ${style.dim(`(${snapshotShaLabel(snapshot)})`)}`;
+}
+
 export function refLine(ref: SourceRef, snapshot: InventorySnapshot): string {
   if (ref.kind === 'worktree') {
     return `working tree ${style.dim(`(${snapshotShaLabel(snapshot)})`)}`;
   }
-  return `${ref.label} ${style.dim(`(${shortSha(ref.sha)})`)}`;
+  return formatMetaEndpoint(ref.label, ref.sha);
 }
 
 export function tierColor(tier: string, value: number): string {

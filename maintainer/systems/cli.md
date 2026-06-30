@@ -46,12 +46,15 @@ Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style 
 
 ```txt
 core command → report/meta events
+             → meta block (ref or from/to with short sha where applicable)
              → (timeline) warm section below meta
              → insights block (Phase E, when present)
              → finishCommand → tips + footer (summary + command · status · ms)
              → createConsoleLogSink
              → stdout/stderr
 ```
+
+**Meta endpoint format:** `label (abc1234)` via `formatMetaEndpoint` in `logger/report.ts` — shared by diff, timeline ref ranges, inventory/graph `ref`, trend tag window, validate/suggest worktree, doctor `HEAD`.
 
 Policy gates: `packages/core/src/runtime/policy.ts`
 
@@ -63,9 +66,10 @@ After the report body, `finishCommand` emits optional `summary: key=val · …` 
 
 - `configureCliHelp.ts` — colorized Commander help (box header + Usage/Options)
 - `printCliHelp.ts` — bare `expgov`, `expgov help`, `expgov -h` / `--help`, usage errors; root help includes **Workflows** via `formatHelp`
-- `commandHelp.ts` — per-command `Examples` / `Related` merged in `formatHelp` (before colorize)
+- `commandHelp.ts` — per-command `Examples`, `Range formats` (diff/timeline), and `Related` merged in `formatHelp` (before colorize)
+- Range grammar lines reuse core `formatTimelineRangeHelp` / `formatGitCommitRangeHelp` (same source as invalid_range suggestions)
 - `expgov help <cmd>` ≡ `expgov <cmd> -h`
-- Core `printHelp` — programmatic only; CLI does not use it for interactive help
+- Core `printHelp` — programmatic/SDK export only; CLI does not call it for interactive help
 - `(default: …)` segments use `style.highlight` (bright yellow)
 - Box header skipped when `--json` or `--silent`; root program name skipped in per-command banners
 

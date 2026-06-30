@@ -1,17 +1,7 @@
 import { readFileSync, unlinkSync, writeFileSync } from 'node:fs';
-
 import { NPM_REGISTRY_LATEST_URL, UPDATE_STATE_SCHEMA_VERSION } from '../../constants/update.js';
+import type { UpdateStateFile } from '../../types/update/index.js';
 import { ensureVersionStateDirExists, getUpdateStateFilePath } from './paths.js';
-
-export type UpdateStateFile = {
-  schemaVersion: typeof UPDATE_STATE_SCHEMA_VERSION;
-  lastAttemptMs: number;
-  lastSuccessMs: number | null;
-  latestRegistryVersion: string | null;
-  lastError: string | null;
-  registryEndpoint: string;
-  cliVersionWhenRecorded: string | null;
-};
 
 function emptyState(registryEndpoint: string): UpdateStateFile {
   return {

@@ -71,9 +71,28 @@ Compare export surfaces between refs. Default: `HEAD` → working tree.
 
 ```bash
 expgov diff
+expgov diff HEAD
 expgov diff v0.1.3..v0.1.4
+expgov diff HEAD~30..HEAD~1
 expgov diff a6caa74..HEAD
 ```
+
+### Git ref ranges (shared with `timeline` for `A..B`)
+
+| Form | Meaning |
+|------|---------|
+| `older..newer` | Snapshot at `older` vs snapshot at `newer` — **order matters** |
+| `HEAD~N..HEAD~M` | Compare two parent anchors (e.g. net export change across that slice) |
+| `v0.1.3..v0.1.4` | Tag-to-tag comparison |
+
+**Diff-only forms** (timeline does not use these):
+
+| Form | Meaning |
+|------|---------|
+| `(omit)` or default | `HEAD` → **working tree** |
+| single ref `v0.1.4` | `v0.1.4` → **working tree** (not `..HEAD`) |
+
+**Timeline-only ranges** (diff does not support): `@4w`, `@3m`, ISO week, inclusive date ranges — those filter *when* barrel commits happened; diff compares two surfaces at two points.
 
 Reports added/removed flat exports and tier violations (internal/advanced promoted to root).
 
@@ -141,7 +160,7 @@ Prints flat / stable / advanced / internal per tag; footer compares first vs las
 
 ## `timeline [range]`
 
-Git log of commits that edited the root barrel. Default range: `@4w`.
+Git log of commits that **edited the root barrel** (`packages/core/src/index.ts` in dogfood). Default range: `@4w`.
 
 ```bash
 expgov timeline
@@ -149,13 +168,45 @@ expgov timeline @3m
 expgov timeline 2025-01-01..2025-06-01
 expgov timeline v1.0.0..HEAD
 expgov timeline v1.0.0
+expgov timeline HEAD~20
+expgov timeline HEAD~30..HEAD~1
 ```
 
-Range formats: `@4w`, `@3m`, ISO dates, and git refs (`v1.0.0..HEAD`, single ref → `ref..HEAD`). Shows flat count and Δ between consecutive barrel edits.
+### What appears in the table
+
+Only commits that **touched the root barrel file** in the chosen window. Other commits in the same time span or ref range are ignored — the table is barrel archaeology, not full repo history.
+
+### Time ranges
+
+`@4w`, `@3m`, ISO week (`2026-W24`), and inclusive date ranges (`2026-06-01..2026-06-14`) filter by commit date (UTC).
+
+### Git ref ranges (same `A..B` grammar as `diff`)
+
+| Form | Meaning |
+|------|---------|
+| `older..newer` | Commits **after** `older` on the path toward `newer` that edited the barrel |
+| `HEAD~N` | Shorthand for `HEAD~N..HEAD` |
+| `HEAD~N..HEAD` | Barrel edits from the commit **N parents back** from `HEAD` up to tip |
+
+**Timeline-only ranges** (diff does not support): `@4w`, `@3m`, ISO week (`2026-W24`), inclusive date ranges — time filters on commit dates.
+
+**Diff-only forms** (timeline does not use): default / single ref → **working tree** instead of `..HEAD`.
+
+**`HEAD~N` is not “the last N commits”.** It resolves to one specific commit (walk N parent links from `HEAD`). Timeline then lists barrel edits between your anchors.
+
+**Order matters:** use **older..newer** (e.g. `b5c70bf..HEAD`, `HEAD~30..HEAD~1`). `HEAD~20..b5c70bf` is empty when both sides resolve to the same commit. Reversed ranges (`newer..older`) are usually empty.
+
+**Examples (dogfood repo):**
+
+- `expgov timeline HEAD~20` — same as `HEAD~20..HEAD`; only barrel commits after that anchor
+- `expgov timeline HEAD~30..HEAD~1` — barrel history between two parent anchors, excluding the latest commit
+- A commit like `92e7f77` appears because it modified `packages/core/src/index.ts`, even when most files in that commit were docs or CLI
+
+Shows flat count and Δ between **consecutive barrel edits** (newest first).
 
 Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → insights.
 
-JSON: `data.warmStats` includes `{ warmed, totalMs, entries[] }`.
+JSON: `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
 
 ---
 
@@ -172,18 +223,26 @@ expgov graph HEAD -v
 
 ## `help [topic]`
 
-Long-form usage. Topics: `init`, `inventory`, `diff`, `validate`, `trend`, `timeline`, `graph`, `help`, or omit for all.
+Commander-based usage — `expgov help <cmd>` is the same as `expgov <cmd> -h`.
 
 ```bash
-expgov help validate
+expgov help
+expgov help timeline
+expgov timeline -h
 ```
+
+Per-command help includes **Examples**, **Range formats** (on `diff` and `timeline`), and **Related** commands. Range format lines match the grammar used at runtime and in invalid-range error suggestions.
+
+Bare `expgov` (no subcommand) prints root help and exits 0.
 
 ---
 
 ## Output order (human mode)
 
 ```txt
-banner → report / meta → tips → footer (summary + command · ok|fail · Nms)
+banner → meta (ref / from·to / range) → report body → insights → tips → footer
 ```
+
+Commands with a **meta** block: `inventory`, `diff`, `timeline`, `trend`, `graph`, `validate`, `suggest`, `doctor`. Ref endpoints use `label (shortsha)` — e.g. `HEAD~30 (902bd6c)`, `working tree (HEAD abc1234)`.
 
 Footer and banners are suppressed under `--json` and `--silent`. See [json.md](./json.md).
