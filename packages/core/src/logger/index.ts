@@ -6,6 +6,6 @@ export { printValidateReport } from './reports/validate.js';
 export { printDoctorReport } from './reports/doctor.js';
 export { printSuggestReport } from './reports/suggest.js';
 export { printTrendReport } from './reports/trend.js';
-export { printTimelineReport } from './reports/timeline.js';
+export { printTimelineReport } from './reports/timeline/index.js';
 export { printGraphReport } from './reports/graph.js';
 export { printExportError, printUnexpected } from './reports/errors.js';

@@ -85,7 +85,7 @@ interface TimelineStepMeta {
 
 ### Core purity note
 
-`TimelineWarmer` currently writes to `console.error` / `process.stderr` directly in verbose mode. Phase B should route warm progress through `emitLog` (type `raw`, stream `stderr`) to comply with core logging rules.
+`TimelineWarmer` verbose warm lines now render via the report layer (`printTimelineWarmSection`) — no `console.*`. Non-verbose in-flight progress still uses `coreLogRaw` `\r` on stderr during warm (cleared before the report). Phase B may fold spinner into `emitLog` if needed.
 
 ---
 

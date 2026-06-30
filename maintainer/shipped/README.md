@@ -48,7 +48,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
 | Inventory & cache | P0a, P0b, P4, P16 | [`inventory-cache.md`](./inventory-cache.md) |
 | Git & commands | P0c, P0d, P4a, P5, P8 | [`git-commands.md`](./git-commands.md) |
-| Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18 | [`runtime-cli.md`](./runtime-cli.md) |
+| Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tiers & config | P2 tiers, P9–P11, P13 | [`tiers-config.md`](./tiers-config.md) |
 | Tooling & docs | P2 hub, P3, P3a, P12, P19 | [`tooling-docs.md`](./tooling-docs.md) |
 

@@ -46,6 +46,7 @@ Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style 
 
 ```txt
 core command → report/meta events
+             → (timeline) warm section below meta
              → insights block (Phase E, when present)
              → finishCommand → tips + footer (summary + command · status · ms)
              → createConsoleLogSink
@@ -91,6 +92,14 @@ Module: `packages/core/src/insights/`. Renderer: `logger/reports/insights.ts` (`
 | `timeline` | Flat churn totals, net window delta, largest step, busiest week |
 
 JSON: additive `data.insights`. Shown under `--quiet`; suppressed under `--silent`. Max 5 lines per command.
+
+## Timeline warm log (shipped P20)
+
+- Collector: `packages/core/src/timeline/warmer.ts` — records per-commit cache warm timings.
+- Renderer: `logger/reports/timeline/warm.ts` — prints **below** meta rows, before commit table.
+- Default: `warmed` summary row only (`       warmed     10/10 · 7ms total`); stderr `\r` spinner during warm (cleared before report).
+- `-v`: `Snapshot warm` section with `· N/M  <sha>  <cache>  <ms>` lines, then the same `warmed` summary row.
+- JSON: `data.warmStats` with `{ warmed, totalMs, entries[] }`.
 
 ## Banners
 

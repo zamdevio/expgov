@@ -1,12 +1,14 @@
 
-import { style } from '../../runtime/style.js';
+import { style } from '../../../runtime/style.js';
 
-import type { CacheStatus } from '../../types/cache/index.js';
-import { getRootIndexRepoPath } from '../../context/paths.js';
-import { computeTimelineInsights } from '../../insights/index.js';
-import { formatSubject } from '../format.js';
-import { logLine, logListTruncation, printMeta } from '../report.js';
-import { printInsightsBlock } from './insights.js';
+import type { CacheStatus } from '../../../types/cache/index.js';
+import { getRootIndexRepoPath } from '../../../context/paths.js';
+import { computeTimelineInsights } from '../../../insights/index.js';
+import { formatSubject } from '../../format.js';
+import { logLine, logListTruncation, printMeta } from '../../report.js';
+import { printInsightsBlock } from '../insights.js';
+import { printTimelineWarmSection } from './warm.js';
+import type { TimelineWarmStats } from '../../../types/timeline/warm.js';
 
 export function printTimelineReport(input: {
   range: { label: string; since: string; until: string };
@@ -21,7 +23,7 @@ export function printTimelineReport(input: {
   }[];
   hiddenCount?: number;
   verbose?: boolean;
-  warmStats?: { warmed: number; totalMs: number };
+  warmStats?: TimelineWarmStats;
   gitStats?: string;
   insights?: ReturnType<typeof computeTimelineInsights>;
 }): void {
@@ -32,11 +34,10 @@ export function printTimelineReport(input: {
     to: style.dim(input.range.until),
     top: style.dim(topLabel),
     barrel: style.dim(`${input.rows.length} commits · ${getRootIndexRepoPath()}`),
-    warm: input.warmStats
-      ? style.dim(`${input.warmStats.warmed}/${input.rows.length} · ${input.warmStats.totalMs}ms`)
-      : undefined,
     git: input.gitStats ? style.dim(input.gitStats) : undefined,
   });
+
+  printTimelineWarmSection(input.warmStats, input.verbose);
 
   if (!input.rows.length) {
     logLine('');

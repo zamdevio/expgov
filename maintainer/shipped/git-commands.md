@@ -10,7 +10,7 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 - [x] `parseDiffRange` — single ref or `A..B` tag/SHA ranges; default HEAD → worktree
 - [x] `listVersionTags` — configurable `git.tagPattern` (default `v*`) for trend
 - [x] `listBarrelCommits` + `parseTimelineRange` — `@4w`, `@3m`, ISO dates (`time/ranges.ts`)
-- [x] `TimelineWarmer` — stderr progress while warming per-commit cache
+- [x] `TimelineWarmer` — per-commit cache warm; report-layer warm log below meta (`timeline/warmer.ts`, `logger/reports/timeline/warm.ts`)
 - [x] Git run stats for verbose inventory/timeline
 
 ---

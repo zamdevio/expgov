@@ -97,3 +97,14 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 - [x] `expgov help <cmd>` ≡ `expgov <cmd> -h` (unchanged; paths now consistent at root)
 
 Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14).
+
+---
+
+## P20 — timeline warm log layout (shipped)
+
+- [x] `TimelineWarmer` collects per-commit timings (`timeline/warmer.ts`) — no `console.*` in verbose mode
+- [x] Non-verbose: stderr `\r` spinner only during warm; cleared before report
+- [x] `printTimelineWarmSection` — warm log **below** meta (`logger/reports/timeline/warm.ts`); `warmed` row matches meta indent (`       key      value`)
+- [x] `-v` / `--verbose` — `Snapshot warm` section with per-commit `· N/M  sha  hit  Nms` lines + summary row
+- [x] JSON: `data.warmStats` includes `entries[]` for machine consumers
+- [x] Removed duplicate `warm` meta row (summary lives in warm section)
