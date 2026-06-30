@@ -66,6 +66,7 @@ Work top-to-bottom once Phase B rows above are done.
 | 7 | **Fix** | Apply fixes (`fix tags`, `fix config`); hard subcmds postponed | [`fix.md`](./fix.md) |
 | 8 | **Config** | `config show` / `export` / `convert`, parse layer, JSON load | [`config.md`](./config.md) |
 | 9 | **Issues** | `issues/` registry, doc links, `issues[]` parity | [`issues.md`](./issues.md) |
+| 10 | **Multibarrel** | Multi-entry API surface, deep scans, workspace | [`multibarrel.md`](./multibarrel.md) |
 
 **One slice per PR** — finish the current Phase B row before starting C.
 
@@ -80,6 +81,7 @@ Work top-to-bottom once Phase B rows above are done.
 | JSON config (`expgov.config.json`) | [`config.md`](./config.md) — export before load; TS stays primary |
 | Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
 | Source profiles (H-src) | Barrel formats only — [`sourceProfiles.md`](./sourceProfiles.md) |
+| Multibarrel / workspace | [`multibarrel.md`](./multibarrel.md) — MB4 after MB1–MB3 |
 | SDK monorepo example (I2) | I1 + I3 shipped — see [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) |
 
 ---

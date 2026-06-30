@@ -36,6 +36,7 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 | [`suggest.md`](./suggest.md) | Suggest — engine, full fixes, `-k` / `-d` filters |
 | [`fix.md`](./fix.md) | Fix — apply subcommands (`tags`, `config`; subpath postponed) |
 | [`config.md`](./config.md) | Config — show, export, convert, parse layer, JSON load |
+| [`multibarrel.md`](./multibarrel.md) | Multi-entry API surface (root + subpaths, workspace) |
 | [`issues.md`](./issues.md) | Issues — `issues[]` registry + doc links (i18nprune-style) |
 | [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (barrel module formats) |
 | [`test-expansion.md`](./test-expansion.md) | Test coverage backlog |

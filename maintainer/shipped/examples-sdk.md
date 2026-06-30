@@ -28,4 +28,25 @@ Teaching fixture for external SDK authors — not expgov dogfood config.
 
 - **I2** — `examples/sdk-monorepo/` workspace variant
 
+---
+
+## External dogfood — vercel/ai `packages/ai`
+
+Not checked into expgov. Maintainer-local config pattern for real multi-entry SDK (`ai`, `ai/internal`, `ai/test`).
+
+| Item | Value |
+|------|--------|
+| Repo | [vercel/ai](https://github.com/vercel/ai) clone at `~/ai` |
+| Config | `~/ai/expgov.config.ts` |
+| Phase | [`multibarrel.md`](../phases/multibarrel.md) MB1–MB4 |
+| Scratch | [`maintainer/temp/vercel-ai-dogfood.md`](../temp/vercel-ai-dogfood.md) |
+
+**Gate commands:**
+
+```bash
+cd ~/ai && expgov inventory && expgov validate
+```
+
+Expect tsconfig parity noise until MB4 (monorepo root has no `paths`). Tier prefixes cover gateway/provider-utils re-exports and `ai/test` Mock* helpers.
+
 Engineering map: [`systems/config.md`](../systems/config.md).
