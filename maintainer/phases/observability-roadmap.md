@@ -140,7 +140,7 @@ From [`active-phase.md`](./active-phase.md) — **complete**:
 - `-v` shows execution chain (or `-vv` for detail)
 - Each command answers ≥1 “next question” inline — **partial** (P17)
 - Phase F audit items owned or explicitly deferred with reason
-- Phase G1–G3 shipped; G4–G8 scheduled in [`systems/observability.md`](../systems/observability.md)
+- Phase G metric catalog defined in [`systems/observability.md`](../systems/observability.md) — all G slices **planned** (post B/C/E)
 
 ---
 

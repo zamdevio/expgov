@@ -56,7 +56,7 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 
 ---
 
-## P14 — Commander-first help / A5 (shipped)
+## P14 — Commander-first help / A5 (shipped) · `7a580d1`, `2845c79`
 
 - [x] `expgov help` ≡ Commander `outputHelp` + **Workflows** appendix
 - [x] `expgov help <cmd>` ≡ `expgov <cmd> -h` (same box + colorized options)
@@ -67,7 +67,7 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 
 ---
 
-## P15 — list truncation hints / A1b (shipped)
+## P15 — list truncation hints / A1b (shipped) · `4f943b3`, `55eab70`
 
 - [x] `formatListTruncationHint` — `…and N more (use -F/--full or -T/--top <n>)`
 - [x] Report-layer only — graph `topModules` no pre-slice in command host
@@ -86,3 +86,13 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 - [x] `trend` — largest tag-pair jump/drop, stable % shift
 - [x] Tests: `shared/__tests__/insights.test.ts` (9 cases)
 - [ ] `graph` / `timeline` insights — pending Phase C / B
+
+---
+
+## P18 — help path polish (shipped) · `5492383`, `42ed91d`
+
+- [x] Bare `expgov` (no subcommand) prints root help and exits **0**
+- [x] Root **Workflows** appendix on `expgov -h`, `--help`, and `expgov help` (shared `workflowAppendix.ts`)
+- [x] `expgov help <cmd>` ≡ `expgov <cmd> -h` (unchanged; paths now consistent at root)
+
+Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14).

@@ -28,8 +28,9 @@ Maintainer hub, user docs, CI, and project hygiene.
 
 ## P3a — CI gate (shipped) · 2026-W26
 
-- [x] `.github/workflows/validate.yml` — `pnpm install`, `build`, `typecheck`, `node dist/cli.js validate`
+- [x] GitHub Actions: `pnpm install`, `build`, `typecheck`, `expgov validate` on PRs
 - [x] Triggers on `push` to `main` and `pull_request`
+- Superseded by **P12** / **P19** — `.github/workflows/ci.yml` (+ `architecture.yml`)
 
 ---
 
@@ -43,3 +44,11 @@ Maintainer hub, user docs, CI, and project hygiene.
 - [x] Root `knip.json`, `vitest.config.ts`, `scripts/madge/run.mjs`
 - [x] `printCliHelp` scaffolding (A5 precursor)
 - [x] Workspace CLI package name `expgov` (publish root binary)
+
+---
+
+## P19 — CI job split (shipped) · `7698189`
+
+- [x] `ci.yml` — parallel `typecheck` and `test` jobs; `build` → madge → dogfood `validate`
+- [x] Typecheck job: `core:typecheck` → `core:build` (declarations) → `cli:typecheck`
+- [x] `architecture.yml` — advisory knip + madge orphans/leaves (unchanged role)
