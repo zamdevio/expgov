@@ -8,7 +8,15 @@
 
 ---
 
-## Focus now — Phase B (Timeline 2.0)
+## Focus now — Phase C (Graph 2.0)
+
+**Doc:** [`graph-2.md`](./graph-2.md)
+
+Phase B (Timeline 2.0) is complete — B1–B4 shipped. Optional B5 (`--cache-insights`) deferred; see [`timeline-2.md`](./timeline-2.md).
+
+---
+
+## Phase B — Timeline 2.0 (complete)
 
 **Doc:** [`timeline-2.md`](./timeline-2.md) · **Command:** `packages/core/src/commands/timeline.ts` · **Ranges:** `packages/core/src/time/ranges.ts`
 
@@ -19,7 +27,7 @@
 | 1 | **B1** — Ref ranges | **Shipped** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
 | 2 | **B2** — Release markers | **Shipped** | Dim `── v1.1.0 ──` rows when commit matches version tag |
 | 3 | **B3** — Per-step metadata | **Shipped** | `diffSnapshots` step meta; `-v` shorthand; JSON `rows[].step` |
-| **→ 4** | **B4** — Summary block | **Next PR** | API growth, largest expansion/reduction, most active period |
+| 4 | **B4** — Summary block | **Shipped** | API growth, largest expansion/reduction, most active period, release jump |
 | 5 | **B5** — Cache insights | Optional | Cache-derived series metrics or `--cache-insights` flag |
 
 **B1 exit (shipped):**
@@ -45,6 +53,12 @@
 - [x] JSON `data.rows[].step`; human `-v` shorthand (`+2 −1 ns +1`)
 - [x] Tests: `timelineStepMeta.test.ts`
 
+**B4 exit (shipped):**
+
+- [x] `computeTimelineSummary(rows, range)` — API growth, step peaks, 7d active window, release jump
+- [x] Human `Summary` block (padLabel rows) after commit table; JSON `data.summary`
+- [x] Tests: `timelineSummary.test.ts`
+
 **Phase B complete when:** B1–B4 done (B5 optional / defer with reason in `timeline-2.md`).
 
 Check [`../shipped/README.md`](../shipped/README.md) before re-implementing listing, help, cache, or insights.
@@ -68,7 +82,7 @@ Work top-to-bottom once Phase B rows above are done.
 | 9 | **Issues** | `issues/` registry, doc links, `issues[]` parity | [`issues.md`](./issues.md) |
 | 10 | **Multibarrel** | Multi-entry API surface, deep scans, workspace | [`multibarrel.md`](./multibarrel.md) |
 
-**One slice per PR** — finish the current Phase B row before starting C.
+**One slice per PR** — focus Phase C before starting D.
 
 ---
 

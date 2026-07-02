@@ -1,6 +1,6 @@
 # Phase B — Timeline 2.0
 
-**Status:** In progress — **B4 next** (summary block). B1–B3 shipped — receipts in [`../shipped/git-commands.md`](../shipped/git-commands.md) and [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md).
+**Status:** Complete — B1–B4 shipped. B5 (`--cache-insights`) optional / deferred.
 
 **Active sprint:** [`active-phase.md`](./active-phase.md#focus-now--phase-b-timeline-20)
 
@@ -13,6 +13,7 @@
 | **B1** — Git ref ranges | `parseTimelineRange` time \| ref; `listBarrelCommitsByRef` |
 | **B2** — Release markers | `indexVersionTagsByCommit`; dim `── v1.0.0 ──` rows |
 | **B3** — Per-step metadata | `computeTimelineStepMeta` + `diffSnapshots`; JSON `rows[].step`; `-v` shorthand |
+| **B4** — Summary block | `computeTimelineSummary`; human `Summary` section; JSON `data.summary` |
 
 ---
 
@@ -24,7 +25,8 @@ listBarrelCommits* → GitCommitRow[]
 indexVersionTagsByCommit → rows[].tags
 per commit: getSnapshot(profile: timeline) → light snapshot + flat symbol names
 pairwise: computeTimelineStepMeta(newer, older)
-printTimelineReport (+ release markers; -v step shorthand)
+computeTimelineSummary(rows, range)
+printTimelineReport (+ release markers; -v step shorthand; Summary block)
 ```
 
 Reuse: `diffSnapshots`, `listVersionTags`, `getSnapshot`, `shared/listing` (`-T`/`-F`).
@@ -33,13 +35,9 @@ Reuse: `diffSnapshots`, `listVersionTags`, `getSnapshot`, `shared/listing` (`-T`
 
 ## Remaining slices
 
-### B4 — Timeline summaries
-
-Executive summary after the commit list: API growth, largest expansion/reduction, busiest period. Pure aggregation over existing rows — see prior plan in git history / [`../shipped/README.md`](../shipped/README.md) when shipped.
-
 ### B5 — Cache insights (optional)
 
-Cache-derived series metrics or `--cache-insights` — defer with reason if not taken in B4 PR.
+Cache-derived series metrics or `--cache-insights` — defer with reason if not taken in a follow-up PR.
 
 ---
 

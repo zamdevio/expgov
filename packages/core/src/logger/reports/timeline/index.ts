@@ -3,12 +3,14 @@ import { style } from '../../../runtime/style.js';
 
 import { getRootIndexRepoPath } from '../../../context/paths.js';
 import { computeTimelineInsights } from '../../../insights/index.js';
+import type { TimelineSummary } from '../../../types/timeline/summary.js';
 import type { TimelineRange } from '../../../types/time/range.js';
 import type { TimelineRow } from '../../../types/timeline/row.js';
 import { formatSubject } from '../../format.js';
 import { formatMetaEndpoint, logLine, logListTruncation, printMeta } from '../../report.js';
 import { printInsightsBlock } from '../insights.js';
 import { formatReleaseMarker, resolveDisplayTags } from './markers.js';
+import { printTimelineSummaryBlock } from './summary.js';
 import {
   formatTimelineStepShorthand,
   hasTimelineStepActivity,
@@ -35,6 +37,7 @@ export function printTimelineReport(input: {
   warmStats?: TimelineWarmStats;
   gitStats?: string;
   insights?: ReturnType<typeof computeTimelineInsights>;
+  summary?: TimelineSummary | null;
 }): void {
   const topLabel = Number.isFinite(input.top) ? String(input.top) : 'all';
   const endpoints = timelineMetaEndpoints(input.range);
@@ -98,6 +101,8 @@ export function printTimelineReport(input: {
     }
   }
   logListTruncation(input.hiddenCount ?? 0);
+
+  printTimelineSummaryBlock(input.summary ?? null);
 
   const insights = input.insights ?? computeTimelineInsights(input.rows);
   if (insights) printInsightsBlock(insights.lines);

@@ -204,9 +204,9 @@ Only commits that **touched the root barrel file** in the chosen window. Other c
 
 Shows flat count and Δ between **consecutive barrel edits** (newest first). When a commit is tagged with a version (`git.tagPattern`, default `v*`), a dim release marker row appears below it (`── v1.1.0 ──`). Use `-v` to show every tag when multiple tags point at the same commit.
 
-Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → insights.
+Human output order: meta (`range`, `from`, `to`, …) → **warm** section (`Snapshot warm`: latest line by default, all lines with `-v`; then `warmed` summary) → commit table → **summary** → insights.
 
-JSON: `data.rows[].tags` lists version tags on each commit. `data.rows[].step` has per-step `added`, `removed`, `namespaceDelta`, `subpathDelta`, `tierDelta` (pairwise vs row above). Use `-v` for inline shorthand (`+2 −1 st +1`). `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
+JSON: `data.rows[].tags` lists version tags on each commit. `data.rows[].step` has per-step `added`, `removed`, `namespaceDelta`, `subpathDelta`, `tierDelta` (pairwise vs row above). `data.summary` has API growth, step peaks, active window, and release jump metrics. Use `-v` for inline shorthand (`+2 −1 st +1`). `data.warmStats` includes `{ warmed, totalMs, entries[] }`. Ref ranges include `range.kind: "ref"` with `left` / `right` refs.
 
 ---
 

@@ -19,6 +19,7 @@ import { limitList, resolveListLimit } from '../shared/listing.js';
 import type { TimelineCliOptions } from '../types/commands/cli.js';
 import type { TimelineRow } from '../types/timeline/row.js';
 import { computeTimelineStepMeta } from '../timeline/stepMeta.js';
+import { computeTimelineSummary } from '../timeline/summary.js';
 import { TimelineWarmer } from '../timeline/warmer.js';
 
 export function runExportsTimeline(options: TimelineCliOptions = {}): void {
@@ -96,6 +97,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   }
 
   const insights = computeTimelineInsights(rows);
+  const summary = computeTimelineSummary(rows, range);
 
   if (getRunOptions().json) {
     finishCommand({
@@ -105,7 +107,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
       json: {
         kind: 'timeline',
         ok: true,
-        data: { range, top: listLimit, rows, warmStats, insights },
+        data: { range, top: listLimit, rows, warmStats, summary, insights },
       },
     });
     return;
@@ -119,6 +121,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     verbose: options.verbose,
     warmStats,
     gitStats: formatGitRunStats(),
+    summary,
     insights,
   });
 
