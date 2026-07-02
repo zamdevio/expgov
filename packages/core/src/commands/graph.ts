@@ -1,6 +1,7 @@
-import type { GraphEdge, InventoryNamespace, InventorySnapshot } from '../types/inventory/index.js';
+import type { GraphEdge, InventorySnapshot } from '../types/inventory/index.js';
 import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
+import { computeGraphAnalytics } from '../graph/analytics.js';
 import { resolveSourceRef } from '../git/index.js';
 import { formatModuleEdgeProvenance } from '../logger/format.js';
 import { printGraphReport } from '../logger/index.js';
@@ -10,7 +11,6 @@ import { getRunOptions } from '../runtime/runOptions.js';
 import type { GraphCliOptions } from '../types/commands/cli.js';
 import type {
   GraphModuleGroup,
-  GraphNamespaceRow,
   GraphTargetSubpathGroup,
 } from '../types/commands/graph.js';
 
@@ -61,12 +61,6 @@ function topModules(edges: GraphEdge[]): GraphModuleGroup[] {
     .sort((a, b) => b.edges - a.edges);
 }
 
-function namespaceRows(namespaces: InventoryNamespace[]): GraphNamespaceRow[] {
-  return namespaces
-    .map((ns) => ({ name: ns.name, targetSubpath: ns.targetSubpath, module: ns.sourceModule }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
 export function runExportsGraph(options: GraphCliOptions = {}): void {
   const timer = beginCommand('graph');
   const ref = resolveSourceRef(options.ref);
@@ -77,7 +71,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
 
   const targetGroups = groupByTargetSubpath(snapshot);
   const top = topModules(snapshot.edges);
-  const namespaces = namespaceRows(snapshot.namespaces);
+  const analytics = computeGraphAnalytics(snapshot);
   const insights = computeGraphInsights(snapshot);
 
   if (getRunOptions().json) {
@@ -96,6 +90,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
             flat: g.flat,
             namespace: g.namespace,
           })),
+          analytics,
           insights,
         },
       },
@@ -109,7 +104,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
     cache,
     targetGroups,
     topModules: top,
-    namespaces,
+    analytics,
     verbose: options.verbose,
     listView: options,
     insights,
@@ -123,6 +118,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
       counts: {
         edges: snapshot.edges.length,
         symbols: snapshot.symbols.length,
+        namespaces: snapshot.namespaces.length,
       },
     },
   });

@@ -10,85 +10,48 @@
 
 ## Focus now — Phase C (Graph 2.0)
 
-**Doc:** [`graph-2.md`](./graph-2.md)
+**Doc:** [`graph-2.md`](./graph-2.md) · **Command:** `packages/core/src/commands/graph.ts`
 
-Phase B (Timeline 2.0) is complete — B1–B5 shipped. Series metrics live in the default Summary block.
-
----
-
-## Phase B — Timeline 2.0 (complete)
-
-**Doc:** [`timeline-2.md`](./timeline-2.md) · **Command:** `packages/core/src/commands/timeline.ts` · **Ranges:** `packages/core/src/time/ranges.ts`
-
-**v1 already shipped:** time windows (`@4w`, `@3m`, ISO dates), flat Δ table, insights (P17), warm log (P20).
+Timeline 2.0 shipped — [`../shipped/timeline.md`](../shipped/timeline.md).
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
-| 1 | **B1** — Ref ranges | **Shipped** | `timeline v1.0.0..HEAD` / tag..tag — same grammar as `diff` |
-| 2 | **B2** — Release markers | **Shipped** | Dim `── v1.1.0 ──` rows when commit matches version tag |
-| 3 | **B3** — Per-step metadata | **Shipped** | `diffSnapshots` step meta; `-v` shorthand; JSON `rows[].step` |
-| 4 | **B4** — Summary block | **Shipped** | API growth, largest expansion/reduction, most active period, release jump |
-| 5 | **B5** — Cache insights | **Shipped** | Folded into default `data.summary` / Summary block (no flag) |
+| 1 | **C2** — Graph analytics | **Shipped** | `graph/analytics.ts`; Summary block; JSON `data.analytics` |
+| 2 | **C1** — Namespace-first view | **Shipped** | Namespaces first, sorted by edge count; composition lines |
+| **→ 3** | **C3** — Graph filters | **Next PR** | `--namespace`, `--module`, `--category`, `--subpath` |
+| 4 | **C4** — Graph modes | Brainstorm | `--view`, JSON graph export, Mermaid (deferred) |
 
-**B1 exit (shipped):**
+**C2 exit (shipped):**
 
-- [x] `parseTimelineRange` accepts ref ranges (`..`) via `splitRangeToken` / `gitRevParse`
-- [x] Single ref `timeline v1.0.0` → commits from tag to HEAD (symmetric to `diff`)
-- [x] Time tokens (`@4w`, ISO week, date range) unchanged
-- [x] `listBarrelCommitsByRef` for `git log left..right -- <barrelPath>`
-- [x] Human + `--json` output; help + [`commands.md`](./commands.md) updated
-- [x] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
+- [x] `computeGraphAnalytics` + `namespaceComposition` in `graph/analytics.ts`
+- [x] Human Summary block; JSON `data.analytics`
+- [x] Tests: `graphAnalytics.test.ts`
 
-**B2 exit (shipped):**
+**C1 exit (shipped):**
 
-- [x] `indexVersionTagsByCommit()` maps `git.tagPattern` tags to commit SHAs
-- [x] Dim `── v1.0.0 ──` marker row below tagged barrel commits (default: highest tag; `-v`: all tags)
-- [x] JSON `data.rows[].tags` on timeline rows
-- [x] Tests: `timelineReleaseMarkers.test.ts`
+- [x] Namespaces section first (sorted by edge count)
+- [x] Per-namespace composition line (tier + category mix)
+- [x] Meta includes `namespaces` count
 
-**B3 exit (shipped):**
-
-- [x] Light timeline snapshots include flat symbol names (cache auto-rebuild when stale)
-- [x] `computeTimelineStepMeta(newer, older)` — added/removed, namespace/subpath/tier deltas
-- [x] JSON `data.rows[].step`; human `-v` shorthand (`+2 −1 ns +1`)
-- [x] Tests: `timelineStepMeta.test.ts`
-
-**B4 exit (shipped):**
-
-- [x] `computeTimelineSummary(rows, range)` — API growth, step peaks, 7d active window, release jump
-- [x] Human `Summary` block (padLabel rows) after commit table; JSON `data.summary`
-- [x] Tests: `timelineSummary.test.ts`
-
-**B5 exit (shipped — folded into Summary, no flag):**
-
-- [x] Symbol export churn, namespace net, tier movement from `rows[].step`
-- [x] Stable ratio, category shift, largest module shift from cached rollups
-- [x] Cache coverage counts (`hit` / `refresh` / `miss`) on warmed snapshots
-
-**Phase B complete when:** B1–B5 done.
-
-Check [`../shipped/README.md`](../shipped/README.md) before re-implementing listing, help, cache, or insights.
+Check [`../shipped/README.md`](../shipped/README.md) before re-implementing graph layout or insights.
 
 ---
 
-## Program backlog (after Phase B)
-
-Work top-to-bottom once Phase B rows above are done.
+## Program backlog (after Phase C)
 
 | # | Slice | Goal | Doc |
 |---|-------|------|-----|
-| 1 | Phase **C** — Graph 2.0 | Namespace-first graph, analytics, filters | [`graph-2.md`](./graph-2.md) |
-| 2 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
-| 3 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
-| 4 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
-| 5 | **Severity** | Policy `severity` rule, graded `issues[]`, preview + `-ns` on triggers | [`severity.md`](./severity.md) |
-| 6 | **Suggest** | Suggestion engine, full fixes, `-k` / `-d` filters | [`suggest.md`](./suggest.md) |
-| 7 | **Fix** | Apply fixes (`fix tags`, `fix config`); hard subcmds postponed | [`fix.md`](./fix.md) |
-| 8 | **Config** | `config show` / `export` / `convert`, parse layer, JSON load | [`config.md`](./config.md) |
-| 9 | **Issues** | `issues/` registry, doc links, `issues[]` parity | [`issues.md`](./issues.md) |
-| 10 | **Multibarrel** | Multi-entry API surface, deep scans, workspace | [`multibarrel.md`](./multibarrel.md) |
+| 1 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
+| 2 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
+| 3 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
+| 4 | **Severity** | Policy `severity` rule, graded `issues[]` | [`severity.md`](./severity.md) |
+| 5 | **Suggest** | Suggestion engine, full fixes, filters | [`suggest.md`](./suggest.md) |
+| 6 | **Fix** | `fix tags`, `fix config` | [`fix.md`](./fix.md) |
+| 7 | **Config** | `config show` / `export` / `convert` | [`config.md`](./config.md) |
+| 8 | **Issues** | `issues/` registry, doc links | [`issues.md`](./issues.md) |
+| 9 | **Multibarrel** | Multi-entry API surface, workspace | [`multibarrel.md`](./multibarrel.md) |
 
-**One slice per PR** — focus Phase C before starting D.
+**One slice per PR** — finish C3 before starting D.
 
 ---
 
@@ -96,22 +59,22 @@ Work top-to-bottom once Phase B rows above are done.
 
 | Slice | Why deferred |
 |-------|----------------|
-| Auto-fix PR bot | Needs stable `fix tags` / `fix config` — blocked on [`fix.md`](./fix.md) |
-| `fix subpath` / barrel moves | Dedicated engine + parser; postponed in [`fix.md`](./fix.md) until upstream stable |
-| JSON config (`expgov.config.json`) | [`config.md`](./config.md) — export before load; TS stays primary |
-| Remote / shared cache | Local `.expgov/cache` only — see [`../systems/cache.md`](../systems/cache.md) |
-| Source profiles (H-src) | Barrel formats only — [`sourceProfiles.md`](./sourceProfiles.md) |
-| Multibarrel / workspace | [`multibarrel.md`](./multibarrel.md) — MB4 after MB1–MB3 |
-| SDK monorepo example (I2) | I1 + I3 shipped — see [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) |
+| Auto-fix PR bot | Blocked on [`fix.md`](./fix.md) |
+| `fix subpath` / barrel moves | Postponed in [`fix.md`](./fix.md) |
+| JSON config | [`config.md`](./config.md) — TS stays primary |
+| Remote / shared cache | [`../systems/cache.md`](../systems/cache.md) |
+| Source profiles (H-src) | [`sourceProfiles.md`](./sourceProfiles.md) |
+| Multibarrel / workspace | [`multibarrel.md`](./multibarrel.md) — MB4 |
+| SDK monorepo example (I2) | [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) |
 
 ---
 
 ## Guiding rules
 
-- **Config is TypeScript first:** `expgov.config.ts` via jiti — JSON load planned ([`config.md`](./config.md)).
+- **Config is TypeScript first:** `expgov.config.ts` via jiti.
 - **Core purity:** `packages/core` never imports CLI, prompts, or chalk.
 - **CLI is thin:** Commander host, banners, help colorization, `init` prompts only.
-- **Tier sources:** `@sdkTier` JSDoc + nested config buckets — see [`systems/tiers.md`](../systems/tiers.md).
+- **Tier sources:** `@sdkTier` JSDoc + nested config buckets — [`systems/tiers.md`](../systems/tiers.md).
 
 ---
 
@@ -120,6 +83,7 @@ Work top-to-bottom once Phase B rows above are done.
 | Need | Doc |
 |------|-----|
 | What shipped, when | [`../shipped/README.md`](../shipped/README.md) |
+| Timeline (Phase B) | [`../shipped/timeline.md`](../shipped/timeline.md) |
 | Command contracts | [`commands.md`](./commands.md) |
 | Tiers, cache, CLI, config | [`../systems/`](../systems/README.md) |
 | Agent layout + import rules | [`agents/architecture.md`](../agents/architecture.md) |

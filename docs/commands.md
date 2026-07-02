@@ -212,12 +212,16 @@ JSON: `data.rows[].tags` lists version tags on each commit. `data.rows[].step` h
 
 ## `graph [ref]`
 
-Re-export governance map — target subpath groups, root namespaces, top source modules.
+Export surface graph — **root namespaces first** (sorted by edge count), re-export targets, published subpaths, top source modules.
 
 ```bash
 expgov graph
 expgov graph HEAD -v
 ```
+
+Human output: meta → namespaces (with tier/category composition) → re-export targets → published subpaths → top modules → **Summary** (edge density, hottest module, fan-in) → insights.
+
+JSON: `data.analytics` includes namespace composition, edge density, hottest module, and fan-in modules; `data.insights` unchanged.
 
 ---
 

@@ -137,12 +137,6 @@ Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14).
 
 ---
 
-## B1–B5 — Timeline 2.0 slices (shipped)
+## B1–B5 — Timeline 2.0 (shipped)
 
-Receipts: [`git-commands.md`](./git-commands.md) (B1–B5). Plan: [`phases/timeline-2.md`](../phases/timeline-2.md).
-
-- [x] **B1** — git ref ranges on `timeline` (`495f6ec`)
-- [x] **B2** — release marker rows (`── v1.0.0 ──`)
-- [x] **B3** — per-step metadata (`rows[].step`, `-v` shorthand)
-- [x] **B4** — executive summary block (`computeTimelineSummary`, `data.summary`)
-- [x] **B5** — series metrics in default Summary (churn, tier/namespace drift, cache coverage)
+Full receipts: [`timeline.md`](./timeline.md) · command index: [`git-commands.md`](./git-commands.md) (B1–B5 bullets).

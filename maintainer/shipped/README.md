@@ -58,7 +58,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 |-------|--------|-----|
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
 | Inventory & cache | P0a, P0b, P4, P16 | [`inventory-cache.md`](./inventory-cache.md) |
-| Git & commands | P0c, P0d, P4a, P5, P8 | [`git-commands.md`](./git-commands.md) |
+| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3 | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) |
@@ -113,6 +113,7 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | Worktree `files.json` gate | P16 | `cache/store/worktreeTrack.ts`, `worktreeFiles.ts` |
 | Command insights (`data.insights`) | P17 | `insights/`, `logger/reports/insights.ts` |
 | Timeline warm log | P20 | `timeline/warmer.ts`, `logger/reports/timeline/` |
+| Timeline 2.0 (B1–B5) | B1–B5 | [`timeline.md`](./timeline.md) |
 | Timeline release markers | B2 | `git/versionTags.ts`, `logger/reports/timeline/markers.ts` |
 | Timeline step metadata | B3 | `timeline/stepMeta.ts`, light snapshot symbols |
 | `expgov version` | P8 | `commands/version.ts` |

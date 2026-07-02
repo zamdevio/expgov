@@ -2,6 +2,8 @@
 
 Ref resolution, wired governance verbs, and auxiliary commands.
 
+**Timeline 2.0 detail:** [`timeline.md`](./timeline.md) (B1–B5 receipts, pipeline, code map).
+
 ---
 
 ## P0c — git & refs (shipped) · `a78a6fe`

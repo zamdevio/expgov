@@ -1,6 +1,6 @@
 # Phase C — Graph 2.0
 
-**Status:** Planning only.
+**Status:** In progress — **C3 next** (filters). C1–C2 shipped in codebase.
 
 **Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Insights shipped [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17
 
