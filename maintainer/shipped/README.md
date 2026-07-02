@@ -45,6 +45,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **B2** — release markers | Dim `── v1.0.0 ──` rows; JSON `rows[].tags` |
 | 2026-W26 | **B3** — timeline step meta | `rows[].step` via `diffSnapshots`; `-v` shorthand |
 | 2026-W27 | **B4** — timeline summary | `computeTimelineSummary`; human `Summary` block; JSON `data.summary` |
+| 2026-W27 | **B5** — timeline series metrics | Symbol churn, tier/namespace drift, cache coverage in default Summary |
 | 2026-W26 | **P21** — listing policy (tiers) | Custom tier rollup rows + diff violations/deltas; suggest/doctor `-T/-F` (`c5a5342`) |
 | 2026-W26 | **P22** — meta + range help | `formatMetaEndpoint`; Commander `Range formats:`; CLI `types/` (`ab8cb85`) |
 | 2026-W26 | **P23** — tier policy engine | `tiers.policies` registry; composable `rootFlat` rules (`31d8ded`) |

@@ -12,7 +12,7 @@
 
 **Doc:** [`graph-2.md`](./graph-2.md)
 
-Phase B (Timeline 2.0) is complete — B1–B4 shipped. Optional B5 (`--cache-insights`) deferred; see [`timeline-2.md`](./timeline-2.md).
+Phase B (Timeline 2.0) is complete — B1–B5 shipped. Series metrics live in the default Summary block.
 
 ---
 
@@ -28,7 +28,7 @@ Phase B (Timeline 2.0) is complete — B1–B4 shipped. Optional B5 (`--cache-in
 | 2 | **B2** — Release markers | **Shipped** | Dim `── v1.1.0 ──` rows when commit matches version tag |
 | 3 | **B3** — Per-step metadata | **Shipped** | `diffSnapshots` step meta; `-v` shorthand; JSON `rows[].step` |
 | 4 | **B4** — Summary block | **Shipped** | API growth, largest expansion/reduction, most active period, release jump |
-| 5 | **B5** — Cache insights | Optional | Cache-derived series metrics or `--cache-insights` flag |
+| 5 | **B5** — Cache insights | **Shipped** | Folded into default `data.summary` / Summary block (no flag) |
 
 **B1 exit (shipped):**
 
@@ -59,7 +59,13 @@ Phase B (Timeline 2.0) is complete — B1–B4 shipped. Optional B5 (`--cache-in
 - [x] Human `Summary` block (padLabel rows) after commit table; JSON `data.summary`
 - [x] Tests: `timelineSummary.test.ts`
 
-**Phase B complete when:** B1–B4 done (B5 optional / defer with reason in `timeline-2.md`).
+**B5 exit (shipped — folded into Summary, no flag):**
+
+- [x] Symbol export churn, namespace net, tier movement from `rows[].step`
+- [x] Stable ratio, category shift, largest module shift from cached rollups
+- [x] Cache coverage counts (`hit` / `refresh` / `miss`) on warmed snapshots
+
+**Phase B complete when:** B1–B5 done.
 
 Check [`../shipped/README.md`](../shipped/README.md) before re-implementing listing, help, cache, or insights.
 

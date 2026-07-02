@@ -1,5 +1,5 @@
 import { ExportError } from '../errors/index.js';
-import { getSnapshot, trendRollupFromSnapshot } from '../cache/index.js';
+import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
 import {
   formatGitRunStats,
@@ -19,6 +19,7 @@ import { limitList, resolveListLimit } from '../shared/listing.js';
 import type { TimelineCliOptions } from '../types/commands/cli.js';
 import type { TimelineRow } from '../types/timeline/row.js';
 import { computeTimelineStepMeta } from '../timeline/stepMeta.js';
+import { timelineRollupFromSnapshot } from '../timeline/rollup.js';
 import { computeTimelineSummary } from '../timeline/summary.js';
 import { TimelineWarmer } from '../timeline/warmer.js';
 
@@ -71,7 +72,7 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
           sha: commit.sha,
           subject: commit.subject,
           cache,
-          rollup: trendRollupFromSnapshot(snapshot),
+          rollup: timelineRollupFromSnapshot(snapshot),
           delta: null,
           step: null,
           tags: versionTagsForCommit(commit.sha, tagIndex),

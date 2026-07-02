@@ -4,6 +4,10 @@ import type { TimelineStepMeta } from './step.js';
 export interface TimelineRowRollup {
   rootFlat: number;
   stable: number;
+  namespace: number;
+  advanced: number;
+  internal: number;
+  byCategory: Record<string, number>;
 }
 
 export interface TimelineRow {

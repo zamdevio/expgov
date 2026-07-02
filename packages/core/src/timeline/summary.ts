@@ -2,10 +2,17 @@ import type { TimelineRange } from '../types/time/range.js';
 import type { TimelineRow } from '../types/timeline/row.js';
 import type {
   TimelineActivePeriod,
+  TimelineCacheCoverage,
+  TimelineCategoryShift,
+  TimelineExportChurn,
+  TimelineModuleShift,
   TimelineReleaseJump,
+  TimelineStableRatio,
   TimelineStepPeak,
   TimelineSummary,
+  TimelineTierMovement,
 } from '../types/timeline/summary.js';
+import type { TimelineStepTierDelta } from '../types/timeline/step.js';
 import { TIMELINE_ACTIVE_WINDOW_DAYS } from '../shared/constants/timeline.js';
 
 function primaryTag(tags: readonly string[]): string | undefined {
@@ -116,6 +123,104 @@ function largestReleaseJump(rows: TimelineRow[]): TimelineReleaseJump | undefine
   return best;
 }
 
+function addTierDelta(target: TimelineTierMovement, delta: TimelineStepTierDelta): void {
+  if (delta.stable) target.stable = (target.stable ?? 0) + delta.stable;
+  if (delta.advanced) target.advanced = (target.advanced ?? 0) + delta.advanced;
+  if (delta.internal) target.internal = (target.internal ?? 0) + delta.internal;
+  if (delta.unclassified) target.unclassified = (target.unclassified ?? 0) + delta.unclassified;
+}
+
+function hasTierMovement(movement: TimelineTierMovement): boolean {
+  return Boolean(
+    movement.stable || movement.advanced || movement.internal || movement.unclassified,
+  );
+}
+
+function aggregateStepSeries(rows: TimelineRow[]): {
+  exportChurn?: TimelineExportChurn;
+  namespaceNet: number;
+  tierMovement: TimelineTierMovement;
+  largestModuleShift?: TimelineModuleShift;
+  cacheCoverage: TimelineCacheCoverage;
+} {
+  let added = 0;
+  let removed = 0;
+  let namespaceNet = 0;
+  const tierMovement: TimelineTierMovement = {};
+  let largestModuleShift: TimelineModuleShift | undefined;
+  const cacheCoverage: TimelineCacheCoverage = {
+    hits: 0,
+    refreshed: 0,
+    misses: 0,
+    total: rows.length,
+  };
+
+  for (const row of rows) {
+    if (row.cache === 'hit') cacheCoverage.hits += 1;
+    else if (row.cache === 'refresh') cacheCoverage.refreshed += 1;
+    else if (row.cache === 'miss') cacheCoverage.misses += 1;
+
+    if (!row.step) continue;
+    added += row.step.added;
+    removed += row.step.removed;
+    namespaceNet += row.step.namespaceDelta;
+    addTierDelta(tierMovement, row.step.tierDelta);
+
+    const moduleChange = row.step.largestModuleChange;
+    if (moduleChange) {
+      const candidate: TimelineModuleShift = {
+        module: moduleChange.module,
+        delta: moduleChange.delta,
+        sha: row.sha,
+        date: row.date,
+      };
+      if (
+        !largestModuleShift ||
+        Math.abs(moduleChange.delta) > Math.abs(largestModuleShift.delta)
+      ) {
+        largestModuleShift = candidate;
+      }
+    }
+  }
+
+  const exportChurn =
+    added > 0 || removed > 0 ? { added, removed, total: added + removed } : undefined;
+
+  return { exportChurn, namespaceNet, tierMovement, largestModuleShift, cacheCoverage };
+}
+
+function stableRatio(rollup: TimelineRow['rollup']): number | undefined {
+  if (rollup.rootFlat <= 0) return undefined;
+  return Math.round((rollup.stable / rollup.rootFlat) * 1000) / 10;
+}
+
+function topCategory(byCategory: Record<string, number>): string | undefined {
+  let best: { category: string; count: number } | undefined;
+  for (const [category, count] of Object.entries(byCategory)) {
+    if (!count) continue;
+    if (!best || count > best.count) best = { category, count };
+  }
+  return best?.category;
+}
+
+function categoryShift(rows: TimelineRow[]): TimelineCategoryShift | undefined {
+  if (rows.length < 2) return undefined;
+  const newest = rows[0]!;
+  const oldest = rows[rows.length - 1]!;
+  const from = topCategory(oldest.rollup.byCategory);
+  const to = topCategory(newest.rollup.byCategory);
+  if (!from || !to || from === to) return undefined;
+  return { from, to };
+}
+
+function stableRatioShift(rows: TimelineRow[]): TimelineStableRatio | undefined {
+  if (rows.length < 2) return undefined;
+  const first = stableRatio(rows[rows.length - 1]!.rollup);
+  const last = stableRatio(rows[0]!.rollup);
+  if (first === undefined || last === undefined || first === last) return undefined;
+  return { first, last };
+}
+
 export function computeTimelineSummary(
   rows: TimelineRow[],
   range: TimelineRange,
@@ -134,13 +239,23 @@ export function computeTimelineSummary(
   const { largestExpansion, largestReduction, avgStepChange } = scanStepPeaks(rows);
   const mostActivePeriod = mostActiveWindow(rows);
   const largestRelease = largestReleaseJump(rows);
+  const series = aggregateStepSeries(rows);
+  const ratio = stableRatioShift(rows);
+  const shiftedCategory = categoryShift(rows);
 
   const hasStory =
     apiGrowth.delta !== 0 ||
     largestExpansion ||
     largestReduction ||
     mostActivePeriod ||
-    largestRelease;
+    largestRelease ||
+    series.exportChurn ||
+    series.namespaceNet !== 0 ||
+    hasTierMovement(series.tierMovement) ||
+    ratio ||
+    shiftedCategory ||
+    series.largestModuleShift ||
+    series.cacheCoverage.hits < series.cacheCoverage.total;
 
   if (!hasStory && avgStepChange === undefined) return null;
 
@@ -151,5 +266,12 @@ export function computeTimelineSummary(
     avgStepChange,
     mostActivePeriod,
     largestRelease,
+    exportChurn: series.exportChurn,
+    namespaceNet: series.namespaceNet !== 0 ? series.namespaceNet : undefined,
+    tierMovement: hasTierMovement(series.tierMovement) ? series.tierMovement : undefined,
+    stableRatio: ratio,
+    largestModuleShift: series.largestModuleShift,
+    categoryShift: shiftedCategory,
+    cacheCoverage: series.cacheCoverage,
   };
 }

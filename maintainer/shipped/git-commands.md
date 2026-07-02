@@ -14,6 +14,7 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 - [x] **B2** — release markers — `indexVersionTagsByCommit`; dim `── v1.0.0 ──` below tagged commits; JSON `rows[].tags`
 - [x] **B3** — per-step metadata — `computeTimelineStepMeta`; JSON `rows[].step`; `-v` shorthand
 - [x] **B4** — summary block — `computeTimelineSummary`; human `Summary` section; JSON `data.summary`
+- [x] **B5** — series metrics — symbol churn, tier/namespace drift, cache coverage in default Summary (no flag)
 - [x] `TimelineWarmer` — per-commit cache warm; report-layer warm log below meta (`timeline/warmer.ts`, `logger/reports/timeline/warm.ts`)
 - [x] Git run stats for verbose inventory/timeline
 

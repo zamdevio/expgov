@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { computeTimelineSummary } from '../../timeline/summary.js';
 import type { TimelineRefRange, TimelineTimeRange } from '../../types/time/range.js';
 import type { TimelineRow } from '../../types/timeline/row.js';
+import type { TimelineStepMeta } from '../../types/timeline/step.js';
 
 const timeRange: TimelineTimeRange = {
   kind: 'time',
@@ -22,7 +23,7 @@ const refRange: TimelineRefRange = {
 
 function row(
   partial: Pick<TimelineRow, 'date' | 'sha' | 'rollup'> &
-    Partial<Pick<TimelineRow, 'delta' | 'tags'>>,
+    Partial<Pick<TimelineRow, 'delta' | 'tags' | 'step' | 'cache'>>,
 ): TimelineRow {
   return {
     subject: 'feat: test',
@@ -34,13 +35,21 @@ function row(
   };
 }
 
+const emptyStep = (): TimelineStepMeta => ({
+  added: 0,
+  removed: 0,
+  namespaceDelta: 0,
+  subpathDelta: 0,
+  tierDelta: {},
+});
+
 describe('computeTimelineSummary', () => {
   it('aggregates API growth, step peaks, active window, and release jump', () => {
     const rows: TimelineRow[] = [
-      row({ date: '2026-06-14', sha: 'd60df9e1111', rollup: { rootFlat: 14, stable: 12 }, delta: null, tags: ['v1.1.0'] }),
-      row({ date: '2026-06-12', sha: 'abc12345678', rollup: { rootFlat: 12, stable: 10 }, delta: 2 }),
-      row({ date: '2026-06-10', sha: 'def98765432', rollup: { rootFlat: 8, stable: 7 }, delta: -4 }),
-      row({ date: '2026-06-08', sha: 'fedcba98765', rollup: { rootFlat: 10, stable: 8 }, delta: 2, tags: ['v1.0.0'] }),
+      row({ date: '2026-06-14', sha: 'd60df9e1111', rollup: { rootFlat: 14, stable: 12, namespace: 2, advanced: 1, internal: 1, byCategory: { command: 8 } }, delta: null, tags: ['v1.1.0'] }),
+      row({ date: '2026-06-12', sha: 'abc12345678', rollup: { rootFlat: 12, stable: 10, namespace: 2, advanced: 1, internal: 1, byCategory: { command: 7 } }, delta: 2 }),
+      row({ date: '2026-06-10', sha: 'def98765432', rollup: { rootFlat: 8, stable: 7, namespace: 1, advanced: 0, internal: 1, byCategory: { util: 5 } }, delta: -4 }),
+      row({ date: '2026-06-08', sha: 'fedcba98765', rollup: { rootFlat: 10, stable: 8, namespace: 1, advanced: 0, internal: 2, byCategory: { util: 6 } }, delta: 2, tags: ['v1.0.0'] }),
     ];
 
     const summary = computeTimelineSummary(rows, refRange);
@@ -66,12 +75,51 @@ describe('computeTimelineSummary', () => {
       toTag: 'v1.1.0',
       delta: 4,
     });
+    expect(summary?.categoryShift).toEqual({ from: 'util', to: 'command' });
+    expect(summary?.cacheCoverage).toEqual({ hits: 4, refreshed: 0, misses: 0, total: 4 });
+  });
+
+  it('aggregates symbol churn, namespace net, and tier movement from step meta', () => {
+    const rows: TimelineRow[] = [
+      row({
+        date: '2026-06-14',
+        sha: '111',
+        rollup: { rootFlat: 5, stable: 4, namespace: 2, advanced: 0, internal: 0, byCategory: {} },
+        delta: null,
+        step: { ...emptyStep(), added: 2, removed: 1, namespaceDelta: 1, tierDelta: { stable: 2 } },
+      }),
+      row({
+        date: '2026-06-01',
+        sha: '222',
+        rollup: { rootFlat: 3, stable: 2, namespace: 1, advanced: 0, internal: 0, byCategory: {} },
+        delta: 2,
+        cache: 'refresh',
+        step: {
+          ...emptyStep(),
+          added: 1,
+          removed: 0,
+          largestModuleChange: { module: './runtime', delta: 3 },
+        },
+      }),
+    ];
+
+    const summary = computeTimelineSummary(rows, timeRange);
+    expect(summary?.exportChurn).toEqual({ added: 3, removed: 1, total: 4 });
+    expect(summary?.namespaceNet).toBe(1);
+    expect(summary?.tierMovement).toEqual({ stable: 2 });
+    expect(summary?.largestModuleShift).toEqual({
+      module: './runtime',
+      delta: 3,
+      sha: '222',
+      date: '2026-06-01',
+    });
+    expect(summary?.cacheCoverage).toEqual({ hits: 1, refreshed: 1, misses: 0, total: 2 });
   });
 
   it('uses range endpoints for time windows', () => {
     const rows: TimelineRow[] = [
-      row({ date: '2026-06-14', sha: '111', rollup: { rootFlat: 5, stable: 4 }, delta: null }),
-      row({ date: '2026-06-01', sha: '222', rollup: { rootFlat: 3, stable: 2 }, delta: 2 }),
+      row({ date: '2026-06-14', sha: '111', rollup: { rootFlat: 5, stable: 4, namespace: 0, advanced: 0, internal: 0, byCategory: {} }, delta: null }),
+      row({ date: '2026-06-01', sha: '222', rollup: { rootFlat: 3, stable: 2, namespace: 0, advanced: 0, internal: 0, byCategory: {} }, delta: 2 }),
     ];
 
     const summary = computeTimelineSummary(rows, timeRange);
@@ -80,12 +128,13 @@ describe('computeTimelineSummary', () => {
       fromLabel: '2026-05-15',
       toLabel: '2026-06-14',
     });
+    expect(summary?.stableRatio).toEqual({ first: 66.7, last: 80 });
   });
 
   it('returns null with fewer than two commits', () => {
     expect(
       computeTimelineSummary(
-        [row({ date: '2026-06-01', sha: '111', rollup: { rootFlat: 1, stable: 1 } })],
+        [row({ date: '2026-06-01', sha: '111', rollup: { rootFlat: 1, stable: 1, namespace: 0, advanced: 0, internal: 0, byCategory: {} } })],
         timeRange,
       ),
     ).toBeNull();

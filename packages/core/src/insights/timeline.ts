@@ -82,21 +82,6 @@ export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineIns
     });
   }
 
-  const stableFirst =
-    oldest.rollup.rootFlat > 0
-      ? Math.round((oldest.rollup.stable / oldest.rollup.rootFlat) * 1000) / 10
-      : undefined;
-  const stableLast =
-    newest.rollup.rootFlat > 0
-      ? Math.round((newest.rollup.stable / newest.rollup.rootFlat) * 1000) / 10
-      : undefined;
-  if (stableFirst !== undefined && stableLast !== undefined && stableFirst !== stableLast) {
-    lines.push({
-      key: 'stable-ratio',
-      text: `stable %: ${stableFirst}% → ${stableLast}%`,
-    });
-  }
-
   if (!lines.length) return null;
 
   return trimInsightLines({
@@ -106,7 +91,5 @@ export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineIns
     netFlat: netFlat || undefined,
     largestStep,
     busiestWeek: busy,
-    stableRatioFirst: stableFirst,
-    stableRatioLast: stableLast,
   });
 }
