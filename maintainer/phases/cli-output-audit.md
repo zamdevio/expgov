@@ -103,28 +103,31 @@ banner (CLI) → meta rows → report body → verbose sections → insights (Ph
 
 ### `timeline`
 
-| Item | Finding | Recommendation |
-|------|---------|----------------|
-| Δ legend | Long dim line before table | Good — move to `expgov help timeline` example block |
-| Column alignment | date/sha/flat/Δ/subject | SHA width 7 vs 9 header — align |
+| Item | Finding | Status / recommendation |
+|------|---------|-------------------------|
+| Δ legend | Long dim line before table | **Open** — move to `expgov help timeline` example block |
+| Column alignment | date/sha/flat/Δ/subject | **Open** — SHA width 7 vs 9 header |
 | Subject truncation | 48 chars | Phase A: `--full` subjects |
-| Warm progress | stderr `\r` spinner | Route through emitter; don’t mix with meta |
-| `--limit` | Not `--top` | Alias per Phase A |
-| Missing releases | No tag markers | Phase B |
-| Row density | High | Optional `--no-delta` for narrow terminals (future) |
+| Warm progress | stderr `\r` spinner | **Shipped** P20 — `printTimelineWarmSection` below meta |
+| `--limit` | Not `--top` | **Shipped** Phase A — `-T` / `-F` |
+| Release markers | Version tag rows | **Shipped** B2 — `── v1.0.0 ──`; JSON `rows[].tags` |
+| Summary block | Executive metrics | **Shipped** B4–B5 — `data.summary` |
+| Row density | High | **Open** — optional `--no-delta` for narrow terminals |
 
 ---
 
 ### `graph`
 
-| Item | Finding | Recommendation |
-|------|---------|----------------|
-| Section order | subpath → subpaths rollup → namespaces → modules | Phase C: namespaces first |
-| Limits | 12 / 15 / 8 inconsistent | Phase A: all `--top 10` |
-| Namespace lines | `·` separators | Match inventory namespace verbose format |
-| Module examples | verbose only, 5 symbols | Truncate with “+N symbols” |
-| Title | “re-export map” | Rename subtitle: “export surface graph” |
-| Meta | Missing namespace count | Add `namespaces: N` |
+| Item | Finding | Status / recommendation |
+|------|---------|-------------------------|
+| Section order | subpath before namespaces | **Shipped** C1 — namespaces first |
+| Limits | 12 / 15 / 8 inconsistent | **Shipped** Phase A — default `--top 10` |
+| Namespace lines | `·` separators + composition | **Shipped** C1 — tier/category mix line |
+| Module examples | verbose only, 5 symbols | **Open** — truncate with “+N symbols” |
+| Title | “re-export map” | **Open** — rename subtitle: “export surface graph” |
+| Meta | namespace count | **Shipped** C1 — `namespaces: N` in meta |
+| Analytics summary | Scalar counts only | **Shipped** C2 — Summary block + `data.analytics` |
+| Filters | No scoped views | **Next** C3 — `--namespace`, `--module`, `--category`, `--subpath` |
 
 ---
 
@@ -228,15 +231,17 @@ Document layer matrix in `systems/cli.md`.
 
 This audit does not ship code. Track fixes as:
 
-| Audit area | Owning phase |
-|------------|--------------|
-| Listing limits | Phase A |
-| Provenance / terminology | Phase A |
-| Namespace graph order | Phase C |
-| Timeline/releases | Phase B |
-| Insights | Phase E |
-| Trace/stderr purity | api-chain.md |
-| Glossary | User docs sprint |
+| Audit area | Owning phase | Status |
+|------------|--------------|--------|
+| Listing limits | Phase A | Shipped |
+| Provenance / terminology | Phase A | Partial |
+| Namespace graph order | Phase C | C1 shipped — [`shipped/graph.md`](../shipped/graph.md) |
+| Graph analytics summary | Phase C | C2 shipped |
+| Graph filters | Phase C | C3 next |
+| Timeline warm / releases / summary | Phase B | Shipped — [`shipped/timeline.md`](../shipped/timeline.md) |
+| Insights | Phase E | Shipped |
+| Trace/stderr purity | api-chain.md | Open |
+| Glossary | User docs sprint | Open |
 
 ---
 
@@ -267,6 +272,6 @@ Phase F is **documentation of record** — implementation spans A–E and user d
 
 1. Adopt glossary + indent constants (small PR).
 2. Execute Phase A (addresses majority of audit items).
-3. Phase E insights (density without noise).
-4. Phase B/C structural changes.
+3. Phase E insights (density without noise) — **shipped**.
+4. Phase B timeline + Phase C graph structure (C1–C2 **shipped**; C3 filters next).
 5. Golden output tests when output stabilizes.

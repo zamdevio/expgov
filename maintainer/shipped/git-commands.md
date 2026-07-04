@@ -2,7 +2,7 @@
 
 Ref resolution, wired governance verbs, and auxiliary commands.
 
-**Timeline 2.0 detail:** [`timeline.md`](./timeline.md) (B1–B5 receipts, pipeline, code map).
+**Timeline 2.0 (B1–B5):** [`timeline.md`](./timeline.md) · **Graph 2.0 (C1–C2):** [`graph.md`](./graph.md) · active plan: [`phases/graph-2.md`](../phases/graph-2.md).
 
 ---
 
@@ -30,8 +30,8 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 | `diff [range]` | `runExportsDiff` | Added/removed flats, tier violations, summary deltas |
 | `validate` | `runExportsValidate` | tsconfig ↔ npm `exports` parity; unclassified root flats → exit 1 |
 | `trend` | `runExportsTrend` | Flat/stable/adv/int per tag; Δ footer between first/last in window |
-| `timeline [range]` | `runExportsTimeline` | Barrel-only git log; flat count + Δ per commit |
-| `graph [ref]` | `runExportsGraph` | Target subpath groups, namespaces, top source modules |
+| `timeline [range]` | `runExportsTimeline` | Barrel git log; ref/time ranges; Summary + step meta (B1–B5) |
+| `graph [ref]` | `runExportsGraph` | Namespace-first graph; analytics Summary; JSON `data.analytics` (C1–C2) |
 | `help [topic]` | `printCliHelp` | Commander help + Examples / Range formats / Related (`commandHelp.ts`) |
 
 - [x] Per-command `-v/--verbose` where applicable

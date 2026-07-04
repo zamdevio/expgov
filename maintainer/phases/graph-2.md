@@ -1,31 +1,34 @@
 # Phase C — Graph 2.0
 
-**Status:** In progress — **C3 next** (filters). C1–C2 shipped in codebase.
+**Status:** In progress — **C3 next** (filters). C1–C2 shipped — receipts: [`../shipped/graph.md`](../shipped/graph.md).
 
-**Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Insights shipped [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17
+**Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Insights: [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17
 
 ---
 
-## Goals
+## Shipped (C1–C2)
 
-1. Reorient the graph around **root namespaces** as primary nodes (not folder scans).
-2. Add **quantitative graph metadata** (size, density, fan-in/out, hottest modules).
-3. Introduce **consistent filters** (`--top`, `--full`, depth, module, category).
-4. Brainstorm **additional graph modes** that reuse `InventorySnapshot.edges[]` and `namespaces[]`.
+| Slice | Receipt |
+|-------|---------|
+| **C2** — Analytics | `graph/analytics.ts`; Summary block; JSON `data.analytics` |
+| **C1** — Namespace-first | Namespaces first, sorted by edge count; composition lines |
+
+---
+
+## Goals (remaining)
+
+1. ~~Reorient the graph around **root namespaces** as primary nodes~~ — **C1 shipped**
+2. ~~Add **quantitative graph metadata** (density, fan-in/out, hottest modules)~~ — **C2 shipped**
+3. Introduce **consistent filters** (`--namespace`, `--module`, `--category`, `--subpath`) — **C3 next**
+4. Brainstorm **additional graph modes** (`--view`, JSON graph export) — **C4 deferred**
 
 ---
 
 ## Rationale
 
-`graph` has outgrown its original “re-export map” description. It already consumes the richest snapshot artifact (`edges[]`, `namespaces[]`, `symbols[]`) but presents a **flat, truncated report**:
+`graph` consumes `edges[]`, `namespaces[]`, and `symbols[]` from a full inventory snapshot. **C1–C2** reordered the report (namespaces first, sorted by edge count) and added a Summary block + `data.analytics`. **C3** adds scoped filters without rebuilding inventory.
 
-- Groups by npm `targetSubpath` (12 rows default).
-- Lists namespaces alphabetically (15 rows).
-- Top modules by edge count (8 default, 20 verbose).
-
-Users treating expgov as an SDK observability tool need **structure**: which namespace owns the surface, which modules are hubs, where coupling is dense. The inventory build already resolves `export * as ns` to `sourceModule` — no filesystem walk required.
-
-Phase C builds on existing architecture: **parse barrel → resolve exports → edges**. Namespace is the governance boundary; subpath is the publish boundary; module is the implementation unit.
+Namespace is the governance boundary; subpath is the publish boundary; module is the implementation unit. No filesystem walks — derive nodes from snapshot only.
 
 ---
 
@@ -55,97 +58,13 @@ Root barrel (packages/core/src/index.ts)
 2. `snapshot.edges[]` — module leaves + edge weights.
 3. `snapshot.symbols[]` — flat exports without namespace (attach to synthetic `"(root flat)"` or target subpath group).
 
-### Shared analytics module
+### Shared analytics module (shipped C2)
 
-Plan `packages/core/src/graph/analytics.ts`:
-
-| Function | Output |
-|----------|--------|
-| `namespaceComposition(snapshot)` | per-ns symbol count, tier mix, categories |
-| `moduleFanout(edges)` | out-degree from barrel/ns to modules |
-| `moduleFanin(edges)` | in-degree (same as fanout for tree; useful if multi-ns → same module) |
-| `edgeDensity(snapshot)` | edges / (modules × namespaces) |
-| `hottestModules(edges, n)` | sorted by edge count |
-| `symbolCategoryMix(symbols)` | category histogram per namespace |
-
-Commands stay thin; `runExportsGraph` composes analytics + `printGraphReport`.
-
-### Modes (CLI shape)
-
-```txt
-expgov graph [ref]              # default: overview (current behavior, enhanced)
-expgov graph namespace [name]   # drill-down (future subcommand or --ns=)
-expgov graph module [path]      # fan-in view for one module
-```
-
-Prefer **flags first** to avoid subcommand proliferation: `--namespace analysis`, `--module packages/core/src/...`.
+`packages/core/src/graph/analytics.ts` — `computeGraphAnalytics`, `namespaceComposition`. See [`../shipped/graph.md`](../shipped/graph.md).
 
 ---
 
-## Implementation strategy
-
-### C1 — Namespace-centric default view
-
-**Motivation:** Namespaces are the intentional SDK surface areas (`export * as analysis`).
-
-**User value:** See SDK composition at a glance.
-
-**Approach:**
-
-1. Reorder report sections:
-   - Meta (ref, cache, edges, symbols)
-   - **Namespaces** (primary) — sorted by **symbol/edge count**, not alpha.
-   - Target subpath groups (secondary governance view).
-   - Top modules (tertiary).
-2. Per namespace row:
-
-   ```txt
-   · analysis          24 symbols → runtime/commands  · @expgov/core/analysis
-     stable 18 · adv 4 · run 12 · type 8
-   ```
-
-3. Reuse `compactCoreSourcePath(ns.sourceModule)` — already in verbose inventory.
-
-**Dependencies:** Phase A listing (`--top 10` default).
-
-**Complexity:** Medium (report restructure, no new parsing).
-
-**Risks:** SDKs without namespaces — fall back to current subpath grouping only.
-
-**Future extensions:** `graph --namespace analysis` expands one row to symbol list.
-
----
-
-### C2 — Rich graph metadata
-
-**Motivation:** Scalar counts (edges, symbols) are insufficient for observability.
-
-**User value:** Identify hotspots and coupling before refactors.
-
-**Metrics to add (default summary block, details in `-v`):
-
-| Metric | Description |
-|--------|-------------|
-| Namespace size | symbols + namespace-mirror edges per `ns.name` |
-| Module size | edge count per `toModule` |
-| Edge density | `edges.length / uniqueModules` |
-| Hottest module | max edge count module |
-| Fan-out | max namespaces pointing at distinct modules (usually 1:1) |
-| Fan-in | modules receiving edges from multiple namespaces |
-| Namespace composition | category + tier histogram per ns |
-| Symbol categories | aggregate `byCategory` under each ns |
-
-**Approach:** Implement in `graph/analytics.ts`; unit-test with dogfood snapshot fixtures.
-
-**Dependencies:** C1 namespace ordering.
-
-**Complexity:** Medium.
-
-**Risks:** Misleading metrics if namespace-mirror edges double-count — document edge `kind` weighting.
-
-**Future extensions:** JSON `data.analytics` object for dashboards.
-
----
+## Remaining slices
 
 ### C3 — Graph filters
 
@@ -227,9 +146,9 @@ Prefer **one flag** `--view <mode>` over many commands when modes share filters.
 
 ## Recommended execution order
 
-1. **C2** Analytics module (testable in isolation).
-2. **C1** Namespace-centric report restructure.
-3. **C3** Filters (namespace, module, category).
-4. **C4** Modes as incremental flags (`--view subpath` default, `--view namespace`).
+1. ~~**C2** Analytics module~~ — shipped
+2. ~~**C1** Namespace-centric report~~ — shipped
+3. **C3** Filters (namespace, module, category, subpath)
+4. **C4** Modes as incremental flags (`--view subpath` default)
 
 Estimated: **2–3 PRs** after Phase A.

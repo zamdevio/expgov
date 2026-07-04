@@ -40,4 +40,4 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 | [`sourceProfiles.md`](./sourceProfiles.md) | H — Source profiles (barrel module formats) |
 | [`test-expansion.md`](./test-expansion.md) | Test coverage backlog |
 
-**Removed after ship:** Phase E (`rich-command-metadata.md`) → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I plan → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Phase B Timeline → [`shipped/timeline.md`](../shipped/timeline.md). Program index (`observability-roadmap.md`) — folded into [`active-phase.md`](./active-phase.md).
+**Removed after ship:** Phase E → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17. Phase I → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Phase B Timeline → [`shipped/timeline.md`](../shipped/timeline.md). Graph C1–C2 → [`shipped/graph.md`](../shipped/graph.md) (partial; delete `graph-2.md` when C complete).

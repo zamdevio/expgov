@@ -225,7 +225,7 @@ git.show       packages/core/src/index.ts · 12ms
 | Phase | Relationship |
 |-------|--------------|
 | Phase A provenance | D4 decision trace content |
-| Phase B timeline | Replace direct stderr in `TimelineWarmer` |
+| Phase B timeline | **Shipped** — warm log via report layer (`TimelineWarmer`, P20); see [`shipped/timeline.md`](../shipped/timeline.md) |
 | Core purity rules | All trace via emitter/trace sink |
 
 ---

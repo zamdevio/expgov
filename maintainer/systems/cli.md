@@ -92,8 +92,8 @@ Module: `packages/core/src/insights/`. Renderer: `logger/reports/insights.ts` (`
 | `validate` | Hot spot / worst subpath on failure; internal/advanced counts on `-v` |
 | `diff` | Module edge delta, tier movement, new advanced, truncated add/remove samples |
 | `trend` | Largest tag-pair jump/drop, stable % shift |
-| `graph` | Densest module, target fan-out, category mix, edge mix |
-| `timeline` | Flat churn totals, net window delta, largest step, busiest week |
+| `graph` | Densest module, fan-out, category mix; Summary: edge density, hottest module (C2) |
+| `timeline` | Flat churn, busiest week (insights); Summary: API growth, symbol churn, cache coverage (B4–B5) |
 
 JSON: additive `data.insights`. Shown under `--quiet`; suppressed under `--silent`. Max 5 lines per command.
 

@@ -10,7 +10,7 @@
 
 ## Focus now — Phase C (Graph 2.0)
 
-**Doc:** [`graph-2.md`](./graph-2.md) · **Command:** `packages/core/src/commands/graph.ts`
+**Doc:** [`graph-2.md`](./graph-2.md) · **Shipped (C1–C2):** [`../shipped/graph.md`](../shipped/graph.md)
 
 Timeline 2.0 shipped — [`../shipped/timeline.md`](../shipped/timeline.md).
 
@@ -33,7 +33,16 @@ Timeline 2.0 shipped — [`../shipped/timeline.md`](../shipped/timeline.md).
 - [x] Per-namespace composition line (tier + category mix)
 - [x] Meta includes `namespaces` count
 
-Check [`../shipped/README.md`](../shipped/README.md) before re-implementing graph layout or insights.
+Check [`../shipped/graph.md`](../shipped/graph.md) before re-implementing C1–C2 layout or analytics.
+
+**C3 exit (target — next PR):**
+
+- [ ] CLI flags: `--namespace`, `--module`, `--category`, `--subpath` on `graph`
+- [ ] Filter snapshot view-model before `computeGraphAnalytics` (no inventory rebuild)
+- [ ] Explicit empty state when filter combo matches nothing
+- [ ] JSON reflects filtered scope; help + [`commands.md`](./commands.md) updated
+- [ ] Tests: `graphFilters.test.ts` (or extend `graphAnalytics.test.ts`)
+- [ ] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
 
 ---
 
@@ -84,6 +93,7 @@ Check [`../shipped/README.md`](../shipped/README.md) before re-implementing grap
 |------|-----|
 | What shipped, when | [`../shipped/README.md`](../shipped/README.md) |
 | Timeline (Phase B) | [`../shipped/timeline.md`](../shipped/timeline.md) |
+| Graph (Phase C partial) | [`../shipped/graph.md`](../shipped/graph.md) |
 | Command contracts | [`commands.md`](./commands.md) |
 | Tiers, cache, CLI, config | [`../systems/`](../systems/README.md) |
 | Agent layout + import rules | [`agents/architecture.md`](../agents/architecture.md) |

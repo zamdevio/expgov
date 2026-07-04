@@ -46,6 +46,8 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **B3** — timeline step meta | `rows[].step` via `diffSnapshots`; `-v` shorthand |
 | 2026-W27 | **B4** — timeline summary | `computeTimelineSummary`; human `Summary` block; JSON `data.summary` |
 | 2026-W27 | **B5** — timeline series metrics | Symbol churn, tier/namespace drift, cache coverage in default Summary |
+| 2026-W27 | **C2** — graph analytics | `computeGraphAnalytics`; Summary block; JSON `data.analytics` (`b7a120b`) |
+| 2026-W27 | **C1** — graph namespace-first | Namespaces sorted by edge count; composition lines; meta `namespaces` |
 | 2026-W26 | **P21** — listing policy (tiers) | Custom tier rollup rows + diff violations/deltas; suggest/doctor `-T/-F` (`c5a5342`) |
 | 2026-W26 | **P22** — meta + range help | `formatMetaEndpoint`; Commander `Range formats:`; CLI `types/` (`ab8cb85`) |
 | 2026-W26 | **P23** — tier policy engine | `tiers.policies` registry; composable `rootFlat` rules (`31d8ded`) |
@@ -58,7 +60,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 |-------|--------|-----|
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
 | Inventory & cache | P0a, P0b, P4, P16 | [`inventory-cache.md`](./inventory-cache.md) |
-| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) |
+| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C2 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3 | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) |
@@ -114,6 +116,7 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | Command insights (`data.insights`) | P17 | `insights/`, `logger/reports/insights.ts` |
 | Timeline warm log | P20 | `timeline/warmer.ts`, `logger/reports/timeline/` |
 | Timeline 2.0 (B1–B5) | B1–B5 | [`timeline.md`](./timeline.md) |
+| Graph 2.0 (C1–C2) | C1–C2 | [`graph.md`](./graph.md) · `graph/analytics.ts` |
 | Timeline release markers | B2 | `git/versionTags.ts`, `logger/reports/timeline/markers.ts` |
 | Timeline step metadata | B3 | `timeline/stepMeta.ts`, light snapshot symbols |
 | `expgov version` | P8 | `commands/version.ts` |
