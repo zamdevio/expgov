@@ -10,7 +10,6 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
       "@example/sdk-demo": ["./src/index.ts"],
       "expgov/core": ["../../dist/core.d.ts", "../../dist/core.js"]
