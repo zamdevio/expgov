@@ -5,7 +5,7 @@ export function emptyTierCounts(): TierCounts {
 }
 
 function mergeCustomTierCounts(into: TierCounts, from: TierCounts): void {
-  for (const [name, count] of Object.entries(from.custom)) {
+  for (const [name, count] of Object.entries(from.custom ?? {})) {
     if (count <= 0) continue;
     into.custom[name] = (into.custom[name] ?? 0) + count;
   }

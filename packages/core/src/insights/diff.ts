@@ -49,7 +49,7 @@ function tierMovementLines(diff: DiffResult): InsightLine[] {
     .filter(([, delta]) => delta !== 0)
     .map(([tier, delta]) => `${tier} ${signedDelta(delta)}`);
 
-  for (const name of new Set([...Object.keys(left.custom), ...Object.keys(right.custom)])) {
+  for (const name of new Set([...Object.keys(left.custom ?? {}), ...Object.keys(right.custom ?? {})])) {
     const delta = (right.custom[name] ?? 0) - (left.custom[name] ?? 0);
     if (delta !== 0) parts.push(`${name} ${signedDelta(delta)}`);
   }

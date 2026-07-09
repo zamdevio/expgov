@@ -10,20 +10,20 @@ import { formatDelta, formatSnapshotMetaEndpoint, logLine, logListTruncation, pa
 import { printInsightsBlock } from './insights.js';
 
 function printCustomTierDeltas(left: TierCounts, right: TierCounts, listLimit: number): void {
-  const names = new Set([...Object.keys(left.custom), ...Object.keys(right.custom)]);
+  const names = new Set([...Object.keys(left.custom ?? {}), ...Object.keys(right.custom ?? {})]);
   const rows = [...names]
     .sort()
     .filter((name) => {
-      const lv = left.custom[name] ?? 0;
-      const rv = right.custom[name] ?? 0;
+      const lv = (left.custom ?? {})[name] ?? 0;
+      const rv = (right.custom ?? {})[name] ?? 0;
       return lv !== 0 || rv !== 0;
     });
   if (!rows.length) return;
 
   const limited = limitList(rows, listLimit);
   for (const name of limited.items) {
-    const lv = left.custom[name] ?? 0;
-    const rv = right.custom[name] ?? 0;
+    const lv = (left.custom ?? {})[name] ?? 0;
+    const rv = (right.custom ?? {})[name] ?? 0;
     logLine(`       ${padLabel(name)} ${formatDelta(lv, rv)}`);
   }
   logListTruncation(limited.hiddenCount);
