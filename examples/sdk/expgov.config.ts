@@ -1,4 +1,4 @@
-import { defineConfig, type ExpgovConfig } from 'expgov/core';
+import { defineConfig, type ExpgovConfig } from '@expgov/cli/core';
 
 /**
  * Consumer-shaped expgov config for `@example/sdk-demo`.

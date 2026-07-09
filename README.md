@@ -33,14 +33,14 @@ Govern TypeScript SDK barrels with a single `expgov.config.ts`. Inventory export
 Requires **Node.js >= 20**.
 
 ```bash
-# project devDependency (recommended — includes expgov/core for config types)
-pnpm add -D expgov
-# or: npm install -D expgov
+# CLI devDependency (binary name is still `expgov`)
+pnpm add -D @expgov/cli
+# or: npm install -D @expgov/cli
 ```
 
 ```bash
 # global CLI (optional)
-pnpm add -g expgov
+pnpm add -g @expgov/cli
 # or: npx expgov --help
 ```
 
@@ -50,7 +50,9 @@ pnpm add -D @expgov/core
 # or: npm install -D @expgov/core
 ```
 
-The **`expgov`** npm package ships a self-contained CLI (`dist/cli.js` — core is compiled in at build time, not a runtime dependency on `@expgov/core`). The same tarball exposes **`expgov/core`** for optional `defineConfig` and `ExpgovConfig` in `expgov.config.ts`. For programmatic governance, use **`@expgov/core`** on npm.
+**npm packages:** [`@expgov/cli`](https://www.npmjs.com/package/@expgov/cli) (CLI + `@expgov/cli/core` config types) and [`@expgov/core`](https://www.npmjs.com/package/@expgov/core) (SDK). npm blocks the unscoped name `expgov` as too similar to [`expo`](https://www.npmjs.com/package/expo) — see [Install](https://expgov.pages.dev/install).
+
+The **`@expgov/cli`** tarball ships a self-contained CLI (`dist/cli.js` — core compiled in at build time). It exposes **`@expgov/cli/core`** for optional `defineConfig` in `expgov.config.ts`.
 
 ## SDK first (`@expgov/core`)
 
@@ -74,7 +76,7 @@ Why SDK consumers pick this:
 
 - **Same engines as the CLI** — `runExportsInventory`, `runExportsDiff`, `runExportsValidate`, `runExportsTrend`, `runExportsTimeline`, `runExportsGraph`, and more.
 - **Host-neutral** — your script wires the log sink; core emits structured output or JSON envelopes.
-- **Config types included** — CLI devDep ships `expgov/core`; SDK package is for `runExports*` without the binary.
+- **Config types included** — `@expgov/cli` ships `@expgov/cli/core`; SDK package is for `runExports*` without the binary.
 - **Stable `--json` contract** — envelope shape matches the CLI for CI parity.
 
 Primary references:

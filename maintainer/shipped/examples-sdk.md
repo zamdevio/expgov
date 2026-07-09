@@ -10,7 +10,7 @@ Teaching fixture for external SDK authors — not expgov dogfood config.
 
 - [x] `examples/sdk/` — `@example/sdk-demo` barrel with stable / internal / advanced namespace pattern
 - [x] `expgov.config.ts` — minimal tiers (`exact`, `prefix`, `@sdkTier`)
-- [x] `package.json` — `"expgov": "link:../.."` (avoids `packages/cli` name clash)
+- [x] `package.json` — `"@expgov/cli": "link:../.."` (avoids `packages/cli` workspace name clash)
 - [x] `README.md` — init → inventory → validate workflow
 - [x] `pnpm-workspace.yaml` — `examples/*` membership
 

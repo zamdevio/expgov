@@ -11,7 +11,7 @@ Copy-paste recipes for common SDK governance tasks. All flows respect the [gover
 Scaffold config, inventory the barrel, and enforce tiers.
 
 ```bash
-pnpm add -D expgov
+pnpm add -D @expgov/cli
 expgov init
 expgov inventory
 expgov validate

@@ -81,12 +81,12 @@ tiers: {
 | `experimentalProbe` | advanced | `@sdkTier advanced` |
 | `betaChannel` | advanced | `^beta[A-Z_]` prefix |
 
-## `expgov/core` vs `@expgov/core`
+## `@expgov/cli/core` vs `@expgov/core`
 
-Published consumers install **`expgov`** and import config types from the CLI tarball:
+Published consumers install **`@expgov/cli`** and import config types from the CLI tarball:
 
 ```ts
-import { defineConfig } from 'expgov/core';
+import { defineConfig } from '@expgov/cli/core';
 ```
 
 For programmatic governance (no CLI binary), install **`@expgov/core`** instead:
@@ -95,7 +95,7 @@ For programmatic governance (no CLI binary), install **`@expgov/core`** instead:
 import { defineConfig, runExportsValidate } from '@expgov/core';
 ```
 
-Inside the monorepo, `package.json` uses `"expgov": "link:../.."` so jiti loads the **root** package’s `./core` export. Do **not** use `workspace:*` here — `packages/cli` is also named `expgov` and would shadow the root.
+Inside the monorepo, `package.json` uses `"@expgov/cli": "link:../.."` so jiti loads the root package’s `./core` export.
 
 ## Production SDKs
 
@@ -104,7 +104,7 @@ Real packages usually point `exports` at built `dist/` output. expgov inventorie
 ## Copying elsewhere
 
 1. Copy `src/`, `expgov.config.ts`, `tsconfig.json`, and `package.json` (drop `link:../..`).
-2. `pnpm add -D expgov` and use `import { defineConfig } from 'expgov/core'` (optional — plain object works too).
+2. `pnpm add -D @expgov/cli` and use `import { defineConfig } from '@expgov/cli/core'` (optional — plain object works too).
 3. `expgov init -y` if you prefer a fresh scaffold, then merge tier rules from this example.
 
 ## Learn more

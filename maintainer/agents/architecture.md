@@ -24,14 +24,16 @@ expgov/
 | Package | npm | Role |
 |---------|-----|------|
 | `@expgov/core` | `@expgov/core` | Export governance engine — inventory, diff, validate, tiers, cache |
-| `expgov` (root publish) | `expgov` | CLI binary + `expgov/core` subpath for config authors |
+| `@expgov/cli` (root publish) | `@expgov/cli` | CLI binary + `@expgov/cli/core` subpath for config authors |
 
-### Dual publish (match nodehunter)
+### Dual publish (match nodehunter pattern, scoped CLI)
 
-Two separate npm packages:
+Two separate npm packages under **`@expgov`**:
 
-1. **`expgov`** — self-contained CLI (`dist/cli.js` bundles core at build time; **no** runtime npm dependency on `@expgov/core`). Also ships `expgov/core` subpath from the same tarball.
-2. **`@expgov/core`** — standalone SDK built from `packages/core` (`tsc` → `packages/core/dist/`).
+1. **`@expgov/cli`** — self-contained CLI (`dist/cli.js` bundles core at build time). Ships `@expgov/cli/core` subpath. Binary name: `expgov`.
+2. **`@expgov/core`** — standalone SDK built from `packages/core`.
+
+npm blocks unscoped **`expgov`** (too similar to `expo`). Owning `@expgov` does not reserve the global name.
 
 Monorepo dev uses `workspace:*` for `@expgov/core` in root `devDependencies`. Published CLI tarball does not list `@expgov/core` as a runtime dependency.
 
@@ -80,6 +82,6 @@ Init prompts use `@inquirer/prompts` in **CLI only** (`packages/cli/src/commands
 
 - File: `expgov.config.ts` at repo root (or `--config`)
 - Loader: jiti (`packages/core/src/config/load.ts`)
-- Types: `defineConfig`, `ExpgovConfig` from `expgov/core` or `@expgov/core`
+- Types: `defineConfig`, `ExpgovConfig` from `@expgov/cli/core` or `@expgov/core`
 
 Engineering principles and out-of-scope list: [`systems/principles.md`](../systems/principles.md).

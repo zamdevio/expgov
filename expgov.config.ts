@@ -1,4 +1,4 @@
-import { defineConfig, type ExpgovConfig } from 'expgov/core';
+import { defineConfig, type ExpgovConfig } from '@expgov/cli/core';
 
 // Dogfood config for the expgov monorepo (@expgov/core public barrel).
 

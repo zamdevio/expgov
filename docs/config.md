@@ -16,10 +16,10 @@ expgov uses a single TypeScript config file — **no JSON config**.
 
 `defineConfig` and `ExpgovConfig` are **optional** — they improve editor autocomplete and type-checking. A plain object export works at runtime.
 
-Import from **`expgov/core`** when you installed the CLI devDependency (no separate `@expgov/core` needed for config). SDK-only projects can import from `@expgov/core` instead.
+Import from **`@expgov/cli/core`** when you installed the CLI devDependency (`@expgov/cli`). SDK-only projects can import from `@expgov/core` instead.
 
 ```ts
-import { defineConfig, type ExpgovConfig } from 'expgov/core';
+import { defineConfig, type ExpgovConfig } from '@expgov/cli/core';
 
 export default defineConfig({
   packageName: '@my/sdk',

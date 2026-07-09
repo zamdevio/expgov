@@ -9,7 +9,7 @@
 ## Minimal shape
 
 ```ts
-import { defineConfig, type ExpgovConfig } from 'expgov/core';
+import { defineConfig, type ExpgovConfig } from '@expgov/cli/core';
 
 export default defineConfig({
   packageName: '@my/sdk',

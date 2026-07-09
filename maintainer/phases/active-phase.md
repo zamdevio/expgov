@@ -12,7 +12,7 @@
 
 **Checklist:** [`release.md`](./release.md)
 
-Ship **npm** (`expgov` + `@expgov/core`), **docs site** (`expgov.pages.dev`), and **GitHub** public repo — not Phase C3 or backlog features unless publish-blocking.
+Ship **npm** (`@expgov/cli` + `@expgov/core`), **docs site** (`expgov.pages.dev`), and **GitHub** public repo — not Phase C3 or backlog features unless publish-blocking.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
@@ -25,7 +25,7 @@ Ship **npm** (`expgov` + `@expgov/core`), **docs site** (`expgov.pages.dev`), an
 
 | Package | npm name | Role |
 |---------|----------|------|
-| Root | `expgov` | CLI binary + `expgov/core` subpath (self-contained build) |
+| Root | `@expgov/cli` | CLI binary + `@expgov/cli/core` subpath (self-contained build) |
 | `packages/core` | `@expgov/core` | Standalone SDK for programmatic imports |
 
 ---

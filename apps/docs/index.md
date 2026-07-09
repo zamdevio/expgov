@@ -48,8 +48,8 @@ features:
 **CLI (terminal):**
 
 ```bash
-pnpm add -D expgov
-# or: npm install -D expgov
+pnpm add -D @expgov/cli
+# or: npm install -D @expgov/cli
 ```
 
 **SDK (programmatic APIs only — not needed for CLI or config):**
@@ -59,12 +59,12 @@ pnpm add -D @expgov/core
 # or: npm install -D @expgov/core
 ```
 
-The **`expgov`** CLI devDependency includes **`expgov/core`** for optional `defineConfig` / `ExpgovConfig` in `expgov.config.ts`. Use **`@expgov/core`** separately when you embed `runExports*` in scripts or services.
+The **`@expgov/cli`** devDependency includes **`@expgov/cli/core`** for optional `defineConfig` in `expgov.config.ts`. npm blocks unscoped `expgov` (too similar to `expo`) — see [Install](/install).
 
 ## Quick start
 
 ```bash
-pnpm add -D expgov
+pnpm add -D @expgov/cli
 expgov init
 expgov validate
 expgov inventory
@@ -73,7 +73,7 @@ expgov timeline @4w
 expgov graph
 ```
 
-Install as a **devDependency** — the CLI tarball includes `expgov/core` for optional `defineConfig` / `ExpgovConfig` in `expgov.config.ts`. See [Install](/install).
+Install as a **devDependency** — the CLI tarball includes `@expgov/cli/core` for optional config types. See [Install](/install).
 
 ## Documentation
 

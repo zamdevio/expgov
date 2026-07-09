@@ -64,7 +64,7 @@ Maintainer hub, user docs, CI, and project hygiene.
 
 ## R0 — First release prep (in progress) · 2026-W27
 
-- [x] Dual npm publish model — `expgov` + `@expgov/core` (match nodehunter)
+- [x] Dual npm publish model — `@expgov/cli` + `@expgov/core` (unscoped `expgov` blocked by npm; see `docs/install.md`)
 - [x] `LICENSE`, root `README.md`, `packages/core/README.md`
 - [x] `publishConfig`, `prepack`, `EXPGOV_PUBLISH` sourcemap omit
 - [x] `apps/docs/` VitePress + branded theme + `expgov.svg` logo

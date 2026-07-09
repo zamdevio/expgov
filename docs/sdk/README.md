@@ -8,32 +8,34 @@ The expgov CLI is a thin host over **`@expgov/core`** — pure domain logic with
 
 ## Install
 
-### SDK only (recommended for apps and libraries)
+### SDK only (recommended for programmatic use)
 
 ```bash
 pnpm add -D @expgov/core
-# or: pnpm add @expgov/core
+# or: npm install -D @expgov/core
 ```
 
 ```typescript
 import { initProjectContext, runExportsValidate } from '@expgov/core';
 ```
 
-### CLI package (terminal + `expgov/core` for config)
+### CLI package (`@expgov/cli`)
 
 ```bash
-pnpm add -D expgov
+pnpm add -D @expgov/cli
 ```
 
 ```typescript
 // optional — plain object export works; types recommended for editor checking
-import { defineConfig } from 'expgov/core';
+import { defineConfig } from '@expgov/cli/core';
 ```
 
 | Goal | Install |
 |------|---------|
-| CLI + config types (`expgov/core`) | `expgov` as devDep |
+| CLI + config types (`@expgov/cli/core`) | `@expgov/cli` as devDep |
 | Programmatic `runExports*` APIs | `@expgov/core` as devDep |
+
+See [Install](../install.md) for why the CLI publishes as **`@expgov/cli`** (npm blocks unscoped `expgov` as too similar to `expo`).
 
 ## Host contract
 

@@ -30,7 +30,7 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 - [x] `maybePrintCommandBanner` — box header per command (off under `--json` / `--silent`)
 - [x] `configureCliHelp` — colorized Usage/Options; `(default: …)` bright yellow (`style.highlight`)
 - [x] Root `expgov.config.ts` dogfood — `@expgov/core` barrel, classified exports, tsconfig path parity
-- [x] `tsconfig.json` paths: `@expgov/core` + `expgov/core` for config resolution
+- [x] `tsconfig.json` paths: `@expgov/core` + `@expgov/cli/core` for config resolution
 
 ---
 

@@ -16,7 +16,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@expgov/core": ["./packages/core/src/index.ts"],
-      "expgov/core": ["./dist/core.d.ts", "./packages/core/src/index.ts"]
+      "@expgov/cli/core": ["./dist/core.d.ts", "./packages/core/src/index.ts"]
     }
   },
   "include": ["packages/**/*.ts", "tsup.config.ts", "expgov.config.ts"]

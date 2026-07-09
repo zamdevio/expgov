@@ -1,5 +1,5 @@
 ---
-description: "Install expgov — devDependency CLI, optional expgov/core types for config, @expgov/core SDK, init scaffold, and local development."
+description: "Install expgov — @expgov/cli devDependency, @expgov/cli/core config types, @expgov/core SDK, init scaffold, and npm package naming."
 ---
 
 # Install
@@ -10,37 +10,57 @@ description: "Install expgov — devDependency CLI, optional expgov/core types f
 - **pnpm** (recommended) or npm/yarn for installing the package
 - A git repo with a TypeScript SDK barrel (`index.ts` re-exports)
 
+## npm package names
+
+| npm package | Role |
+|-------------|------|
+| **`@expgov/cli`** | CLI binary (`expgov` command) + `@expgov/cli/core` config types |
+| **`@expgov/core`** | SDK only — `runExports*` APIs without the CLI binary |
+
+The **command** is always `expgov` (from the `bin` field). Only the **npm package name** is scoped.
+
+### Why not unscoped `expgov`?
+
+npm rejected publishing the unscoped name **`expgov`** as too similar to the existing package [**`expo`**](https://www.npmjs.com/package/expo) (React Native tooling). That is a registry policy — not a permissions issue. Owning the **`@expgov`** org does not reserve the global unscoped name.
+
+We publish under the org scope instead:
+
+- **`@expgov/core@0.0.1`** — SDK engine
+- **`@expgov/cli@0.0.1`** — CLI (this is what you install for terminal use)
+
+The CLI binary name stays **`expgov`** — only the install package name is `@expgov/cli`.
+
 ## Add to a project
 
-Install the **CLI as a devDependency** — it is a development tool, not a runtime dependency of your SDK:
+Install the **CLI as a devDependency**:
 
 ```bash
-pnpm add -D expgov
-# or: npm install -D expgov
+pnpm add -D @expgov/cli
+# or: npm install -D @expgov/cli
 ```
 
 ### Why `-D`?
 
 `expgov` runs at dev/CI time to inventory, validate, and diff your barrel. It does not ship to npm consumers of your package.
 
-The same tarball also exposes **`expgov/core`** — types and `defineConfig` for `expgov.config.ts`. You do **not** need a separate `@expgov/core` install just to author config; the CLI bundle is enough.
+The same tarball also exposes **`@expgov/cli/core`** — types and `defineConfig` for `expgov.config.ts`. You do **not** need a separate `@expgov/core` install just to author config.
 
 **Optional but recommended** in `expgov.config.ts`:
 
 ```ts
-import { defineConfig, type ExpgovConfig } from 'expgov/core';
+import { defineConfig, type ExpgovConfig } from '@expgov/cli/core';
 
 export default defineConfig({
   // ...
 } satisfies ExpgovConfig);
 ```
 
-`defineConfig` and `ExpgovConfig` are optional — a plain object export works at runtime. The imports give you autocomplete and `satisfies` checking in your editor. See [Configuration](./config.md).
+`defineConfig` and `ExpgovConfig` are optional — a plain object export works at runtime. See [Configuration](./config.md).
 
 ### Global CLI (optional)
 
 ```bash
-pnpm add -g expgov
+pnpm add -g @expgov/cli
 # or: npx expgov --help
 ```
 
@@ -54,7 +74,7 @@ pnpm add -D @expgov/core
 
 | Install | Best for |
 |---------|----------|
-| `expgov` (devDep) | CLI + `expgov/core` config types from one package |
+| `@expgov/cli` (devDep) | CLI + `@expgov/cli/core` config types |
 | `@expgov/core` (devDep) | Programmatic governance without the CLI binary |
 
 See [SDK overview](./sdk/README.md) for the host contract.
@@ -77,7 +97,7 @@ From your SDK repo root:
 expgov init
 ```
 
-Creates `expgov.config.ts` with **conservative tier defaults** (empty `stable` / `internal` / `advanced` buckets — classify via `@sdkTier` or `tiers.*.exact`, then `expgov suggest`). Detects monorepo `packages/core` vs single-package `src/index.ts` layouts.
+Creates `expgov.config.ts` with **conservative tier defaults**. `expgov init` scaffolds imports from `@expgov/cli/core` by default.
 
 | Flag | Role |
 |------|------|
@@ -109,10 +129,10 @@ expgov --config ./tools/expgov.config.ts validate
 
 ```bash
 pnpm install
-pnpm build          # core tsc + root tsup → dist/cli.js
+pnpm build
 pnpm typecheck
 node dist/cli.js validate
-pnpm cli:dev -- validate   # tsx dev entry
+pnpm cli:dev -- validate
 ```
 
 ## Cache

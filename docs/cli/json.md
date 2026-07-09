@@ -33,7 +33,7 @@ type Issue = {
 };
 ```
 
-`apiVersion` is `RESULT_API_VERSION` from `expgov/core` — bump when the envelope shape changes.
+`apiVersion` is `RESULT_API_VERSION` from `@expgov/cli/core` or `@expgov/core` — bump when the envelope shape changes.
 
 ## Exit codes
 

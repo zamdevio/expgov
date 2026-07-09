@@ -10,10 +10,14 @@ Reference: [nodehunter](https://github.com/zamdevio/nodehunter) publish model (`
 
 | Package | npm name | Built from | Notes |
 |---------|----------|------------|-------|
-| Root | `expgov` | `tsup` → `dist/cli.js` + `dist/core.js` | Self-contained CLI; no runtime dep on `@expgov/core` |
+| Root | `@expgov/cli` | `tsup` → `dist/cli.js` + `dist/core.js` | Self-contained CLI; no runtime dep on `@expgov/core` |
 | `packages/core` | `@expgov/core` | `tsc` → `packages/core/dist/` | Standalone SDK for programmatic imports |
 
-Both packages expose config types. CLI consumers: `import from 'expgov/core'`. SDK consumers: `import from '@expgov/core'`.
+Both packages expose config types. CLI consumers: `import from '@expgov/cli/core'`. SDK consumers: `import from '@expgov/core'`.
+
+### npm: why not unscoped `expgov`?
+
+npm rejected **`expgov`** (unscoped) as too similar to **`expo`**. The **`@expgov`** org scope is unaffected — publish CLI as **`@expgov/cli`**; binary name stays `expgov`.
 
 ---
 
@@ -74,7 +78,7 @@ pnpm docs:build
 pnpm publish --access public
 
 # from repo root
-pnpm publish --access public
+pnpm publish --access public   # @expgov/cli
 
 git tag v0.0.1
 git push origin v0.0.1

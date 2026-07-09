@@ -61,7 +61,7 @@ importers:
 
   examples/sdk:
     devDependencies:
-      expgov:
+      '@expgov/cli':
         specifier: link:../..
         version: link:../..
 

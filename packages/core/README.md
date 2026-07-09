@@ -10,17 +10,17 @@ Requires **Node.js >= 20**.
 
 ```bash
 npm install @expgov/core
-# or: pnpm add @expgov/core
+# or: pnpm add -D @expgov/core
 ```
 
 ### CLI package vs SDK package
 
 | Install | Best for |
 |---------|----------|
-| `npm install expgov` | Terminal CLI — self-contained binary plus optional `expgov/core` import from the same tarball (not a runtime dep on `@expgov/core`) |
-| `npm install @expgov/core` | Apps, CI jobs, and libraries that embed export governance without the CLI binary (recommended for imports) |
+| `npm install @expgov/cli` | Terminal CLI — binary `expgov` plus `@expgov/cli/core` for config (not a runtime dep on `@expgov/core`) |
+| `npm install @expgov/core` | Apps, CI jobs, and libraries that embed export governance without the CLI binary |
 
-You do **not** need both for most projects. Pick the CLI for command-line use, or `@expgov/core` when you import APIs directly.
+The CLI publishes as **`@expgov/cli`** because npm blocks unscoped `expgov` as too similar to `expo`. See [install docs](https://expgov.pages.dev/install).
 
 ## Quick start
 
@@ -42,37 +42,8 @@ resetRunOptions();
 
 ```ts
 import { defineConfig, type ExpgovConfig } from '@expgov/core';
-
-export default defineConfig({
-  packageName: '@my/sdk',
-  core: {
-    dir: 'packages/core',
-    rootBarrel: 'packages/core/src/index.ts',
-    subpaths: { '.': 'src/index.ts' },
-  },
-  tsconfig: 'tsconfig.json',
-  tiers: {
-    stable: { exact: ['RESULT_API_VERSION'], prefix: ['run'] },
-    internal: { prefix: ['^internal[A-Z_]'] },
-    advanced: { prefix: ['^experimental[A-Z_]'] },
-  },
-} satisfies ExpgovConfig);
+// or from the CLI package: import from '@expgov/cli/core';
 ```
-
-## Commands (programmatic)
-
-| Function | Role |
-|----------|------|
-| `runExportsInventory` | Barrel snapshot and tier rollup |
-| `runExportsDiff` | Compare export surfaces between refs |
-| `runExportsValidate` | Governance checks (exit code 0/1) |
-| `runExportsTrend` | Export counts across release tags |
-| `runExportsTimeline` | Git log of barrel edits |
-| `runExportsGraph` | Export surface graph |
-| `runExportsSuggest` | Dry-run tier allowlist hints |
-| `runExportsDoctor` | Setup hygiene checks |
-
-Call `initProjectContext({ cwd, config })` before any command. Use `setRunOptions` for `--json`, `--quiet`, cache flags, and list truncation.
 
 ## Docs
 

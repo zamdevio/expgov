@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@example/sdk-demo": ["./src/index.ts"],
-      "expgov/core": ["../../dist/core.d.ts", "../../dist/core.js"]
+      "@expgov/cli/core": ["../../dist/core.d.ts", "../../dist/core.js"]
     }
   },
   "include": ["src/**/*.ts", "expgov.config.ts"]
