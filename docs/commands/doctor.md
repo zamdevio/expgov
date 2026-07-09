@@ -13,7 +13,9 @@ expgov doctor -v
 
 Use `validate` for full tier enforcement; `doctor` is for environment hygiene before you run governance commands.
 
-## Related
+## Cache
+
+`doctor` reports your configured cache dir and how many snapshot folders exist. If a command fails oddly after upgrading expgov, stale on-disk snapshots are usually rebuilt automatically — see [Cache flags](../cli/flags.md#stale-cache-schema). To force a rebuild: add `-f/--force` to `inventory`, `diff`, `trend`, etc.
 
 - [validate](./validate.md)
 - [Install](../install.md)

@@ -41,6 +41,21 @@ Snapshots for uncommitted state live under `.expgov/cache/__worktree__/`. expgov
 
 Commit/SHA refs use immutable per-SHA cache dirs.
 
+### Stale cache schema
+
+Older expgov builds may have written snapshots **before** the current tier rollup shape (e.g. missing `summary.root.custom`). Current releases **auto-invalidate** those files on read: the entry is deleted, the command rebuilds from git, and a fresh snapshot is written.
+
+You usually do **not** need `-f/--force` for schema drift — it is handled on the next run.
+
+| Situation | What to do |
+|-----------|------------|
+| Normal upgrade | Run the command again (auto-rebuild) |
+| Suspect bad cache / want a clean rebuild | Add `-f/--force` to that command |
+| CI or one-off debug | `-nch/--no-cache` (skip read and write) |
+| Nuclear option | Delete your configured cache dir (e.g. `.expgov/cache/`) |
+
+`expgov doctor` reports cache location and snapshot dir count; use `validate` for tier enforcement.
+
 ## Insights
 
 Several commands append an **Insights** block before the footer — largest module, diff deltas, trend jumps, validate hot spots, etc. Available as `data.insights` in `--json`. Suppressed under `--silent`.
