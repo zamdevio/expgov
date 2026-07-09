@@ -38,9 +38,9 @@ pnpm install
 pnpm build
 
 cd examples/sdk
-pnpm exec expgov inventory
-pnpm exec expgov validate    # should pass
-pnpm exec expgov suggest     # no unclassified flats when tiers are complete
+expgov inventory
+expgov validate    # should pass
+expgov suggest     # no unclassified flats when tiers are complete
 ```
 
 From repo root without `cd`:
@@ -81,12 +81,18 @@ tiers: {
 | `experimentalProbe` | advanced | `@sdkTier advanced` |
 | `betaChannel` | advanced | `^beta[A-Z_]` prefix |
 
-## `expgov/core` in this repo
+## `expgov/core` vs `@expgov/core`
 
-Published consumers install `expgov` and import:
+Published consumers install **`expgov`** and import config types from the CLI tarball:
 
 ```ts
 import { defineConfig } from 'expgov/core';
+```
+
+For programmatic governance (no CLI binary), install **`@expgov/core`** instead:
+
+```ts
+import { defineConfig, runExportsValidate } from '@expgov/core';
 ```
 
 Inside the monorepo, `package.json` uses `"expgov": "link:../.."` so jiti loads the **root** package’s `./core` export. Do **not** use `workspace:*` here — `packages/cli` is also named `expgov` and would shadow the root.
@@ -98,12 +104,13 @@ Real packages usually point `exports` at built `dist/` output. expgov inventorie
 ## Copying elsewhere
 
 1. Copy `src/`, `expgov.config.ts`, `tsconfig.json`, and `package.json` (drop `link:../..`).
-2. `pnpm add -D expgov` and use `import { defineConfig } from 'expgov/core'`.
-3. `pnpm exec expgov init -y` if you prefer a fresh scaffold, then merge tier rules from this example.
+2. `pnpm add -D expgov` and use `import { defineConfig } from 'expgov/core'` (optional — plain object works too).
+3. `expgov init -y` if you prefer a fresh scaffold, then merge tier rules from this example.
 
 ## Learn more
 
 - [Install & global CLI](../../docs/install.md)
 - [Configuration](../../docs/config.md)
-- [Commands](../../docs/commands.md)
+- [Commands](../../docs/commands/README.md)
+- [SDK overview](../../docs/sdk/README.md)
 - [Shipped receipt (Phase I)](../../maintainer/shipped/examples-sdk.md)

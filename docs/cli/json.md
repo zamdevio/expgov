@@ -1,4 +1,8 @@
-# JSON envelope
+---
+description: "expgov --json envelope contract — ok, kind, data, issues, meta.apiVersion, exit codes, and CI parsing examples."
+---
+
+# JSON output
 
 Pass `-j` or `--json` to any command for machine-readable output on **stdout**.
 
@@ -129,7 +133,14 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
 
 ```bash
 pnpm build
-node dist/cli.js validate --json
+expgov validate --json --silent > validate.json
+test "$(jq -r .ok validate.json)" = "true"
 ```
 
-Parse `ok` and `issues` for automation. `expgov validate` without `--json` is sufficient for a pass/fail gate (exit code only).
+Parse `ok` and `issues` for automation. Exit-code-only gates work without `--json`.
+
+## Related
+
+- [Flags](./flags.md)
+- [Workflows](../guides/workflows.md)
+- [SDK overview](../sdk/README.md)

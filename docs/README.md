@@ -1,22 +1,25 @@
-# expgov
+# Maintainer docs index
 
-Export-governance CLI for TypeScript SDK barrels — inventory, diff, validate, trend, timeline, and graph.
+User-facing source lives in **`docs/`** (synced to `apps/docs/content/`). The published home page is **`apps/docs/index.md`**.
 
-## Docs
+## Structure
 
-| Topic | Guide |
-|-------|-------|
-| Install & run | [install.md](./install.md) |
-| `expgov.config.ts` | [config.md](./config.md) |
-| Commands | [commands.md](./commands.md) |
-| `--json` output | [json.md](./json.md) |
+| Area | Pages |
+|------|--------|
+| Start | `install.md`, `config.md`, `governance.md` |
+| Guides | `guides/workflows.md` |
+| SDK | `sdk/README.md` |
+| CLI | `cli/README.md`, `cli/flags.md`, `cli/json.md` |
+| Commands | `commands/README.md` + one page per verb |
 
-## Quick start
+## Dev commands
 
 ```bash
-pnpm add -D expgov
-pnpm exec expgov init
-pnpm exec expgov validate
+pnpm docs:sync          # docs/ → apps/docs/content/
+pnpm docs:sync:verify   # idempotent sync gate
+pnpm docs:dev           # watch + VitePress :8284
+pnpm docs:build
+pnpm docs:deploy        # Cloudflare Pages
 ```
 
-Config is TypeScript only: `expgov.config.ts` at the project root (or git root). See [config.md](./config.md).
+Update **`apps/docs/.vitepress/sidebar.ts`** when adding or renaming pages.
