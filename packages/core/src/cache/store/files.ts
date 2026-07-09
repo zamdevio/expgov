@@ -28,7 +28,7 @@ export function snapshotPathsForSha(sha: string): string[] {
   return [fullSnapshotPathForSha(sha), timelineSnapshotPathForSha(sha)];
 }
 
-/** Remove one snapshot file when JSON is corrupt, SHA mismatches, or toolVersion is stale. */
+/** Remove one snapshot file when JSON is corrupt, SHA mismatches, schema is stale, or toolVersion mismatches. */
 export function purgeStaleSnapshotFile(filePath: string, sha: string): boolean {
   if (!existsSync(filePath)) return false;
   const snapshot = readJsonFile<InventorySnapshot>(filePath);
