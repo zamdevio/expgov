@@ -1,10 +1,22 @@
 {
   "name": "expgov",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.1",
   "description": "Portable export-governance CLI for TypeScript SDK barrels.",
+  "homepage": "https://expgov.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zamdevio/expgov.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zamdevio/expgov/issues"
+  },
   "type": "module",
   "packageManager": "pnpm@11.9.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=20"
   },
@@ -20,7 +32,20 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "typescript",
+    "sdk",
+    "exports",
+    "barrel",
+    "semver",
+    "governance",
+    "cli",
+    "developer-tools",
+    "expgov"
   ],
   "scripts": {
     "build": "pnpm core:build && pnpm cli:build",
@@ -36,7 +61,14 @@
     "core:typecheck": "pnpm --filter @expgov/core typecheck",
     "cli:build": "tsup",
     "cli:typecheck": "tsc -p packages/cli/tsconfig.json --noEmit",
-    "cli:dev": "tsx --tsconfig tsconfig.json packages/cli/bin/cli.ts"
+    "cli:dev": "tsx --tsconfig tsconfig.json packages/cli/bin/cli.ts",
+    "docs:sync": "pnpm --filter @expgov/docs sync",
+    "docs:sync:verify": "pnpm --filter @expgov/docs sync:verify",
+    "docs:dev": "pnpm --filter @expgov/docs dev",
+    "docs:build": "pnpm --filter @expgov/docs build",
+    "docs:deploy": "pnpm --filter @expgov/docs run deploy",
+    "docs:typecheck": "pnpm --filter @expgov/docs typecheck",
+    "prepack": "EXPGOV_PUBLISH=1 pnpm run build"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.3.2",

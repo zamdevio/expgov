@@ -17,6 +17,8 @@ function readPackageVersion(packageJsonPath: string): string {
 const rootPackageVersion = readPackageVersion(path.join(root, 'package.json'));
 const corePackageVersion = readPackageVersion(path.join(root, 'packages/core/package.json'));
 
+const publish = process.env.EXPGOV_PUBLISH === '1';
+
 export default defineConfig({
   entry: {
     cli: 'packages/cli/bin/cli.ts',
@@ -26,7 +28,7 @@ export default defineConfig({
   target: 'node20',
   outDir: 'dist',
   clean: true,
-  sourcemap: true,
+  sourcemap: !publish,
   dts: {
     entry: { core: path.join(coreSrc, 'index.ts') },
     resolve: true,

@@ -4,3 +4,7 @@ node_modules
 *.tgz
 .expgov/cache
 maintainer/temp/
+# VitePress copy: `apps/docs/content/` (ignored — run `pnpm docs:sync`).
+apps/docs/content/
+apps/docs/.vitepress/cache/
+apps/docs/.vitepress/dist/
