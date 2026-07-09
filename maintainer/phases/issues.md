@@ -4,7 +4,7 @@
 
 **Reference implementation:** [i18nprune](https://github.com/) — `packages/core/src/shared/constants/issueCodes.ts`, `shared/result/issueDocLinks.ts`, `docs/issues/README.md`.
 
-**Companion:** [`severity.md`](./severity.md) · [`suggest.md`](./suggest.md) · [`docs/json.md`](../../docs/json.md)
+**Companion:** [`severity.md`](./severity.md) · [`suggest.md`](./suggest.md) · [`docs/cli/json.md`](../../docs/cli/json.md)
 
 ---
 
@@ -216,5 +216,5 @@ flowchart LR
 ## Receipt checklist (on ship)
 
 - [ ] Row in [`../shipped/README.md`](../shipped/README.md).
-- [ ] [`docs/json.md`](../../docs/json.md) updated (`docHref`, code stability note).
+- [ ] [`docs/cli/json.md`](../../docs/cli/json.md) updated (`docHref`, code stability note).
 - [ ] Agent rule: three-place wiring for new codes (mirror i18nprune `architecture.md`).

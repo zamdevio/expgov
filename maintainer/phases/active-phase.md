@@ -8,59 +8,56 @@
 
 ---
 
-## Focus now — Phase C (Graph 2.0)
+## Focus now — First public release (v0.0.1)
 
-**Doc:** [`graph-2.md`](./graph-2.md) · **Shipped (C1–C2):** [`../shipped/graph.md`](../shipped/graph.md)
+**Checklist:** [`release.md`](./release.md)
 
-Timeline 2.0 shipped — [`../shipped/timeline.md`](../shipped/timeline.md).
+Ship **npm** (`expgov` + `@expgov/core`), **docs site** (`expgov.pages.dev`), and **GitHub** public repo — not Phase C3 or backlog features unless publish-blocking.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
-| 1 | **C2** — Graph analytics | **Shipped** | `graph/analytics.ts`; Summary block; JSON `data.analytics` |
-| 2 | **C1** — Namespace-first view | **Shipped** | Namespaces first, sorted by edge count; composition lines |
-| **→ 3** | **C3** — Graph filters | **Next PR** | `--namespace`, `--module`, `--category`, `--subpath` |
-| 4 | **C4** — Graph modes | Brainstorm | `--view`, JSON graph export, Mermaid (deferred) |
+| 1 | **R1** — Publish metadata | In progress | LICENSE, READMEs, `publishConfig`, `prepack`, dual npm packages |
+| 2 | **R2** — Docs site | In progress | VitePress `apps/docs/`, sync from `docs/`, Cloudflare Pages |
+| 3 | **R3** — Docs audit | In progress | `docs/*` + `maintainer/*` match shipped CLI (timeline B, graph C1–C2) |
+| 4 | **R4** — Tag & publish | Pending | `pnpm build`, gate, `npm publish` ×2, git tag `v0.0.1` |
 
-**C2 exit (shipped):**
+**Publish model (match nodehunter):**
 
-- [x] `computeGraphAnalytics` + `namespaceComposition` in `graph/analytics.ts`
-- [x] Human Summary block; JSON `data.analytics`
-- [x] Tests: `graphAnalytics.test.ts`
-
-**C1 exit (shipped):**
-
-- [x] Namespaces section first (sorted by edge count)
-- [x] Per-namespace composition line (tier + category mix)
-- [x] Meta includes `namespaces` count
-
-Check [`../shipped/graph.md`](../shipped/graph.md) before re-implementing C1–C2 layout or analytics.
-
-**C3 exit (target — next PR):**
-
-- [ ] CLI flags: `--namespace`, `--module`, `--category`, `--subpath` on `graph`
-- [ ] Filter snapshot view-model before `computeGraphAnalytics` (no inventory rebuild)
-- [ ] Explicit empty state when filter combo matches nothing
-- [ ] JSON reflects filtered scope; help + [`commands.md`](./commands.md) updated
-- [ ] Tests: `graphFilters.test.ts` (or extend `graphAnalytics.test.ts`)
-- [ ] Gate: `pnpm build`, `typecheck`, `test`, `expgov validate`
+| Package | npm name | Role |
+|---------|----------|------|
+| Root | `expgov` | CLI binary + `expgov/core` subpath (self-contained build) |
+| `packages/core` | `@expgov/core` | Standalone SDK for programmatic imports |
 
 ---
 
-## Program backlog (after Phase C)
+## Paused — Phase C (Graph 2.0)
+
+**Doc:** [`graph-2.md`](./graph-2.md) · **Shipped (C1–C2):** [`../shipped/graph.md`](../shipped/graph.md)
+
+Resume **C3** graph filters after v0.0.1 ships.
+
+| # | Slice | Status |
+|---|-------|--------|
+| C1–C2 | Namespace-first + analytics | **Shipped** |
+| C3 | `--namespace`, `--module`, `--category`, `--subpath` | Paused |
+| C4 | Graph modes | Brainstorm |
+
+---
+
+## Program backlog (after release)
 
 | # | Slice | Goal | Doc |
 |---|-------|------|-----|
-| 1 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
-| 2 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
-| 3 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
-| 4 | **Severity** | Policy `severity` rule, graded `issues[]` | [`severity.md`](./severity.md) |
-| 5 | **Suggest** | Suggestion engine, full fixes, filters | [`suggest.md`](./suggest.md) |
-| 6 | **Fix** | `fix tags`, `fix config` | [`fix.md`](./fix.md) |
-| 7 | **Config** | `config show` / `export` / `convert` | [`config.md`](./config.md) |
-| 8 | **Issues** | `issues/` registry, doc links | [`issues.md`](./issues.md) |
-| 9 | **Multibarrel** | Multi-entry API surface, workspace | [`multibarrel.md`](./multibarrel.md) |
-
-**One slice per PR** — finish C3 before starting D.
+| 1 | Phase **C3** — Graph filters | Filtered graph view | [`graph-2.md`](./graph-2.md) |
+| 2 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
+| 3 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
+| 4 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
+| 5 | **Severity** | Policy `severity` rule, graded `issues[]` | [`severity.md`](./severity.md) |
+| 6 | **Suggest** | Suggestion engine, full fixes, filters | [`suggest.md`](./suggest.md) |
+| 7 | **Fix** | `fix tags`, `fix config` | [`fix.md`](./fix.md) |
+| 8 | **Config** | `config show` / `export` / `convert` | [`config.md`](./config.md) |
+| 9 | **Issues** | `issues/` registry, doc links | [`issues.md`](./issues.md) |
+| 10 | **Multibarrel** | Multi-entry API surface, workspace | [`multibarrel.md`](./multibarrel.md) |
 
 ---
 
@@ -91,6 +88,7 @@ Check [`../shipped/graph.md`](../shipped/graph.md) before re-implementing C1–C
 
 | Need | Doc |
 |------|-----|
+| Release checklist | [`release.md`](./release.md) |
 | What shipped, when | [`../shipped/README.md`](../shipped/README.md) |
 | Timeline (Phase B) | [`../shipped/timeline.md`](../shipped/timeline.md) |
 | Graph (Phase C partial) | [`../shipped/graph.md`](../shipped/graph.md) |

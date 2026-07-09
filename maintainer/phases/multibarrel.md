@@ -146,7 +146,7 @@ type InventorySnapshot = {
 
 - [ ] `expgov graph --entry internal` shows edges for `internal/index.ts`.
 - [ ] Cache round-trip tests with multi-entry snapshot.
-- [ ] JSON `data.entries` documented in `docs/json.md`.
+- [ ] JSON `data.entries` documented in `docs/cli/json.md`.
 
 ---
 

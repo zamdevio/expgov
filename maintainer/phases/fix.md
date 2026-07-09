@@ -324,7 +324,7 @@ flowchart LR
 | Appliers | `governance/fix/tags.ts`, `governance/fix/config.ts` (later) |
 | CLI | `packages/cli/bin/cli.ts` (`fix` subcommand group) |
 | Help | `help/index.ts`, `commandHelp.ts` |
-| Docs | `docs/json.md`, `commands.md`, `systems/cli.md` |
+| Docs | `docs/cli/json.md`, `docs/commands/README.md`, `systems/cli.md` |
 
 ---
 

@@ -18,11 +18,11 @@ Maintainer hub, user docs, CI, and project hygiene.
 
 ## P3 — user docs (shipped) · 2026-W26
 
-- [x] `docs/README.md` — index + quick start
-- [x] `docs/install.md` — requirements, init, local dev, cache
-- [x] `docs/config.md` — `expgov.config.ts` fields, tiers, policies, `@sdkTier`
-- [x] `docs/commands.md` — all wired verbs + global flags
-- [x] `docs/json.md` — `--json` contract, `kind` values, CI examples
+- [x] `docs/install.md`, `docs/config.md`, `docs/governance.md`
+- [x] `docs/guides/workflows.md` — practical recipes
+- [x] `docs/cli/` — overview, global flags, JSON envelope
+- [x] `docs/commands/` — per-verb reference pages
+- [x] `docs/sdk/README.md` — `@expgov/core` install and host contract
 
 ---
 
@@ -59,3 +59,15 @@ Maintainer hub, user docs, CI, and project hygiene.
 
 - [x] `ci.yml` — `node dist/cli.js -C examples/sdk validate` after dogfood validate
 - [x] Receipt: [`examples-sdk.md`](./examples-sdk.md)
+
+---
+
+## R0 — First release prep (in progress) · 2026-W27
+
+- [x] Dual npm publish model — `expgov` + `@expgov/core` (match nodehunter)
+- [x] `LICENSE`, root `README.md`, `packages/core/README.md`
+- [x] `publishConfig`, `prepack`, `EXPGOV_PUBLISH` sourcemap omit
+- [x] `apps/docs/` VitePress + branded theme + `expgov.svg` logo
+- [x] `docs/sdk/README.md` — SDK install and host contract
+- [x] `maintainer/phases/release.md` — v0.0.1 checklist
+- [ ] npm publish + git tag `v0.0.1` + Cloudflare Pages deploy

@@ -2,7 +2,7 @@
 
 **Status:** Planned — after Phase **G** (per [`active-phase.md`](./active-phase.md) backlog).
 
-**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) · [`fix.md`](./fix.md) · [`issues.md`](./issues.md) · [`commands.md`](./commands.md)
+**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) · [`fix.md`](./fix.md) · [`issues.md`](./issues.md) · [`docs/commands/README.md`](./commands.md)
 
 ---
 
@@ -161,7 +161,7 @@ Preview is truncated (reuse `-T` / `-F` listing contract). Label `Suggested fixe
 }
 ```
 
-- `--json` default: omit `suggestionPreview` (CI lean) unless `-v` or explicit opt-in documented in `docs/json.md`.
+- `--json` default: omit `suggestionPreview` (CI lean) unless `-v` or explicit opt-in documented in `docs/cli/json.md`.
 - `-ns` + `--json`: no `suggestionPreview`; hints may still include suggest pointer.
 
 ### Grouped violations (optional, V7+)
@@ -207,7 +207,7 @@ Per-command only — not a global flag (`expgov -ns validate` is invalid).
 | **V4** | `validate` integration | Graded `issues[]`; grouped human output; tip line |
 | **V5** | `diff` integration | Tier violations → findings + `issues[]` + tip |
 | **V6** | `doctor` + parity | Reuse codes; suggest tip when tier-related warnings likely |
-| **V7** | Exit / CI contract | Errors → `1`; warnings/info → `0`; `--strict`; `docs/json.md`; optional `violationGroups` |
+| **V7** | Exit / CI contract | Errors → `1`; warnings/info → `0`; `--strict`; `docs/cli/json.md`; optional `violationGroups` |
 | **V8** | Preview + `-ns` | Policy context tip + `collectFixSuggestions` preview; `-ns, --no-suggestions` |
 
 **Phase complete when:** V1–V8 shipped.
@@ -288,7 +288,7 @@ deprecated:   { rootFlat: 'allow', severity: 'warning' },
 
 - `issues[]` with `severity`, `code` from [`issues.md`](./issues.md) registry, `message`.
 - `data.hints[]` includes suggest pointer.
-- `data.violations` retained for compat or deprecated in same PR (note in `docs/json.md`).
+- `data.violations` retained for compat or deprecated in same PR (note in `docs/cli/json.md`).
 
 **Exit:**
 
@@ -324,7 +324,7 @@ Future commands that surface governance issues must use the same findings + seve
 
 - `ok` in JSON reflects errors only (warnings may yield `ok: true` with non-empty `issues`).
 - CI gate remains `expgov validate` (often `validate --json` or `validate -ns` for quiet human runs).
-- Document in `docs/json.md` (pre-v1 argv change in PR description).
+- Document in `docs/cli/json.md` (pre-v1 argv change in PR description).
 
 ---
 
@@ -407,7 +407,7 @@ flowchart LR
 | Commands | `commands/validate.ts`, `format/diff.ts`, `commands/doctor.ts` |
 | Reports | `logger/reports/validate.ts`, `logger/reports/diff.ts` |
 | CLI | `packages/cli/bin/cli.ts` (`-ns` on trigger commands) |
-| Docs | `systems/tiers.md`, `docs/json.md` |
+| Docs | `systems/tiers.md`, `docs/cli/json.md` |
 
 ---
 

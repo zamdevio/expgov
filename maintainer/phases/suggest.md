@@ -2,7 +2,7 @@
 
 **Status:** Planned — immediately after [`severity.md`](./severity.md) V1–V7 (shared findings + policy severity).
 
-**Companion:** [`severity.md`](./severity.md) · [`fix.md`](./fix.md) (apply — deferred) · [`../systems/tiers.md`](../systems/tiers.md) · [`commands.md`](./commands.md)
+**Companion:** [`severity.md`](./severity.md) · [`fix.md`](./fix.md) (apply — deferred) · [`../systems/tiers.md`](../systems/tiers.md) · [`docs/commands/README.md`](./commands.md)
 
 ---
 
@@ -230,7 +230,7 @@ Invalid `-k` / `-d` values → clear error listing allowed values (same pattern 
 
 **Triggers:** `data.suggestionPreview` — same object shape, truncated; omitted under `--json` default / `-ns`.
 
-Document in `docs/json.md`.
+Document in `docs/cli/json.md`.
 
 ---
 
@@ -350,7 +350,7 @@ flowchart LR
 | Types | `types/commands/cli.ts` (`SuggestCliOptions` + kind/domain) |
 | CLI | `packages/cli/bin/cli.ts` (`-k`, `-d`, `--severity` on suggest) |
 | Help | `help/index.ts`, `packages/cli/src/utils/help/commandHelp.ts` |
-| Docs | `docs/json.md`, `systems/cli.md`, `examples/sdk/README.md` |
+| Docs | `docs/cli/json.md`, `systems/cli.md`, `examples/sdk/README.md` |
 
 ---
 
