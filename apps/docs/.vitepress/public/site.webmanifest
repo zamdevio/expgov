@@ -1,0 +1,14 @@
+{
+  "name": "expgov docs",
+  "short_name": "expgov",
+  "icons": [
+    {
+      "src": "/expgov.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#0c1220",
+  "background_color": "#0c1220",
+  "display": "standalone"
+}

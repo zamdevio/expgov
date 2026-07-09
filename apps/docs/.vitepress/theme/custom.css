@@ -1,0 +1,329 @@
+/**
+ * expgov docs chrome — slate surfaces, cyan accent (CLI), amber accent glow.
+ * Palette aligned with packages/cli style helpers (cyan accent, #FF8C00 tips).
+ */
+
+:root {
+  --eg-docs-radius: 0.75rem;
+
+  /* Surfaces — cool slate, not mint */
+  --vp-c-bg: hsl(220 18% 98%);
+  --vp-c-bg-alt: hsl(220 16% 96%);
+  --vp-c-bg-elv: hsl(0 0% 100%);
+  --vp-c-bg-soft: hsl(220 14% 93%);
+
+  /* Text */
+  --vp-c-text-1: hsl(222 35% 11%);
+  --vp-c-text-2: hsl(220 12% 42%);
+  --vp-c-text-3: hsl(220 10% 55%);
+
+  /* Chrome */
+  --vp-c-border: hsl(220 14% 82%);
+  --vp-c-divider: hsl(220 14% 88%);
+  --vp-c-gutter: hsl(220 14% 88%);
+
+  /* Brand — cyan primary (CLI accent) */
+  --vp-c-brand-1: hsl(187 78% 28%);
+  --vp-c-brand-2: hsl(187 88% 36%);
+  --vp-c-brand-3: hsl(187 92% 42%);
+  --vp-c-brand-soft: hsl(187 92% 42% / 0.12);
+
+  /* Hunter accent for hero gradient tail */
+  --eg-docs-amber: hsl(33 100% 50%);
+
+  --vp-nav-bg-color: color-mix(in hsl, hsl(220 18% 98%) 88%, transparent);
+  --vp-nav-screen-bg-color: var(--vp-c-bg);
+  --vp-local-nav-bg-color: color-mix(in hsl, hsl(220 18% 98%) 92%, transparent);
+  --vp-sidebar-bg-color: hsl(220 16% 96%);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    hsl(187 92% 38%) 0%,
+    hsl(33 95% 48%) 100%
+  );
+}
+
+.dark {
+  --vp-c-bg: hsl(222 28% 5%);
+  --vp-c-bg-alt: hsl(222 26% 7%);
+  --vp-c-bg-elv: hsl(222 24% 9%);
+  --vp-c-bg-soft: hsl(222 22% 11%);
+
+  --vp-c-text-1: hsl(220 15% 95%);
+  --vp-c-text-2: hsl(220 12% 68%);
+  --vp-c-text-3: hsl(220 10% 50%);
+
+  --vp-c-border: hsl(222 18% 18%);
+  --vp-c-divider: hsl(222 18% 12%);
+  --vp-c-gutter: hsl(222 20% 9%);
+
+  --vp-c-brand-1: hsl(187 85% 62%);
+  --vp-c-brand-2: hsl(187 90% 52%);
+  --vp-c-brand-3: hsl(187 95% 48%);
+  --vp-c-brand-soft: hsl(187 95% 55% / 0.14);
+
+  --eg-docs-amber: hsl(33 100% 58%);
+
+  --vp-nav-bg-color: color-mix(in hsl, hsl(222 28% 5%) 86%, transparent);
+  --vp-nav-screen-bg-color: var(--vp-c-bg);
+  --vp-local-nav-bg-color: color-mix(in hsl, hsl(222 28% 5%) 90%, transparent);
+  --vp-sidebar-bg-color: hsl(222 26% 7%);
+
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    hsl(187 90% 55%) 0%,
+    hsl(33 100% 58%) 100%
+  );
+}
+
+.VPNavBar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+:root .VPNav {
+  border-bottom: 1px solid color-mix(in hsl, hsl(220 14% 88%) 65%, transparent);
+}
+
+.dark .VPNav {
+  border-bottom-color: color-mix(in hsl, hsl(222 18% 18%) 70%, transparent);
+}
+
+.VPLocalNav {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom-color: color-mix(in hsl, hsl(220 14% 88%) 55%, transparent);
+}
+
+.dark .VPLocalNav {
+  border-bottom-color: color-mix(in hsl, hsl(222 18% 18%) 55%, transparent);
+}
+
+@media (min-width: 960px) {
+  .VPSidebar {
+    border-right: 1px solid color-mix(in hsl, hsl(220 14% 88%) 45%, transparent);
+  }
+
+  .dark .VPSidebar {
+    border-right-color: color-mix(in hsl, hsl(222 18% 18%) 50%, transparent);
+  }
+}
+
+.vp-doc :not(pre) > code {
+  border-radius: var(--eg-docs-radius);
+}
+
+@media (min-width: 640px) {
+  .vp-doc div[class*='language-'],
+  .vp-block {
+    border-radius: var(--eg-docs-radius);
+  }
+
+  .vp-code-group .tabs {
+    border-radius: var(--eg-docs-radius) var(--eg-docs-radius) 0 0;
+  }
+}
+
+@media (max-width: 639px) {
+  .vp-doc li div[class*='language-'] {
+    border-radius: var(--eg-docs-radius) 0 0 var(--eg-docs-radius);
+  }
+}
+
+* {
+  scrollbar-color: color-mix(in hsl, hsl(220 14% 70%) 55%, transparent) var(--vp-c-bg);
+  scrollbar-width: thin;
+}
+
+.dark * {
+  scrollbar-color: color-mix(in hsl, hsl(222 18% 35%) 50%, transparent) var(--vp-c-bg);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--vp-c-bg);
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: color-mix(in hsl, hsl(220 14% 70%) 55%, transparent);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in hsl, hsl(220 14% 55%) 65%, transparent);
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background: color-mix(in hsl, hsl(222 18% 35%) 50%, transparent);
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in hsl, hsl(222 18% 48%) 55%, transparent);
+}
+
+.custom-block {
+  border-radius: var(--eg-docs-radius);
+}
+
+/* Home hero image — subtle amber ring */
+.VPHero .image {
+  filter: drop-shadow(0 12px 32px hsl(33 100% 50% / 0.18));
+}
+
+.dark .VPHero .image {
+  filter: drop-shadow(0 12px 40px hsl(187 95% 48% / 0.22));
+}
+
+/**
+ * Ambient background — slate grid + cyan/amber glow + noise (all pages).
+ * Injected via `layout-top` in `.vitepress/theme/index.ts`.
+ */
+
+.eg-docs-textures {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.eg-docs-textures__grid,
+.eg-docs-textures__glow,
+.eg-docs-textures__noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.eg-docs-textures__grid {
+  opacity: 0.34;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in hsl, hsl(220 14% 82%) 40%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in hsl, hsl(220 14% 82%) 40%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 90% 75% at 50% 32%, #000 6%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 75% at 50% 32%, #000 6%, transparent 70%);
+}
+
+.dark .eg-docs-textures__grid {
+  opacity: 0.42;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in hsl, hsl(222 18% 28%) 36%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in hsl, hsl(222 18% 28%) 36%, transparent) 1px,
+      transparent 1px
+    );
+}
+
+.eg-docs-textures__glow {
+  background:
+    radial-gradient(circle at 18% -8%, hsl(187 92% 42% / 0.14) 0%, transparent 52%),
+    radial-gradient(circle at 82% -12%, hsl(33 100% 50% / 0.12) 0%, transparent 48%);
+}
+
+.dark .eg-docs-textures__glow {
+  background:
+    radial-gradient(circle at 18% -8%, hsl(187 95% 48% / 0.12) 0%, transparent 52%),
+    radial-gradient(circle at 82% -12%, hsl(33 100% 58% / 0.1) 0%, transparent 48%);
+}
+
+.eg-docs-textures__noise {
+  opacity: 0.028;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.dark .eg-docs-textures__noise {
+  opacity: 0.04;
+}
+
+.Layout .VPContent,
+.Layout .VPFooter {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 775px) {
+  .VPNavBarHamburger {
+    display: none !important;
+  }
+
+  .VPNavBarMenu {
+    display: flex !important;
+  }
+
+  .VPNavScreen {
+    display: none !important;
+  }
+
+  .VPNavBarExtra {
+    display: block !important;
+  }
+
+  .VPNavBar .wrapper {
+    padding: 0 32px;
+  }
+}
+
+@media (max-width: 774px) {
+  .VPNavBarHamburger {
+    display: flex !important;
+  }
+
+  .VPNavBarMenu {
+    display: none !important;
+  }
+
+  .VPNavBarExtra {
+    display: none !important;
+  }
+
+  .VPNavScreen {
+    display: block !important;
+    position: fixed !important;
+    top: var(--vp-nav-height) !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: calc(100dvh - var(--vp-nav-height)) !important;
+    min-height: calc(100dvh - var(--vp-nav-height)) !important;
+    width: 100% !important;
+    z-index: calc(var(--vp-z-index-sidebar) + 5);
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .VPNav:has(.VPNavBar.screen-open) {
+    z-index: calc(var(--vp-z-index-sidebar) + 5);
+  }
+}
+
+@media (min-width: 1280px) {
+  .VPNavBarExtra {
+    display: none !important;
+  }
+
+  .VPNavBarAppearance,
+  .VPNavBarSocialLinks {
+    display: flex !important;
+    align-items: center;
+  }
+}
