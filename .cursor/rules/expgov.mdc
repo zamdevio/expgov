@@ -37,6 +37,6 @@ alwaysApply: true
 - **`maintainer/**`** is contributor-only.
 - **`docs/**`** is public copy (planned).
 
-## Pre-v1
-- Internal APIs may change freely.
-- User-facing surfaces (CLI argv, `--json` envelope, exit codes) are contract — treat changes as breaking.
+## v1 contract
+- User-facing surfaces (CLI argv, `--json` envelope, exit codes) are semver-stable — breaking changes need a major bump.
+- `@expgov/core` may grow additively in minor releases.

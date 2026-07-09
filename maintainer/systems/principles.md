@@ -13,7 +13,7 @@ Stable constraints for expgov design — not sprint plans.
 | Thin CLI | `packages/cli` — Commander, banners, init prompts only |
 | Tier explicitness | `@sdkTier` or config bucket — `unclassified` fails validate |
 | Cache is local | `.expgov/cache/` per SHA — gitignored, never committed |
-| Incremental PRs | One slice per PR; user-facing argv/JSON contracts are stable pre-v1 |
+| Incremental PRs | One slice per PR; user-facing argv/JSON contracts are semver-stable since v1 |
 
 ---
 

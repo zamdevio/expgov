@@ -43,7 +43,7 @@ Maintainer hub, user docs, CI, and project hygiene.
 - [x] `architecture.yml` — advisory knip + madge orphans/leaves
 - [x] Root `knip.json`, `vitest.config.ts`, `scripts/madge/run.mjs`
 - [x] `printCliHelp` scaffolding (A5 precursor)
-- [x] Workspace CLI package name `expgov` (publish root binary)
+- [x] Workspace CLI package name `expgov` (private sources); npm publish root `@expgov/cli`
 
 ---
 
@@ -69,5 +69,5 @@ Maintainer hub, user docs, CI, and project hygiene.
 - [x] `publishConfig`, `prepack`, `EXPGOV_PUBLISH` sourcemap omit
 - [x] `apps/docs/` VitePress + branded theme + `expgov.svg` logo
 - [x] `docs/sdk/README.md` — SDK install and host contract
-- [x] `maintainer/phases/release.md` — v0.0.1 checklist
-- [ ] npm publish + git tag `v0.0.1` + Cloudflare Pages deploy
+- [x] `maintainer/phases/release.md` — v1.0.0 checklist
+- [ ] npm publish `@expgov/cli@1.0.0` + `@expgov/core@1.0.0`; git tag `v1.0.0`; Cloudflare Pages deploy

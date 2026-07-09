@@ -4,7 +4,7 @@
 
 1. Root `README.md` — product vision and install
 2. [`maintainer/phases/active-phase.md`](../phases/active-phase.md) — current slice (release sprint)
-3. [`maintainer/phases/release.md`](../phases/release.md) — v0.0.1 checklist
+3. [`maintainer/phases/release.md`](../phases/release.md) — v1.0.0 checklist
 3. [`maintainer/agents/architecture.md`](./architecture.md) — layout
 4. [`maintainer/systems/tiers.md`](../systems/tiers.md) — tier schema + classifier
 5. [`maintainer/systems/cli.md`](../systems/cli.md) — host output contract

@@ -1,6 +1,6 @@
-# Release checklist — v0.0.1
+# Release checklist — v1.0.0
 
-First public release: **GitHub** + **npm** (dual packages) + **docs site**.
+First stable release: **GitHub** + **npm** (dual packages) + **docs site**.
 
 Reference: [nodehunter](https://github.com/zamdevio/nodehunter) publish model (`nodehunter` + `@nodehunter/core`).
 
@@ -80,20 +80,20 @@ pnpm publish --access public
 # from repo root
 pnpm publish --access public   # @expgov/cli
 
-git tag v0.0.1
-git push origin v0.0.1
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ---
 
-## Explicitly out of scope for v0.0.1
+## Explicitly out of scope for v1.0.0
 
 - C3 graph filters
 - Phase D / multibarrel / fix / config / issues backlog
-- New features beyond credible first release
+- Additive features beyond the inaugural stable surface
 
 ---
 
-## Pre-v1 contract
+## v1 contract
 
-CLI argv, `--json` envelope, and exit codes are user-facing. Internal APIs may still change pre-v1.
+CLI argv, `--json` envelope, and exit codes are semver-stable. `@expgov/core` may grow additively in minor releases; breaking SDK or CLI contract changes require a major bump.

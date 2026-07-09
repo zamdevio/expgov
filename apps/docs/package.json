@@ -1,6 +1,6 @@
 {
   "name": "@expgov/docs",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Documentation site (VitePress). Content is synced from repository docs/.",

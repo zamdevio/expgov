@@ -2,6 +2,9 @@ import { resolveCliVersion } from './version.js';
 
 export const CLI_NAME = 'expgov';
 
+/** npm package name for the published CLI (root `package.json`). */
+export const CLI_PACKAGE_NAME = '@expgov/cli' as const;
+
 export const CONFIG_BASE_NAME = `${CLI_NAME}.config`;
 
 export const CONFIG_FILE_NAME = `${CONFIG_BASE_NAME}.ts`;

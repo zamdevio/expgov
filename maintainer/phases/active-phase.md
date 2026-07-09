@@ -8,7 +8,7 @@
 
 ---
 
-## Focus now — First public release (v0.0.1)
+## Focus now — v1.0.0 stable release
 
 **Checklist:** [`release.md`](./release.md)
 
@@ -16,10 +16,10 @@ Ship **npm** (`@expgov/cli` + `@expgov/core`), **docs site** (`expgov.pages.dev`
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
-| 1 | **R1** — Publish metadata | In progress | LICENSE, READMEs, `publishConfig`, `prepack`, dual npm packages |
-| 2 | **R2** — Docs site | In progress | VitePress `apps/docs/`, sync from `docs/`, Cloudflare Pages |
-| 3 | **R3** — Docs audit | In progress | `docs/*` + `maintainer/*` match shipped CLI (timeline B, graph C1–C2) |
-| 4 | **R4** — Tag & publish | Pending | `pnpm build`, gate, `npm publish` ×2, git tag `v0.0.1` |
+| 1 | **R1** — Publish metadata | Shipped | LICENSE, READMEs, `publishConfig`, `prepack`, dual npm packages |
+| 2 | **R2** — Docs site | Shipped | VitePress `apps/docs/`, sync from `docs/`, Cloudflare Pages |
+| 3 | **R3** — Docs audit | Shipped | `docs/*` + `maintainer/*` match shipped CLI |
+| 4 | **R4** — Tag & publish | In progress | `v1.0.0` tag, npm publish ×2 (registry URL + install hints) |
 
 **Publish model (match nodehunter):**
 
@@ -34,7 +34,7 @@ Ship **npm** (`@expgov/cli` + `@expgov/core`), **docs site** (`expgov.pages.dev`
 
 **Doc:** [`graph-2.md`](./graph-2.md) · **Shipped (C1–C2):** [`../shipped/graph.md`](../shipped/graph.md)
 
-Resume **C3** graph filters after v0.0.1 ships.
+Resume **C3** graph filters after v1.0.0 ships.
 
 | # | Slice | Status |
 |---|-------|--------|

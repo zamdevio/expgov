@@ -1,6 +1,6 @@
 {
   "name": "expgov",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Workspace-only CLI sources for expgov. The installable npm package is the repository root (@expgov/cli). Keep version aligned with root package.json and @expgov/core on every release.",

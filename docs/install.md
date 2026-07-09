@@ -25,8 +25,8 @@ npm rejected publishing the unscoped name **`expgov`** as too similar to the exi
 
 We publish under the org scope instead:
 
-- **`@expgov/core@0.0.1`** — SDK engine
-- **`@expgov/cli@0.0.1`** — CLI (this is what you install for terminal use)
+- **`@expgov/core@1.0.0`** — SDK engine
+- **`@expgov/cli@1.0.0`** — CLI (this is what you install for terminal use)
 
 The CLI binary name stays **`expgov`** — only the install package name is `@expgov/cli`.
 
