@@ -1,6 +1,6 @@
 {
   "name": "@expgov/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Portable export-governance CLI for TypeScript SDK barrels.",
   "homepage": "https://expgov.pages.dev",
   "repository": {
