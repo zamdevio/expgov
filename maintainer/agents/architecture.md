@@ -4,7 +4,7 @@
 
 ```txt
 expgov/
-├── package.json              # published npm pkg `expgov`; bin → dist/cli.js; exports ./core
+├── package.json              # published npm pkg `@expgov/cli`; bin → dist/cli.js; exports ./core
 ├── expgov.config.ts          # dogfood tier config for @expgov/core
 ├── examples/
 │   └── sdk/                  # consumer-shaped SDK example (Phase I)

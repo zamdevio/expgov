@@ -1,6 +1,6 @@
 # Phase C — Graph 2.0
 
-**Status:** In progress — **C3 next** (filters). C1–C2 shipped — receipts: [`../shipped/graph.md`](../shipped/graph.md).
+**Status:** Paused — **C3** after Diff/Agentic (share filter vocab with AG5). C1–C2 shipped — receipts: [`../shipped/graph.md`](../shipped/graph.md).
 
 **Companion:** [`../systems/exports.md`](../systems/exports.md) · [`../systems/cli.md`](../systems/cli.md) · Insights: [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) P17
 
@@ -19,7 +19,7 @@
 
 1. ~~Reorient the graph around **root namespaces** as primary nodes~~ — **C1 shipped**
 2. ~~Add **quantitative graph metadata** (density, fan-in/out, hottest modules)~~ — **C2 shipped**
-3. Introduce **consistent filters** (`--namespace`, `--module`, `--category`, `--subpath`) — **C3 next**
+3. Introduce **consistent filters** (`--namespace`, `--module`, `--category`, `--subpath`) — **C3** (paused; design with Agentic AG5)
 4. Brainstorm **additional graph modes** (`--view`, JSON graph export) — **C4 deferred**
 
 ---
@@ -148,7 +148,7 @@ Prefer **one flag** `--view <mode>` over many commands when modes share filters.
 
 1. ~~**C2** Analytics module~~ — shipped
 2. ~~**C1** Namespace-centric report~~ — shipped
-3. **C3** Filters (namespace, module, category, subpath)
+3. **C3** Filters — after Diff D1–D2 + Agentic AG1–AG2; share vocabulary with AG5
 4. **C4** Modes as incremental flags (`--view subpath` default)
 
-Estimated: **2–3 PRs** after Phase A.
+Resume from [`active-phase.md`](./active-phase.md) when Diff/Agentic focus clears.

@@ -1,6 +1,6 @@
 # Phase — Severity (tier policy engine)
 
-**Status:** Planned — after Phase **G** (per [`active-phase.md`](./active-phase.md) backlog).
+**Status:** Planned — after Diff/Agentic and Phase **G** (per [`active-phase.md`](./active-phase.md) backlog order).
 
 **Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) · [`fix.md`](./fix.md) · [`issues.md`](./issues.md) · [`docs/commands/README.md`](./commands.md)
 
@@ -382,7 +382,7 @@ flowchart LR
   V3 --> S1
 ```
 
-**Schedule:** after Phase **G** per [`active-phase.md`](./active-phase.md) — then **Severity (V1–V7)** → **Suggest (S1–S8)** → **Severity V8** can ship in same PR as suggest S1 if convenient.
+**Schedule:** after Diff/Agentic and Phase **G** per [`active-phase.md`](./active-phase.md) — then **Severity (V1–V7)** → **Suggest (S1–S8)** → **Severity V8** can ship in same PR as suggest S1 if convenient.
 
 ---
 

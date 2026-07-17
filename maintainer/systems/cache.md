@@ -63,3 +63,14 @@ Cache must not be committed. `git/gitignore-tip.ts` suggests adding the configur
 ## Meta
 
 `meta.json` tracks cache version (`CACHE_META_VERSION` in `shared/constants/cache.ts`).
+
+## Snapshot validation (shipped P24 / v1.0.1)
+
+Cached `inventory.full.json` must pass `isValidSnapshot` (`cache/store/validation.ts`):
+
+- `version === SNAPSHOT_VERSION` and `toolVersion === TOOL_VERSION`
+- `summary.root` / subpath `byTier` include `custom` tier rollup maps (post–custom-tier shape)
+
+**On invalid / legacy read:** delete the bad entry, rebuild from git (or worktree), write a fresh snapshot. Users usually do **not** need `-f/--force` for schema drift — the next command recovers automatically. Use `-f` for suspected corruption; `--no-cache` for CI/debug bypass; delete the cache dir for a nuclear wipe.
+
+User-facing note: `docs/cli/flags.md` (Stale cache schema).

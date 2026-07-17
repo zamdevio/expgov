@@ -14,4 +14,4 @@
 | **CLI host** | `packages/cli` | Commander, banners, init prompts |
 | **Plans** | `maintainer/phases/` | **When** to build what |
 | **Maps** | `maintainer/systems/` | **How** subsystems wire |
-| **User docs** | `docs/` | End-user markdown (planned) |
+| **User docs** | `docs/` | End-user markdown (synced → `apps/docs/` / [expgov.pages.dev](https://expgov.pages.dev)) |

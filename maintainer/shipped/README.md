@@ -2,7 +2,7 @@
 
 Closed slices only — check here before re-implementing. Durable engineering detail lives in [`systems/`](../systems/README.md).
 
-**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `e74abeb` (P7–P16) · `006b45a` → `0b7f5f0` (P17–P20) · `5492383` → `7698189` (P18–P19) · `b8ccbdb` (Phase I1/I3) · `495f6ec` → `31d8ded` (B1, P21–P23).
+**Commits on `main`:** `a78a6fe` → `651bf29` (2026-W26) · `d372532` → `e74abeb` (P7–P16) · `006b45a` → `0b7f5f0` (P17–P20) · `5492383` → `7698189` (P18–P19) · `b8ccbdb` (Phase I1/I3) · `495f6ec` → `31d8ded` (B1, P21–P23) · `3eeb5cf` → `53dd15c` (R1–R4, v1.0.0 / v1.0.1).
 
 ---
 
@@ -51,6 +51,10 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W26 | **P21** — listing policy (tiers) | Custom tier rollup rows + diff violations/deltas; suggest/doctor `-T/-F` (`c5a5342`) |
 | 2026-W26 | **P22** — meta + range help | `formatMetaEndpoint`; Commander `Range formats:`; CLI `types/` (`ab8cb85`) |
 | 2026-W26 | **P23** — tier policy engine | `tiers.policies` registry; composable `rootFlat` rules (`31d8ded`) |
+| 2026-W28 | **R1–R4** — v1.0.0 stable release | Dual npm (`@expgov/cli` + `@expgov/core`), docs site, GitHub tag (`3eeb5cf`) — [`release.md`](./release.md) |
+| 2026-W28 | **P24** — cache schema invalidation | Reject legacy snapshots missing tier `custom` rollups; auto-rebuild on read (`4c8ea8e`) |
+| 2026-W28 | **P25** — diff custom-tier guard | Incomplete summary rollups safe in diff/insights (`8f4273c`) |
+| 2026-W28 | **R4a** — v1.0.1 patch | Cache recovery docs + package bump (`8b83ff9`, `53dd15c`) — [`release.md`](./release.md) |
 
 ---
 
@@ -59,11 +63,11 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Group | Slices | Doc |
 |-------|--------|-----|
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
-| Inventory & cache | P0a, P0b, P4, P16 | [`inventory-cache.md`](./inventory-cache.md) |
-| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C2 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
+| Inventory & cache | P0a, P0b, P4, P16, P24 | [`inventory-cache.md`](./inventory-cache.md) |
+| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C2, P25 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22 | [`runtime-cli.md`](./runtime-cli.md) |
-| Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3 | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) |
+| Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3, R1–R4, R4a | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) · [`release.md`](./release.md) |
 
 ---
 
@@ -73,11 +77,15 @@ Closed slices only — check here before re-implementing. Durable engineering de
 |--------|--------|
 | **expgov repo** | Root `expgov.config.ts`; custom tiers (`beta`, `deprecated`); `expgov validate` passes |
 | **Global CLI** | `pnpm build && pnpm link --global` → `expgov` on PATH |
+| **npm** | `@expgov/cli@1.0.1` + `@expgov/core@1.0.1` published |
+| **Docs** | [expgov.pages.dev](https://expgov.pages.dev) |
 
 ---
 
 ## Explicitly not shipped
 
+- [ ] Diff `--fail-on-removed` / `validate --since` ([`phases/diff.md`](../phases/diff.md))
+- [ ] Agentic full JSON symbols/edges ([`phases/agentic.md`](../phases/agentic.md))
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache
@@ -93,6 +101,7 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 |--------------|-------------|------------|
 | Barrel snapshot | P0a | `inventory/build.ts` |
 | Cache warm/read | P0b | `cache/store/*` |
+| Legacy snapshot reject / rebuild | P24 | `cache/store/validation.ts` · [`systems/cache.md`](../systems/cache.md) |
 | tsconfig ↔ npm check | P0d | `commands/validate.ts` |
 | `--json` envelope | P1 | `shared/result/cliJson.ts` |
 | `-q` / `-s` gates | P1 | `runtime/policy.ts` |
@@ -121,4 +130,5 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | Timeline step metadata | B3 | `timeline/stepMeta.ts`, light snapshot symbols |
 | `expgov version` | P8 | `commands/version.ts` |
 | SDK example workspace | I1, I3 | [`examples-sdk.md`](./examples-sdk.md) · [`examples/sdk/`](../../examples/sdk/) |
+| Dual npm + docs site | R1–R4, R4a | [`release.md`](./release.md) |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

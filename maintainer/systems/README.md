@@ -13,6 +13,6 @@
 | [`cache.md`](./cache.md) | `.expgov/cache/` layout, worktree `files.json` gate (P16) |
 | [`observability.md`](./observability.md) | Metrics-over-snapshots model; Phase G catalog (planned) |
 
-**Shipped receipts:** [`shipped/README.md`](../shipped/README.md)
-**Active plans:** [`phases/active-phase.md`](../phases/active-phase.md)
+**Shipped receipts:** [`shipped/README.md`](../shipped/README.md) · **Release:** [`shipped/release.md`](../shipped/release.md)
+**Active plans:** [`phases/active-phase.md`](../phases/active-phase.md) (focus: Diff fail gate)
 **Rules:** [`agents/rules.md`](../agents/rules.md)

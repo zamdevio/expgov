@@ -49,3 +49,15 @@ Engineering map: [`systems/cache.md`](../systems/cache.md).
 - [x] `collectBarrelScanClosure` — deep re-export hops (`findNamedReexportSpecifier` walk)
 - [x] Full rebuild on any hash diff — no incremental snapshot merge
 - [x] Tests: hit/miss on barrel, direct module, and deep re-export edits; tmp fixtures under `<tmpdir>/expgov/`
+
+---
+
+## P24 — legacy snapshot schema invalidation (shipped) · `4c8ea8e`
+
+- [x] `isValidSnapshot` / `isValidTiersCounts` require `summary.root.custom` (and subpath `byTier.custom`)
+- [x] On read: reject outdated cache files → delete entry → rebuild from git → write fresh snapshot
+- [x] Tests: `cache/store/__tests__/validation.test.ts`
+- [x] User docs: `docs/cli/flags.md` (stale cache schema; usually no `-f` needed)
+
+Engineering map: [`systems/cache.md`](../systems/cache.md).
+Release context: [`release.md`](./release.md) (v1.0.1).

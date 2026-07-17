@@ -62,12 +62,13 @@ Maintainer hub, user docs, CI, and project hygiene.
 
 ---
 
-## R0 — First release prep (in progress) · 2026-W27
+## R0 / R1–R4 — First stable release (shipped) · 2026-W28
 
 - [x] Dual npm publish model — `@expgov/cli` + `@expgov/core` (unscoped `expgov` blocked by npm; see `docs/install.md`)
 - [x] `LICENSE`, root `README.md`, `packages/core/README.md`
 - [x] `publishConfig`, `prepack`, `EXPGOV_PUBLISH` sourcemap omit
 - [x] `apps/docs/` VitePress + branded theme + `expgov.svg` logo
 - [x] `docs/sdk/README.md` — SDK install and host contract
-- [x] `maintainer/phases/release.md` — v1.0.0 checklist
-- [ ] npm publish `@expgov/cli@1.0.0` + `@expgov/core@1.0.0`; git tag `v1.0.0`; Cloudflare Pages deploy
+- [x] npm publish `@expgov/cli@1.0.0` + `@expgov/core@1.0.0`; git tag `v1.0.0`; Cloudflare Pages (`expgov.pages.dev`)
+- [x] v1.0.1 patch — cache schema invalidation + docs + package bump (`4c8ea8e` → `53dd15c`)
+- [x] Receipt: [`release.md`](./release.md) (phase plan `phases/release.md` removed)

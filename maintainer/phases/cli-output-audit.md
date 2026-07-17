@@ -147,7 +147,7 @@ banner (CLI) → meta rows → report body → verbose sections → insights (Ph
 |------|---------|----------------|
 | Structure | Section per command | Phase A workflows |
 | Global flags | Missing short aliases | Update after Phase A2 |
-| Color | Uses chalk directly | OK in help path |
+| Color hierarchy | Binary/command/flags lack token contrast | **Planned HELP1** — blue binary, cyan command, dim flags in Usage/Examples ([`help.md`](./help.md)) |
 | Commander `--help` | Shorter than `expgov help` | Cross-ref in configureCliHelp epilog |
 
 ---

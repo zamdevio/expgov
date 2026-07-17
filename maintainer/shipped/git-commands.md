@@ -62,3 +62,12 @@ Command contracts: [`phases/commands.md`](../phases/commands.md).
 - [x] Global `-V` when no subcommand (Commander version flag)
 - [x] Build-time defines `__EXPGOV_CLI_VERSION__` / `__EXPGOV_SDK_VERSION__` via tsup
 - [x] `--check` / `--reset` for npm registry update hint + cached state
+
+---
+
+## P25 — diff custom-tier guard (shipped) · `8f4273c`
+
+- [x] Diff / insights tolerate incomplete summary tier rollups (missing `custom`) without throwing
+- [x] Complements P24 cache validation — old in-memory paths stay safe during upgrade
+
+Release context: [`release.md`](./release.md) (v1.0.1).

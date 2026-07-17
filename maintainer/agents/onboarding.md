@@ -3,11 +3,13 @@
 ## Reading order
 
 1. Root `README.md` — product vision and install
-2. [`maintainer/phases/active-phase.md`](../phases/active-phase.md) — current slice (release sprint)
-3. [`maintainer/phases/release.md`](../phases/release.md) — v1.0.0 checklist
-3. [`maintainer/agents/architecture.md`](./architecture.md) — layout
-4. [`maintainer/systems/tiers.md`](../systems/tiers.md) — tier schema + classifier
-5. [`maintainer/systems/cli.md`](../systems/cli.md) — host output contract
+2. [`maintainer/phases/active-phase.md`](../phases/active-phase.md) — current slice (Diff fail gate)
+3. [`maintainer/shipped/README.md`](../shipped/README.md) — closed work (do not re-implement)
+4. [`maintainer/agents/architecture.md`](./architecture.md) — layout + dual publish
+5. [`maintainer/systems/tiers.md`](../systems/tiers.md) — tier schema + classifier
+6. [`maintainer/systems/cli.md`](../systems/cli.md) — host output contract
+
+Release receipt (already shipped): [`../shipped/release.md`](../shipped/release.md).
 
 ## Trace a command
 
@@ -32,7 +34,7 @@ commands/init/run.ts → runInit (core) → write expgov.config.ts
 - [ ] Not already in `maintainer/shipped/README.md`
 - [ ] Core logic has no prompts/chalk in command paths
 - [ ] Tier/export changes include `expgov validate` pass
-- [ ] Update `maintainer/shipped/README.md` on ship
+- [ ] Update `maintainer/shipped/README.md` on ship; fold durable notes into `systems/`
 
 ## Local dev
 
