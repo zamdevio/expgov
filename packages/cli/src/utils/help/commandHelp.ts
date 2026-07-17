@@ -14,7 +14,7 @@ const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {
     examples: [
       'expgov diff HEAD',
       'expgov diff HEAD~30..HEAD~1',
-      'expgov diff v1.0.0..v2.0.0',
+      'expgov diff v1.0.0..HEAD --fail-on-removed',
       'expgov diff -F',
     ],
     rangeFormats: () => [

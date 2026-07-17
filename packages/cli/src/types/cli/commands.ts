@@ -25,6 +25,11 @@ export interface ValidateCommandOpts extends VerboseOpts, ListFlagOpts {
   since?: string;
 }
 
+export interface DiffCommandOpts extends CacheListVerboseOpts {
+  failOnRemoved?: boolean;
+  failOnTierViolations?: boolean;
+}
+
 export interface TrendCommandOpts extends CacheListVerboseOpts {
   tags: number;
 }

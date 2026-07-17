@@ -1,6 +1,7 @@
 export type {
   CacheFlagOpts,
   CacheListVerboseOpts,
+  DiffCommandOpts,
   GlobalOpts,
   HelpOutputOpts,
   InitCommandOpts,

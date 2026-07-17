@@ -27,6 +27,7 @@ import { CLI_NAME, CLI_ROOT_DESCRIPTION } from '../src/constants/cli.js';
 import { getCliYesFlag, resetCliGlobals, setCliYesFlag } from '../src/shared/context/globals.js';
 import type {
   CacheListVerboseOpts,
+  DiffCommandOpts,
   GlobalOpts,
   InitCommandOpts,
   ListFlagOpts,
@@ -173,9 +174,11 @@ function buildProgram(): Command {
         .description('compare export surfaces between refs')
         .argument('[range]', 'ref or A..B range')
         .option('-v, --verbose', 'verbose output')
+        .option('--fail-on-removed', 'exit 1 when flat exports were removed')
+        .option('--fail-on-tier-violations', 'exit 1 when right-side tier violations exist')
         .action((range: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as CacheListVerboseOpts;
-          withContext(cmd, local.verbose, program, () => {
+          const local = cmd.opts() as DiffCommandOpts;
+          withContext(cmd, local.verbose, program, () =>
             runExportsDiff({
               range,
               noCache: local.cache === false,
@@ -183,8 +186,10 @@ function buildProgram(): Command {
               verbose: local.verbose,
               top: local.top,
               full: local.full,
-            });
-          });
+              failOnRemoved: local.failOnRemoved,
+              failOnTierViolations: local.failOnTierViolations,
+            }),
+          );
         }),
     ),
   );
