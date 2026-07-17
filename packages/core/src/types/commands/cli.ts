@@ -5,6 +5,10 @@ export interface DiffCliOptions extends ListViewOptions {
   noCache?: boolean;
   force?: boolean;
   verbose?: boolean;
+  /** Exit 1 when flat exports were removed (opt-in CI gate). */
+  failOnRemoved?: boolean;
+  /** Exit 1 when right-side tier violations exist (opt-in CI gate). */
+  failOnTierViolations?: boolean;
 }
 
 export interface DoctorCliOptions extends ListViewOptions {

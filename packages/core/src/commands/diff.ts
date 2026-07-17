@@ -1,6 +1,6 @@
 import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
-import { diffSnapshots } from '../format/index.js';
+import { diffSnapshots, evaluateDiffFailMode } from '../format/index.js';
 import { computeDiffInsights } from '../insights/index.js';
 import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
@@ -8,7 +8,7 @@ import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { DiffCliOptions } from '../types/commands/cli.js';
 
-export function runExportsDiff(options: DiffCliOptions): void {
+export function runExportsDiff(options: DiffCliOptions): number {
   const timer = beginCommand('diff');
   const { left, right, rangeLabel } = parseDiffRange(options.range);
   const cacheOpts = resolveCacheOptions({ noCache: options.noCache, force: options.force });
@@ -17,19 +17,34 @@ export function runExportsDiff(options: DiffCliOptions): void {
   const rightResult = getSnapshot(right, cacheOpts);
   const diff = diffSnapshots(leftResult.snapshot, rightResult.snapshot);
   const insights = computeDiffInsights(leftResult.snapshot, rightResult.snapshot, diff);
+  const { passed, issues } = evaluateDiffFailMode(diff, {
+    failOnRemoved: options.failOnRemoved,
+    failOnTierViolations: options.failOnTierViolations,
+  });
+  const exitCode = passed ? 0 : 1;
+  const status = passed ? 'ok' : 'fail';
 
   if (getRunOptions().json) {
     finishCommand({
       command: 'diff',
       timer,
-      status: 'ok',
+      status,
+      exitCode,
       json: {
         kind: 'diff',
-        ok: true,
-        data: { rangeLabel, diff: diff.summaryDelta, added: diff.added, removed: diff.removed, insights },
+        ok: passed,
+        issues,
+        data: {
+          rangeLabel,
+          diff: diff.summaryDelta,
+          added: diff.added,
+          removed: diff.removed,
+          tierViolations: diff.tierViolations,
+          insights,
+        },
       },
     });
-    return;
+    return exitCode;
   }
 
   printDiffReport({ rangeLabel, left: leftResult, right: rightResult, diff, listView: options });
@@ -42,12 +57,15 @@ export function runExportsDiff(options: DiffCliOptions): void {
   finishCommand({
     command: 'diff',
     timer,
-    status: 'ok',
+    status,
+    exitCode,
     footer: {
       counts: {
         added: diff.added.length,
         removed: diff.removed.length,
+        ...(issues.length ? { issues: issues.length } : {}),
       },
     },
   });
+  return exitCode;
 }
