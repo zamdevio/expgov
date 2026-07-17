@@ -70,6 +70,17 @@ expgov validate
 
 Fails with exit `1` when violations exist — suitable for GitHub Actions without parsing output.
 
+## CI gate (no export removals)
+
+After a frozen 1.x baseline tag, fail when public flats disappear:
+
+```bash
+expgov validate
+expgov diff v1.0.0..HEAD --fail-on-removed
+```
+
+Optional: also fail on right-side tier violations with `--fail-on-tier-violations`. Default `diff` (no fail flags) stays exit `0`. See [diff](../commands/diff.md).
+
 ## CI gate (JSON artifact)
 
 ```bash

@@ -137,7 +137,14 @@ expgov validate --json --silent > validate.json
 test "$(jq -r .ok validate.json)" = "true"
 ```
 
-Parse `ok` and `issues` for automation. Exit-code-only gates work without `--json`.
+Surface regression gate (opt-in on `diff`):
+
+```bash
+expgov diff v1.0.0..HEAD --fail-on-removed --json --silent > diff.json
+test "$(jq -r .ok diff.json)" = "true"
+```
+
+Failing diff runs emit `issues[]` with `expgov.diff.exports_removed` and/or `expgov.diff.tier_violation`. Parse `ok` and `issues` for automation. Exit-code-only gates work without `--json`.
 
 ## Related
 
