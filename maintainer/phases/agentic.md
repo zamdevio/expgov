@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Planned — post-v1.0.0. Highest ROI after (or in parallel with) [`diff.md`](./diff.md). **AG3/AG4** = Diff D1/D2 (do not duplicate).
+**Status:** Active — D1 completed the fail-mode half of AG3; AG1–AG2 are next. **AG3/AG4** share Diff D1/D2 work (do not duplicate).
 
 **Companion:** [`diff.md`](./diff.md) · [`severity.md`](./severity.md) · [`cli-output-audit.md`](./cli-output-audit.md) · [`docs/cli/json.md`](../../docs/cli/json.md) · [`docs/guides/workflows.md`](../../docs/guides/workflows.md)
 
@@ -25,7 +25,7 @@ Dogfood target: nodehunter (and any SDK that freezes a 1.x surface) can automate
 | `inventory -v -j` | JSON = summary only; symbol table is human `-v` only | Cannot enumerate exports via JSON |
 | `graph -F -j` | Analytics rollup only; edges not in JSON | Cannot reason about re-export graph |
 | Default `-T 10` | Truncation in human lists | Fine for TTY; wrong default for agents if they scrape text |
-| `diff` | Always exit `0` / `ok: true` | Cannot gate on removals — see [`diff.md`](./diff.md) |
+| `diff` detail | Fail gate shipped; verbose JSON lacks added/removed metadata | Agents can gate removals, but cannot inspect rich symbol changes |
 | `validate --since` | Reserved, unimplemented | One-command “PR shippable?” missing |
 | Insights shape | `{ lines }` vs richer objects, per command | Fragile agent parsers |
 | Full data | Lives in `inventory.full.json` cache | Unofficial; agents shouldn’t dig cache |
@@ -185,13 +185,13 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 |----|-------|---------|---------|
 | **AG1** | JSON inventory symbols/namespaces (`-v`/`-F`) | — | Agents can list all exports |
 | **AG2** | JSON graph edges (`-v`/`-F`) | — | Agents can map re-exports |
-| **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | CI-ready surface gate |
+| **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | **Partial** — fail flags shipped in D1; `-v` detail JSON still open |
 | **AG4** | `validate --since` | AG3 compare core | One-command PR gate |
 | **AG5** | Filter flags (`--tier`, `--category`, …) | AG1–2 | Flexible queries |
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
 | **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | Public contract |
 
-Suggested order: **AG1 → AG2 → AG3 → AG4 → AG5 → AG6 → AG7**.
+Suggested remaining order: **AG1 → AG2 → AG3 detail → AG4 → AG5 → AG6 → AG7**.
 
 ---
 

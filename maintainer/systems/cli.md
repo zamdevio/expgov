@@ -32,6 +32,8 @@ Thin Commander host — argv, banners, help colorization, init prompts. No domai
 
 Per-command list flags (`inventory`, `diff`, `graph`, `trend`, `timeline`, `validate`, `suggest`, `doctor`): `-T, --top <n>` (default 10, min 1), `-F, --full`.
 
+**`diff` fail flags (shipped D1):** `--fail-on-removed`, `--fail-on-tier-violations` — opt-in exit `1` / `ok: false` / `issues[]`. Default remains exit `0`.
+
 Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode never applies ANSI.
 
 Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style default action).

@@ -16,8 +16,8 @@ Ship an opt-in CI removal gate for frozen 1.x export surfaces (nodehunter and si
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
-| 1 | **D1** — `diff` fail flags | Next | `--fail-on-removed`, `--fail-on-tier-violations`; `ok: false` + `issues[]` when failing |
-| 2 | **AG1** — inventory JSON symbols | Next (after D1 or parallel) | `symbols[]` / `namespaces[]` under `-v`/`-F` |
+| 1 | **D1** — `diff` fail flags | **Shipped** | `--fail-on-removed`, `--fail-on-tier-violations`; `ok: false` + `issues[]` when failing |
+| 2 | **AG1** — inventory JSON symbols | Next | `symbols[]` / `namespaces[]` under `-v`/`-F` |
 | 3 | **AG2** — graph JSON edges | Next | `edges[]` under `-v`/`-F` |
 | 4 | **D2 / AG4** — `validate --since` | After D1 | Shared compare core → baseline vs worktree; fail on removals + existing validate rules |
 

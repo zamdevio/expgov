@@ -71,3 +71,15 @@ Command contracts: [`phases/commands.md`](../phases/commands.md).
 - [x] Complements P24 cache validation — old in-memory paths stay safe during upgrade
 
 Release context: [`release.md`](./release.md) (v1.0.1).
+
+---
+
+## D1 — diff fail gate (shipped) · 2026-W29
+
+- [x] `--fail-on-removed` / `--fail-on-tier-violations` on `expgov diff` (opt-in; default still exit `0`)
+- [x] `evaluateDiffFailMode` — `format/diffFail.ts`; codes `expgov.diff.exports_removed`, `expgov.diff.tier_violation`
+- [x] JSON `ok: false` + `issues[]` when failing; `data.tierViolations` always included
+- [x] Tests: `shared/__tests__/diffFail.test.ts`
+- [x] Docs: `docs/commands/diff.md`, workflows CI snippet, `docs/cli/json.md`
+
+Still open: D2 `validate --since`, D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).

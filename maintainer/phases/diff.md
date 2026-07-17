@@ -1,6 +1,6 @@
 # Phase — Diff fail gate (export surface regressions)
 
-**Status:** Active — next sprint (post-v1.0.1). Triggered by [nodehunter](https://github.com/zamdevio/nodehunter) `v1.0.0` frozen surface.
+**Status:** Active — **D1 shipped**; next D2 / Agentic AG1–AG2. Triggered by [nodehunter](https://github.com/zamdevio/nodehunter) `v1.0.0` frozen surface.
 
 **Companion:** [`agentic.md`](./agentic.md) · [`commands.md`](./commands.md) · [`severity.md`](./severity.md) · [`docs/commands/diff.md`](../../docs/commands/diff.md)
 
@@ -14,21 +14,15 @@ Make `expgov diff` (and/or `validate --since`) usable as a **CI fail gate** when
 
 ## Problem
 
-Consumers that treat the root barrel as a **frozen stable contract** (e.g. `@nodehunter/core` after `v1.0.0`) need CI to fail when exports are **removed** relative to a baseline tag.
-
-Today that gate **does not exist**:
+Consumers that treat the root barrel as a **frozen stable contract** (e.g. `@nodehunter/core` after `v1.0.0`) need CI to fail when exports are **removed** relative to a baseline tag. D1 now provides the direct `diff` gate; D2 will compose that comparison into `validate`.
 
 | Command | What it does | Exit on removals? |
 |---------|--------------|-------------------|
 | `expgov validate` | Tier / tsconfig ↔ npm parity / unclassified | **No** — current-tree only |
-| `expgov diff A..B` | Reports `added` / `removed` / tier notes | **No** — always `ok: true`, exit `0` |
+| `expgov diff A..B` | Reports `added` / `removed` / tier notes | **Opt-in** — `--fail-on-removed` exits `1`; default remains informational |
 | `validate --since <ref>` | Documented as reserved | **Not implemented** |
 
-Proof: `expgov diff HEAD~30..v1.0.0 -j` can report `removed: 3` while exiting `0` with `"ok": true`.
-
-Code: `packages/core/src/commands/diff.ts` always finishes with `status: 'ok'` / `json.ok: true`. No `--fail-on-removed` flag and no config knob for “fail if removed since baseline.”
-
-Wiring bare `expgov diff v1.0.0..HEAD` into consumer CI stays **green** even after deleting a public symbol such as `runScan`.
+Bare `expgov diff v1.0.0..HEAD` intentionally stays green for compatibility. Consumer CI must opt into `--fail-on-removed`.
 
 ---
 
@@ -91,27 +85,25 @@ CI can run `expgov validate --since` / `expgov diff --fail-on-removed` without h
 
 ## Acceptance criteria
 
-- [ ] Known removal between `A..B` → non-zero exit when fail mode enabled
-- [ ] No removals → exit `0`
-- [ ] Default `expgov diff` (no fail flag) remains exit `0` (no breaking CLI change)
-- [ ] `--json` sets `ok: false` + structured `issues` when failing
-- [ ] Docs: `docs/commands/diff.md`, `docs/commands/validate.md`, CI snippet in `docs/guides/workflows.md`
-- [ ] Core tests for fail / no-fail paths
+- [x] Known removal between `A..B` → non-zero exit when fail mode enabled
+- [x] No removals → exit `0`
+- [x] Default `expgov diff` (no fail flag) remains exit `0` (no breaking CLI change)
+- [x] `--json` sets `ok: false` + structured `issues` when failing
+- [x] Docs: `docs/commands/diff.md`, `docs/commands/validate.md`, CI snippet in `docs/guides/workflows.md`
+- [x] Core tests for fail / no-fail paths (`shared/__tests__/diffFail.test.ts`)
+
+**D1 shipped** — `evaluateDiffFailMode` + CLI flags. **D2** (`validate --since`) and **D3** (`compatBaseline`) still open.
 
 ---
 
-## Workaround (temporary — replace after D1/D2)
+## CI use after D1
 
 ```bash
-expgov diff v1.0.0..HEAD -j --silent | node -e '
-const d = JSON.parse(require("fs").readFileSync(0, "utf8"));
-const removed = d.data?.removed ?? [];
-if (removed.length) {
-  console.error("export surface regression: removed", removed);
-  process.exit(1);
-}
-'
+expgov validate
+expgov diff v1.0.0..HEAD --fail-on-removed
 ```
+
+Use an immutable released tag or commit as the baseline. This protects removals and renames while allowing additive API growth. Keep `validate` alongside it for current-tree tier and policy checks until D2 ships.
 
 ---
 

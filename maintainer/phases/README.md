@@ -28,7 +28,7 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 
 | Doc | Phase |
 |-----|-------|
-| [`diff.md`](./diff.md) | **Focus** — Diff fail gate (`--fail-on-removed`, `validate --since`) |
+| [`diff.md`](./diff.md) | **Focus** — Diff fail gate (**D1 shipped**; D2 next) |
 | [`agentic.md`](./agentic.md) | Agentic JSON completeness + flexible flags (AG3/AG4 owned by diff) |
 | [`help.md`](./help.md) | HELP1 — small parallel help color hierarchy slice |
 | [`graph-2.md`](./graph-2.md) | C — Graph 2.0 (C3 paused; align filters with AG5) |

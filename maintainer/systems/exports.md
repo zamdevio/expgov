@@ -27,11 +27,13 @@
 | Command | Purpose |
 |---------|---------|
 | `expgov inventory` | Snapshot current export surface |
-| `expgov diff` | Compare refs / working tree |
+| `expgov diff` | Compare refs / working tree; optional `--fail-on-removed` / `--fail-on-tier-violations` CI gates |
 | `expgov validate` | Guardrail checks (CI-friendly exit code) |
 | `expgov trend` | Count drift across release tags |
 | `expgov timeline` | Barrel-change commit history |
 | `expgov graph` | Re-export map by source module |
+
+Default `diff` is informational (exit `0`). Opt-in fail flags emit `issues[]` codes `expgov.diff.exports_removed` and `expgov.diff.tier_violation` when enabled. Shared evaluator: `format/diffFail.ts` (`evaluateDiffFailMode`).
 
 ---
 
