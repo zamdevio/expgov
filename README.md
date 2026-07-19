@@ -45,7 +45,7 @@ pnpm add -g @expgov/cli
 ```
 
 ```bash
-# SDK only — programmatic runExports* APIs (not needed for CLI or config)
+# SDK only — programmatic run* APIs (not needed for CLI or config)
 pnpm add -D @expgov/core
 # or: npm install -D @expgov/core
 ```
@@ -59,7 +59,7 @@ The **`@expgov/cli`** tarball ships a self-contained CLI (`dist/cli.js` — core
 Use the core engine when you want programmatic control — no shelling out, no Commander, no `console.*` in command paths.
 
 ```ts
-import { runExportsValidate } from '@expgov/core';
+import { runValidate } from '@expgov/core';
 import {
   initProjectContext,
   setRunOptions,
@@ -68,15 +68,15 @@ import {
 
 initProjectContext({ cwd: process.cwd() });
 setRunOptions({ json: true, quiet: true });
-const exitCode = runExportsValidate();
+const exitCode = runValidate();
 resetRunOptions();
 ```
 
 Why SDK consumers pick this:
 
-- **Same engines as the CLI** — `runExportsInventory`, `runExportsDiff`, `runExportsValidate`, `runExportsTrend`, `runExportsTimeline`, `runExportsGraph`, and more.
+- **Same engines as the CLI** — `runInventory`, `runDiff`, `runValidate`, `runTrend`, `runTimeline`, `runGraph`, and more.
 - **Host-neutral** — your script wires the log sink; core emits structured output or JSON envelopes.
-- **Config types included** — `@expgov/cli` ships `@expgov/cli/core`; SDK package is for `runExports*` without the binary.
+- **Config types included** — `@expgov/cli` ships `@expgov/cli/core`; SDK package is for `run*` command APIs without the binary.
 - **Stable `--json` contract** — envelope shape matches the CLI for CI parity.
 
 Primary references:
@@ -156,7 +156,7 @@ Hosted docs: [expgov.pages.dev](https://expgov.pages.dev)
 
 | Path | Responsibility |
 |------|----------------|
-| `packages/core/` | Domain engine (`runExports*`, inventory, tiers, cache) |
+| `packages/core/` | Domain engine (`run*` commands, inventory, tiers, cache) |
 | `packages/cli/` | Commander host, banners, help colorization, `init` prompts |
 | `apps/docs/` | VitePress site (content synced from `docs/`) |
 | `docs/` | Source-of-truth user documentation |

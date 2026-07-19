@@ -1,6 +1,6 @@
 /**
  * `@expgov/core/advanced` — supported but not semver-stable root surface.
- * Prefer root `@expgov/core` for config + `runExports*` consumers.
+ * Prefer root `@expgov/core` for config + `run*` command consumers.
  */
 
 export { resolveExpgovConfig, formatConfigDiscoveryHint } from '../config/load.js';

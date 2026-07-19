@@ -23,7 +23,7 @@ import { timelineRollupFromSnapshot } from '../timeline/rollup.js';
 import { computeTimelineSummary } from '../timeline/summary.js';
 import { TimelineWarmer } from '../timeline/warmer.js';
 
-export function runExportsTimeline(options: TimelineCliOptions = {}): void {
+export function runTimeline(options: TimelineCliOptions = {}): void {
   resetGitRunStats();
   const timer = beginCommand('timeline');
   const rangeToken = options.range ?? '@4w';

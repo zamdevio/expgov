@@ -29,7 +29,7 @@ export function formatStableExactSnippet(names: string[]): string {
   return ['      exact: [', ...lines, '      ],'].join('\n');
 }
 
-export function runExportsSuggest(options: SuggestCliOptions = {}): number {
+export function runSuggest(options: SuggestCliOptions = {}): number {
   const timer = beginCommand('suggest');
   const { snapshot } = getWorktreeSnapshot({ noCache: true });
   const suggestion = collectTierExactSuggestions(snapshot);

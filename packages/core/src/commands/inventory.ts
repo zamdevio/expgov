@@ -12,7 +12,7 @@ import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { InventoryCliOptions } from '../types/commands/cli.js';
 
-export function runExportsInventory(options: InventoryCliOptions): void {
+export function runInventory(options: InventoryCliOptions): void {
   resetGitRunStats();
   const timer = beginCommand('inventory');
   const ref = resolveSourceRef(options.ref);

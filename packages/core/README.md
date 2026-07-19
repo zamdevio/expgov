@@ -25,7 +25,7 @@ The CLI publishes as **`@expgov/cli`** because npm blocks unscoped `expgov` as t
 ## Quick start
 
 ```ts
-import { runExportsValidate } from '@expgov/core';
+import { runValidate } from '@expgov/core';
 import {
   initProjectContext,
   setRunOptions,
@@ -34,7 +34,7 @@ import {
 
 initProjectContext({ cwd: process.cwd() });
 setRunOptions({ json: true, quiet: true });
-const exitCode = runExportsValidate();
+const exitCode = runValidate();
 resetRunOptions();
 ```
 
@@ -42,7 +42,7 @@ resetRunOptions();
 
 | Import | Role |
 |--------|------|
-| `@expgov/core` | Stable — `defineConfig`, `runExports*`, config/JSON types |
+| `@expgov/core` | Stable — `defineConfig`, `run*` command APIs, config/JSON types |
 | `@expgov/core/advanced` | Tooling — resolve config, init, help formatters |
 | `@expgov/core/internal` | Host — project context, run options, log sinks, style |
 

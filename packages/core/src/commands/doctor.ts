@@ -81,7 +81,7 @@ function collectParityDrift(): string[] {
   return drift;
 }
 
-export function runExportsDoctor(options: DoctorCliOptions = {}): number {
+export function runDoctor(options: DoctorCliOptions = {}): number {
   const timer = beginCommand('doctor');
   const ctx = getProjectContext();
   const ok: string[] = [];

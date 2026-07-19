@@ -7,7 +7,7 @@ import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { TrendCliOptions } from '../types/commands/cli.js';
 
-export function runExportsTrend(options: TrendCliOptions = {}): void {
+export function runTrend(options: TrendCliOptions = {}): void {
   const timer = beginCommand('trend');
   const tags = listVersionTags(options.tagLimit ?? 12);
 

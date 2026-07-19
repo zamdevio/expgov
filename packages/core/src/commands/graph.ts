@@ -65,7 +65,7 @@ function topModules(edges: GraphEdge[]): GraphModuleGroup[] {
     .sort((a, b) => b.edges - a.edges);
 }
 
-export function runExportsGraph(options: GraphCliOptions = {}): void {
+export function runGraph(options: GraphCliOptions = {}): void {
   const timer = beginCommand('graph');
   const ref = resolveSourceRef(options.ref);
   const { snapshot, cache } = getSnapshot(

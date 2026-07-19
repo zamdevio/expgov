@@ -6,14 +6,14 @@
  */
 
 export {
-  runExportsDiff,
-  runExportsDoctor,
-  runExportsGraph,
-  runExportsInventory,
-  runExportsTimeline,
-  runExportsTrend,
-  runExportsSuggest,
-  runExportsValidate,
+  runDiff,
+  runDoctor,
+  runGraph,
+  runInventory,
+  runTimeline,
+  runTrend,
+  runSuggest,
+  runValidate,
 } from './commands/index.js';
 export type {
   DiffCliOptions,

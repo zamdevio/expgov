@@ -92,7 +92,7 @@ import { defineConfig } from '@expgov/cli/core';
 For programmatic governance (no CLI binary), install **`@expgov/core`** instead:
 
 ```ts
-import { defineConfig, runExportsValidate } from '@expgov/core';
+import { defineConfig, runValidate } from '@expgov/core';
 ```
 
 Inside the monorepo, `package.json` uses `"@expgov/cli": "link:../.."` so jiti loads the root package’s `./core` export.

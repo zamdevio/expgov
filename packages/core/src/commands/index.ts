@@ -1,8 +1,8 @@
-export { runExportsDiff } from './diff.js';
-export { runExportsDoctor } from './doctor.js';
-export { runExportsGraph } from './graph.js';
-export { runExportsInventory } from './inventory.js';
-export { runExportsTimeline } from './timeline.js';
-export { runExportsTrend } from './trend.js';
-export { runExportsSuggest } from './suggest.js';
-export { runExportsValidate } from './validate.js';
+export { runDiff } from './diff.js';
+export { runDoctor } from './doctor.js';
+export { runGraph } from './graph.js';
+export { runInventory } from './inventory.js';
+export { runTimeline } from './timeline.js';
+export { runTrend } from './trend.js';
+export { runSuggest } from './suggest.js';
+export { runValidate } from './validate.js';

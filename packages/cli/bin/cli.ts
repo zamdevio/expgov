@@ -3,14 +3,14 @@ import path from 'node:path';
 import { Command, CommanderError } from 'commander';
 import {
   isExportError,
-  runExportsDiff,
-  runExportsGraph,
-  runExportsInventory,
-  runExportsTimeline,
-  runExportsTrend,
-  runExportsValidate,
-  runExportsDoctor,
-  runExportsSuggest,
+  runDiff,
+  runGraph,
+  runInventory,
+  runTimeline,
+  runTrend,
+  runValidate,
+  runDoctor,
+  runSuggest,
 } from '@expgov/core';
 import {
   bootstrapRuntime,
@@ -215,7 +215,7 @@ function buildProgram(): Command {
         .action((ref: string | undefined, _opts, cmd) => {
           const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
-            runExportsInventory({
+            runInventory({
               ref,
               verbose: local.verbose,
               noCache: local.cache === false,
@@ -240,7 +240,7 @@ function buildProgram(): Command {
         .action((range: string | undefined, _opts, cmd) => {
           const local = cmd.opts() as DiffCommandOpts;
           withContext(cmd, local.verbose, program, () =>
-            runExportsDiff({
+            runDiff({
               range,
               noCache: local.cache === false,
               force: local.force,
@@ -264,7 +264,7 @@ function buildProgram(): Command {
       .action((_opts, cmd) => {
         const local = cmd.opts() as ValidateCommandOpts;
         withContext(cmd, local.verbose, program, () =>
-          runExportsValidate({
+          runValidate({
             since: local.since,
             verbose: local.verbose,
             top: local.top,
@@ -282,7 +282,7 @@ function buildProgram(): Command {
       .action((_opts, cmd) => {
         const local = cmd.opts() as VerboseOpts & ListFlagOpts;
         withContext(cmd, local.verbose, program, () =>
-          runExportsDoctor({ verbose: local.verbose, top: local.top, full: local.full }),
+          runDoctor({ verbose: local.verbose, top: local.top, full: local.full }),
         );
       }),
   );
@@ -295,7 +295,7 @@ function buildProgram(): Command {
       .action((_opts, cmd) => {
         const local = cmd.opts() as VerboseOpts & ListFlagOpts;
         withContext(cmd, local.verbose, program, () =>
-          runExportsSuggest({ verbose: local.verbose, top: local.top, full: local.full }),
+          runSuggest({ verbose: local.verbose, top: local.top, full: local.full }),
         );
       }),
   );
@@ -310,7 +310,7 @@ function buildProgram(): Command {
         .action((_opts, cmd) => {
           const local = cmd.opts() as TrendCommandOpts;
           withContext(cmd, local.verbose, program, () => {
-            runExportsTrend({
+            runTrend({
               tagLimit: local.tags,
               noCache: local.cache === false,
               force: local.force,
@@ -333,7 +333,7 @@ function buildProgram(): Command {
         .action((range: string | undefined, _opts, cmd) => {
           const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
-            runExportsTimeline({
+            runTimeline({
               range,
               top: local.top,
               full: local.full,
@@ -356,7 +356,7 @@ function buildProgram(): Command {
         .action((ref: string | undefined, _opts, cmd) => {
           const local = cmd.opts() as CacheListVerboseOpts;
           withContext(cmd, local.verbose, program, () => {
-            runExportsGraph({
+            runGraph({
               ref,
               noCache: local.cache === false,
               force: local.force,

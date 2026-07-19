@@ -14,7 +14,7 @@ describe('compilePrefixMatcher', () => {
   it('uses literal prefix when no metacharacters', () => {
     const matcher = compilePrefixMatcher('run');
     expect(matcher).toEqual({ kind: 'prefix', value: 'run' });
-    expect(testPrefixMatcher('runExports', matcher)).toBe(true);
+    expect(testPrefixMatcher('runInventory', matcher)).toBe(true);
   });
 
   it('parses slash-wrapped regex', () => {

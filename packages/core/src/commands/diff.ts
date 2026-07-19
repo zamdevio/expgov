@@ -13,7 +13,7 @@ import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import type { DiffCliOptions } from '../types/commands/cli.js';
 
-export function runExportsDiff(options: DiffCliOptions): number {
+export function runDiff(options: DiffCliOptions): number {
   const timer = beginCommand('diff');
   const { left, right, rangeLabel } = parseDiffRange(options.range);
   const cacheOpts = resolveCacheOptions({ noCache: options.noCache, force: options.force });

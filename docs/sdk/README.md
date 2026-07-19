@@ -16,7 +16,7 @@ pnpm add -D @expgov/core
 ```
 
 ```typescript
-import { runExportsValidate } from '@expgov/core';
+import { runValidate } from '@expgov/core';
 import { initProjectContext } from '@expgov/core/internal';
 ```
 
@@ -34,7 +34,7 @@ import { defineConfig } from '@expgov/cli/core';
 | Goal | Install |
 |------|---------|
 | CLI + config types (`@expgov/cli/core`) | `@expgov/cli` as devDep |
-| Programmatic `runExports*` APIs | `@expgov/core` as devDep |
+| Programmatic `run*` command APIs | `@expgov/core` as devDep |
 
 See [Install](../install.md) for why the CLI publishes as **`@expgov/cli`** (npm blocks unscoped `expgov` as too similar to `expo`).
 
@@ -42,12 +42,12 @@ See [Install](../install.md) for why the CLI publishes as **`@expgov/cli`** (npm
 
 1. **`initProjectContext({ cwd, config })`** — from `@expgov/core/internal`; loads `expgov.config.ts` via jiti.
 2. **`setRunOptions`** — `@expgov/core/internal`; `--json`, `--quiet`, cache flags, list truncation.
-3. **`runExports*`** — from `@expgov/core` (stable); returns exit code where applicable.
+3. **`run*` command APIs** — from `@expgov/core` (stable); returns exit code where applicable.
 4. **`subscribeLogSink`** — `@expgov/core/internal`; optional human report lines.
 
 | Subpath | Role |
 |---------|------|
-| `@expgov/core` | Stable — `defineConfig`, `runExports*`, config/JSON types, `ExportError` |
+| `@expgov/core` | Stable — `defineConfig`, `run*` command APIs, config/JSON types, `ExportError` |
 | `@expgov/core/advanced` | Tooling — config resolve, init helpers, help formatters |
 | `@expgov/core/internal` | CLI host — project context, run options, log sinks, style |
 
@@ -55,19 +55,19 @@ See [Install](../install.md) for why the CLI publishes as **`@expgov/cli`** (npm
 
 | Function | CLI equivalent |
 |----------|----------------|
-| `runExportsInventory` | `expgov inventory` |
-| `runExportsDiff` | `expgov diff` |
-| `runExportsValidate` | `expgov validate` |
-| `runExportsTrend` | `expgov trend` |
-| `runExportsTimeline` | `expgov timeline` |
-| `runExportsGraph` | `expgov graph` |
-| `runExportsSuggest` | `expgov suggest` |
-| `runExportsDoctor` | `expgov doctor` |
+| `runInventory` | `expgov inventory` |
+| `runDiff` | `expgov diff` |
+| `runValidate` | `expgov validate` |
+| `runTrend` | `expgov trend` |
+| `runTimeline` | `expgov timeline` |
+| `runGraph` | `expgov graph` |
+| `runSuggest` | `expgov suggest` |
+| `runDoctor` | `expgov doctor` |
 
 ## Example (validate in CI)
 
 ```ts
-import { runExportsValidate } from '@expgov/core';
+import { runValidate } from '@expgov/core';
 import {
   initProjectContext,
   setRunOptions,
@@ -76,7 +76,7 @@ import {
 
 initProjectContext({ cwd: process.cwd() });
 setRunOptions({ json: true, quiet: true });
-const exitCode = runExportsValidate();
+const exitCode = runValidate();
 resetRunOptions();
 process.exit(exitCode);
 ```

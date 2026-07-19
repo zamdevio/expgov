@@ -15,7 +15,7 @@ description: "Install expgov — @expgov/cli devDependency, @expgov/cli/core con
 | npm package | Role |
 |-------------|------|
 | **`@expgov/cli`** | CLI binary (`expgov` command) + `@expgov/cli/core` config types |
-| **`@expgov/core`** | SDK only — `runExports*` APIs without the CLI binary |
+| **`@expgov/core`** | SDK only — `run*` command APIs without the CLI binary |
 
 The **command** is always `expgov` (from the `bin` field). Only the **npm package name** is scoped.
 
@@ -66,7 +66,7 @@ pnpm add -g @expgov/cli
 
 ### SDK package (`@expgov/core`)
 
-For scripts, CI, and libraries that call `runExports*` APIs directly — not needed for config or terminal use:
+For scripts, CI, and libraries that call `run*` command APIs directly — not needed for config or terminal use:
 
 ```bash
 pnpm add -D @expgov/core

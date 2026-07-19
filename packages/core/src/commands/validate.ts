@@ -77,7 +77,7 @@ function summarizeTierSources(
   return { tag, config, defaultPrefix, byBucket };
 }
 
-export function runExportsValidate(options: ValidateOptions = {}): number {
+export function runValidate(options: ValidateOptions = {}): number {
   const timer = beginCommand('validate');
   const violations: string[] = [];
   const notes: string[] = [];

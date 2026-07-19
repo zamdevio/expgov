@@ -64,8 +64,15 @@ export default defineConfig({
         'ValidateOptions',
         'defineConfig',
         'isExportError',
+        'runDiff',
+        'runDoctor',
+        'runGraph',
+        'runInventory',
+        'runSuggest',
+        'runTimeline',
+        'runTrend',
+        'runValidate',
       ],
-      prefix: ['runExports'],
     },
     internal: {
       // ./internal barrel also auto-hints; exact keeps inventory/graph honest if symbols appear elsewhere.

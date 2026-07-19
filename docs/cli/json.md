@@ -205,7 +205,7 @@ expgov inventory -F -j          # all symbols (same as -v -F)
     "top": 10,
     "symbols": [
       {
-        "name": "runExportsValidate",
+        "name": "runValidate",
         "tier": "stable",
         "category": "run",
         "symbolKind": "function",
@@ -252,7 +252,7 @@ expgov graph -F -j
       {
         "kind": "flat-reexport",
         "from": "packages/core/src/index.ts",
-        "symbol": "runExportsValidate",
+        "symbol": "runValidate",
         "toModule": "packages/core/src/commands/validate.ts",
         "targetSubpath": "./commands/validate"
       }
