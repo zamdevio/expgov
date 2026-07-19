@@ -1,11 +1,14 @@
 import { readFileSync } from 'node:fs';
-import { getWorktreeSnapshot } from '../cache/index.js';
+import { getSnapshot, getWorktreeSnapshot } from '../cache/index.js';
 import {
   getProjectContext,
   isPackageTsconfigPath,
   packageNamePathPrefix,
   wildcardPackageTsconfigPath,
 } from '../context/index.js';
+import { ExportError } from '../errors/index.js';
+import { evaluateValidateSince } from '../format/index.js';
+import { resolveSourceRef } from '../git/index.js';
 import { formatTierCountsNote, sumSdkTierCounts, tierCountsFooterFields } from '../inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { computeValidateInsights } from '../insights/index.js';
@@ -18,6 +21,7 @@ import { getRunOptions } from '../runtime/runOptions.js';
 import type { ValidateOptions } from '../types/commands/cli.js';
 import type { PackageExports } from '../types/config/package.js';
 import type { Issue } from '../types/json/envelope.js';
+
 
 function readCoreExports(): PackageExports {
   const pkg = JSON.parse(readFileSync(getCorePkgPath(), 'utf8')) as { exports?: PackageExports };
@@ -105,13 +109,39 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     }
   }
 
-  if (options.since) {
-    notes.push(`--since=${options.since} is reserved for future delta validation (not enforced yet)`);
-  }
-
   const { snapshot } = getWorktreeSnapshot({ noCache: true });
   const { tierCatalog } = getProjectContext();
   const tierSources = summarizeTierSources(snapshot.symbols);
+
+  let sinceLabel: string | undefined;
+  let sinceAdded: string[] | undefined;
+  let sinceRemoved: string[] | undefined;
+  const sinceIssues: Issue[] = [];
+
+  if (options.since) {
+    const baselineRef = resolveSourceRef(options.since);
+    if (baselineRef.kind !== 'commit') {
+      throw new ExportError(
+        `--since requires a commit ref (got working tree alias "${options.since}")`,
+        'invalid_range',
+        {
+          details: {
+            since: options.since,
+            suggestion: 'Use a tag, branch, or SHA — e.g. `expgov validate --since v1.0.0`.',
+          },
+        },
+      );
+    }
+    const baseline = getSnapshot(baselineRef);
+    const { diff, removal } = evaluateValidateSince(baseline.snapshot, snapshot);
+    sinceLabel = `${baselineRef.label} → working tree`;
+    sinceAdded = diff.added;
+    sinceRemoved = diff.removed;
+    sinceIssues.push(...removal.issues);
+    if (removal.passed) {
+      notes.push(`compat since ${baselineRef.label}: no flat export removals`);
+    }
+  }
 
   for (const message of listUnknownPolicyRefs(tierCatalog.entries, tierCatalog.policies)) {
     violations.push(message);
@@ -168,20 +198,33 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     );
   }
 
-  const passed = violations.length === 0;
+  const displayViolations = [...violations, ...sinceIssues.map((issue) => issue.message)];
+  const passed = displayViolations.length === 0;
   const insights = computeValidateInsights(snapshot, {
     passed,
     verbose: options.verbose,
     internalFlatCount: internalFlatSymbols.length,
     advancedFlatCount: advancedFlatSymbols.length,
   });
-  const issues: Issue[] = violations.map((message) => ({
-    severity: 'error',
-    code: 'expgov.validate.violation',
-    message,
-  }));
+  const issues: Issue[] = [
+    ...violations.map((message) => ({
+      severity: 'error' as const,
+      code: 'expgov.validate.violation',
+      message,
+    })),
+    ...sinceIssues,
+  ];
 
   const exitCode = passed ? 0 : 1;
+  const sinceData =
+    options.since && sinceLabel
+      ? {
+          since: options.since,
+          sinceLabel,
+          added: sinceAdded ?? [],
+          removed: sinceRemoved ?? [],
+        }
+      : undefined;
 
   if (getRunOptions().json) {
     finishCommand({
@@ -195,12 +238,13 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
         issues,
         data: {
           passed,
-          violations,
+          violations: displayViolations,
           notes,
           advancedFlatSymbols,
           internalFlatSymbols,
           sdkTiers,
           insights,
+          ...sinceData,
         },
       },
     });
@@ -209,14 +253,16 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
 
   printValidateReport({
     passed,
-    violations,
+    violations: displayViolations,
     notes,
     verbose: options.verbose,
     advancedFlatSymbols,
     internalFlatSymbols,
     insights,
     listView: options,
-    ref: refLine({ kind: 'worktree', label: 'working tree' }, snapshot),
+    ref: sinceLabel
+      ? `compat ${sinceLabel}`
+      : refLine({ kind: 'worktree', label: 'working tree' }, snapshot),
   });
 
   finishCommand({
@@ -225,7 +271,10 @@ export function runExportsValidate(options: ValidateOptions = {}): number {
     status: passed ? 'ok' : 'fail',
     exitCode,
     footer: {
-      counts: tierCountsFooterFields(sdkTiers, { violations: violations.length }),
+      counts: tierCountsFooterFields(sdkTiers, {
+        violations: displayViolations.length,
+        ...(sinceRemoved?.length ? { removed: sinceRemoved.length } : {}),
+      }),
     },
   });
   return exitCode;

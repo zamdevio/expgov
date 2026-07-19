@@ -53,6 +53,7 @@ export interface TrendCliOptions extends ListViewOptions {
 }
 
 export interface ValidateOptions extends ListViewOptions {
+  /** Fail when flat exports were removed relative to this git ref (worktree right side). */
   since?: string;
   verbose?: boolean;
 }
