@@ -10,7 +10,17 @@ GitHub releases: https://github.com/zamdevio/expgov/releases
 
 ## [Unreleased]
 
-Breaking and additive work on `main` since **v1.0.1**. Becomes **v1.1.0** when tagged.
+### Added
+
+### Changed
+
+### Fixed
+
+---
+
+## [1.1.0] - 2026-07-20
+
+Breaking and additive work since **v1.0.1**.
 
 ### Breaking
 
@@ -43,6 +53,13 @@ Breaking and additive work on `main` since **v1.0.1**. Becomes **v1.1.0** when t
 ### Fixed
 
 - Keep list truncation guidance in a single `listGuidance` block (no duplicate `notes` mirror).
+
+### Install
+
+```bash
+pnpm add -D @expgov/cli@1.1.0
+pnpm add -D @expgov/core@1.1.0
+```
 
 ---
 
