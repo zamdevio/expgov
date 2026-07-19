@@ -35,6 +35,24 @@ type Issue = {
 
 `apiVersion` is `RESULT_API_VERSION` from `@expgov/cli/core` or `@expgov/core` — bump when the envelope shape changes.
 
+**Detail flags:** With `--json`, `-v` / `--verbose` and `-F` / `--full` expand `data` with the same list payloads humans see. **List policy is shared:** `-T` / `--top` and `-F` / `--full` truncate or uncap JSON arrays the same way as human lists.
+
+When a list is truncated, JSON includes a stable **`data.listGuidance`** block (and mirrors the text in **`data.notes`**):
+
+```json
+{
+  "listGuidance": {
+    "truncated": true,
+    "note": "symbols: 91 more hidden (showing 10 of 101). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
+  },
+  "notes": [
+    "symbols: 91 more hidden (showing 10 of 101). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
+  ]
+}
+```
+
+Agents should check `listGuidance.truncated` (or scan `notes`) before assuming a list is complete. Uncapped runs still emit `listGuidance: { "truncated": false }` whenever list sections are present.
+
 ## Exit codes
 
 | Code | Meaning |
@@ -97,6 +115,14 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
 
 ### `inventory`
 
+Default JSON is summary-only. Pass `-v` or `-F` to include root flat symbols and namespaces. Lists honor the same `-T` / `-F` policy as human verbose mode (default top `10`; `-F` = uncapped, `top` serializes as `null`):
+
+```bash
+expgov inventory -v -j -s          # top 10 symbols + namespacesHidden
+expgov inventory -v -T 5 -j -s     # top 5
+expgov inventory -F -j -s          # all symbols (same as -v -F)
+```
+
 ```json
 {
   "ok": true,
@@ -104,17 +130,40 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
   "data": {
     "ref": "worktree",
     "sha": "__worktree__",
-    "summary": { "root": { "flat": 80, "namespaces": 0 }, "sdkTiers": { "stable": 80 } },
+    "summary": { "root": { "flat": 80, "namespace": 0 }, "subpaths": [] },
     "cache": { "status": "hit" },
     "insights": {
       "lines": [{ "key": "largest-module", "text": "largest module: … (N edges, M flats)" }],
       "largestModule": { "path": "packages/core/src/…", "count": 12 }
-    }
+    },
+    "top": 10,
+    "symbols": [
+      {
+        "name": "runExportsValidate",
+        "tier": "stable",
+        "category": "run",
+        "symbolKind": "function",
+        "targetSubpath": "./commands/validate",
+        "module": "packages/core/src/commands/validate.ts"
+      }
+    ],
+    "namespaces": [],
+    "symbolsHidden": 70,
+    "namespacesHidden": 0,
+    "listGuidance": {
+      "truncated": true,
+      "note": "symbols: 70 more hidden (showing 10 of 80). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
+    },
+    "notes": [
+      "symbols: 70 more hidden (showing 10 of 80). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
+    ]
   },
   "issues": [],
   "meta": { "apiVersion": "1", "command": "inventory", "durationMs": 12 }
 }
 ```
+
+Use `summary.root.flat` for the true total; `symbols.length + symbolsHidden` matches that total when detail is present. Omit `-v`/`-F` and those list fields are absent.
 
 ## `kind` values
 

@@ -12,7 +12,7 @@ expgov inventory HEAD
 expgov inventory v0.1.4
 ```
 
-`-v` prints a symbol table (tier, category, target subpath).
+`-v` prints a symbol table (tier, category, target subpath). With `--json`, `-v` or `-F` also adds `data.symbols` / `data.namespaces` under the same `-T`/`-F` list policy as human mode (see [JSON output](../cli/json.md)).
 
 ## Related
 

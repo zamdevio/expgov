@@ -38,11 +38,12 @@ Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode n
 
 Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style default action).
 
-## Listing contract (shipped P6, P15)
+## Listing contract (shipped P6, P15, AG1)
 
 - Shared helper: `packages/core/src/shared/listing.ts` — `resolveListLimit`, `limitList`, `formatListTruncationHint`.
 - Default cap: 10 rows; `-F` removes cap; truncation hint: `…and N more (use -F/--full or -T/--top <n>)`.
 - Applied in report layer (`logger/reports/*`), including diff tier violations, custom tier deltas, inventory custom tier rollup rows, suggest names, and doctor check lines.
+- **JSON lists use the same policy** as human lists (`timeline.data.top` / rows; inventory `data.top` + `symbols` / `symbolsHidden` under `-v`/`-F`). Truncated payloads always include `data.listGuidance` (`truncated` + `note`) and mirror the text in `data.notes`. Agents that need uncapped payloads pass `-F -j -s`. Remaining list-heavy JSON commands (graph edges, diff detail, …) follow this rule as Agentic slices land.
 
 ## Output flow
 

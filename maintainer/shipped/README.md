@@ -56,6 +56,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W28 | **P25** — diff custom-tier guard | Incomplete summary rollups safe in diff/insights (`8f4273c`) |
 | 2026-W28 | **R4a** — v1.0.1 patch | Cache recovery docs + package bump (`8b83ff9`, `53dd15c`) — [`release.md`](./release.md) |
 | 2026-W29 | **D1** — diff fail gate | `--fail-on-removed` / `--fail-on-tier-violations`; `evaluateDiffFailMode`; docs + tests |
+| 2026-W29 | **AG1** — inventory JSON detail | `symbols[]` / `namespaces[]` under `-v`/`-F` + `--json`; `format/inventoryJson.ts` |
 
 ---
 
@@ -64,7 +65,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Group | Slices | Doc |
 |-------|--------|-----|
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
-| Inventory & cache | P0a, P0b, P4, P16, P24 | [`inventory-cache.md`](./inventory-cache.md) |
+| Inventory & cache | P0a, P0b, P4, P16, P24, AG1 | [`inventory-cache.md`](./inventory-cache.md) |
 | Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C2, P25, D1 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22 | [`runtime-cli.md`](./runtime-cli.md) |
@@ -86,7 +87,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 ## Explicitly not shipped
 
 - [ ] `validate --since` ([`phases/diff.md`](../phases/diff.md) D2)
-- [ ] Agentic full JSON symbols/edges ([`phases/agentic.md`](../phases/agentic.md))
+- [ ] Agentic graph JSON edges ([`phases/agentic.md`](../phases/agentic.md) AG2)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache
@@ -133,4 +134,5 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | SDK example workspace | I1, I3 | [`examples-sdk.md`](./examples-sdk.md) · [`examples/sdk/`](../../examples/sdk/) |
 | Dual npm + docs site | R1–R4, R4a | [`release.md`](./release.md) |
 | Diff fail-on-removed / tier violations | D1 | `format/diffFail.ts`, `commands/diff.ts` |
+| Inventory JSON symbols / namespaces | AG1 | `format/inventoryJson.ts`, `commands/inventory.ts` |
 | Agent onboarding | P2 | `maintainer/agents/onboarding.md` |

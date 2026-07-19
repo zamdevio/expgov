@@ -61,3 +61,16 @@ Engineering map: [`systems/cache.md`](../systems/cache.md).
 
 Engineering map: [`systems/cache.md`](../systems/cache.md).
 Release context: [`release.md`](./release.md) (v1.0.1).
+
+---
+
+## AG1 — inventory JSON symbols / namespaces (shipped) · 2026-W29
+
+- [x] `inventory --json` with `-v` or `-F` emits `data.symbols[]` and `data.namespaces[]`
+- [x] Lean rows: name, tier, category, symbolKind, targetSubpath, module (optional on symbols)
+- [x] Shared list policy: same `-T`/`-F` as human verbose; `top` + `symbolsHidden` / `namespacesHidden`
+- [x] Truncation guidance: `data.listGuidance` + `data.notes` pointing at `-F` / `-T`
+- [x] Helpers: `format/inventoryJson.ts`, `shared/listing.ts` (`buildJsonListGuidance`); tests included
+- [x] Docs: `docs/cli/json.md`, `docs/commands/inventory.md`
+
+Phase: [`phases/agentic.md`](../phases/agentic.md).

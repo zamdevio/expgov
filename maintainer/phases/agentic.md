@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — D1 completed the fail-mode half of AG3; AG1–AG2 are next. **AG3/AG4** share Diff D1/D2 work (do not duplicate).
+**Status:** Active — **AG1 shipped**; AG2 next. D1 completed the fail-mode half of AG3. **AG3/AG4** share Diff D1/D2 work (do not duplicate).
 
 **Companion:** [`diff.md`](./diff.md) · [`severity.md`](./severity.md) · [`cli-output-audit.md`](./cli-output-audit.md) · [`docs/cli/json.md`](../../docs/cli/json.md) · [`docs/guides/workflows.md`](../../docs/guides/workflows.md)
 
@@ -22,7 +22,7 @@ Dogfood target: nodehunter (and any SDK that freezes a 1.x surface) can automate
 
 | Gap | Today | Agent impact |
 |-----|-------|--------------|
-| `inventory -v -j` | JSON = summary only; symbol table is human `-v` only | Cannot enumerate exports via JSON |
+| `inventory -v/-F -j` | Summary only; symbol table was human `-v` only | **Shipped AG1** — `data.symbols` / `data.namespaces` |
 | `graph -F -j` | Analytics rollup only; edges not in JSON | Cannot reason about re-export graph |
 | Default `-T 10` | Truncation in human lists | Fine for TTY; wrong default for agents if they scrape text |
 | `diff` detail | Fail gate shipped; verbose JSON lacks added/removed metadata | Agents can gate removals, but cannot inspect rich symbol changes |
@@ -36,8 +36,8 @@ Cache already has `symbols[]` + `edges[]` in `inventory.full.json`. **JSON mode 
 
 ## Principles
 
-1. **`--json` implies completeness** — when JSON is on, prefer full structured payloads; use `-T` / `-F` only for human list truncation (or map `-F` → include full arrays in JSON).
-2. **`-v` affects JSON too** — verbose = more fields in `data`, not only more stderr.
+1. **List policy is shared** — `-T` / `-F` truncate or uncap JSON arrays the same as human lists; include `top` + `*Hidden` (or equivalent) so agents know truncation. Prefer `-F -j -s` when agents need the full surface.
+2. **`-v` affects JSON too** — verbose = more fields / list sections in `data`, not only more stderr.
 3. **Fail modes are opt-in** — default interactive commands stay quiet/exit 0 unless flags request enforcement.
 4. **Stable issue codes** — every fail path emits `issues[].code` agents can switch on.
 5. **No breaking envelope** — keep `{ ok, kind, data, issues, meta }`; grow `data` additively; bump `meta.apiVersion` only if shape breaks.
@@ -49,21 +49,15 @@ Cache already has `symbols[]` + `edges[]` in `inventory.full.json`. **JSON mode 
 
 ### A1 — `inventory -j`
 
-Always or under `-v` / `-F`, include:
+Always or under `-v` / `-F`, include (same `-T`/`-F` list policy as human verbose):
 
 ```ts
 data: {
   ref, sha, summary, cache, insights,
-  // NEW when -v or -F (or always if size OK ~ tens of KB):
-  symbols: Array<{
-    name: string
-    tier: string
-    category: string
-    symbolKind: string
-    targetSubpath: string
-    module?: string
-  }>
-  namespaces: Array<{ name: string; targetSubpath: string; module: string; tier: string }>
+  top,                    // resolveListLimit; Infinity → null in JSON
+  symbols: Array<{…}>,  // truncated unless -F
+  namespaces: Array<{…}>,
+  symbolsHidden, namespacesHidden,
 }
 ```
 
@@ -183,7 +177,7 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 
 | ID | Slice | Depends | Outcome |
 |----|-------|---------|---------|
-| **AG1** | JSON inventory symbols/namespaces (`-v`/`-F`) | — | Agents can list all exports |
+| **AG1** | JSON inventory symbols/namespaces (`-v`/`-F`) | — | **Shipped** — agents can list all exports |
 | **AG2** | JSON graph edges (`-v`/`-F`) | — | Agents can map re-exports |
 | **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | **Partial** — fail flags shipped in D1; `-v` detail JSON still open |
 | **AG4** | `validate --since` | AG3 compare core | One-command PR gate |
@@ -191,18 +185,18 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
 | **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | Public contract |
 
-Suggested remaining order: **AG1 → AG2 → AG3 detail → AG4 → AG5 → AG6 → AG7**.
+Suggested remaining order: **AG2 → AG3 detail → AG4 → AG5 → AG6 → AG7**.
 
 ---
 
 ## Acceptance criteria
 
-- [ ] `expgov inventory -v -j -s` includes every root flat symbol name + tier (matches human `-v` count)
+- [x] `expgov inventory -v -j -s` includes symbol/namespace lists under the same `-T`/`-F` policy as human verbose (use `-F` for every flat)
 - [ ] `expgov graph -F -j -s` includes edge list (or documented equivalent) matching cache/graph analytics
-- [ ] `expgov diff A..B --fail-on-removed` exits 1 iff removals exist; default diff still exits 0
+- [x] `expgov diff A..B --fail-on-removed` exits 1 iff removals exist; default diff still exits 0
 - [ ] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
 - [ ] Filter flags compose with JSON without requiring human output parsing
-- [ ] `docs/cli/json.md` documents full `data` shapes; workflows show agent/CI recipes
+- [x] `docs/cli/json.md` documents inventory detail shapes (graph/diff detail still growing)
 - [ ] No regression: human mode banners/truncation remain usable; envelope `apiVersion` unchanged unless breaking
 
 ---
