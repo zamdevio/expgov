@@ -21,6 +21,8 @@ export interface ProjectContext {
   git: {
     tagPattern: string;
     timelineBarrelPath: string;
+    /** Raw `git.compatBaseline` from config (unresolved). */
+    compatBaseline?: string;
   };
   tierCatalog: ResolvedTierCatalog;
   /** Raw tier buckets from config (for provenance labels). */

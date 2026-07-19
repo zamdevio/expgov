@@ -97,7 +97,11 @@ export default defineConfig({
   tsconfig: ${quote(config.tsconfig ?? 'tsconfig.json')},
 ${rich ? formatRichCacheBlock('  ') : ''}  git: {
     tagPattern: ${quote(config.git?.tagPattern ?? 'v*')},
-    timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},
+    timelineBarrelPath: ${quote(config.git?.timelineBarrelPath ?? config.core.rootBarrel)},${
+      config.git?.compatBaseline
+        ? `\n    compatBaseline: ${quote(config.git.compatBaseline)},`
+        : ''
+    }
   },
   tiers: {
 ${rich ? formatRichPoliciesBlock('    ') : ''}    stable: ${formatTierBucket(tiers?.stable ?? { exact: [], prefix: [] }, '    ', rich ? RICH_INIT_TIER_HINTS.stable : undefined)},

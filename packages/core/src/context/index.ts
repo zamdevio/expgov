@@ -52,6 +52,9 @@ export function buildProjectContext(
     git: {
       tagPattern: config.git?.tagPattern ?? 'v*',
       timelineBarrelPath: (config.git?.timelineBarrelPath ?? rootIndexRepoPath).replace(/\\/g, '/'),
+      ...(config.git?.compatBaseline
+        ? { compatBaseline: config.git.compatBaseline }
+        : {}),
     },
     tierCatalog,
     tierConfig: config.tiers ?? {},

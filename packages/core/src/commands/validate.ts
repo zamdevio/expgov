@@ -8,7 +8,7 @@ import {
 } from '../context/index.js';
 import { ExportError } from '../errors/index.js';
 import { evaluateValidateSince } from '../format/index.js';
-import { resolveSourceRef } from '../git/index.js';
+import { resolveSourceRef, resolveValidateSinceRef } from '../git/index.js';
 import { formatTierCountsNote, sumSdkTierCounts, tierCountsFooterFields } from '../inventory/index.js';
 import { formatTierTagHint } from '../inventory/tierTagHint.js';
 import { computeValidateInsights } from '../insights/index.js';
@@ -18,6 +18,7 @@ import { refLine } from '../logger/report.js';
 import { getCorePkgPath, getRootIndexRepoPath } from '../context/paths.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { ISSUE_VALIDATE_VIOLATION } from '../shared/constants/issues.js';
 import type { ValidateOptions } from '../types/commands/cli.js';
 import type { PackageExports } from '../types/config/package.js';
 import type { Issue } from '../types/json/envelope.js';
@@ -118,15 +119,16 @@ export function runValidate(options: ValidateOptions = {}): number {
   let sinceRemoved: string[] | undefined;
   const sinceIssues: Issue[] = [];
 
-  if (options.since) {
-    const baselineRef = resolveSourceRef(options.since);
+  const sinceRef = resolveValidateSinceRef(options.since, getProjectContext().git.compatBaseline);
+  if (sinceRef) {
+    const baselineRef = resolveSourceRef(sinceRef);
     if (baselineRef.kind !== 'commit') {
       throw new ExportError(
-        `--since requires a commit ref (got working tree alias "${options.since}")`,
+        `--since requires a commit ref (got working tree alias "${sinceRef}")`,
         'invalid_range',
         {
           details: {
-            since: options.since,
+            since: sinceRef,
             suggestion: 'Use a tag, branch, or SHA — e.g. `expgov validate --since v1.0.0`.',
           },
         },
@@ -209,7 +211,7 @@ export function runValidate(options: ValidateOptions = {}): number {
   const issues: Issue[] = [
     ...violations.map((message) => ({
       severity: 'error' as const,
-      code: 'expgov.validate.violation',
+      code: ISSUE_VALIDATE_VIOLATION,
       message,
     })),
     ...sinceIssues,
@@ -217,9 +219,9 @@ export function runValidate(options: ValidateOptions = {}): number {
 
   const exitCode = passed ? 0 : 1;
   const sinceData =
-    options.since && sinceLabel
+    sinceRef && sinceLabel
       ? {
-          since: options.since,
+          since: sinceRef,
           sinceLabel,
           added: sinceAdded ?? [],
           removed: sinceRemoved ?? [],

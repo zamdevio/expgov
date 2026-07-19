@@ -11,6 +11,12 @@ export interface ExpgovCoreConfig {
 export interface ExpgovGitConfig {
   tagPattern?: string;
   timelineBarrelPath?: string;
+  /**
+   * Default baseline for `validate` removal checks when `--since` is omitted.
+   * A git ref (e.g. `v1.0.0`) or `'latest-tag'` (newest tag matching `tagPattern`).
+   * CLI `--since` always wins.
+   */
+  compatBaseline?: string;
 }
 
 /** Stable project identity — paths, package name, tier rules. */

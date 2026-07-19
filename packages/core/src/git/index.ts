@@ -3,6 +3,11 @@ export { gitCommitMeta } from './commit-meta.js';
 export { listBarrelCommits, listBarrelCommitsByRef, listVersionTags } from './log.js';
 export { indexVersionTagsByCommit, versionTagsForCommit } from './versionTags.js';
 export {
+  COMPAT_BASELINE_LATEST_TAG,
+  resolveCompatBaseline,
+  resolveValidateSinceRef,
+} from './compatBaseline.js';
+export {
   formatGitRunStats,
   resetGitRunStats,
   runGit,

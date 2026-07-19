@@ -101,7 +101,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       '',
       `  ${style.bold('Flags')}`,
       `    -v, --verbose   all notes, path parity gaps, tier flat leaks`,
-      `    --since=<ref>   fail if flat exports were removed since ref`,
+      `    --since=<ref>   fail if flat exports were removed since ref (overrides git.compatBaseline)`,
       `    -h, --help      show this section`,
       '',
       `  ${style.bold('Output')}`,
