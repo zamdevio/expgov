@@ -233,6 +233,56 @@ expgov graph -F -j -s
 
 `edgeCount` is the true total; `edges.length + edgesHidden` matches it when detail is present.
 
+### `diff`
+
+Default JSON always includes complete `added` / `removed` name arrays (and `tierViolations`) — do not truncate those for CI. Pass `-v` or `-F` for rich symbol detail under the shared `-T`/`-F` list policy:
+
+```bash
+expgov diff v1.0.0..HEAD -v -j -s
+expgov diff v1.0.0..HEAD -F -j -s
+```
+
+```json
+{
+  "ok": true,
+  "kind": "diff",
+  "data": {
+    "rangeLabel": "v1.0.0 → HEAD",
+    "added": ["newApi"],
+    "removed": ["legacyHelper"],
+    "tierViolations": [],
+    "top": 10,
+    "addedDetail": [
+      {
+        "name": "newApi",
+        "tier": "stable",
+        "category": "run",
+        "symbolKind": "function",
+        "targetSubpath": ".",
+        "module": "packages/core/src/commands/new.ts"
+      }
+    ],
+    "removedDetail": [
+      {
+        "name": "legacyHelper",
+        "tier": "stable",
+        "category": "other",
+        "symbolKind": "function",
+        "targetSubpath": ".",
+        "module": "packages/core/src/legacy.ts"
+      }
+    ],
+    "addedDetailHidden": 0,
+    "removedDetailHidden": 0,
+    "listGuidance": { "truncated": false }
+  },
+  "issues": [],
+  "meta": { "apiVersion": "1", "command": "diff", "durationMs": 40 }
+}
+```
+
+Use `added` / `removed` for complete name sets; use `*Detail` when agents need tier/module metadata. Omit `-v`/`-F` and detail fields are absent.
+
 ## `kind` values
 
 | `kind` | Command |

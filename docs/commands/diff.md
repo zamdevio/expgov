@@ -15,6 +15,8 @@ expgov diff v0.1.3..v0.1.4
 expgov diff HEAD~30..HEAD~1
 expgov diff v1.0.0..HEAD --fail-on-removed
 expgov diff v1.0.0..HEAD --fail-on-removed --fail-on-tier-violations
+expgov diff v1.0.0..HEAD -v -j -s
+expgov diff v1.0.0..HEAD -F -j -s
 ```
 
 ## Ref ranges
@@ -28,6 +30,8 @@ expgov diff v1.0.0..HEAD --fail-on-removed --fail-on-tier-violations
 **Diff-only** — timeline time ranges (`@4w`, ISO dates) are not supported here.
 
 Reports added/removed flat exports and tier violations (internal/advanced promoted to root).
+
+With `--json`, `-v` or `-F` also adds `data.addedDetail` / `data.removedDetail` (tier, category, symbolKind, targetSubpath, module) under the same `-T`/`-F` list policy. Name arrays `added` / `removed` stay **complete** for CI gates — only the detail rows truncate. See [JSON output](../cli/json.md).
 
 ## Fail flags (CI)
 
