@@ -31,6 +31,7 @@ D1 (`diff` fail flags) and AG1–AG2 (inventory/graph JSON detail) are shipped. 
 |-------|------------|------|
 | **ID1 / ID2** — Inventory diagnostics | After AG1–AG2 preferred; parallel only if silent barrel misses hurt dogfood | Direct barrel decls + closure modules with no reachable exports — [`inventory-diagnostics.md`](./inventory-diagnostics.md). **ID-DOC** updates systems + `docs/` **after** code |
 | **HELP1** — Help color hierarchy | Independent; first, parallel, or last | Blue `expgov`, cyan command path, dim flags/values in `Usage:` + `Examples:` — [`help.md`](./help.md) |
+| **REL1–REL3** — Automated releases | Independent; pull REL1 forward before next npm bump | `versions:*` + tag `release.yml` dual publish — [`releases.md`](./releases.md) |
 
 ---
 
@@ -66,6 +67,7 @@ Resume **C3** after Diff D1–D2 and Agentic AG1–AG2 (share filter vocabulary 
 | 2 | **Agentic** | JSON completeness + flexible flags (inventory/graph/diff) | [`agentic.md`](./agentic.md) |
 | 3 | **Inventory diagnostics** | Reachable-surface honesty (ID1/ID2) + ID-DOC | [`inventory-diagnostics.md`](./inventory-diagnostics.md) |
 | P | **HELP1** — Help color hierarchy | Independent small slice; may accompany another CLI task | [`help.md`](./help.md) |
+| P | **Releases** — versions + `release.yml` | i18nprune-style dual npm auto-publish | [`releases.md`](./releases.md) |
 | 4 | Phase **C3** — Graph filters | Filtered graph view (shared vocab with AG5) | [`graph-2.md`](./graph-2.md) |
 | 5 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
 | 6 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |

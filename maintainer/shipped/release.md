@@ -54,3 +54,5 @@ CLI argv, `--json` envelope, and exit codes are **semver-stable**. `@expgov/core
 ## Out of scope at v1.0.0 (still backlog)
 
 C3 graph filters · Diff fail gate · Agentic JSON · Severity / Suggest / Fix · Config JSON · Multibarrel · API chain · Observability G
+
+**Planned automation:** [`../phases/releases.md`](../phases/releases.md) — `versions:*` + tag-triggered `release.yml` (i18nprune-style dual publish).
