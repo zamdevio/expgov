@@ -1,6 +1,10 @@
 import type { GraphEdge, InventorySnapshot } from '../types/inventory/index.js';
 import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
+import {
+  buildGraphJsonListDetail,
+  shouldIncludeGraphJsonDetail,
+} from '../format/index.js';
 import { computeGraphAnalytics } from '../graph/analytics.js';
 import { resolveSourceRef } from '../git/index.js';
 import { formatModuleEdgeProvenance } from '../logger/format.js';
@@ -75,6 +79,25 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
   const insights = computeGraphInsights(snapshot);
 
   if (getRunOptions().json) {
+    const data: Record<string, unknown> = {
+      ref: ref.label,
+      edgeCount: snapshot.edges.length,
+      targetGroups: targetGroups.map((g) => ({
+        targetSubpath: g.targetSubpath,
+        flat: g.flat,
+        namespace: g.namespace,
+      })),
+      analytics,
+      insights,
+    };
+    if (shouldIncludeGraphJsonDetail(options)) {
+      const detail = buildGraphJsonListDetail(snapshot.edges, options);
+      data.top = detail.top;
+      data.edges = detail.edges;
+      data.edgesHidden = detail.edgesHidden;
+      data.listGuidance = detail.listGuidance;
+      data.notes = detail.notes;
+    }
     finishCommand({
       command: 'graph',
       timer,
@@ -82,17 +105,7 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
       json: {
         kind: 'graph',
         ok: true,
-        data: {
-          ref: ref.label,
-          edgeCount: snapshot.edges.length,
-          targetGroups: targetGroups.map((g) => ({
-            targetSubpath: g.targetSubpath,
-            flat: g.flat,
-            namespace: g.namespace,
-          })),
-          analytics,
-          insights,
-        },
+        data,
       },
     });
     return;
