@@ -11,6 +11,9 @@ export interface ListFlagOpts {
 export interface FilterFlagOpts {
   tier?: string[];
   category?: string[];
+  namespace?: string[];
+  module?: string[];
+  subpath?: string[];
 }
 
 export interface CacheFlagOpts {

@@ -3,7 +3,7 @@ import { boldDim, style } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../types/cache/index.js';
 import type { InventorySnapshot } from '../../types/inventory/index.js';
 import type { DiffResult } from '../../types/format/diff.js';
-import { matchesTierCategory, toFilterOptions } from '../../shared/filters.js';
+import { filterSymbols, formatAppliedFiltersMeta, toFilterOptions } from '../../shared/filters.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import type { TierCounts } from '../../types/inventory/snapshot.js';
@@ -45,6 +45,7 @@ export function printDiffReport(input: {
     from: formatSnapshotMetaEndpoint(left.snapshot),
     to: formatSnapshotMetaEndpoint(right.snapshot),
     cache: `${cacheLabel(left.cache)} / ${cacheLabel(right.cache)}`,
+    filters: formatAppliedFiltersMeta(toFilterOptions(input.listView)),
   });
 
   logLine('');
@@ -101,11 +102,12 @@ export function printDiffVerbose(input: {
   const filters = toFilterOptions(input.listView);
   const listLimit = resolveListLimit(input.listView);
 
-  const detailNames = (names: string[], side: InventorySnapshot): string[] =>
-    names.filter((name) => {
-      const sym = side.symbols.find((s) => s.name === name && s.exportKind === 'flat');
-      return sym ? matchesTierCategory(sym, filters) : false;
-    });
+  const detailNames = (names: string[], side: InventorySnapshot): string[] => {
+    const matched = names
+      .map((name) => side.symbols.find((s) => s.name === name && s.exportKind === 'flat'))
+      .filter((sym): sym is NonNullable<typeof sym> => Boolean(sym));
+    return filterSymbols(matched, filters, side.namespaces).map((sym) => sym.name);
+  };
 
   if (diff.added.length) {
     const added = limitList(detailNames(diff.added, right), listLimit);

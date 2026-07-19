@@ -6,7 +6,9 @@ import type { SourceRef } from '../../types/git/index.js';
 import type { InventorySnapshot, SubpathRollup } from '../../types/inventory/index.js';
 import { sumSdkTierCounts } from '../../inventory/index.js';
 import {
-  filterByTierCategory,
+  filterNamespaces,
+  filterSymbols,
+  formatAppliedFiltersMeta,
   hasActiveFilters,
   toFilterOptions,
 } from '../../shared/filters.js';
@@ -18,7 +20,7 @@ import {
   formatInventorySymbolKind,
   formatInventoryTier,
   formatNamespaceSourceLabel,
-  formatTierProvenanceLabel,
+  formatTierProvenanceParen,
   formatVerboseInventoryHeader,
 } from '../format.js';
 import {
@@ -74,6 +76,7 @@ export function printInventoryReport(input: {
     edges: style.dim(String(snapshot.edges.length)),
     subpaths: style.dim(String(snapshot.summary.subpaths.length)),
     git: input.gitStats ? style.dim(input.gitStats) : undefined,
+    filters: formatAppliedFiltersMeta(toFilterOptions(input.listView)),
   });
 
   logLine('');
@@ -108,9 +111,10 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
   const filters = toFilterOptions(listView);
   const listLimit = resolveListLimit(listView);
   const flat = limitList(
-    filterByTierCategory(
+    filterSymbols(
       [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name)),
       filters,
+      snapshot.namespaces,
     ),
     listLimit,
   );
@@ -130,11 +134,13 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
       const tier = tierStyle(sym.tier)(tierPlain);
       const category = style.accent(formatInventoryCategory(sym.category));
       const symbolKind = style.white(formatInventorySymbolKind(sym.symbolKind));
-      const provenanceLabel = sym.tierProvenance?.kind === 'tag'
-        ? style.accent(formatTierProvenanceLabel(sym.tierProvenance))
-        : style.dim(formatTierProvenanceLabel(sym.tierProvenance));
+      const provenancePlain = formatTierProvenanceParen(sym.tierProvenance);
+      const provenance =
+        sym.tierProvenance?.kind === 'tag'
+          ? style.accent(provenancePlain)
+          : style.dim(provenancePlain);
       logLine(
-        `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${style.dim(sym.targetSubpath)} ${style.dim('[')}${provenanceLabel}${style.dim(']')}`,
+        `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${provenance} ${category} ${symbolKind} ${style.dim(sym.targetSubpath)}`,
       );
     }
     logListTruncation(flat.hiddenCount);
@@ -142,7 +148,7 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
 
   logLine('');
   const namespaces = limitList(
-    filterByTierCategory(
+    filterNamespaces(
       [...snapshot.namespaces].sort((a, b) => a.name.localeCompare(b.name)),
       filters,
     ),

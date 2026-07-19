@@ -225,6 +225,9 @@ function buildProgram(): Command {
                 full: local.full,
                 tier: local.tier,
                 category: local.category,
+                namespace: local.namespace,
+                module: local.module,
+                subpath: local.subpath,
               });
             });
           }),
@@ -254,6 +257,9 @@ function buildProgram(): Command {
                 full: local.full,
                 tier: local.tier,
                 category: local.category,
+                namespace: local.namespace,
+                module: local.module,
+                subpath: local.subpath,
                 failOnRemoved: local.failOnRemoved,
                 failOnTierViolations: local.failOnTierViolations,
               }),
@@ -374,6 +380,9 @@ function buildProgram(): Command {
                 full: local.full,
                 tier: local.tier,
                 category: local.category,
+                namespace: local.namespace,
+                module: local.module,
+                subpath: local.subpath,
               });
             });
           }),

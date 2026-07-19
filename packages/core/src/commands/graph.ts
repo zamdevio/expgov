@@ -74,7 +74,8 @@ export function runGraph(options: GraphCliOptions = {}): void {
     resolveCacheOptions({ noCache: options.noCache, force: options.force, profile: 'full' }),
   );
   // Filter the view before computing analytics or limiting lists.
-  const view = filterSnapshotView(snapshot, toFilterOptions(options));
+  const filters = toFilterOptions(options);
+  const view = filterSnapshotView(snapshot, filters);
 
   const targetGroups = groupByTargetSubpath(view);
   const top = topModules(view.edges);
@@ -93,6 +94,7 @@ export function runGraph(options: GraphCliOptions = {}): void {
       analytics,
       insights,
     };
+    if (filters) data.filters = filters;
     if (shouldIncludeGraphJsonDetail(options)) {
       const detail = buildGraphJsonListDetail(view.edges, options);
       data.top = detail.top;

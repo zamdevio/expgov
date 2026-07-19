@@ -11,6 +11,7 @@ import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { toFilterOptions } from '../shared/filters.js';
 import type { DiffCliOptions } from '../types/commands/cli.js';
 
 export function runDiff(options: DiffCliOptions): number {
@@ -28,6 +29,7 @@ export function runDiff(options: DiffCliOptions): number {
   });
   const exitCode = passed ? 0 : 1;
   const status = passed ? 'ok' : 'fail';
+  const filters = toFilterOptions(options);
 
   if (getRunOptions().json) {
     const data: Record<string, unknown> = {
@@ -38,6 +40,7 @@ export function runDiff(options: DiffCliOptions): number {
       tierViolations: diff.tierViolations,
       insights,
     };
+    if (filters) data.filters = filters;
     if (shouldIncludeDiffJsonDetail(options)) {
       Object.assign(
         data,

@@ -56,7 +56,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       `    d60df9e      short commit SHA (git must resolve uniquely)`,
       '',
       `  ${style.bold('Flags')}`,
-      `    -v, --verbose   symbol table: tier, category, symbolKind, targetSubpath; subpath rollups`,
+      `    -v, --verbose   symbol table: tier (+ provenance), category, symbolKind, targetSubpath; subpath rollups`,
       `    -f, --force     rebuild snapshot and overwrite ${DEFAULT_CACHE_DIR}/ for this run`,
       `    --no-cache      build fresh but skip reading/writing ${DEFAULT_CACHE_DIR}/ (status: bypass)`,
       `    -h, --help      show this section`,

@@ -12,6 +12,7 @@ import type {
   GraphTargetSubpathGroup,
 } from '../../types/commands/graph.js';
 import { computeGraphInsights } from '../../insights/index.js';
+import { formatAppliedFiltersMeta, toFilterOptions } from '../../shared/filters.js';
 import { formatCacheMetaLine, logLine, logListSection, logListTruncation, logSectionEmpty, printMeta, refLine } from '../report.js';
 import { printPublishedSubpathRollups } from './inventory.js';
 import { printInsightsBlock } from './insights.js';
@@ -44,6 +45,7 @@ export function printGraphReport(input: {
     symbols: style.dim(String(input.snapshot.symbols.length)),
     namespaces: style.dim(String(input.snapshot.namespaces.length)),
     subpaths: style.dim(String(input.snapshot.summary.subpaths.length)),
+    filters: formatAppliedFiltersMeta(toFilterOptions(input.listView)),
   });
 
   logLine('');

@@ -10,6 +10,7 @@ import { computeInventoryInsights } from '../insights/index.js';
 import { printInventoryReport, printVerboseInventory } from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { toFilterOptions } from '../shared/filters.js';
 import type { InventoryCliOptions } from '../types/commands/cli.js';
 
 export function runInventory(options: InventoryCliOptions): void {
@@ -19,6 +20,7 @@ export function runInventory(options: InventoryCliOptions): void {
   const result = getSnapshot(ref, resolveCacheOptions({ noCache: options.noCache, force: options.force, profile: 'full' }));
   const root = result.snapshot.summary.root;
   const insights = computeInventoryInsights(result.snapshot);
+  const filters = toFilterOptions(options);
 
   if (getRunOptions().json) {
     const data: Record<string, unknown> = {
@@ -28,6 +30,7 @@ export function runInventory(options: InventoryCliOptions): void {
       cache: result.cache,
       insights,
     };
+    if (filters) data.filters = filters;
     if (shouldIncludeInventoryJsonDetail(options)) {
       const detail = buildInventoryJsonListDetail(result.snapshot, options);
       data.top = detail.top;

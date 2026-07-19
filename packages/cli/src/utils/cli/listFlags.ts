@@ -10,11 +10,14 @@ export function addListFlags(cmd: Command): Command {
     .option('-F, --full', 'show all list rows without truncation');
 }
 
-/** Add shared tier and category filters. */
+/** Shared list filters for inventory / diff detail / graph. */
 export function addFilterFlags(cmd: Command): Command {
   return cmd
     .option('--tier <tier>', 'filter by tier (repeatable)', collectString, [])
-    .option('--category <category>', 'filter by category (repeatable)', collectString, []);
+    .option('--category <category>', 'filter by category (repeatable)', collectString, [])
+    .option('--namespace <name>', 'filter by root namespace name (repeatable)', collectString, [])
+    .option('--module <path>', 'filter by module path substring (repeatable)', collectString, [])
+    .option('--subpath <subpath>', 'filter by target subpath (repeatable)', collectString, []);
 }
 
 export function addCacheFlags(cmd: Command): Command {

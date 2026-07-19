@@ -1,5 +1,7 @@
 export const INVENTORY_NAME_WIDTH = 33;
 export const INVENTORY_TIER_WIDTH = 10;
+/** Padded width for dim `(exact)` / `(default-prefix)` beside the tier cell. */
+export const INVENTORY_PROVENANCE_WIDTH = 16;
 export const INVENTORY_CATEGORY_WIDTH = 10;
 export const INVENTORY_SYMBOL_KIND_WIDTH = 10;
 
