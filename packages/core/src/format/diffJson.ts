@@ -1,4 +1,4 @@
-import { filterByTierCategory, toFilterOptions } from '../shared/filters.js';
+import { filterSymbols, toFilterOptions } from '../shared/filters.js';
 import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
 import type { ListViewOptions } from '../types/cli/list.js';
 import type { DiffJsonListDetail, DiffJsonSymbolDetail } from '../types/format/diffJson.js';
@@ -27,20 +27,21 @@ function mapSymbol(sym: InventorySymbol): DiffJsonSymbolDetail {
 function detailForNames(
   names: string[],
   snapshot: InventorySnapshot,
+  filters: ReturnType<typeof toFilterOptions>,
 ): DiffJsonSymbolDetail[] {
   const byName = new Map(
     snapshot.symbols.filter((s) => s.exportKind === 'flat').map((s) => [s.name, s] as const),
   );
-  return names
+  const matched = names
     .map((name) => byName.get(name))
-    .filter((sym): sym is InventorySymbol => Boolean(sym))
-    .map(mapSymbol);
+    .filter((sym): sym is InventorySymbol => Boolean(sym));
+  return filterSymbols(matched, filters, snapshot.namespaces).map(mapSymbol);
 }
 
 /**
  * Diff JSON detail rows use the same `-T` / `-F` policy as human verbose detail.
  * Name arrays `added` / `removed` stay complete for CI gates.
- * `--tier` / `--category` filter detail rows only (before truncation).
+ * Shared list filters apply to detail rows only (before truncation).
  */
 export function buildDiffJsonListDetail(
   diff: Pick<DiffResult, 'added' | 'removed'>,
@@ -50,14 +51,8 @@ export function buildDiffJsonListDetail(
 ): DiffJsonListDetail {
   const filters = toFilterOptions(listView);
   const top = resolveListLimit(listView);
-  const added = limitList(
-    filterByTierCategory(detailForNames(diff.added, right), filters),
-    top,
-  );
-  const removed = limitList(
-    filterByTierCategory(detailForNames(diff.removed, left), filters),
-    top,
-  );
+  const added = limitList(detailForNames(diff.added, right, filters), top);
+  const removed = limitList(detailForNames(diff.removed, left, filters), top);
   const listGuidance = buildJsonListGuidance([
     { name: 'addedDetail', shown: added.items.length, hidden: added.hiddenCount },
     { name: 'removedDetail', shown: removed.items.length, hidden: removed.hiddenCount },

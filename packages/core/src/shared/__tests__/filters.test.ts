@@ -2,8 +2,12 @@ import { describe, expect, it } from 'vitest';
 import {
   filterByTierCategory,
   filterEdgesBySymbolMeta,
+  filterNamespaces,
   filterSnapshotView,
+  filterSymbols,
+  formatAppliedFiltersMeta,
   hasActiveFilters,
+  matchesSubpath,
   matchesTierCategory,
   toFilterOptions,
 } from '../filters.js';
@@ -25,13 +29,17 @@ function sym(
   };
 }
 
-function edge(symbol: string, toModule = 'src/x.ts'): GraphEdge {
+function edge(
+  symbol: string,
+  toModule = 'src/x.ts',
+  targetSubpath = '.',
+): GraphEdge {
   return {
     kind: 'flat-reexport',
     from: 'src/index.ts',
     symbol,
     toModule,
-    targetSubpath: '.',
+    targetSubpath,
   };
 }
 
@@ -81,6 +89,9 @@ describe('shared filters', () => {
     expect(hasActiveFilters({ tier: [] })).toBe(false);
     expect(hasActiveFilters({ tier: ['stable'] })).toBe(true);
     expect(hasActiveFilters({ category: ['run'] })).toBe(true);
+    expect(hasActiveFilters({ namespace: ['Ns'] })).toBe(true);
+    expect(hasActiveFilters({ module: ['src/'] })).toBe(true);
+    expect(hasActiveFilters({ subpath: ['./types'] })).toBe(true);
   });
 
   it('matches tier and category (AND across dimensions, OR within)', () => {
@@ -89,6 +100,12 @@ describe('shared filters', () => {
     expect(matchesTierCategory(row, { tier: ['internal'] })).toBe(false);
     expect(matchesTierCategory(row, { category: ['run', 'config'] })).toBe(true);
     expect(matchesTierCategory(row, { tier: ['stable'], category: ['config'] })).toBe(false);
+  });
+
+  it('matches subpath aliases', () => {
+    expect(matchesSubpath('./types', ['types'])).toBe(true);
+    expect(matchesSubpath('./types', ['./types'])).toBe(true);
+    expect(matchesSubpath('./config', ['types'])).toBe(false);
   });
 
   it('filters symbols and edges via symbol join', () => {
@@ -102,6 +119,48 @@ describe('shared filters', () => {
     expect(
       filterEdgesBySymbolMeta(edges, symbols, { category: ['run'] }).map((e) => e.symbol),
     ).toEqual(['a']);
+  });
+
+  it('filters by module substring and target subpath', () => {
+    const symbols = [
+      sym({ name: 'a', tier: 'stable', category: 'run', sourceModule: 'packages/core/src/run.ts', targetSubpath: './commands' }),
+      sym({ name: 'b', tier: 'stable', category: 'type', sourceModule: 'packages/core/src/types/x.ts', targetSubpath: './types' }),
+    ];
+    expect(
+      filterSymbols(symbols, { module: ['/types/'] }).map((s) => s.name),
+    ).toEqual(['b']);
+    expect(
+      filterSymbols(symbols, { subpath: ['types'] }).map((s) => s.name),
+    ).toEqual(['b']);
+
+    const edges = [
+      edge('a', 'packages/core/src/run.ts', '.'),
+      edge('b', 'packages/core/src/types/x.ts', '.'),
+    ];
+    expect(
+      filterEdgesBySymbolMeta(edges, symbols, { module: ['types/'] }).map((e) => e.symbol),
+    ).toEqual(['b']);
+    expect(
+      filterEdgesBySymbolMeta(edges, symbols, { subpath: ['./types'] }).map((e) => e.symbol),
+    ).toEqual(['b']);
+  });
+
+  it('filters namespaces by name and keeps matching module symbols', () => {
+    const symbols = [
+      sym({ name: 'helper', tier: 'stable', category: 'run', sourceModule: 'src/ns.ts' }),
+      sym({ name: 'other', tier: 'stable', category: 'run', sourceModule: 'src/other.ts' }),
+    ];
+    const snapshot = miniSnapshot(symbols, [
+      edge('helper', 'src/ns.ts'),
+      edge('other', 'src/other.ts'),
+      { kind: 'namespace-reexport', from: 'src/index.ts', symbol: 'NsStable', toModule: 'src/ns.ts', targetSubpath: './ns' },
+    ]);
+    const view = filterSnapshotView(snapshot, { namespace: ['NsStable'] });
+    expect(filterNamespaces(snapshot.namespaces, { namespace: ['NsStable'] }).map((n) => n.name)).toEqual([
+      'NsStable',
+    ]);
+    expect(view.symbols.map((s) => s.name)).toEqual(['helper']);
+    expect(view.edges.map((e) => e.symbol).sort()).toEqual(['NsStable', 'helper']);
   });
 
   it('builds a filtered snapshot view without mutating the original', () => {
@@ -118,10 +177,32 @@ describe('shared filters', () => {
   });
 
   it('normalizes list-view filter fields', () => {
-    expect(toFilterOptions({ top: 5, tier: [], category: [] })).toBeUndefined();
-    expect(toFilterOptions({ tier: ['stable'], category: ['run'] })).toEqual({
+    expect(toFilterOptions({ top: 5, tier: [], category: [], namespace: [], module: [], subpath: [] })).toBeUndefined();
+    expect(
+      toFilterOptions({
+        tier: ['stable'],
+        category: ['run'],
+        namespace: ['Ns'],
+        module: ['src/'],
+        subpath: ['./types'],
+      }),
+    ).toEqual({
       tier: ['stable'],
       category: ['run'],
+      namespace: ['Ns'],
+      module: ['src/'],
+      subpath: ['./types'],
     });
+  });
+
+  it('formats applied filters meta and omits empty keys', () => {
+    expect(formatAppliedFiltersMeta(undefined)).toBeUndefined();
+    expect(formatAppliedFiltersMeta({})).toBeUndefined();
+    expect(formatAppliedFiltersMeta({ tier: ['stable'], module: ['commands'] })).toBe(
+      'tier=stable · module=commands',
+    );
+    expect(formatAppliedFiltersMeta({ tier: ['stable', 'advanced'], category: ['run'] })).toBe(
+      'tier=stable,advanced · category=run',
+    );
   });
 });

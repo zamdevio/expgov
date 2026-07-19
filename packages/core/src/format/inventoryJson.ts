@@ -1,4 +1,4 @@
-import { filterByTierCategory, toFilterOptions } from '../shared/filters.js';
+import { filterNamespaces, filterSymbols, toFilterOptions } from '../shared/filters.js';
 import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
 import type { ListViewOptions } from '../types/cli/list.js';
 import type {
@@ -73,11 +73,11 @@ export function buildInventoryJsonListDetail(
   const top = resolveListLimit(listView);
   // Filter inventory rows before JSON map (namespace JSON omits category).
   const symbols = limitList(
-    toInventoryJsonSymbols(filterByTierCategory(snapshot.symbols, filters)),
+    toInventoryJsonSymbols(filterSymbols(snapshot.symbols, filters, snapshot.namespaces)),
     top,
   );
   const namespaces = limitList(
-    toInventoryJsonNamespaces(filterByTierCategory(snapshot.namespaces, filters)),
+    toInventoryJsonNamespaces(filterNamespaces(snapshot.namespaces, filters)),
     top,
   );
   const listGuidance = buildJsonListGuidance([
