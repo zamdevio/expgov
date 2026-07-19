@@ -15,7 +15,7 @@ import { computeTimelineInsights } from '../insights/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { formatTimelineRangeHelp, parseTimelineRange } from '../time/index.js';
-import { limitList, resolveListLimit } from '../shared/listing.js';
+import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
 import type { TimelineCliOptions } from '../types/commands/cli.js';
 import type { TimelineRow } from '../types/timeline/row.js';
 import { computeTimelineStepMeta } from '../timeline/stepMeta.js';
@@ -101,6 +101,11 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
   const summary = computeTimelineSummary(rows, range);
 
   if (getRunOptions().json) {
+    const listGuidance = buildJsonListGuidance([
+      { name: 'rows', shown: rows.length, hidden: hiddenCount },
+    ]);
+    const notes: string[] = [];
+    if (listGuidance.note) notes.push(listGuidance.note);
     finishCommand({
       command: 'timeline',
       timer,
@@ -108,7 +113,17 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
       json: {
         kind: 'timeline',
         ok: true,
-        data: { range, top: listLimit, rows, warmStats, summary, insights },
+        data: {
+          range,
+          top: listLimit,
+          rows,
+          rowsHidden: hiddenCount,
+          listGuidance,
+          notes,
+          warmStats,
+          summary,
+          insights,
+        },
       },
     });
     return;

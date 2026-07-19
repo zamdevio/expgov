@@ -1,5 +1,9 @@
 import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
+import {
+  buildInventoryJsonListDetail,
+  shouldIncludeInventoryJsonDetail,
+} from '../format/index.js';
 import { formatGitRunStats, resetGitRunStats, resolveSourceRef } from '../git/index.js';
 import { tierCountsFooterFields } from '../inventory/index.js';
 import { computeInventoryInsights } from '../insights/index.js';
@@ -17,6 +21,23 @@ export function runExportsInventory(options: InventoryCliOptions): void {
   const insights = computeInventoryInsights(result.snapshot);
 
   if (getRunOptions().json) {
+    const data: Record<string, unknown> = {
+      ref: ref.label,
+      sha: result.snapshot.sha,
+      summary: result.snapshot.summary,
+      cache: result.cache,
+      insights,
+    };
+    if (shouldIncludeInventoryJsonDetail(options)) {
+      const detail = buildInventoryJsonListDetail(result.snapshot, options);
+      data.top = detail.top;
+      data.symbols = detail.symbols;
+      data.namespaces = detail.namespaces;
+      data.symbolsHidden = detail.symbolsHidden;
+      data.namespacesHidden = detail.namespacesHidden;
+      data.listGuidance = detail.listGuidance;
+      data.notes = detail.notes;
+    }
     finishCommand({
       command: 'inventory',
       timer,
@@ -24,13 +45,7 @@ export function runExportsInventory(options: InventoryCliOptions): void {
       json: {
         kind: 'inventory',
         ok: true,
-        data: {
-          ref: ref.label,
-          sha: result.snapshot.sha,
-          summary: result.snapshot.summary,
-          cache: result.cache,
-          insights,
-        },
+        data,
       },
     });
     return;
