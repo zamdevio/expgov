@@ -165,6 +165,51 @@ expgov inventory -F -j -s          # all symbols (same as -v -F)
 
 Use `summary.root.flat` for the true total; `symbols.length + symbolsHidden` matches that total when detail is present. Omit `-v`/`-F` and those list fields are absent.
 
+### `graph`
+
+Default JSON is analytics + target groups. Pass `-v` or `-F` to include re-export `edges[]` under the same `-T`/`-F` list policy + `listGuidance`:
+
+```bash
+expgov graph -v -j -s
+expgov graph -F -j -s
+```
+
+```json
+{
+  "ok": true,
+  "kind": "graph",
+  "data": {
+    "ref": "worktree",
+    "edgeCount": 120,
+    "targetGroups": [{ "targetSubpath": "./commands", "flat": 9, "namespace": 0 }],
+    "analytics": { "edgeDensity": 1.2, "hottestModule": { "path": "…", "edges": 12 } },
+    "insights": { "lines": [] },
+    "top": 10,
+    "edges": [
+      {
+        "kind": "flat-reexport",
+        "from": "packages/core/src/index.ts",
+        "symbol": "runExportsValidate",
+        "toModule": "packages/core/src/commands/validate.ts",
+        "targetSubpath": "./commands/validate"
+      }
+    ],
+    "edgesHidden": 110,
+    "listGuidance": {
+      "truncated": true,
+      "note": "edges: 110 more hidden (showing 10 of 120). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
+    },
+    "notes": [
+      "edges: 110 more hidden (showing 10 of 120). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
+    ]
+  },
+  "issues": [],
+  "meta": { "apiVersion": "1", "command": "graph", "durationMs": 18 }
+}
+```
+
+`edgeCount` is the true total; `edges.length + edgesHidden` matches it when detail is present.
+
 ## `kind` values
 
 | `kind` | Command |

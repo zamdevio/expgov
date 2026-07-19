@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — **AG1 shipped**; AG2 next. D1 completed the fail-mode half of AG3. **AG3/AG4** share Diff D1/D2 work (do not duplicate).
+**Status:** Active — **AG1–AG2 shipped**; D2/AG4 (`validate --since`) next. D1 completed the fail-mode half of AG3. **AG3/AG4** share Diff D1/D2 work (do not duplicate).
 
 **Companion:** [`diff.md`](./diff.md) · [`severity.md`](./severity.md) · [`cli-output-audit.md`](./cli-output-audit.md) · [`docs/cli/json.md`](../../docs/cli/json.md) · [`docs/guides/workflows.md`](../../docs/guides/workflows.md)
 
@@ -23,7 +23,7 @@ Dogfood target: nodehunter (and any SDK that freezes a 1.x surface) can automate
 | Gap | Today | Agent impact |
 |-----|-------|--------------|
 | `inventory -v/-F -j` | Summary only; symbol table was human `-v` only | **Shipped AG1** — `data.symbols` / `data.namespaces` |
-| `graph -F -j` | Analytics rollup only; edges not in JSON | Cannot reason about re-export graph |
+| `graph -v/-F -j` | Analytics rollup only; edges not in JSON | **Shipped AG2** — `data.edges` + `listGuidance` |
 | Default `-T 10` | Truncation in human lists | Fine for TTY; wrong default for agents if they scrape text |
 | `diff` detail | Fail gate shipped; verbose JSON lacks added/removed metadata | Agents can gate removals, but cannot inspect rich symbol changes |
 | `validate --since` | Reserved, unimplemented | One-command “PR shippable?” missing |
@@ -65,13 +65,12 @@ Source: same structures already printed by `printVerboseInventory` / stored in c
 
 ### A2 — `graph -j`
 
-Under `-v` or `-F`, include:
+Under `-v` or `-F`, include (same `-T`/`-F` list policy + `listGuidance`):
 
 ```ts
 data: {
   ref, edgeCount, targetGroups, analytics, insights,
-  edges: Array<{ /* existing edge record fields */ }>
-  // optional: modules[] ranked by edge count (already partially in analytics)
+  top, edges, edgesHidden, listGuidance, notes,
 }
 ```
 
@@ -178,25 +177,25 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 | ID | Slice | Depends | Outcome |
 |----|-------|---------|---------|
 | **AG1** | JSON inventory symbols/namespaces (`-v`/`-F`) | — | **Shipped** — agents can list all exports |
-| **AG2** | JSON graph edges (`-v`/`-F`) | — | Agents can map re-exports |
+| **AG2** | JSON graph edges (`-v`/`-F`) | — | **Shipped** — agents can map re-exports |
 | **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | **Partial** — fail flags shipped in D1; `-v` detail JSON still open |
 | **AG4** | `validate --since` | AG3 compare core | One-command PR gate |
 | **AG5** | Filter flags (`--tier`, `--category`, …) | AG1–2 | Flexible queries |
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
 | **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | Public contract |
 
-Suggested remaining order: **AG2 → AG3 detail → AG4 → AG5 → AG6 → AG7**.
+Suggested remaining order: **AG3 detail → AG4 → AG5 → AG6 → AG7**.
 
 ---
 
 ## Acceptance criteria
 
 - [x] `expgov inventory -v -j -s` includes symbol/namespace lists under the same `-T`/`-F` policy as human verbose (use `-F` for every flat)
-- [ ] `expgov graph -F -j -s` includes edge list (or documented equivalent) matching cache/graph analytics
+- [x] `expgov graph -F -j -s` includes edge list matching `edgeCount` under shared listGuidance
 - [x] `expgov diff A..B --fail-on-removed` exits 1 iff removals exist; default diff still exits 0
 - [ ] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
 - [ ] Filter flags compose with JSON without requiring human output parsing
-- [x] `docs/cli/json.md` documents inventory detail shapes (graph/diff detail still growing)
+- [x] `docs/cli/json.md` documents inventory + graph detail shapes (diff detail still growing)
 - [ ] No regression: human mode banners/truncation remain usable; envelope `apiVersion` unchanged unless breaking
 
 ---

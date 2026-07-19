@@ -13,7 +13,7 @@ expgov graph HEAD -v
 
 Human output: meta → namespaces (tier/category composition) → re-export targets → published subpaths → top modules → **Summary** (edge density, hottest module, fan-in) → insights.
 
-JSON: `data.analytics` includes namespace composition, edge density, hottest module, and fan-in modules.
+JSON: `data.analytics` includes namespace composition, edge density, hottest module, and fan-in modules. With `-v` or `-F`, JSON also includes `data.edges` under the same `-T`/`-F` list policy as other commands (see [JSON output](../cli/json.md)).
 
 ## Related
 

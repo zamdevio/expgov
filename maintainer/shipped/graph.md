@@ -17,6 +17,17 @@ P17 graph insights (densest module, fan-out, category mix) remain — see [`runt
 
 ---
 
+## AG2 — graph JSON edges (shipped) · 2026-W29
+
+- [x] `graph --json` with `-v` or `-F` emits `data.edges[]` (kind, from, symbol, toModule, targetSubpath)
+- [x] Shared list policy: same `-T`/`-F` as human lists; `top` + `edgesHidden` + `listGuidance` / `notes`
+- [x] Helpers: `format/graphJson.ts`; tests: `shared/__tests__/graphJson.test.ts`
+- [x] Docs: `docs/cli/json.md`, `docs/commands/graph.md`
+
+Phase: [`phases/agentic.md`](../phases/agentic.md).
+
+---
+
 ## Pipeline (current)
 
 ```txt

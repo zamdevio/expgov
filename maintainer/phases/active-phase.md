@@ -12,14 +12,14 @@
 
 **Doc:** [`agentic.md`](./agentic.md) · **Diff companion:** [`diff.md`](./diff.md)
 
-D1 (`diff` fail flags) is shipped. Next: expose inventoriable truth over `--json`, then compose `validate --since`.
+D1 (`diff` fail flags) and AG1–AG2 (inventory/graph JSON detail) are shipped. Next: compose `validate --since`.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
 | 1 | **D1** — `diff` fail flags | **Shipped** | `--fail-on-removed`, `--fail-on-tier-violations`; `ok: false` + `issues[]` when failing |
 | 2 | **AG1** — inventory JSON symbols | **Shipped** | `symbols[]` / `namespaces[]` under `-v`/`-F` |
-| 3 | **AG2** — graph JSON edges | **Next** | `edges[]` under `-v`/`-F` |
-| 4 | **D2 / AG4** — `validate --since` | After compare core | Baseline vs worktree; fail on removals + existing validate rules |
+| 3 | **AG2** — graph JSON edges | **Shipped** | `edges[]` under `-v`/`-F` + shared listGuidance |
+| 4 | **D2 / AG4** — `validate --since` | **Next** | Baseline vs worktree; fail on removals + existing validate rules |
 
 **Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic AG3/AG4 are the same work (JSON/detail integration) — do not implement twice. Optional D3 `compatBaseline` waits until flags are dogfooded.
 
