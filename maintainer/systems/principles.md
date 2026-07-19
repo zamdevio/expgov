@@ -8,6 +8,7 @@ Stable constraints for expgov design — not sprint plans.
 
 | Principle | Rule |
 |-----------|------|
+| **Reachable SDK surface** | Govern only entry barrels/subpaths and modules transitively reachable from them — not the whole workspace (see below) |
 | Config as code | `expgov.config.ts` primary — [`phases/config.md`](../phases/config.md) for show/export + JSON load |
 | Core purity | Engine in `packages/core` — no TTY/chalk/prompts in command paths |
 | Thin CLI | `packages/cli` — Commander, banners, init prompts only |
@@ -20,6 +21,28 @@ Stable constraints for expgov design — not sprint plans.
 ## Mission
 
 Portable export-governance CLI for TypeScript SDK barrels: inventory, diff, validate, trend, timeline, graph — evolving toward SDK observability without a parallel data store.
+
+---
+
+## Reachable SDK surface (core inventory scope)
+
+expgov’s engine answers: **what is intentionally public from configured package entry points?** It does **not** analyze every file in the repo.
+
+**In scope**
+
+1. Root package barrels (and configured multi-entry barrels)
+2. Package subpaths listed for publish / governance
+3. Every downstream module **transitively reachable** from those entries via re-export edges
+
+**Out of scope (by design)**
+
+- Modules never reached from a governed entry (implementation detail)
+- Workspace-wide unused-export / dead-file scans — use Knip, Madge, or similar
+- Overlapping with general TS project linters
+
+This keeps diagnostics focused, matches graph-based cache invalidation (same closure), and avoids turning expgov into a second static-analysis suite.
+
+**Planned honesty gaps** (silent today; do not claim fixed in user docs until shipped): direct declarations inside tracked barrels, and tracked closure modules that declare symbols but contribute no reachable SDK export — [`phases/inventory-diagnostics.md`](../phases/inventory-diagnostics.md) (ID1 / ID2). After those land, expand [`exports.md`](./exports.md) and [`../../docs/governance.md`](../../docs/governance.md) with the live diagnostic codes and UX.
 
 ---
 

@@ -8,27 +8,28 @@
 
 ---
 
-## Focus now — Diff fail gate
+## Focus now — Agentic JSON (post-D1)
 
-**Doc:** [`diff.md`](./diff.md) · **Companion:** [`agentic.md`](./agentic.md)
+**Doc:** [`agentic.md`](./agentic.md) · **Diff companion:** [`diff.md`](./diff.md)
 
-Ship an opt-in CI removal gate for frozen 1.x export surfaces (nodehunter and similar). Default `diff` stays informational (exit `0`).
+D1 (`diff` fail flags) is shipped. Next: expose inventoriable truth over `--json`, then compose `validate --since`.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
 | 1 | **D1** — `diff` fail flags | **Shipped** | `--fail-on-removed`, `--fail-on-tier-violations`; `ok: false` + `issues[]` when failing |
-| 2 | **AG1** — inventory JSON symbols | Next | `symbols[]` / `namespaces[]` under `-v`/`-F` |
+| 2 | **AG1** — inventory JSON symbols | **Next** | `symbols[]` / `namespaces[]` under `-v`/`-F` |
 | 3 | **AG2** — graph JSON edges | Next | `edges[]` under `-v`/`-F` |
-| 4 | **D2 / AG4** — `validate --since` | After D1 | Shared compare core → baseline vs worktree; fail on removals + existing validate rules |
+| 4 | **D2 / AG4** — `validate --since` | After compare core | Baseline vs worktree; fail on removals + existing validate rules |
 
 **Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic AG3/AG4 are the same work (JSON/detail integration) — do not implement twice. Optional D3 `compatBaseline` waits until flags are dogfooded.
 
 **After AG4:** bump expgov in nodehunter CI; prefer `validate --since v1.0.0`.
 
-### Parallel small slice
+### Parallel / follow-on engine phase
 
 | Slice | Scheduling | Goal |
 |-------|------------|------|
+| **ID1 / ID2** — Inventory diagnostics | After AG1–AG2 preferred; parallel only if silent barrel misses hurt dogfood | Direct barrel decls + closure modules with no reachable exports — [`inventory-diagnostics.md`](./inventory-diagnostics.md). **ID-DOC** updates systems + `docs/` **after** code |
 | **HELP1** — Help color hierarchy | Independent; first, parallel, or last | Blue `expgov`, cyan command path, dim flags/values in `Usage:` + `Examples:` — [`help.md`](./help.md) |
 
 ---
@@ -61,19 +62,20 @@ Resume **C3** after Diff D1–D2 and Agentic AG1–AG2 (share filter vocabulary 
 
 | # | Slice | Goal | Doc |
 |---|-------|------|-----|
-| 1 | **Diff fail gate** | `--fail-on-removed`, implement `validate --since` | [`diff.md`](./diff.md) |
+| 1 | **Diff fail gate** | D1 shipped; implement `validate --since` (D2) | [`diff.md`](./diff.md) |
 | 2 | **Agentic** | JSON completeness + flexible flags (inventory/graph/diff) | [`agentic.md`](./agentic.md) |
+| 3 | **Inventory diagnostics** | Reachable-surface honesty (ID1/ID2) + ID-DOC | [`inventory-diagnostics.md`](./inventory-diagnostics.md) |
 | P | **HELP1** — Help color hierarchy | Independent small slice; may accompany another CLI task | [`help.md`](./help.md) |
-| 3 | Phase **C3** — Graph filters | Filtered graph view (shared vocab with AG5) | [`graph-2.md`](./graph-2.md) |
-| 4 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
-| 5 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
-| 6 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
-| 7 | **Severity** | Policy `severity` rule, graded `issues[]` | [`severity.md`](./severity.md) |
-| 8 | **Suggest** | Suggestion engine, full fixes, filters | [`suggest.md`](./suggest.md) |
-| 9 | **Fix** | `fix tags`, `fix config` | [`fix.md`](./fix.md) |
-| 10 | **Config** | `config show` / `export` / `convert` | [`config.md`](./config.md) |
-| 11 | **Issues** | `issues/` registry, doc links | [`issues.md`](./issues.md) |
-| 12 | **Multibarrel** | Multi-entry API surface, workspace | [`multibarrel.md`](./multibarrel.md) |
+| 4 | Phase **C3** — Graph filters | Filtered graph view (shared vocab with AG5) | [`graph-2.md`](./graph-2.md) |
+| 5 | Phase **D** — API chain | Execution introspection / tier rule trace | [`../api-chain.md`](../api-chain.md) |
+| 6 | Phase **F** — CLI output audit | UX audit receipt; close gaps | [`cli-output-audit.md`](./cli-output-audit.md) |
+| 7 | Phase **G** — Long-term observability | Metrics over cached snapshots | [`../systems/observability.md`](../systems/observability.md) |
+| 8 | **Severity** | Policy `severity` rule, graded `issues[]` | [`severity.md`](./severity.md) |
+| 9 | **Suggest** | Suggestion engine, full fixes, filters | [`suggest.md`](./suggest.md) |
+| 10 | **Fix** | `fix tags`, `fix config` | [`fix.md`](./fix.md) |
+| 11 | **Config** | `config show` / `export` / `convert` | [`config.md`](./config.md) |
+| 12 | **Issues** | `issues/` registry, doc links | [`issues.md`](./issues.md) |
+| 13 | **Multibarrel** | Multi-entry API surface, workspace | [`multibarrel.md`](./multibarrel.md) |
 
 ---
 
@@ -98,6 +100,7 @@ Resume **C3** after Diff D1–D2 and Agentic AG1–AG2 (share filter vocabulary 
 - **Core purity:** `packages/core` never imports CLI, prompts, or chalk.
 - **CLI is thin:** Commander host, banners, help colorization, `init` prompts only.
 - **Tier sources:** `@sdkTier` JSDoc + nested config buckets — [`systems/tiers.md`](../systems/tiers.md).
+- **Reachable SDK surface:** inventory/validate/graph scope — [`systems/principles.md`](../systems/principles.md); diagnostics phase [`inventory-diagnostics.md`](./inventory-diagnostics.md).
 
 ---
 

@@ -17,10 +17,13 @@ Governance commands never edit your barrel, `package.json`, or tier tags. You ap
 
 ## What “governed” means
 
-1. **Tier classification** — every root flat export maps to a bucket (`stable`, `internal`, `advanced`, or custom) via `@sdkTier` JSDoc and/or `tiers.*` config.
-2. **Policy rules** — buckets reference policies (e.g. `internal` denies flat root exports).
-3. **Parity checks** — `validate` compares tsconfig `paths` to npm `exports`.
-4. **Drift visibility** — `diff`, `timeline`, and `trend` show how the surface changed over time.
+1. **Reachable SDK surface** — expgov inventories exports reachable from your package entry barrels and subpaths (and modules they re-export). It does **not** scan the whole workspace for unused files; that stays with tools like Knip.
+2. **Tier classification** — every root flat export maps to a bucket (`stable`, `internal`, `advanced`, or custom) via `@sdkTier` JSDoc and/or `tiers.*` config.
+3. **Policy rules** — buckets reference policies (e.g. `internal` denies flat root exports).
+4. **Parity checks** — `validate` compares tsconfig `paths` to npm `exports`.
+5. **Drift visibility** — `diff`, `timeline`, and `trend` show how the surface changed over time.
+
+Prefer `export { … } from './module'` (or `export * as`) from barrels so symbols enter the inventoriable graph. Declarations written directly in a barrel may not appear in inventory until engine diagnostics/support for that pattern land.
 
 ## Tier sources (first match wins)
 

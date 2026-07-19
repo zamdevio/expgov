@@ -12,6 +12,22 @@
 2. How root barrel growth is measured over time
 3. How tsconfig paths stay aligned with npm `exports`
 
+Core scope rule: **reachable SDK surface** — [`principles.md`](./principles.md).
+
+---
+
+## Reachable surface (engine)
+
+Inventory builds from configured entry barrels / subpaths, then follows re-export edges (`export { … } from`, `export * as`). The resulting symbol set, graph edges, and cache invalidation closure are the same graph.
+
+| Included today | Not included today |
+|----------------|--------------------|
+| Named / namespace re-exports from tracked barrels | Direct `export const` / `function` / … **inside** the barrel (silent miss — [`phases/inventory-diagnostics.md`](../phases/inventory-diagnostics.md) ID1) |
+| Modules on those re-export chains | Repo files never reached from an entry |
+| Tier / policy on inventoriable flats | “Module in closure declares stuff but exports nothing reachable” (silent — ID2) |
+
+When ID1/ID2 ship, document issue codes and command UX here and in public `docs/governance.md` (phase **ID-DOC**). Until then: do not advertise those diagnostics as live.
+
 ---
 
 ## Root barrel

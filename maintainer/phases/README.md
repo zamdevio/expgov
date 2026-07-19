@@ -28,8 +28,9 @@ Scratch / spikes: **`maintainer/temp/`** (gitignored).
 
 | Doc | Phase |
 |-----|-------|
-| [`diff.md`](./diff.md) | **Focus** — Diff fail gate (**D1 shipped**; D2 next) |
-| [`agentic.md`](./agentic.md) | Agentic JSON completeness + flexible flags (AG3/AG4 owned by diff) |
+| [`diff.md`](./diff.md) | Diff fail gate (**D1 shipped**; D2 next) |
+| [`agentic.md`](./agentic.md) | **Focus** — Agentic JSON completeness + flexible flags (AG3/AG4 owned by diff) |
+| [`inventory-diagnostics.md`](./inventory-diagnostics.md) | ID1/ID2 — reachable-surface honesty (direct barrel decls + dead contribution) |
 | [`help.md`](./help.md) | HELP1 — small parallel help color hierarchy slice |
 | [`graph-2.md`](./graph-2.md) | C — Graph 2.0 (C3 paused; align filters with AG5) |
 | [`../api-chain.md`](../api-chain.md) | D — API chain |
