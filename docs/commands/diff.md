@@ -55,10 +55,18 @@ expgov diff HEAD --fail-on-removed
 
 Choose an immutable released tag or commit for the left side. The right side is the candidate release (`HEAD` in CI, or the working tree when only one ref is supplied).
 
-Do not use this flag to reject additive API growth: additions remain allowed. It also does not replace `expgov validate`, which checks current-tree tier classification and package/config policy. Run both in CI until `validate --since` is implemented.
+Do not use this flag to reject additive API growth: additions remain allowed. It also does not replace `expgov validate`, which checks current-tree tier classification and package/config policy.
+
+**Prefer the one-command gate** when you want both checks:
+
+```bash
+expgov validate --since v1.0.0
+```
+
+That runs current-tree validate **and** fails on flat removals vs the baseline. Keep `diff --fail-on-removed` when you only want the surface compare (or need `--fail-on-tier-violations` on the right-side snapshot).
 
 ## Related
 
 - [timeline](./timeline.md) — shared `A..B` grammar for ref ranges
-- [validate](./validate.md)
+- [validate](./validate.md) — `--since` one-command CI gate
 - [Workflows](../guides/workflows.md)

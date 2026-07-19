@@ -110,6 +110,38 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
 }
 ```
 
+### `validate --since`
+
+Baseline vs working tree. Removals use the same issue code as `diff --fail-on-removed`:
+
+```bash
+expgov validate --since v1.0.0 -j -s
+```
+
+```json
+{
+  "ok": false,
+  "kind": "validate",
+  "data": {
+    "passed": false,
+    "violations": ["1 flat export removed: legacyHelper"],
+    "notes": [],
+    "since": "v1.0.0",
+    "sinceLabel": "v1.0.0 → working tree",
+    "added": ["newApi"],
+    "removed": ["legacyHelper"]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "code": "expgov.diff.exports_removed",
+      "message": "1 flat export removed: legacyHelper"
+    }
+  ],
+  "meta": { "apiVersion": "1", "command": "validate", "durationMs": 52 }
+}
+```
+
 ### `inventory`
 
 Default JSON is summary-only. Pass `-v` or `-F` to include root flat symbols and namespaces. Lists honor the same `-T` / `-F` policy as human verbose mode (default top `10`; `-F` = uncapped, `top` serializes as `null`):
@@ -218,11 +250,13 @@ expgov graph -F -j -s
 
 ```bash
 pnpm build
-expgov validate --json --silent > validate.json
+expgov validate --since v1.0.0 --json --silent > validate.json
 test "$(jq -r .ok validate.json)" = "true"
 ```
 
-Surface regression gate (opt-in on `diff`):
+When `--since` is set, `data` also includes `since`, `sinceLabel`, `added`, and `removed`. Failures may mix `expgov.validate.violation` with `expgov.diff.exports_removed` in `issues[]`.
+
+Surface-only regression gate (opt-in on `diff`):
 
 ```bash
 expgov diff v1.0.0..HEAD --fail-on-removed --json --silent > diff.json

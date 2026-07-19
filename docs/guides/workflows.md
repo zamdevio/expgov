@@ -1,5 +1,5 @@
 ---
-description: "Practical expgov workflows — scaffold config, tune tiers, review releases, and wire validate into CI with JSON output."
+description: "Practical expgov workflows — scaffold config, tune tiers, review releases, and wire validate --since into CI with JSON output."
 ---
 
 # Workflows
@@ -70,25 +70,60 @@ expgov validate
 
 Fails with exit `1` when violations exist — suitable for GitHub Actions without parsing output.
 
-## CI gate (no export removals)
+## CI gate (compat + validate)
 
-After a frozen 1.x baseline tag, fail when public flats disappear:
+After a frozen 1.x baseline tag, prefer the **one-command** PR gate — current-tree governance **and** no flat export removals:
+
+```bash
+pnpm build
+expgov validate --since v1.0.0
+```
+
+Equivalent two-step form (still useful when you want separate jobs or only the surface check):
 
 ```bash
 expgov validate
 expgov diff v1.0.0..HEAD --fail-on-removed
 ```
 
-Optional: also fail on right-side tier violations with `--fail-on-tier-violations`. Default `diff` (no fail flags) stays exit `0`. See [diff](../commands/diff.md).
+Optional on `diff` only: also fail on right-side tier notes with `--fail-on-tier-violations`. Default `diff` (no fail flags) stays exit `0`. See [validate](../commands/validate.md) and [diff](../commands/diff.md).
+
+| Goal | Command |
+|------|---------|
+| Current-tree tiers + parity | `expgov validate` |
+| No removals since baseline | `expgov diff <tag>..HEAD --fail-on-removed` |
+| Both (recommended CI) | `expgov validate --since <tag>` |
+| JSON artifact for agents | add `-j -s` |
 
 ## CI gate (JSON artifact)
 
 ```bash
-expgov validate --json --silent > validate.json
+expgov validate --since v1.0.0 --json --silent > validate.json
 test "$(jq -r .ok validate.json)" = "true"
 ```
 
-Parse `issues[]` for structured automation. See [JSON output](../cli/json.md).
+Parse `issues[]` for structured automation (`expgov.validate.violation`, `expgov.diff.exports_removed`). See [JSON output](../cli/json.md).
+
+### GitHub Actions sketch
+
+```yaml
+- name: Export governance
+  run: pnpm exec expgov validate --since v1.0.0
+```
+
+Or with a JSON artifact:
+
+```yaml
+- name: Export governance (JSON)
+  run: |
+    pnpm exec expgov validate --since v1.0.0 -j -s > validate.json
+    test "$(jq -r .ok validate.json)" = "true"
+- uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: expgov-validate
+    path: validate.json
+```
 
 ## Monorepo dogfood
 
@@ -103,4 +138,6 @@ expgov -C packages/my-sdk inventory
 
 - [Install](../install.md)
 - [Commands overview](../commands/README.md)
+- [validate](../commands/validate.md)
+- [diff](../commands/diff.md)
 - [SDK overview](../sdk/README.md)
