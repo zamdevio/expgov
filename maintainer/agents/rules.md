@@ -13,6 +13,16 @@
 - Core never imports CLI or `@inquirer/prompts`.
 - Chalk tokens live in `runtime/style.ts` for shared semantic colors only.
 
+## Source layout (types / constants)
+
+Keep logic modules thin — full rules in [`architecture.md`](./architecture.md#module-organization-types--constants).
+
+1. **Types** — `export type` / `export interface` only under `packages/*/src/types/` (subdir barrels OK).
+2. **Constants** — named consts under `packages/core/src/shared/constants/` or `packages/cli/src/constants/`.
+3. **Logic imports, does not re-export** — feature modules must not `export type { … }` or re-export consts for call-sites; import from the type/const barrel instead.
+4. **Local aliases OK** — file-private `type X = …` with no export is fine.
+5. **Public root exception** — only `packages/core/src/index.ts` is the intentional published re-export surface.
+
 ## Output contract
 
 - **stdout** — command results (human reports or `--json` envelope)

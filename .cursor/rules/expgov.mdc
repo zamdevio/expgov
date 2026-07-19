@@ -23,6 +23,13 @@ alwaysApply: true
 - Core never imports CLI or `@inquirer/prompts`.
 - Chalk only in `runtime/style.ts` for semantic tokens.
 
+## Source layout
+- Types/interfaces → `packages/*/src/types/` (subdir barrels OK); logic files import, do not define or re-export them.
+- Named constants → `packages/core/src/shared/constants/` or `packages/cli/src/constants/`.
+- File-private `type` aliases (no export) are OK.
+- Public SDK re-exports only from `packages/core/src/index.ts`.
+- Details: `maintainer/agents/architecture.md` (Module organization).
+
 ## Export governance
 - Root barrel: `packages/core/src/index.ts`.
 - Classify exports via `@sdkTier` JSDoc or tier config buckets.

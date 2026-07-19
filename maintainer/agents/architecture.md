@@ -41,24 +41,47 @@ Monorepo dev uses `workspace:*` for `@expgov/core` in root `devDependencies`. Pu
 
 ```txt
 packages/core/src/
-├── commands/       # runExports* — beginCommand/finishCommand + reports
-├── config/         # load.ts, tiers.ts, tierCatalog, tierPolicy
-├── context/        # ProjectContext from expgov.config.ts; path accessors (paths.ts)
-├── cache/          # snapshot warm/read, worktree files.json
-├── inventory/      # barrel snapshot + classifySymbolTier
-├── init/           # detect + template for init command
-├── git/            # refs, gitignore tip
-├── insights/       # command metadata aggregations (Phase E)
-├── runtime/        # RunOptions, emitter, policy, timer, JSON envelope, style
-├── logger/         # human report formatters (emit via log sink)
-└── help/           # long-form usage text
+├── types/              # all exported type/interface defs (subdir barrels)
+├── shared/
+│   ├── constants/      # named constants (CLI_NAME, cache, tiers, list, …)
+│   ├── listing.ts      # list truncation helpers (imports types from types/)
+│   └── result/         # JSON envelope builders
+├── commands/           # runExports* — beginCommand/finishCommand + reports
+├── config/             # load.ts, tiers.ts, tierCatalog, tierPolicy
+├── context/            # ProjectContext from expgov.config.ts; path accessors
+├── cache/              # snapshot warm/read, worktree files.json
+├── format/             # diff/graph/inventory JSON + fail/since helpers
+├── inventory/          # barrel snapshot + classifySymbolTier
+├── init/               # detect + template for init command
+├── git/                # refs, gitignore tip
+├── insights/           # command metadata aggregations (Phase E)
+├── runtime/            # RunOptions, emitter, policy, timer, style
+├── logger/             # human report formatters (emit via log sink)
+├── timeline/           # warm helpers
+└── help/               # long-form usage text
 
 packages/cli/src/
-├── bin/cli.ts      # thin entry — bootstrapRuntime + buildProgram
-├── types/          # CLI-only interfaces (global flags, help, init, update state)
-├── commands/init/  # ensureConfig + prompts
-└── utils/          # help colorization, banners, list flags
+├── types/              # CLI-only interfaces (global flags, help, init, update)
+├── constants/          # CLI_NAME, env keys, update/version constants
+├── commands/init/      # ensureConfig + prompts
+└── utils/              # help colorization, banners, list flags
+
+packages/cli/bin/cli.ts # thin entry — bootstrapRuntime + buildProgram
 ```
+
+## Module organization (types / constants)
+
+Apply in **both** `packages/core` and `packages/cli`:
+
+| Rule | Detail |
+|------|--------|
+| Types live under `types/` | `export type` / `export interface` belong in `types/` (or a `types/<domain>/` barrel). Logic modules **import** them; they do not define public types. |
+| Constants live under `constants/` | Named consts (`CLI_NAME`, issue codes, widths, …) live in `shared/constants/` (core) or `src/constants/` (cli). |
+| No type re-exports from logic | `commands/`, `format/`, `runtime/`, `insights/`, … must not `export type { … }`. Call-sites import from the matching `types/` barrel. |
+| Local one-off aliases OK | A file-private `type Foo = …` used only inside that module (no export) is fine. |
+| Public SDK root is the exception | `packages/core/src/index.ts` is the intentional public re-export surface for published values + types. Do not use other feature barrels as a second public API. |
+
+When adding a new JSON/CLI shape or named constant, put the type/const in the right folder first, then import it into the logic file.
 
 ## Import rule
 

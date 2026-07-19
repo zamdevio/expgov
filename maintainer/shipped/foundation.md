@@ -26,3 +26,13 @@ Monorepo scaffold and core package layout.
 - [x] Logic files stop re-exporting types; import from `types/*` barrels
 - [x] Single CLI entry: `packages/cli/bin/cli.ts` (`bootstrapRuntime` + `buildProgram().parse`)
 - [x] Conventional commit message rules in `maintainer/agents/rules.md`
+
+### Follow-up — layout hygiene pass (shipped)
+
+Tightened the same rules after later features left types/consts in logic modules again:
+
+- [x] Move remaining inline types (`format/*` JSON helpers, `JsonErrorData`, listing guidance, insight rows, cache flags, …) into `types/`
+- [x] Move stray constants (`CLI_NAME`/`CLI_MARK`, `MAX_INSIGHT_LINES`, init rich hints, timeline marker width, …) into `shared/constants/`
+- [x] Strip type/const re-exports from `format/`, `runtime/`, `insights/`, `tierPolicy`, `warmer`
+- [x] CLI: `VERSION_UNKNOWN` → `constants/update.ts`
+- [x] Document pattern in `agents/architecture.md`, `agents/rules.md`, `.cursor/rules/expgov.mdc`

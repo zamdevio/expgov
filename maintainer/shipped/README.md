@@ -59,6 +59,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W29 | **D2 / AG4** — `validate --since` | Baseline vs worktree; removals ∪ validate; CI docs in workflows |
 | 2026-W29 | **AG3** — diff JSON detail | `addedDetail` / `removedDetail` under `-v`/`-F` + listGuidance |
 | 2026-W29 | **AG8** — JSON error envelopes | Domain, unexpected, and CLI parser errors emit `ok:false` envelopes under `-j` |
+| 2026-W29 | **P7b** — layout hygiene | Types/constants out of logic modules; import-only; architecture + rules docs |
 | 2026-W29 | **AG1** — inventory JSON detail | `symbols[]` / `namespaces[]` under `-v`/`-F` + `--json`; `format/inventoryJson.ts` |
 | 2026-W29 | **AG2** — graph JSON edges | `edges[]` under `-v`/`-F` + `--json`; `format/graphJson.ts` + shared `listGuidance` |
 
