@@ -69,6 +69,17 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 
 ---
 
+## HELP1 — help color hierarchy (shipped) · 2026-W29
+
+- [x] `styleInvocation` / `styleExampleLine` — `packages/cli/src/utils/help/exampleLine.ts`
+- [x] Usage + Examples: bold **blue** `expgov`, bold **cyan** command path, **dim** flags / values / `[options]`
+- [x] Section labels stay bold magenta; `--no-color` plain text/spacing unchanged
+- [x] Tests: `packages/cli/src/utils/help/__tests__/exampleLine.test.ts`
+
+Engineering map: [`systems/cli.md`](../systems/cli.md#help-shipped-p14--help1).
+
+---
+
 ## P15 — list truncation hints / A1b (shipped) · `4f943b3`, `55eab70`
 
 - [x] `formatListTruncationHint` — `…and N more (use -F/--full or -T/--top <n>)`
@@ -92,9 +103,17 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 - [x] `init` — workflow tips only (no insights block; by design)
 - [x] Tests: `shared/__tests__/insights.test.ts`
 
-Engineering map: [`systems/cli.md`](../systems/cli.md#insights-phase-e--shipped).
+Engineering map: [`systems/cli.md`](../systems/cli.md#insights).
 
 **Future (not shipped):** config toggle, `--insights none`, CI gates on insight fields.
+
+---
+
+## AG6 — insights shape + chronological deltas (shipped) · 2026-W29
+
+- [x] Insights always `{ lines, …typedFields }` (empty `lines: []`, never `null`)
+- [x] Timeline / trend / diff Δ positive = growth toward newer / right / later
+- [x] Tests: `shared/__tests__/insights.test.ts`
 
 ---
 

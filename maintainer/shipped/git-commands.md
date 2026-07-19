@@ -2,7 +2,7 @@
 
 Ref resolution, wired governance verbs, and auxiliary commands.
 
-**Timeline 2.0 (B1–B5):** [`timeline.md`](./timeline.md) · **Graph 2.0 (C1–C2):** [`graph.md`](./graph.md) · active plan: [`phases/graph-2.md`](../phases/graph-2.md).
+**Timeline 2.0 (B1–B5):** [`timeline.md`](./timeline.md) · **Graph 2.0 (C1–C3):** [`graph.md`](./graph.md).
 
 ---
 
@@ -99,3 +99,13 @@ Still open: D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).
 - [x] Shared `-T`/`-F` list policy + `listGuidance`; name arrays `added`/`removed` stay complete
 - [x] Tests: `shared/__tests__/diffJson.test.ts`
 - [x] Docs: `docs/cli/json.md`, `docs/commands/diff.md`, `systems/cli.md`
+
+## AG5 — shared list filters (shipped) · 2026-W29
+
+- [x] Repeatable `--tier` / `--category` on inventory, diff detail, and graph (before `-T`/`-F`)
+- [x] Extended by **C3** with `--namespace` / `--module` / `--subpath` — [`graph.md`](./graph.md)
+- [x] Active filters in human meta + JSON `data.filters` (omit empty keys)
+- [x] Helpers: `shared/filters.ts`; tests: `shared/__tests__/filters.test.ts`
+- [x] Docs: `docs/cli/flags.md`
+
+Deferred (not blocking): `--names-only` compact listing — see [`phases/active-phase.md`](../phases/active-phase.md) Deferred.

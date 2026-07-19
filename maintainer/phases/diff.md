@@ -1,6 +1,6 @@
 # Phase — Diff fail gate (export surface regressions)
 
-**Status:** Active — optional **D3** only · **Companion:** [`agentic.md`](./agentic.md)
+**Status:** Active — optional **D3** only · **Companion:** [`../systems/cli.md`](../systems/cli.md) · agentic JSON receipts in [`../shipped/`](../shipped/README.md)
 
 Triggered by nodehunter frozen `v1.0.0` surface.
 

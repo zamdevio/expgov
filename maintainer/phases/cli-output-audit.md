@@ -12,8 +12,8 @@
 | Insights | P17 · same |
 | Timeline warm / markers / summary | B · [`../shipped/timeline.md`](../shipped/timeline.md) |
 | Graph namespace-first + analytics | C1–C2 · [`../shipped/graph.md`](../shipped/graph.md) |
-| Help color hierarchy | **HELP1** still open — [`help.md`](./help.md) |
-| Graph filters | **C3** — [`graph-2.md`](./graph-2.md) |
+| Help color hierarchy | **HELP1 shipped** — [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) · [`../systems/cli.md`](../systems/cli.md) |
+| Graph filters | **C3 shipped** — [`../shipped/graph.md`](../shipped/graph.md) |
 
 This doc remains the **audit backlog** for spacing/terminology/density gaps not owned by another phase.
 
@@ -160,7 +160,7 @@ banner (CLI) → meta rows → report body → verbose sections → insights (Ph
 |------|---------|----------------|
 | Structure | Section per command | Phase A workflows |
 | Global flags | Missing short aliases | Update after Phase A2 |
-| Color hierarchy | Binary/command/flags lack token contrast | **Planned HELP1** — blue binary, cyan command, dim flags in Usage/Examples ([`help.md`](./help.md)) |
+| Color hierarchy | Binary/command/flags lack token contrast | **Shipped HELP1** — blue binary, cyan command, dim flags ([`../shipped/runtime-cli.md`](../shipped/runtime-cli.md)) |
 | Commander `--help` | Shorter than `expgov help` | Cross-ref in configureCliHelp epilog |
 
 ---
@@ -250,9 +250,10 @@ This audit does not ship code. Track fixes as:
 | Provenance / terminology | Phase A | Partial |
 | Namespace graph order | Phase C | C1 shipped — [`shipped/graph.md`](../shipped/graph.md) |
 | Graph analytics summary | Phase C | C2 shipped |
-| Graph filters | Phase C | C3 next |
+| Graph filters | Phase C | **C3 shipped** |
 | Timeline warm / releases / summary | Phase B | Shipped — [`shipped/timeline.md`](../shipped/timeline.md) |
 | Insights | Phase E | Shipped |
+| Help color hierarchy | HELP1 | **Shipped** — [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) |
 | Trace/stderr purity | api-chain.md | Open |
 | Glossary | User docs sprint | Open |
 
@@ -286,5 +287,5 @@ Phase F is **documentation of record** — implementation spans A–E and user d
 1. Adopt glossary + indent constants (small PR).
 2. Execute Phase A (addresses majority of audit items).
 3. Phase E insights (density without noise) — **shipped**.
-4. Phase B timeline + Phase C graph structure (C1–C2 **shipped**; C3 filters next).
+4. Phase B timeline + Phase C graph structure (C1–C3 **shipped**; C4 brainstorm).
 5. Golden output tests when output stabilizes.

@@ -41,10 +41,8 @@ Near / Mid lists and the hold on `versions:up` live in [`active-phase.md`](./act
 
 | Doc | Status | Band |
 |-----|--------|------|
-| [`agentic.md`](./agentic.md) | AG1–8 shipped | Near |
 | [`diff.md`](./diff.md) | D1–D2 shipped; optional D3 | Near |
-| [`inventory-diagnostics.md`](./inventory-diagnostics.md) | ID1/ID2 planned | Near |
-| [`help.md`](./help.md) | **Focus** — HELP1 | Near |
+| [`inventory-diagnostics.md`](./inventory-diagnostics.md) | **Focus** — ID1/ID2 | Near |
 | [`graph-2.md`](./graph-2.md) | C1–C3 shipped; C4 deferred | Near |
 | [`../api-chain.md`](../api-chain.md) | D — API chain | Mid |
 | [`cli-output-audit.md`](./cli-output-audit.md) | F — UX audit leftovers | Mid |

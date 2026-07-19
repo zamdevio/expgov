@@ -12,7 +12,7 @@
 
 | Ship | When | Contents |
 |------|------|----------|
-| **v1.1.0** | After **all Near** slices below are done | Breaking Unreleased work already on `main` (surface split, `run*`, AG5–AG6, C3 filters) **plus** remaining Near: HELP1, ID1/ID2, optional D3 |
+| **v1.1.0** | After **all Near** slices below are done | Breaking Unreleased work already on `main` (surface split, `run*`, AG*, C3, HELP1) **plus** remaining Near: ID1/ID2, optional D3 |
 | **v1.1.1+** | After v1.1.0 | **Mid** backlog (severity → suggest → fix → issues, …) as additive patches/minors |
 
 **Do not** run `versions:up` / tag a release until the Near list is complete. Automation is ready ([`../systems/release.md`](../systems/release.md)); the hold is intentional.
@@ -21,10 +21,10 @@
 
 | Slice | Doc | Notes |
 |-------|-----|-------|
-| **C3** — graph filters | [`graph-2.md`](./graph-2.md) | **Shipped** — `--namespace` / `--module` / `--subpath` |
-| **HELP1** — help colors | [`help.md`](./help.md) | **Next** — small; parallel OK |
-| **ID1 / ID2** — inventory diagnostics | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | + ID-DOC after code |
+| **ID1 / ID2** — inventory diagnostics | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | **Next** — + ID-DOC after code |
 | **D3** — `compatBaseline` | [`diff.md`](./diff.md) | Optional; after `--since` dogfood |
+
+Shipped Near (receipts only): AG1–AG8 · C3 · HELP1 — [`../shipped/README.md`](../shipped/README.md).
 
 ### Mid (after v1.1.0 → target v1.1.1+)
 
@@ -32,34 +32,26 @@ Severity → Suggest → Fix → Issues; then Config / Multibarrel / Source prof
 
 ---
 
-## Focus now — HELP1 / inventory diagnostics
+## Focus now — inventory diagnostics
 
-**Docs:** [`help.md`](./help.md) · [`inventory-diagnostics.md`](./inventory-diagnostics.md)
+**Doc:** [`inventory-diagnostics.md`](./inventory-diagnostics.md)
 
-Near remaining after AG/C3: **HELP1** (small), **ID1/ID2**, optional **D3**.
+Near remaining: **ID1/ID2**, optional **D3**.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
 | 1 | **D1** — `diff` fail flags | **Shipped** | `--fail-on-removed`, `--fail-on-tier-violations`; `ok: false` + `issues[]` when failing |
-| 2 | **AG1** — inventory JSON symbols | **Shipped** | `symbols[]` / `namespaces[]` under `-v`/`-F` |
-| 3 | **AG2** — graph JSON edges | **Shipped** | `edges[]` under `-v`/`-F` + shared listGuidance |
-| 4 | **D2 / AG4** — `validate --since` | **Shipped** | Baseline vs worktree; fail on removals + existing validate rules |
-| 4b | **AG7 / D2-docs** — CI recommended usage | **Shipped** (with D2) | Workflows CI recipes + validate/diff/json pages |
-| 5 | **AG3** — diff JSON detail | **Shipped** | `addedDetail` / `removedDetail` under `-v`/`-F` |
-| 5b | **AG8** — JSON error envelopes | **Shipped** | Domain, unexpected, and parser errors emit `ok:false` JSON |
-| 6 | **AG5** — filter flags | **Done** (`--tier` / `--category`) | Shared vocab with Graph C3 (`--namespace` / `--module` / `--subpath` next) |
-| 7 | **AG6** — insights normalization | **Done** | `{ lines, …typedFields }` everywhere; chronological Δ signs |
+| 2–7 | **AG1–AG8** · **C3** · **HELP1** | **Shipped** | Receipts: [`../shipped/`](../shipped/README.md) (inventory-cache, graph, git-commands, runtime-cli) |
 
-**Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic slices share Diff compare core — do not implement twice. Optional D3 `compatBaseline` waits until `--since` is dogfooded.
+**Ownership:** D1/D2 live in [`diff.md`](./diff.md). Optional D3 `compatBaseline` waits until `--since` is dogfooded.
 
 **After D2 / before or with v1.1.0:** bump expgov in nodehunter CI; prefer `validate --since v1.0.0`.
 
-### Parallel Near slices
+### Focus
 
 | Slice | Scheduling | Goal |
 |-------|------------|------|
-| **ID1 / ID2** — Inventory diagnostics | Near; after AG1–AG2 preferred | Direct barrel decls + closure modules with no reachable exports — [`inventory-diagnostics.md`](./inventory-diagnostics.md). **ID-DOC** after code |
-| **HELP1** — Help color hierarchy | Near; independent | Blue `expgov`, cyan command path, dim flags — [`help.md`](./help.md) |
+| **ID1 / ID2** — Inventory diagnostics | Near; **next** | Direct barrel decls + closure modules with no reachable exports — [`inventory-diagnostics.md`](./inventory-diagnostics.md). **ID-DOC** after code |
 
 **Release automation (shipped, hold until Near done):** [`../systems/release.md`](../systems/release.md) · root [`CHANGELOG.md`](../../CHANGELOG.md)
 
@@ -94,9 +86,7 @@ C1–C3 done. **C4** graph modes remain brainstorm-only.
 | # | Slice | Goal | Doc | Band |
 |---|-------|------|-----|------|
 | 1 | **Diff fail gate** | D1–D2 shipped; optional D3 | [`diff.md`](./diff.md) | Near (D3) |
-| 4 | Phase **C3** — Graph filters | **Shipped** — shared vocab with AG5 | [`graph-2.md`](./graph-2.md) | Near |
-| P | **HELP1** | Help color hierarchy — **next** | [`help.md`](./help.md) | Near |
-| 3 | **Inventory diagnostics** | ID1/ID2 + ID-DOC | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | Near |
+| 3 | **Inventory diagnostics** | ID1/ID2 + ID-DOC — **next** | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | Near |
 | — | **v1.1.0 release** | After Near complete | [`../systems/release.md`](../systems/release.md) | Gate |
 | 5 | Phase **D** — API chain | Execution introspection | [`../api-chain.md`](../api-chain.md) | Mid (1.1.1+) |
 | 6 | Phase **F** — CLI output audit | Close remaining UX gaps | [`cli-output-audit.md`](./cli-output-audit.md) | Mid |
@@ -115,6 +105,7 @@ C1–C3 done. **C4** graph modes remain brainstorm-only.
 | Slice | Why deferred |
 |-------|----------------|
 | Diff D3 `compatBaseline` | Near-optional; after D1/D2 dogfood |
+| `--names-only` compact listing | Optional AG leftover; not blocking v1.1.0 |
 | Auto-fix PR bot | Blocked on [`fix.md`](./fix.md) |
 | `fix subpath` / barrel moves | Postponed in [`fix.md`](./fix.md) |
 | JSON config | [`config.md`](./config.md) — TS stays primary |

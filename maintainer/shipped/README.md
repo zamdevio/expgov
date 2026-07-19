@@ -67,6 +67,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W29 | **AG5** — shared filters | Repeatable `--tier` / `--category` on inventory, diff detail, and graph; filter before list limits |
 | 2026-W29 | **AG6** — insights normalization | Shared `{ lines, …typedFields }`; chronological timeline/trend/diff Δ signs |
 | 2026-W29 | **C3** — graph filters | `--namespace` / `--module` / `--subpath` on shared filter helper; view before analytics |
+| 2026-W29 | **HELP1** — help color hierarchy | Blue `expgov` · cyan command path · dim flags on Usage/Examples |
 
 ---
 
@@ -78,7 +79,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Inventory & cache | P0a, P0b, P4, P16, P24, AG1 | [`inventory-cache.md`](./inventory-cache.md) |
 | Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C3, P25, D1, D2, AG2, AG3, AG5 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
-| Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22, AG8 | [`runtime-cli.md`](./runtime-cli.md) |
+| Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22, AG8, HELP1 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3, R1–R4, R4a | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) · [`release.md`](./release.md) |
 
 ---
@@ -98,11 +99,12 @@ Closed slices only — check here before re-implementing. Durable engineering de
 
 - [x] `validate --since` ([`phases/diff.md`](../phases/diff.md) D2 / Agentic AG4)
 - [ ] `compatBaseline` config ([`phases/diff.md`](../phases/diff.md) D3)
-- [x] Diff verbose JSON detail ([`phases/agentic.md`](../phases/agentic.md) AG3)
-- [x] JSON envelopes for thrown/parser errors ([`phases/agentic.md`](../phases/agentic.md) AG8)
-- [x] Filter flags `--tier` / `--category` ([`phases/agentic.md`](../phases/agentic.md) AG5)
-- [x] Insights normalization ([`phases/agentic.md`](../phases/agentic.md) AG6)
-- [x] Graph filters `--namespace` / `--module` / `--subpath` ([`phases/graph-2.md`](../phases/graph-2.md) C3)
+- [x] Diff verbose JSON detail ([`git-commands.md`](./git-commands.md) AG3)
+- [x] JSON envelopes for thrown/parser errors ([`runtime-cli.md`](./runtime-cli.md) AG8)
+- [x] Filter flags `--tier` / `--category` ([`git-commands.md`](./git-commands.md) AG5)
+- [x] Insights normalization ([`runtime-cli.md`](./runtime-cli.md) AG6)
+- [x] Graph filters `--namespace` / `--module` / `--subpath` ([`graph.md`](./graph.md) C3)
+- [x] Help color hierarchy ([`runtime-cli.md`](./runtime-cli.md) HELP1)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache
@@ -142,7 +144,8 @@ Current sprint: [`phases/active-phase.md`](../phases/active-phase.md).
 | Command insights (`data.insights`) | P17 | `insights/`, `logger/reports/insights.ts` |
 | Timeline warm log | P20 | `timeline/warmer.ts`, `logger/reports/timeline/` |
 | Timeline 2.0 (B1–B5) | B1–B5 | [`timeline.md`](./timeline.md) |
-| Graph 2.0 (C1–C2) | C1–C2 | [`graph.md`](./graph.md) · `graph/analytics.ts` |
+| Graph 2.0 (C1–C3) | C1–C3 | [`graph.md`](./graph.md) · `graph/analytics.ts` |
+| Help color hierarchy | HELP1 | `cli/utils/help/exampleLine.ts`, `configureCliHelp.ts` |
 | Timeline release markers | B2 | `git/versionTags.ts`, `logger/reports/timeline/markers.ts` |
 | Timeline step metadata | B3 | `timeline/stepMeta.ts`, light snapshot symbols |
 | `expgov version` | P8 | `commands/version.ts` |

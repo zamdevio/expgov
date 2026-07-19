@@ -68,9 +68,10 @@ Policy gates: `packages/core/src/runtime/policy.ts`
 
 After the report body, `finishCommand` emits optional `summary: key=val · …` then a blank line and `expgov  <command> · ok|fail · Nms`. Skipped under `--json` / `--silent`.
 
-## Help (shipped P14)
+## Help (shipped P14 · HELP1)
 
 - `configureCliHelp.ts` — colorized Commander help (box header + Usage/Options)
+- `exampleLine.ts` — `styleInvocation` / `styleExampleLine`: bold **blue** `expgov`, bold **cyan** command path, **dim** flags / values / `[options]`
 - `printCliHelp.ts` — bare `expgov`, `expgov help`, `expgov -h` / `--help`, usage errors; root help includes **Workflows** via `formatHelp`
 - `commandHelp.ts` — per-command `Examples`, `Range formats` (diff/timeline), and `Related` merged in `formatHelp` (before colorize)
 - Range grammar lines reuse core `formatTimelineRangeHelp` / `formatGitCommitRangeHelp` (same source as invalid_range suggestions)
@@ -78,6 +79,7 @@ After the report body, `finishCommand` emits optional `summary: key=val · …` 
 - Core `printHelp` — programmatic/SDK export only; CLI does not call it for interactive help
 - `(default: …)` segments use `style.highlight` (bright yellow)
 - Box header skipped when `--json` or `--silent`; root program name skipped in per-command banners
+- `--no-color` keeps Usage/Examples text and spacing byte-identical
 
 **Workflows appendix** (root help only):
 

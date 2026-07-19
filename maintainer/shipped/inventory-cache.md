@@ -73,4 +73,14 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 - [x] Helpers: `format/inventoryJson.ts`, `shared/listing.ts` (`buildJsonListGuidance`); tests included
 - [x] Docs: `docs/cli/json.md`, `docs/commands/inventory.md`
 
-Phase: [`phases/agentic.md`](../phases/agentic.md).
+---
+
+## Agentic JSON principles (shipped AG1–AG8)
+
+1. `-T` / `-F` apply to JSON arrays the same as human lists (`listGuidance` when truncated).
+2. `-v` expands JSON `data`, not only human reports.
+3. Fail modes stay opt-in; stable `issues[].code`.
+4. Grow `data` additively; bump `meta.apiVersion` only on shape breaks.
+5. Insights always `{ lines, …typedFields }` (empty `lines: []`, never `null`); Δ positive = growth toward newer/right/later.
+
+Map: [`systems/cli.md`](../systems/cli.md).
