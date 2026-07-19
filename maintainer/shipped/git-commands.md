@@ -92,3 +92,10 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 - [x] Docs: `docs/commands/validate.md`, `diff.md`, `guides/workflows.md` CI recipes, `docs/cli/json.md`
 
 Still open: D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).
+
+## AG3 — diff JSON detail (shipped) · 2026-W29
+
+- [x] `buildDiffJsonListDetail` — `format/diffJson.ts`; `addedDetail` / `removedDetail` under `-v`/`-F`
+- [x] Shared `-T`/`-F` list policy + `listGuidance`; name arrays `added`/`removed` stay complete
+- [x] Tests: `shared/__tests__/diffJson.test.ts`
+- [x] Docs: `docs/cli/json.md`, `docs/commands/diff.md`, `systems/cli.md`

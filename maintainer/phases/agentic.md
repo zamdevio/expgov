@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — **AG1–AG2 + AG4 shipped**; AG3 detail / AG5 filters next. D1–D2 completed the fail-mode half of AG3/AG4.
+**Status:** Active — **AG1–AG4 + AG7 shipped**; AG5 filters next.
 
 **Companion:** [`diff.md`](./diff.md) · [`severity.md`](./severity.md) · [`cli-output-audit.md`](./cli-output-audit.md) · [`docs/cli/json.md`](../../docs/cli/json.md) · [`docs/guides/workflows.md`](../../docs/guides/workflows.md)
 
@@ -178,7 +178,7 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 |----|-------|---------|---------|
 | **AG1** | JSON inventory symbols/namespaces (`-v`/`-F`) | — | **Shipped** — agents can list all exports |
 | **AG2** | JSON graph edges (`-v`/`-F`) | — | **Shipped** — agents can map re-exports |
-| **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | **Partial** — fail flags shipped in D1; `-v` detail JSON still open |
+| **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | **Shipped** — fail flags (D1) + `addedDetail`/`removedDetail` under `-v`/`-F` |
 | **AG4** | `validate --since` | AG3 compare core | **Shipped** — one-command PR gate |
 | **AG5** | Filter flags (`--tier`, `--category`, …) | AG1–2 | Flexible queries |
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
@@ -186,7 +186,7 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 
 **AG7 (shipped with D2):** public CI recipes in [`docs/guides/workflows.md`](../../docs/guides/workflows.md) covering `validate`, `diff --fail-on-removed`, and `validate --since`.
 
-Suggested remaining order: **AG3 detail → AG5 → AG6**.
+Suggested remaining order: **AG5 → AG6**.
 
 ---
 
@@ -197,7 +197,7 @@ Suggested remaining order: **AG3 detail → AG5 → AG6**.
 - [x] `expgov diff A..B --fail-on-removed` exits 1 iff removals exist; default diff still exits 0
 - [x] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
 - [ ] Filter flags compose with JSON without requiring human output parsing
-- [x] `docs/cli/json.md` documents inventory + graph detail shapes (diff detail still growing)
+- [x] `docs/cli/json.md` documents inventory + graph + diff detail shapes
 - [x] Public CI recommended-usage section in `docs/guides/workflows.md` covering validate / diff fail flags / `validate --since`
 - [ ] No regression: human mode banners/truncation remain usable; envelope `apiVersion` unchanged unless breaking
 
