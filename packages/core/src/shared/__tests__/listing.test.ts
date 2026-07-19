@@ -4,7 +4,12 @@ import {
   DEFAULT_LIST_TOP,
   MIN_LIST_TOP,
 } from '../constants/list.js';
-import { formatListTruncationHint, limitList, resolveListLimit } from '../listing.js';
+import {
+  buildJsonListGuidance,
+  formatListTruncationHint,
+  limitList,
+  resolveListLimit,
+} from '../listing.js';
 
 describe('resolveListLimit', () => {
   it('defaults to DEFAULT_LIST_TOP', () => {
@@ -56,5 +61,28 @@ describe('formatListTruncationHint', () => {
     expect(hint).toContain('1 more');
     expect(hint).toContain('-F/--full');
     expect(hint).toContain('-T/--top');
+  });
+});
+
+describe('buildJsonListGuidance', () => {
+  it('marks truncated false when nothing is hidden', () => {
+    expect(
+      buildJsonListGuidance([
+        { name: 'symbols', shown: 10, hidden: 0 },
+        { name: 'namespaces', shown: 2, hidden: 0 },
+      ]),
+    ).toEqual({ truncated: false });
+  });
+
+  it('builds a note that points at -F and -T when rows are hidden', () => {
+    const guidance = buildJsonListGuidance([
+      { name: 'symbols', shown: 10, hidden: 91 },
+      { name: 'namespaces', shown: 0, hidden: 0 },
+    ]);
+    expect(guidance.truncated).toBe(true);
+    expect(guidance.note).toContain('symbols: 91 more hidden (showing 10 of 101)');
+    expect(guidance.note).toContain('-F/--full');
+    expect(guidance.note).toContain('-T/--top');
+    expect(guidance.note).not.toContain('namespaces:');
   });
 });

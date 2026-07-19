@@ -30,3 +30,49 @@ export function formatListTruncationHint(hiddenCount: number): string {
   if (hiddenCount <= 0) return '';
   return `…and ${hiddenCount} more (use -F/--full or -T/--top <n>)`;
 }
+
+/** Stable JSON block so agents/users see list truncation + how to expand. */
+export type JsonListGuidance = {
+  truncated: boolean;
+  /** Present when any listed section still has hidden rows. */
+  note?: string;
+};
+
+export type JsonListGuidanceSection = {
+  /** Field name in `data` (e.g. `symbols`, `rows`). */
+  name: string;
+  shown: number;
+  hidden: number;
+};
+
+/**
+ * Build `data.listGuidance` for JSON envelopes that share human `-T`/`-F` list policy.
+ * Always return a block when callers attach list sections; set `truncated` + `note` when rows are hidden.
+ */
+export function buildJsonListGuidance(sections: JsonListGuidanceSection[]): JsonListGuidance {
+  const truncatedSections = sections.filter((section) => section.hidden > 0);
+  if (truncatedSections.length === 0) {
+    return { truncated: false };
+  }
+
+  const details = truncatedSections
+    .map((section) => {
+      const total = section.shown + section.hidden;
+      return `${section.name}: ${section.hidden} more hidden (showing ${section.shown} of ${total})`;
+    })
+    .join('; ');
+
+  return {
+    truncated: true,
+    note: `${details}. Use -F/--full for all rows, or -T/--top <n> to raise the cap.`,
+  };
+}
+
+/** Convenience: push guidance note into a `notes[]` array when truncated. */
+export function appendJsonListGuidanceNotes(
+  notes: string[],
+  guidance: JsonListGuidance,
+): string[] {
+  if (guidance.truncated && guidance.note) notes.push(guidance.note);
+  return notes;
+}
