@@ -1,10 +1,11 @@
 # Phase — Automated releases (version sync + tag publish)
 
-**Status:** Planned — independent tooling slice; schedule after current Agentic/Diff work or when the next npm bump is needed.
+**Status:** **Shipped** (REL1–REL3) — see [`../systems/release.md`](../systems/release.md) · receipt [`../shipped/release.md`](../shipped/release.md)
 
 **Reference:** local `~/Tools/i18nprune` — `scripts/release/sync.ts` · `.github/workflows/release.yml` · root `versions:*` scripts  
-**Receipt today:** [`../shipped/release.md`](../shipped/release.md) (manual v1.0.0 / v1.0.1)  
-**Companion:** [`../systems/README.md`](../systems/README.md) · [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers)
+**Companion:** [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers) (configured for `@expgov/cli` + `@expgov/core`)
+
+---
 
 ---
 
@@ -80,11 +81,11 @@ Risk gates (same spirit as i18nprune): block downgrade, major jump > 1, minor ju
 
 ### Acceptance (REL1)
 
-- [ ] `versions:verify` exits 0 when aligned; exits 1 with fix hint when drifted
-- [ ] `versions:up -- 1.0.2` updates all three `package.json` files
-- [ ] `versions:sync` copies root → others
-- [ ] `--force` required for risky bumps; help text documents flags
-- [ ] No chalk outside existing style rules if script is kept maintainer-only (chalk OK in `scripts/` like i18nprune; do not import into `packages/core`)
+- [x] `versions:verify` exits 0 when aligned; exits 1 with fix hint when drifted
+- [x] `versions:up -- <semver>` updates all three `package.json` files
+- [x] `versions:sync` copies root → others
+- [x] `--force` required for risky bumps; help text documents flags
+- [x] Script lives under `scripts/` (chalk OK); not imported into `packages/core`
 
 ---
 
@@ -137,11 +138,12 @@ Publish jobs depend only on `verify` (not each other) so a partial failure can r
 
 ### Acceptance (REL2)
 
-- [ ] Pushing `v*` runs verify + dual publish
-- [ ] Mismatched tag vs package versions fails verify
-- [ ] Re-running a publish job after one package already published skips that package
-- [ ] No `NPM_TOKEN` / `NODE_AUTH_TOKEN` in repo secrets for this path
-- [ ] Prerelease versions (`1.1.0-beta.1`) publish under `beta` tag
+- [x] Pushing `v*` runs verify + dual publish (workflow checked in)
+- [x] Mismatched tag vs package versions fails verify
+- [x] Re-running a publish job after one package already published skips that package
+- [x] No `NPM_TOKEN` / `NODE_AUTH_TOKEN` in repo secrets for this path
+- [x] Prerelease versions (`1.1.0-beta.1`) publish under `beta` tag
+- [x] Trusted Publishing configured on npm for both packages
 
 ---
 

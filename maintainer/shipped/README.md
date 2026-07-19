@@ -61,6 +61,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W29 | **AG8** — JSON error envelopes | Domain, unexpected, and CLI parser errors emit `ok:false` envelopes under `-j` |
 | 2026-W29 | **P7b** — layout hygiene | Types/constants out of logic modules; import-only; architecture + rules docs |
 | 2026-W29 | **SF1** — stable surface split | Thin `@expgov/core` root; `./advanced` + `./internal` subpaths; tier reclass |
+| 2026-W29 | **REL1–3** — release automation | `versions:*` + `release.yml` OIDC dual publish |
 | 2026-W29 | **AG1** — inventory JSON detail | `symbols[]` / `namespaces[]` under `-v`/`-F` + `--json`; `format/inventoryJson.ts` |
 | 2026-W29 | **AG2** — graph JSON edges | `edges[]` under `-v`/`-F` + `--json`; `format/graphJson.ts` + shared `listGuidance` |
 

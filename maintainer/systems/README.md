@@ -12,6 +12,7 @@
 | [`cli.md`](./cli.md) | Listing, help, insights, flags, banners, footer (Phase A + E partial) |
 | [`cache.md`](./cache.md) | `.expgov/cache/` layout, worktree `files.json` gate (P16) |
 | [`observability.md`](./observability.md) | Metrics-over-snapshots model; Phase G catalog (planned) |
+| [`release.md`](./release.md) | `versions:*`, tag `v*` → OIDC dual publish (`release.yml`) |
 
 **Shipped receipts:** [`shipped/README.md`](../shipped/README.md) · **Release:** [`shipped/release.md`](../shipped/release.md)
 **Active plans:** [`phases/active-phase.md`](../phases/active-phase.md) (focus: Agentic AG1 after D1) · inventory honesty: [`phases/inventory-diagnostics.md`](../phases/inventory-diagnostics.md)

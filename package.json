@@ -68,6 +68,9 @@
     "docs:build": "pnpm --filter @expgov/docs build",
     "docs:deploy": "pnpm --filter @expgov/docs run deploy",
     "docs:typecheck": "pnpm --filter @expgov/docs typecheck",
+    "versions:up": "tsx --tsconfig tsconfig.json scripts/release/sync.ts --up",
+    "versions:sync": "tsx --tsconfig tsconfig.json scripts/release/sync.ts --sync",
+    "versions:verify": "tsx --tsconfig tsconfig.json scripts/release/sync.ts --verify",
     "prepack": "EXPGOV_PUBLISH=1 pnpm run build"
   },
   "dependencies": {

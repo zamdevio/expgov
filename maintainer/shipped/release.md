@@ -45,6 +45,33 @@ npm rejected unscoped **`expgov`** (too similar to `expo`). Binary name stays `e
 
 ---
 
+## Automation (shipped) — REL1–REL3
+
+| Piece | Location |
+|-------|----------|
+| Version sync | `scripts/release/sync.ts` · `pnpm versions:up\|sync\|verify` |
+| CI gate | `ci.yml` → `versions:verify` |
+| Tag publish | `.github/workflows/release.yml` on `v*` → OIDC dual publish |
+| Maintainer map | [`../systems/release.md`](../systems/release.md) |
+
+Trusted Publishing is configured on npm for **both** `@expgov/cli` and `@expgov/core`.
+
+---
+
+## Next ship — v1.1.0 (planned)
+
+Breaking SDK surface in a **minor** (early post-1.0 choice — document clearly in the GitHub/npm release notes):
+
+| Change | Notes |
+|--------|-------|
+| Thin stable root + `./advanced` / `./internal` | Already on `main` (SF1) |
+| `runExports*` → `run*` rename | Planned with 1.1.0 |
+| Release via `versions:up -- 1.1.0` + tag `v1.1.0` | Triggers `release.yml` |
+
+Recipe: [`../systems/release.md`](../systems/release.md).
+
+---
+
 ## v1 contract
 
 CLI argv, `--json` envelope, and exit codes are **semver-stable**. `@expgov/core` may grow additively in minor releases; breaking SDK or CLI contract changes require a major bump.

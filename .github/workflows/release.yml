@@ -1,0 +1,247 @@
+# Release — publish both npm packages on version tags
+#
+# Triggers on Git tags matching `v*` (e.g. v1.1.0).
+#
+# Publishes:
+#   1. @expgov/cli   (repository root — CLI binary + @expgov/cli/core)
+#   2. @expgov/core  (packages/core — scoped SDK)
+#
+# Authentication: npm Trusted Publishing via GitHub Actions OIDC
+# (owner `zamdevio`, repo `expgov`, workflow `release.yml`).
+# No NPM_TOKEN / NODE_AUTH_TOKEN secret is used or required.
+#
+# Structure:
+#   verify         — install, gate, build once, pack tarballs, upload artifacts
+#   publish-cli    — download + publish root tarball (independent)
+#   publish-core   — download + publish core tarball (independent)
+#
+# Publish jobs depend only on `verify` (not each other) so a partial failure
+# can be retried without republishing a version that already succeeded.
+# Root `@expgov/cli` does not declare a runtime dependency on `@expgov/core`
+# (core is bundled into dist/ + exposed as `@expgov/cli/core`), so parallel
+# publish is safe.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify version alignment
+        run: pnpm versions:verify
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build publishable packages
+        env:
+          EXPGOV_PUBLISH: '1'
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Dogfood validate
+        run: node dist/cli.js validate
+
+      - name: Example SDK validate
+        run: node dist/cli.js -C examples/sdk validate
+
+      - name: Validate tag matches package versions
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          EXPECTED="${TAG#v}"
+          ROOT_VERSION="$(node -p "require('./package.json').version")"
+          CORE_VERSION="$(node -p "require('./packages/core/package.json').version")"
+          CLI_VERSION="$(node -p "require('./packages/cli/package.json').version")"
+
+          echo "Tag: ${TAG}"
+          echo "Expected version: ${EXPECTED}"
+          echo "Root package.json: ${ROOT_VERSION}"
+          echo "Core package.json: ${CORE_VERSION}"
+          echo "CLI workspace package.json: ${CLI_VERSION}"
+
+          if [ "${ROOT_VERSION}" != "${EXPECTED}" ] || [ "${CORE_VERSION}" != "${EXPECTED}" ] || [ "${CLI_VERSION}" != "${EXPECTED}" ]; then
+            echo "::error::Tag version mismatch. Tag ${TAG} requires version ${EXPECTED} in root, packages/core, and packages/cli (got root=${ROOT_VERSION}, core=${CORE_VERSION}, cli=${CLI_VERSION})."
+            exit 1
+          fi
+
+      - name: Pack @expgov/cli tarball
+        run: |
+          set -euo pipefail
+          mkdir -p .release-artifacts/cli
+          # Build already ran above; skip prepack rebuild so the artifact matches verify.
+          npm pack --ignore-scripts --pack-destination .release-artifacts/cli
+          ls -la .release-artifacts/cli
+
+      - name: Pack @expgov/core tarball
+        run: |
+          set -euo pipefail
+          DEST="${GITHUB_WORKSPACE}/.release-artifacts/core"
+          mkdir -p "$DEST"
+          npm pack --ignore-scripts --pack-destination "$DEST"
+          ls -la "$DEST"
+        working-directory: packages/core
+
+      - name: Upload @expgov/cli package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: expgov-cli-package
+          path: .release-artifacts/cli/*.tgz
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload @expgov/core package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: expgov-core-package
+          path: .release-artifacts/core/*.tgz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-cli:
+    name: publish-cli
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install --global npm@latest
+
+      - name: Show tool versions
+        run: |
+          node --version
+          npm --version
+
+      - name: Download @expgov/cli package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: expgov-cli-package
+          path: .release-artifacts/cli
+
+      - name: Publish @expgov/cli (skip if already on npm)
+        run: |
+          set -euo pipefail
+          TARBALL="$(find .release-artifacts/cli -name '*.tgz' -type f | head -n 1)"
+          if [ -z "${TARBALL}" ]; then
+            echo "::error::No @expgov/cli tarball found in artifact."
+            exit 1
+          fi
+          echo "Tarball: ${TARBALL}"
+
+          NAME="$(tar -xOf "${TARBALL}" package/package.json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).name")"
+          VERSION="$(tar -xOf "${TARBALL}" package/package.json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).version")"
+          echo "Package: ${NAME}@${VERSION}"
+
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${NAME}@${VERSION} is already published on npm — skipping publish (safe retry)."
+            exit 0
+          fi
+
+          DIST_TAG=latest
+          if [[ "${VERSION}" == *-* ]]; then
+            DIST_TAG=beta
+          fi
+
+          echo "Publishing ${NAME}@${VERSION} (tag ${DIST_TAG}) via npm Trusted Publishing (OIDC)…"
+          npm publish "${TARBALL}" --access public --tag "${DIST_TAG}"
+
+  publish-core:
+    name: publish-core
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install --global npm@latest
+
+      - name: Show tool versions
+        run: |
+          node --version
+          npm --version
+
+      - name: Download @expgov/core package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: expgov-core-package
+          path: .release-artifacts/core
+
+      - name: Publish @expgov/core (skip if already on npm)
+        run: |
+          set -euo pipefail
+          TARBALL="$(find .release-artifacts/core -name '*.tgz' -type f | head -n 1)"
+          if [ -z "${TARBALL}" ]; then
+            echo "::error::No @expgov/core tarball found in artifact."
+            exit 1
+          fi
+          echo "Tarball: ${TARBALL}"
+
+          NAME="$(tar -xOf "${TARBALL}" package/package.json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).name")"
+          VERSION="$(tar -xOf "${TARBALL}" package/package.json | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).version")"
+          echo "Package: ${NAME}@${VERSION}"
+
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${NAME}@${VERSION} is already published on npm — skipping publish (safe retry)."
+            exit 0
+          fi
+
+          DIST_TAG=latest
+          if [[ "${VERSION}" == *-* ]]; then
+            DIST_TAG=beta
+          fi
+
+          echo "Publishing ${NAME}@${VERSION} (tag ${DIST_TAG}) via npm Trusted Publishing (OIDC)…"
+          npm publish "${TARBALL}" --access public --tag "${DIST_TAG}"
