@@ -26,12 +26,12 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 
 | Command | Core entry | Shipped behavior |
 |---------|------------|------------------|
-| `inventory [ref]` | `runExportsInventory` | Root barrel tiers, categories, subpath rollups; `-v` symbol table |
-| `diff [range]` | `runExportsDiff` | Added/removed flats, tier violations, summary deltas |
-| `validate` | `runExportsValidate` | tsconfig ↔ npm `exports` parity; unclassified root flats → exit 1 |
-| `trend` | `runExportsTrend` | Flat/stable/adv/int per tag; Δ footer between first/last in window |
-| `timeline [range]` | `runExportsTimeline` | Barrel git log; ref/time ranges; Summary + step meta (B1–B5) |
-| `graph [ref]` | `runExportsGraph` | Namespace-first graph; analytics Summary; JSON `data.analytics` (C1–C2) |
+| `inventory [ref]` | `runInventory` | Root barrel tiers, categories, subpath rollups; `-v` symbol table |
+| `diff [range]` | `runDiff` | Added/removed flats, tier violations, summary deltas |
+| `validate` | `runValidate` | tsconfig ↔ npm `exports` parity; unclassified root flats → exit 1 |
+| `trend` | `runTrend` | Flat/stable/adv/int per tag; Δ footer between first/last in window |
+| `timeline [range]` | `runTimeline` | Barrel git log; ref/time ranges; Summary + step meta (B1–B5) |
+| `graph [ref]` | `runGraph` | Namespace-first graph; analytics Summary; JSON `data.analytics` (C1–C2) |
 | `help [topic]` | `printCliHelp` | Commander help + Examples / Range formats / Related (`commandHelp.ts`) |
 
 - [x] Per-command `-v/--verbose` where applicable
@@ -42,7 +42,7 @@ Command contracts: [`phases/commands.md`](../phases/commands.md).
 
 ## P4a — `doctor` command (shipped) · 2026-W26
 
-- [x] `runExportsDoctor` — config paths, cache gitignore, tsconfig/npm drift hints
+- [x] `runDoctor` — config paths, cache gitignore, tsconfig/npm drift hints
 - [x] CLI `doctor` + help/banner; `--json` kind `doctor`
 - [x] Exit 0 healthy / 1 when actionable warnings remain
 
@@ -50,7 +50,7 @@ Command contracts: [`phases/commands.md`](../phases/commands.md).
 
 ## P5 — `suggest` command (shipped) · 2026-W26
 
-- [x] `runExportsSuggest` — collect unclassified flat exports; `formatStableExactSnippet`
+- [x] `runSuggest` — collect unclassified flat exports; `formatStableExactSnippet`
 - [x] CLI `suggest` + help/banner; `--json` kind `suggest`
 - [x] Exit 0 when clean, 1 when names to add (dry-run — no config writes)
 
@@ -85,7 +85,7 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 ## D2 — validate --since (shipped) · 2026-W29
 
 - [x] `evaluateValidateSince` — `format/validateSince.ts` (compose `diffSnapshots` + `evaluateDiffFailMode({ failOnRemoved: true })`)
-- [x] `runExportsValidate({ since })` — baseline commit → worktree; merge removal issues with current-tree validate
+- [x] `runValidate({ since })` — baseline commit → worktree; merge removal issues with current-tree validate
 - [x] JSON: `data.since` / `sinceLabel` / `added` / `removed`; issue code `expgov.diff.exports_removed`
 - [x] CLI/help un-reserved: `--since <ref>` fail if flats removed since ref
 - [x] Tests: `shared/__tests__/validateSince.test.ts`

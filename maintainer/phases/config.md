@@ -197,7 +197,7 @@ Today: `assertTypeScriptConfigPath` in `load.ts` rejects non-`.ts` — removed w
 | # | Slice | Goal |
 |---|-------|------|
 | **CF1** | `parseExpgovConfig` | Single validator; jiti path refactored through it |
-| **CF2** | `config show` | `runExportsConfigShow`; human + `--json` metadata report |
+| **CF2** | `config show` | `runConfigShow`; human + `--json` metadata report |
 | **CF3** | `config export` | `serializeExpgovConfig`; `-o` / `--stdout` |
 | **CF4** | JSON loader | `loaders/json.ts`; discovery; round-trip tests |
 | **CF5** | Doctor + docs | Loaded file path, duplicate-config warning; `docs/config.md` + principles |
@@ -226,7 +226,7 @@ Today: `assertTypeScriptConfigPath` in `load.ts` rejects non-`.ts` — removed w
 
 ## CF2 — `config show`
 
-**Core:** `runExportsConfigShow` — uses `getProjectContext()` after load.
+**Core:** `runConfigShow` — uses `getProjectContext()` after load.
 
 **Exit:**
 
@@ -238,7 +238,7 @@ Today: `assertTypeScriptConfigPath` in `load.ts` rejects non-`.ts` — removed w
 
 ## CF3 — `config export`
 
-**Core:** `runExportsConfigExport` + `config/serialize.ts` (stable key ordering).
+**Core:** `runConfigExport` + `config/serialize.ts` (stable key ordering).
 
 **Exit:**
 
@@ -268,7 +268,7 @@ Today: `assertTypeScriptConfigPath` in `load.ts` rejects non-`.ts` — removed w
 
 ## CF6 — `config convert`
 
-**Core:** `runExportsConfigConvert` — pick loader by `--from` / input ext → `parseExpgovConfig` → pick emitter by `--to` / output ext.
+**Core:** `runConfigConvert` — pick loader by `--from` / input ext → `parseExpgovConfig` → pick emitter by `--to` / output ext.
 
 **Codegen (`json → ts`):** `config/emitters/typescript.ts` — extend `buildInitConfigTemplate` / `formatConfigModule`; not a text copy of original TS.
 

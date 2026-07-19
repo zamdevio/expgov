@@ -67,7 +67,7 @@ Stable **string values** — never rename after ship (pre-v1 still treat as cont
 
 ### Envelope rule
 
-Every `runExports*` that can fail or warn returns:
+Every `run*` command that can fail or warn returns:
 
 ```ts
 { payload, issues: Issue[] }  // core op

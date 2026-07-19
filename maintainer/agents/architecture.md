@@ -51,7 +51,7 @@ packages/core/src/
 ├── index.ts            # stable public barrel (`@expgov/core`)
 ├── advanced/index.ts   # `@expgov/core/advanced`
 ├── internal/index.ts   # `@expgov/core/internal`
-├── commands/           # runExports* — beginCommand/finishCommand + reports
+├── commands/           # run* — beginCommand/finishCommand + reports
 ├── config/             # load.ts, tiers.ts, tierCatalog, tierPolicy
 ├── context/            # ProjectContext from expgov.config.ts; path accessors
 ├── cache/              # snapshot warm/read, worktree files.json

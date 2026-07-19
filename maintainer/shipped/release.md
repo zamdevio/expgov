@@ -65,7 +65,7 @@ Breaking SDK surface in a **minor** (early post-1.0 choice — document clearly 
 | Change | Notes |
 |--------|-------|
 | Thin stable root + `./advanced` / `./internal` | Already on `main` (SF1) |
-| `runExports*` → `run*` rename | Planned with 1.1.0 |
+| `run*` command entrypoints | Planned with 1.1.0 |
 | Release via `versions:up -- 1.1.0` + tag `v1.1.0` | Triggers `release.yml` |
 
 Recipe: [`../systems/release.md`](../systems/release.md).
@@ -76,7 +76,7 @@ Recipe: [`../systems/release.md`](../systems/release.md).
 
 CLI argv, `--json` envelope, and exit codes are **semver-stable**. `@expgov/core` may grow additively in minor releases; breaking SDK or CLI contract changes require a major bump.
 
-**SF1 surface split (post-v1.0.1):** root `@expgov/core` is now a thin stable set (`defineConfig`, `runExports*`, config/JSON types). Symbols moved to `@expgov/core/advanced` / `@expgov/core/internal` are a **breaking import-path change** for anyone who imported them from the root — bump major on next publish.
+**SF1 surface split (post-v1.0.1):** root `@expgov/core` is now a thin stable set (`defineConfig`, `run*` command APIs, config/JSON types). Symbols moved to `@expgov/core/advanced` / `@expgov/core/internal` are a **breaking import-path change** for anyone who imported them from the root — bump major on next publish.
 
 ---
 

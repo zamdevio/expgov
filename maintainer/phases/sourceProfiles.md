@@ -121,7 +121,7 @@ One profile per PR; register in `sourceProfiles.ts`; add colocated `__tests__/pr
 |-------|-----|
 | `SourceReader` | Still `read(repoPath) → string \| null` |
 | `InventorySnapshot` schema | Profile-agnostic |
-| Commands (`runExports*`) | Call `buildInventorySnapshot` only |
+| Commands (`run*`) | Call `buildInventorySnapshot` only |
 | Cache / `files.json` | Tracks resolved repo paths; uses profile candidates |
 | Insights, diff, validate | Consume snapshots |
 

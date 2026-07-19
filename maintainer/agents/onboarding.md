@@ -18,7 +18,7 @@ packages/cli/bin/cli.ts
   → bootstrapRuntime() + subscribe console sink
   → cli.ts preAction (RunOptions, style, banner)
   → initProjectContext({ cwd, config, ... })
-  → runExportsValidate / inventory / …
+  → runValidate / runInventory / …
   → beginCommand → reports via emitLog → finishCommand (JSON or tips)
 ```
 

@@ -15,7 +15,7 @@ Contributor-only planning and systems maps. **`docs/`** is user-facing; **`maint
 | **How subsystems wire** | [`systems/README.md`](systems/README.md) |
 | **Agent / commit rules** | [`agents/rules.md`](agents/rules.md) |
 
-**Engine truth:** domain logic in **`packages/core`** (`runExports*`, inventory, tiers, cache). CLI is a thin host in **`packages/cli`**.
+**Engine truth:** domain logic in **`packages/core`** (`run*` commands, inventory, tiers, cache). CLI is a thin host in **`packages/cli`**.
 
 **Scratch:** **`maintainer/temp/`** (gitignored — never commit).
 

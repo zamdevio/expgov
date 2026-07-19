@@ -50,7 +50,7 @@ Each subcommand maps to one or more `FixKind` values from [`suggest.md`](./sugge
 
 **CLI host:** `packages/cli/bin/cli.ts` — `fix` as Commander subcommand group (like `init` patterns).
 
-**Core entry:** `runExportsFix(subcommand, options)` in `packages/core/src/commands/fix.ts` (or `fix/index.ts`).
+**Core entry:** `runFix(subcommand, options)` in `packages/core/src/commands/fix.ts` (or `fix/index.ts`).
 
 ---
 
@@ -152,7 +152,7 @@ Stay documented here as **placeholder** — no slice PR until upstream is stable
 
 | # | Slice | Goal |
 |---|-------|------|
-| **F1** | `fix` command scaffold | CLI subcommand group, `runExportsFix`, help, dry-run plumbing |
+| **F1** | `fix` command scaffold | CLI subcommand group, `runFix`, help, dry-run plumbing |
 | **F2** | `fix tags` applier | JSDoc tier-tag injection for unclassified / tag-suggested symbols |
 | **F3** | `fix tags` JSON + tests | `--json`, fixture repos, idempotent re-run |
 | **F4** | `fix config` applier | Merge `tier-exact` / policy snippets into `expgov.config.ts` |

@@ -50,7 +50,7 @@ No `NPM_TOKEN`. Trusted Publisher on npm for both packages → GitHub `zamdevio/
 ```bash
 pnpm versions:verify
 pnpm versions:up -- 1.1.0
-# finish breaking work (surface split, runExports* → run*, …)
+# finish breaking work (surface split, command entrypoint rename, …)
 pnpm build && pnpm test && node dist/cli.js validate
 git add package.json packages/core/package.json packages/cli/package.json
 git commit -m "chore(release): bump to 1.1.0"
@@ -60,3 +60,5 @@ git push origin v1.1.0
 ```
 
 Watch the Release workflow; confirm both packages on npm.
+
+User-facing history: root [`CHANGELOG.md`](../../CHANGELOG.md) (no releases portal — keep that file updated on each ship).

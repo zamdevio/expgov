@@ -10,22 +10,22 @@ Companion: [`../systems/principles.md`](../systems/principles.md) · [`active-ph
 
 ## Command principles
 
-Commands are user workflows. Core `runExports*` functions are the engine entrypoints.
+Commands are user workflows. Core `run*` functions are the engine entrypoints.
 
 ```txt
 CLI handler              Core entry
 -----------              ----------
 init                     runInit + ensureConfig (CLI)
-inventory [ref]          runExportsInventory
-diff [range]             runExportsDiff
-validate                 runExportsValidate
-doctor                   runExportsDoctor
-suggest                  runExportsSuggest
-fix <subcommand>         runExportsFix (planned — see fix.md)
-config [show|export|convert]  runExportsConfig* (planned — config.md)
-trend                    runExportsTrend
-timeline [range]         runExportsTimeline
-graph [ref]              runExportsGraph
+inventory [ref]          runInventory
+diff [range]             runDiff
+validate                 runValidate
+doctor                   runDoctor
+suggest                  runSuggest
+fix <subcommand>         runFix (planned — see fix.md)
+config [show|export|convert]  runConfig* (planned — config.md)
+trend                    runTrend
+timeline [range]         runTimeline
+graph [ref]              runGraph
 help [topic]             printCliHelp (Commander + commandHelp extras)
 ```
 

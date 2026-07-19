@@ -39,7 +39,7 @@ Engineering map: [`systems/cli.md`](../systems/cli.md).
 - [x] Human output order: **banner → report/meta → tips → footer**
 - [x] `runtime/footer.ts` — `emitCommandFooter` with optional count summary
 - [x] Log events: `summary` (counts line), `note`, `footer` (`command · ok|fail · Nms`)
-- [x] All `runExports*` commands call `finishCommand` **after** human reports
+- [x] All `run*` commands call `finishCommand` **after** human reports
 - [x] Footer counts per command (e.g. validate: violations/stable/unclassified; inventory: flat/stable)
 - [x] Timer no longer emits mid-command line; duration only in footer (or JSON `meta.durationMs`)
 - [x] Removed `printCommandLine`, `command-start` / `command-end` events

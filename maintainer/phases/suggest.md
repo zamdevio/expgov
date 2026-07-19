@@ -167,7 +167,7 @@ Invalid `-k` / `-d` values → clear error listing allowed values (same pattern 
 
 ## S2 — Wire shared findings
 
-- `runExportsSuggest` calls `collectGovernanceFindings` (severity phase).
+- `runSuggest` calls `collectGovernanceFindings` (severity phase).
 - Drop duplicate unclassified-only loop in `suggest.ts`.
 - Display order: errors → warnings → info; within domain groups.
 

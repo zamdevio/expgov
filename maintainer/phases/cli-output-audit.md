@@ -1,8 +1,21 @@
 # Phase F — CLI Output Audit
 
-**Status:** Planning only — complete UX review of human output.
+**Status:** Planning only — remaining open items below · **Companion:** [`../systems/cli.md`](../systems/cli.md)
 
-**Companion:** [`../systems/cli.md`](../systems/cli.md) (Phase A shipped)
+---
+
+## Already covered elsewhere (do not re-implement)
+
+| Area | Where |
+|------|--------|
+| Listing `-T`/`-F`, truncation hints | Phase A · [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) |
+| Insights | P17 · same |
+| Timeline warm / markers / summary | B · [`../shipped/timeline.md`](../shipped/timeline.md) |
+| Graph namespace-first + analytics | C1–C2 · [`../shipped/graph.md`](../shipped/graph.md) |
+| Help color hierarchy | **HELP1** still open — [`help.md`](./help.md) |
+| Graph filters | **C3** — [`graph-2.md`](./graph-2.md) |
+
+This doc remains the **audit backlog** for spacing/terminology/density gaps not owned by another phase.
 
 ---
 

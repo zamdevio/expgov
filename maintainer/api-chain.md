@@ -192,7 +192,7 @@ git.show       packages/core/src/index.ts · 12ms
 
    ```txt
    classify  defineConfig → tiers.stable.exact match
-   classify  runExportsInventory → tiers.internal.prefix /run/
+   classify  runInventory → tiers.stable.exact
    ```
 
 2. Link to Phase A provenance strings.

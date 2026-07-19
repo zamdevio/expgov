@@ -61,7 +61,7 @@ Default `diff` is informational (exit `0`). Opt-in fail flags emit `issues[]` co
 
 ## Validation checks
 
-`runExportsValidate`:
+`runValidate`:
 
 - tsconfig package paths ⊆ npm `exports` (and reverse)
 - no wildcard `@scope/pkg/*` tsconfig path
