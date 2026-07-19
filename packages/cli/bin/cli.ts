@@ -199,7 +199,7 @@ function buildProgram(): Command {
       .command('validate')
       .description('governance checks on working tree')
       .option('-v, --verbose', 'verbose output')
-      .option('--since <ref>', 'reserved for future delta validation')
+      .option('--since <ref>', 'fail if flat exports were removed since git ref')
       .action((_opts, cmd) => {
         const local = cmd.opts() as ValidateCommandOpts;
         withContext(cmd, local.verbose, program, () =>

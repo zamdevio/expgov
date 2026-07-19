@@ -101,7 +101,7 @@ export function printHelp(topic: HelpTopic = 'all'): void {
       '',
       `  ${style.bold('Flags')}`,
       `    -v, --verbose   all notes, path parity gaps, tier flat leaks`,
-      `    --since=<ref>   reserved for future delta validation`,
+      `    --since=<ref>   fail if flat exports were removed since ref`,
       `    -h, --help      show this section`,
       '',
       `  ${style.bold('Output')}`,
