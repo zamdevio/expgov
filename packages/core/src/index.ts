@@ -84,6 +84,7 @@ export {
   createConsoleLogSink,
   startCommandTimer,
   emitJsonResult,
+  emitJsonError,
   beginCommand,
   finishCommand,
   coreLog,
@@ -105,4 +106,5 @@ export type {
   CommandStatus,
 } from './types/runtime/index.js';
 export type { CliJsonEnvelope, Issue, IssueSeverity, ResultMeta } from './types/json/envelope.js';
+export type { JsonErrorData } from './runtime/index.js';
 export { SDK_PACKAGE_NAME, SDK_VERSION } from './shared/constants/sdk.js';

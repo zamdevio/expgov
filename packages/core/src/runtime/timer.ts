@@ -38,3 +38,38 @@ export function emitJsonResult<K extends string, D>(input: {
     emitLog({ type: 'raw', message: stringifyEnvelope(envelope), stream: 'stdout' });
   }
 }
+
+export type JsonErrorData = {
+  error: {
+    code: string;
+    message: string;
+    details?: Record<string, string | number | string[] | undefined>;
+  };
+};
+
+/** Emit a failed JSON envelope for errors thrown before a command can finish normally. */
+export function emitJsonError(input: {
+  command: string;
+  code: string;
+  message: string;
+  details?: Record<string, string | number | string[] | undefined>;
+  durationMs?: number;
+  cwd?: string;
+}): void {
+  const data: JsonErrorData = {
+    error: {
+      code: input.code,
+      message: input.message,
+      ...(input.details && Object.keys(input.details).length ? { details: input.details } : {}),
+    },
+  };
+  emitJsonResult({
+    kind: input.command,
+    data,
+    ok: false,
+    issues: [{ severity: 'error', code: input.code, message: input.message }],
+    command: input.command,
+    durationMs: input.durationMs ?? 0,
+    cwd: input.cwd,
+  });
+}

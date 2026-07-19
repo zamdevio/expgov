@@ -10,7 +10,8 @@ export {
   installDefaultLogSink,
   isDefaultSinkInstalled,
 } from './emitter.js';
-export { startCommandTimer, emitJsonResult } from './timer.js';
+export { startCommandTimer, emitJsonResult, emitJsonError } from './timer.js';
+export type { JsonErrorData } from './timer.js';
 export { beginCommand, finishCommand } from './command.js';
 export { coreLog, coreLogTip, coreLogRaw, coreLogBlank, formatBoxHeader, stripAnsiVisible } from './log.js';
 export { createConsoleLogSink } from './sinks/console.js';
