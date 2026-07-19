@@ -1,6 +1,11 @@
 import { getSnapshot } from '../cache/index.js';
 import { resolveCacheOptions } from '../cache/resolveOptions.js';
-import { diffSnapshots, evaluateDiffFailMode } from '../format/index.js';
+import {
+  diffSnapshots,
+  evaluateDiffFailMode,
+  shouldIncludeDiffJsonDetail,
+  buildDiffJsonListDetail,
+} from '../format/index.js';
 import { computeDiffInsights } from '../insights/index.js';
 import { parseDiffRange } from '../git/index.js';
 import { printDiffReport, printDiffVerbose, printDiffCacheDetail } from '../logger/index.js';
@@ -25,6 +30,20 @@ export function runExportsDiff(options: DiffCliOptions): number {
   const status = passed ? 'ok' : 'fail';
 
   if (getRunOptions().json) {
+    const data: Record<string, unknown> = {
+      rangeLabel,
+      diff: diff.summaryDelta,
+      added: diff.added,
+      removed: diff.removed,
+      tierViolations: diff.tierViolations,
+      insights,
+    };
+    if (shouldIncludeDiffJsonDetail(options)) {
+      Object.assign(
+        data,
+        buildDiffJsonListDetail(diff, leftResult.snapshot, rightResult.snapshot, options),
+      );
+    }
     finishCommand({
       command: 'diff',
       timer,
@@ -34,14 +53,7 @@ export function runExportsDiff(options: DiffCliOptions): number {
         kind: 'diff',
         ok: passed,
         issues,
-        data: {
-          rangeLabel,
-          diff: diff.summaryDelta,
-          added: diff.added,
-          removed: diff.removed,
-          tierViolations: diff.tierViolations,
-          insights,
-        },
+        data,
       },
     });
     return exitCode;
