@@ -96,7 +96,6 @@ export function runExportsGraph(options: GraphCliOptions = {}): void {
       data.edges = detail.edges;
       data.edgesHidden = detail.edgesHidden;
       data.listGuidance = detail.listGuidance;
-      data.notes = detail.notes;
     }
     finishCommand({
       command: 'graph',

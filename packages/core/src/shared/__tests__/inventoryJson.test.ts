@@ -114,7 +114,6 @@ describe('inventoryJson detail helpers', () => {
     expect(truncated.symbols[0]?.name).toBe('sym00');
     expect(truncated.listGuidance.truncated).toBe(true);
     expect(truncated.listGuidance.note).toContain('-F/--full');
-    expect(truncated.notes).toEqual([truncated.listGuidance.note]);
 
     const full = buildInventoryJsonListDetail({ symbols, namespaces }, { full: true });
     expect(full.top).toBe(Infinity);
@@ -123,6 +122,5 @@ describe('inventoryJson detail helpers', () => {
     expect(full.symbolsHidden).toBe(0);
     expect(full.namespacesHidden).toBe(0);
     expect(full.listGuidance).toEqual({ truncated: false });
-    expect(full.notes).toEqual([]);
   });
 });

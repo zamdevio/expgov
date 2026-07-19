@@ -18,7 +18,6 @@ export type GraphJsonListDetail = {
   edges: GraphJsonEdge[];
   edgesHidden: number;
   listGuidance: JsonListGuidance;
-  notes: string[];
 };
 
 export function shouldIncludeGraphJsonDetail(options: {
@@ -64,14 +63,11 @@ export function buildGraphJsonListDetail(
   const listGuidance = buildJsonListGuidance([
     { name: 'edges', shown: limited.items.length, hidden: limited.hiddenCount },
   ]);
-  const notes: string[] = [];
-  if (listGuidance.note) notes.push(listGuidance.note);
 
   return {
     top,
     edges: limited.items,
     edgesHidden: limited.hiddenCount,
     listGuidance,
-    notes,
   };
 }

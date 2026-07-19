@@ -32,7 +32,6 @@ export type InventoryJsonListDetail = {
   symbolsHidden: number;
   namespacesHidden: number;
   listGuidance: JsonListGuidance;
-  notes: string[];
 };
 
 export function shouldIncludeInventoryJsonDetail(options: {
@@ -99,8 +98,6 @@ export function buildInventoryJsonListDetail(
     { name: 'symbols', shown: symbols.items.length, hidden: symbols.hiddenCount },
     { name: 'namespaces', shown: namespaces.items.length, hidden: namespaces.hiddenCount },
   ]);
-  const notes: string[] = [];
-  if (listGuidance.note) notes.push(listGuidance.note);
 
   return {
     top,
@@ -109,6 +106,5 @@ export function buildInventoryJsonListDetail(
     symbolsHidden: symbols.hiddenCount,
     namespacesHidden: namespaces.hiddenCount,
     listGuidance,
-    notes,
   };
 }

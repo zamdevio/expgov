@@ -104,8 +104,6 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
     const listGuidance = buildJsonListGuidance([
       { name: 'rows', shown: rows.length, hidden: hiddenCount },
     ]);
-    const notes: string[] = [];
-    if (listGuidance.note) notes.push(listGuidance.note);
     finishCommand({
       command: 'timeline',
       timer,
@@ -119,7 +117,6 @@ export function runExportsTimeline(options: TimelineCliOptions = {}): void {
           rows,
           rowsHidden: hiddenCount,
           listGuidance,
-          notes,
           warmStats,
           summary,
           insights,

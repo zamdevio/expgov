@@ -46,13 +46,11 @@ describe('graphJson detail helpers', () => {
     expect(truncated.edgesHidden).toBe(10);
     expect(truncated.listGuidance.truncated).toBe(true);
     expect(truncated.listGuidance.note).toContain('edges: 10 more hidden (showing 5 of 15)');
-    expect(truncated.notes).toEqual([truncated.listGuidance.note]);
 
     const full = buildGraphJsonListDetail(edges, { full: true });
     expect(full.top).toBe(Infinity);
     expect(full.edges).toHaveLength(15);
     expect(full.edgesHidden).toBe(0);
     expect(full.listGuidance).toEqual({ truncated: false });
-    expect(full.notes).toEqual([]);
   });
 });

@@ -36,7 +36,6 @@ export function runExportsInventory(options: InventoryCliOptions): void {
       data.symbolsHidden = detail.symbolsHidden;
       data.namespacesHidden = detail.namespacesHidden;
       data.listGuidance = detail.listGuidance;
-      data.notes = detail.notes;
     }
     finishCommand({
       command: 'inventory',

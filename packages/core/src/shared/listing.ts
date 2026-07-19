@@ -67,12 +67,3 @@ export function buildJsonListGuidance(sections: JsonListGuidanceSection[]): Json
     note: `${details}. Use -F/--full for all rows, or -T/--top <n> to raise the cap.`,
   };
 }
-
-/** Convenience: push guidance note into a `notes[]` array when truncated. */
-export function appendJsonListGuidanceNotes(
-  notes: string[],
-  guidance: JsonListGuidance,
-): string[] {
-  if (guidance.truncated && guidance.note) notes.push(guidance.note);
-  return notes;
-}
