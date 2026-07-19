@@ -32,9 +32,15 @@ When ID1/ID2 ship, document issue codes and command UX here and in public `docs/
 
 ## Root barrel
 
-- Public facade: `packages/core/src/index.ts`
-- Package: `packages/core/package.json` (`@expgov/core`)
-- Dogfood config: repo root `expgov.config.ts`
+- **Stable** facade: `packages/core/src/index.ts` → `@expgov/core`
+- **Advanced** tooling: `packages/core/src/advanced/index.ts` → `@expgov/core/advanced`
+- **Internal** CLI host: `packages/core/src/internal/index.ts` → `@expgov/core/internal`
+- Package: `packages/core/package.json` (`exports` for `.`, `./advanced`, `./internal`)
+- Dogfood config: repo root `expgov.config.ts` (`core.subpaths` must list all three)
+
+`./advanced` and `./internal` use inventory `subpathTierHint` (path ending `/advanced` or `/internal`) so flats on those barrels classify without duplicating every name into config — still keep `tiers.*.exact` honest for dogfood.
+
+Root flats with `advanced` / `internal` tiers fail validate (`rootFlat: deny`). Keep the stable root thin.
 
 ---
 
@@ -75,6 +81,8 @@ See [`cache.md`](./cache.md). Cache dir should be gitignored — see gitignore t
 
 ## After changing exports
 
-1. Add `@sdkTier` or update `tiers.stable.exact` / `.prefix` in `expgov.config.ts`
-2. Run `expgov validate`
-3. Update `maintainer/shipped/README.md` if shipping a governance slice
+1. Put new symbols on the right barrel (stable root vs `advanced/` vs `internal/`)
+2. Add `@sdkTier` or update `tiers.*.exact` / `.prefix` in `expgov.config.ts`
+3. Keep `core.subpaths` + `package.json` `exports` + root `tsconfig` paths in sync
+4. Run `expgov validate`
+5. Update `maintainer/shipped/README.md` if shipping a governance slice

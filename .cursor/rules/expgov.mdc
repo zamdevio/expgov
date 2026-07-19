@@ -31,8 +31,9 @@ alwaysApply: true
 - Details: `maintainer/agents/architecture.md` (Module organization).
 
 ## Export governance
-- Root barrel: `packages/core/src/index.ts`.
-- Classify exports via `@sdkTier` JSDoc or tier config buckets.
+- Root barrel: `packages/core/src/index.ts` (stable). Also `./advanced` and `./internal`.
+- Classify exports via `@sdkTier` JSDoc or tier config buckets; do not put advanced/internal flats on root.
+- Keep `package.json` exports, `expgov.config.ts` `core.subpaths`, and tsconfig paths aligned.
 - Run `expgov validate` after changing public exports or tiers.
 
 ## CLI output

@@ -13,7 +13,7 @@ Stable dual npm publish + docs site. **No active phase doc** — check here befo
 | Root | `@expgov/cli` | `tsup` → `dist/cli.js` + `dist/core.js` | Self-contained CLI; no runtime dep on `@expgov/core` |
 | `packages/core` | `@expgov/core` | `tsc` → `packages/core/dist/` | Standalone SDK for programmatic imports |
 
-Both packages expose config types. CLI consumers: `import from '@expgov/cli/core'`. SDK consumers: `import from '@expgov/core'`.
+Both packages expose config types. CLI consumers: `import from '@expgov/cli/core'`. SDK consumers: `import from '@expgov/core'` (stable). Host/runtime APIs: `@expgov/core/internal`. Config tooling/init: `@expgov/core/advanced`.
 
 npm rejected unscoped **`expgov`** (too similar to `expo`). Binary name stays `expgov`.
 
@@ -48,6 +48,8 @@ npm rejected unscoped **`expgov`** (too similar to `expo`). Binary name stays `e
 ## v1 contract
 
 CLI argv, `--json` envelope, and exit codes are **semver-stable**. `@expgov/core` may grow additively in minor releases; breaking SDK or CLI contract changes require a major bump.
+
+**SF1 surface split (post-v1.0.1):** root `@expgov/core` is now a thin stable set (`defineConfig`, `runExports*`, config/JSON types). Symbols moved to `@expgov/core/advanced` / `@expgov/core/internal` are a **breaking import-path change** for anyone who imported them from the root — bump major on next publish.
 
 ---
 

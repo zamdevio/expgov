@@ -24,6 +24,8 @@ expgov/
 | Package | npm | Role |
 |---------|-----|------|
 | `@expgov/core` | `@expgov/core` | Export governance engine — inventory, diff, validate, tiers, cache |
+| `@expgov/core/advanced` | same package | Tooling subpath — config resolve, init, help formatters |
+| `@expgov/core/internal` | same package | CLI host subpath — context, run options, log sinks, style |
 | `@expgov/cli` (root publish) | `@expgov/cli` | CLI binary + `@expgov/cli/core` subpath for config authors |
 
 ### Dual publish (match nodehunter pattern, scoped CLI)
@@ -46,6 +48,9 @@ packages/core/src/
 │   ├── constants/      # named constants (CLI_NAME, cache, tiers, list, …)
 │   ├── listing.ts      # list truncation helpers (imports types from types/)
 │   └── result/         # JSON envelope builders
+├── index.ts            # stable public barrel (`@expgov/core`)
+├── advanced/index.ts   # `@expgov/core/advanced`
+├── internal/index.ts   # `@expgov/core/internal`
 ├── commands/           # runExports* — beginCommand/finishCommand + reports
 ├── config/             # load.ts, tiers.ts, tierCatalog, tierPolicy
 ├── context/            # ProjectContext from expgov.config.ts; path accessors

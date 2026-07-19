@@ -16,7 +16,8 @@ pnpm add -D @expgov/core
 ```
 
 ```typescript
-import { initProjectContext, runExportsValidate } from '@expgov/core';
+import { runExportsValidate } from '@expgov/core';
+import { initProjectContext } from '@expgov/core/internal';
 ```
 
 ### CLI package (`@expgov/cli`)
@@ -39,10 +40,16 @@ See [Install](../install.md) for why the CLI publishes as **`@expgov/cli`** (npm
 
 ## Host contract
 
-1. **`initProjectContext({ cwd, config })`** — loads `expgov.config.ts` via jiti.
-2. **`setRunOptions`** — `--json`, `--quiet`, cache flags, list truncation.
-3. **`runExports*`** — returns exit code where applicable.
-4. **`subscribeLogSink`** — optional human report lines.
+1. **`initProjectContext({ cwd, config })`** — from `@expgov/core/internal`; loads `expgov.config.ts` via jiti.
+2. **`setRunOptions`** — `@expgov/core/internal`; `--json`, `--quiet`, cache flags, list truncation.
+3. **`runExports*`** — from `@expgov/core` (stable); returns exit code where applicable.
+4. **`subscribeLogSink`** — `@expgov/core/internal`; optional human report lines.
+
+| Subpath | Role |
+|---------|------|
+| `@expgov/core` | Stable — `defineConfig`, `runExports*`, config/JSON types, `ExportError` |
+| `@expgov/core/advanced` | Tooling — config resolve, init helpers, help formatters |
+| `@expgov/core/internal` | CLI host — project context, run options, log sinks, style |
 
 ## Programmatic commands
 
@@ -60,12 +67,12 @@ See [Install](../install.md) for why the CLI publishes as **`@expgov/cli`** (npm
 ## Example (validate in CI)
 
 ```ts
+import { runExportsValidate } from '@expgov/core';
 import {
   initProjectContext,
-  runExportsValidate,
   setRunOptions,
   resetRunOptions,
-} from '@expgov/core';
+} from '@expgov/core/internal';
 
 initProjectContext({ cwd: process.cwd() });
 setRunOptions({ json: true, quiet: true });

@@ -84,6 +84,8 @@ Example: `feat(cli): add version command with build-time semver injection`
 
 ## Export changes
 
-- Root barrel: `packages/core/src/index.ts`
-- Update `expgov.config.ts` tier allowlist (or add `@sdkTier` on declaration)
-- Run `expgov validate` after changing public exports
+- **Stable root:** `packages/core/src/index.ts` → `@expgov/core`
+- **Advanced:** `packages/core/src/advanced/index.ts` → `@expgov/core/advanced`
+- **Internal:** `packages/core/src/internal/index.ts` → `@expgov/core/internal`
+- Update `expgov.config.ts` tier allowlist (or add `@sdkTier` on declaration); keep `core.subpaths` + npm `exports` + tsconfig paths aligned
+- Run `expgov validate` after changing public exports — advanced/internal flats on root fail (`rootFlat: deny`)

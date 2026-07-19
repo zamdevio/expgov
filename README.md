@@ -59,12 +59,12 @@ The **`@expgov/cli`** tarball ships a self-contained CLI (`dist/cli.js` — core
 Use the core engine when you want programmatic control — no shelling out, no Commander, no `console.*` in command paths.
 
 ```ts
+import { runExportsValidate } from '@expgov/core';
 import {
   initProjectContext,
-  runExportsValidate,
   setRunOptions,
   resetRunOptions,
-} from '@expgov/core';
+} from '@expgov/core/internal';
 
 initProjectContext({ cwd: process.cwd() });
 setRunOptions({ json: true, quiet: true });
