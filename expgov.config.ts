@@ -21,8 +21,8 @@ export default defineConfig({
   git: {
     tagPattern: 'v*',
     timelineBarrelPath: 'packages/core/src/index.ts',
-    // Set after v1.1.0 tags the thin stable root (v1.0.0 baseline fails on intentional Unreleased removals).
-    compatBaseline: 'v1.1.0',
+    // After this release is tagged, pin the thin stable root:
+    // compatBaseline: 'v1.1.0',
   },
   tiers: {
     tag: {
