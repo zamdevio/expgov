@@ -6,3 +6,6 @@ export const NPM_REGISTRY_LATEST_URL =
 
 /** Bump when the on-disk `version.json` shape changes. */
 export const UPDATE_STATE_SCHEMA_VERSION = 1 as const;
+
+/** Placeholder when latest npm version cannot be resolved. */
+export const VERSION_UNKNOWN = '—' as const;

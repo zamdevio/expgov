@@ -2,9 +2,9 @@ import { coreLogRaw, SDK_PACKAGE_NAME, SDK_VERSION, style } from '@expgov/core';
 
 import { CLI_VERSION } from '../../constants/cli.js';
 import { ENV_EXPGOV_NO_UPDATE_CHECK } from '../../constants/env.js';
-import { NPM_REGISTRY_LATEST_URL, UPDATE_STATE_SCHEMA_VERSION } from '../../constants/update.js';
+import { NPM_REGISTRY_LATEST_URL, UPDATE_STATE_SCHEMA_VERSION, VERSION_UNKNOWN } from '../../constants/update.js';
 import { readUpdateState, resetUpdateState, writeUpdateState } from '../update/cache.js';
-import { printGlobalInstallHints, VERSION_UNKNOWN } from '../update/installHint.js';
+import { printGlobalInstallHints } from '../update/installHint.js';
 import { fetchLatestPublishedVersion, isPublishedVersionNewer } from '../update/registry.js';
 
 function truthyEnv(v: string | undefined): boolean {
