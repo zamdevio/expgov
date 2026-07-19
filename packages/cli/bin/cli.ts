@@ -223,6 +223,7 @@ function buildProgram(): Command {
                 force: local.force,
                 top: local.top,
                 full: local.full,
+                namesOnly: local.namesOnly,
                 tier: local.tier,
                 category: local.category,
                 namespace: local.namespace,
@@ -255,6 +256,7 @@ function buildProgram(): Command {
                 verbose: local.verbose,
                 top: local.top,
                 full: local.full,
+                namesOnly: local.namesOnly,
                 tier: local.tier,
                 category: local.category,
                 namespace: local.namespace,
@@ -274,7 +276,7 @@ function buildProgram(): Command {
       .command('validate')
       .description('governance checks on working tree')
       .option('-v, --verbose', 'verbose output')
-      .option('--since <ref>', 'fail if flat exports were removed since git ref')
+      .option('--since <ref>', 'fail if flat exports were removed since git ref (overrides git.compatBaseline)')
       .action((_opts, cmd) => {
         const local = cmd.opts() as ValidateCommandOpts;
         withContext(cmd, local.verbose, program, () =>
@@ -378,6 +380,7 @@ function buildProgram(): Command {
                 verbose: local.verbose,
                 top: local.top,
                 full: local.full,
+                namesOnly: local.namesOnly,
                 tier: local.tier,
                 category: local.category,
                 namespace: local.namespace,

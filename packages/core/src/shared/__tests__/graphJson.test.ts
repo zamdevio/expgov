@@ -16,10 +16,11 @@ function edge(partial: Partial<GraphEdge> & Pick<GraphEdge, 'symbol' | 'toModule
 }
 
 describe('graphJson detail helpers', () => {
-  it('includes detail for -v or -F only', () => {
+  it('includes detail for -v, -F, or --names-only', () => {
     expect(shouldIncludeGraphJsonDetail({})).toBe(false);
     expect(shouldIncludeGraphJsonDetail({ verbose: true })).toBe(true);
     expect(shouldIncludeGraphJsonDetail({ full: true })).toBe(true);
+    expect(shouldIncludeGraphJsonDetail({ namesOnly: true })).toBe(true);
   });
 
   it('sorts edges by module then symbol', () => {
@@ -52,5 +53,16 @@ describe('graphJson detail helpers', () => {
     expect(full.edges).toHaveLength(15);
     expect(full.edgesHidden).toBe(0);
     expect(full.listGuidance).toEqual({ truncated: false });
+  });
+
+  it('emits unique sorted symbol names with --names-only', () => {
+    const edges = [
+      edge({ symbol: 'zeta', toModule: 'b.ts' }),
+      edge({ symbol: 'alpha', toModule: 'a.ts' }),
+      edge({ symbol: 'alpha', toModule: 'c.ts' }),
+    ];
+    const detail = buildGraphJsonListDetail(edges, { namesOnly: true, full: true });
+    expect(detail.namesOnly).toBe(true);
+    expect(detail.edges).toEqual(['alpha', 'zeta']);
   });
 });

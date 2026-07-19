@@ -14,6 +14,7 @@ export interface FilterFlagOpts {
   namespace?: string[];
   module?: string[];
   subpath?: string[];
+  namesOnly?: boolean;
 }
 
 export interface CacheFlagOpts {

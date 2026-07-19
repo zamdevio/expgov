@@ -14,8 +14,9 @@ import type {
 export function shouldIncludeInventoryJsonDetail(options: {
   verbose?: boolean;
   full?: boolean;
+  namesOnly?: boolean;
 }): boolean {
-  return Boolean(options.verbose || options.full);
+  return Boolean(options.verbose || options.full || options.namesOnly);
 }
 
 function mapSymbol(sym: InventorySymbol): InventoryJsonSymbol {
@@ -61,6 +62,7 @@ export function toInventoryJsonNamespaces(
 /**
  * Inventory JSON detail lists use the same `-T` / `-F` policy as human verbose lists.
  * `--tier` / `--category` filter before truncation.
+ * `--names-only` emits bare name strings instead of lean objects.
  */
 export function buildInventoryJsonListDetail(
   snapshot: {
@@ -71,15 +73,36 @@ export function buildInventoryJsonListDetail(
 ): InventoryJsonListDetail {
   const filters = toFilterOptions(listView);
   const top = resolveListLimit(listView);
+  const namesOnly = Boolean(listView?.namesOnly);
   // Filter inventory rows before JSON map (namespace JSON omits category).
-  const symbols = limitList(
-    toInventoryJsonSymbols(filterSymbols(snapshot.symbols, filters, snapshot.namespaces)),
-    top,
-  );
-  const namespaces = limitList(
-    toInventoryJsonNamespaces(filterNamespaces(snapshot.namespaces, filters)),
-    top,
-  );
+  const filteredSymbols = filterSymbols(snapshot.symbols, filters, snapshot.namespaces);
+  const filteredNamespaces = filterNamespaces(snapshot.namespaces, filters);
+
+  if (namesOnly) {
+    const symbols = limitList(
+      toInventoryJsonSymbols(filteredSymbols).map((s) => s.name),
+      top,
+    );
+    const namespaces = limitList(
+      toInventoryJsonNamespaces(filteredNamespaces).map((n) => n.name),
+      top,
+    );
+    return {
+      top,
+      namesOnly: true,
+      symbols: symbols.items,
+      namespaces: namespaces.items,
+      symbolsHidden: symbols.hiddenCount,
+      namespacesHidden: namespaces.hiddenCount,
+      listGuidance: buildJsonListGuidance([
+        { name: 'symbols', shown: symbols.items.length, hidden: symbols.hiddenCount },
+        { name: 'namespaces', shown: namespaces.items.length, hidden: namespaces.hiddenCount },
+      ]),
+    };
+  }
+
+  const symbols = limitList(toInventoryJsonSymbols(filteredSymbols), top);
+  const namespaces = limitList(toInventoryJsonNamespaces(filteredNamespaces), top);
   const listGuidance = buildJsonListGuidance([
     { name: 'symbols', shown: symbols.items.length, hidden: symbols.hiddenCount },
     { name: 'namespaces', shown: namespaces.items.length, hidden: namespaces.hiddenCount },

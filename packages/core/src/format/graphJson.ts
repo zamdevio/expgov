@@ -6,8 +6,9 @@ import type { GraphEdge } from '../types/inventory/index.js';
 export function shouldIncludeGraphJsonDetail(options: {
   verbose?: boolean;
   full?: boolean;
+  namesOnly?: boolean;
 }): boolean {
-  return Boolean(options.verbose || options.full);
+  return Boolean(options.verbose || options.full || options.namesOnly);
 }
 
 function mapEdge(edge: GraphEdge): GraphJsonEdge {
@@ -34,14 +35,35 @@ export function toGraphJsonEdges(edges: GraphEdge[]): GraphJsonEdge[] {
     .map(mapEdge);
 }
 
+/** Unique sorted symbol names from edges (for `--names-only`). */
+export function toGraphJsonEdgeNames(edges: GraphEdge[]): string[] {
+  return [...new Set(edges.map((e) => e.symbol))].sort((a, b) => a.localeCompare(b));
+}
+
 /**
  * Graph JSON edge lists use the same `-T` / `-F` policy as human graph lists.
+ * `--names-only` emits unique sorted symbol names instead of lean edge objects.
  */
 export function buildGraphJsonListDetail(
   edges: GraphEdge[],
   listView?: ListViewOptions,
 ): GraphJsonListDetail {
   const top = resolveListLimit(listView);
+  const namesOnly = Boolean(listView?.namesOnly);
+
+  if (namesOnly) {
+    const limited = limitList(toGraphJsonEdgeNames(edges), top);
+    return {
+      top,
+      namesOnly: true,
+      edges: limited.items,
+      edgesHidden: limited.hiddenCount,
+      listGuidance: buildJsonListGuidance([
+        { name: 'edges', shown: limited.items.length, hidden: limited.hiddenCount },
+      ]),
+    };
+  }
+
   const limited = limitList(toGraphJsonEdges(edges), top);
   const listGuidance = buildJsonListGuidance([
     { name: 'edges', shown: limited.items.length, hidden: limited.hiddenCount },

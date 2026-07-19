@@ -85,10 +85,11 @@ describe('diffJson detail helpers', () => {
     while (fixtures.length) fixtures.pop()?.cleanup();
   });
 
-  it('includes detail under -v or -F only', () => {
+  it('includes detail under -v, -F, or --names-only', () => {
     expect(shouldIncludeDiffJsonDetail({})).toBe(false);
     expect(shouldIncludeDiffJsonDetail({ verbose: true })).toBe(true);
     expect(shouldIncludeDiffJsonDetail({ full: true })).toBe(true);
+    expect(shouldIncludeDiffJsonDetail({ namesOnly: true })).toBe(true);
   });
 
   it('builds added/removed detail from the correct side snapshots', () => {
@@ -162,7 +163,24 @@ describe('diffJson detail helpers', () => {
       { full: true, tier: ['stable'] },
     );
 
-    expect(detail.addedDetail.map((r) => r.name)).toEqual(['addedStable']);
-    expect(detail.removedDetail.map((r) => r.name)).toEqual(['keep']);
+    expect(detail.addedDetail.map((r) => (typeof r === 'string' ? r : r.name))).toEqual([
+      'addedStable',
+    ]);
+    expect(detail.removedDetail.map((r) => (typeof r === 'string' ? r : r.name))).toEqual(['keep']);
+  });
+
+  it('emits bare name strings with --names-only', () => {
+    withMiniContext();
+    const left = snapshotWithFlats(['alpha', 'beta']);
+    const right = snapshotWithFlats(['alpha', 'gamma']);
+    const detail = buildDiffJsonListDetail(
+      { added: ['gamma'], removed: ['beta'] },
+      left,
+      right,
+      { namesOnly: true, full: true },
+    );
+    expect(detail.namesOnly).toBe(true);
+    expect(detail.addedDetail).toEqual(['gamma']);
+    expect(detail.removedDetail).toEqual(['beta']);
   });
 });

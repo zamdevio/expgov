@@ -34,6 +34,7 @@ export function printGraphReport(input: {
   insights?: ReturnType<typeof computeGraphInsights>;
 }): void {
   const listLimit = resolveListLimit(input.listView);
+  const namesOnly = Boolean(input.listView?.namesOnly);
   const namespaces = limitList(input.analytics?.namespaces ?? [], listLimit);
   const targetGroups = limitList(input.targetGroups, listLimit);
   const topModules = limitList(input.topModules, listLimit);
@@ -54,6 +55,10 @@ export function printGraphReport(input: {
     namespaces.items,
     'No root namespace exports.',
     (ns) => {
+      if (namesOnly) {
+        logLine(`       ${style.dim('·')} ${ns.name}`);
+        return;
+      }
       const primary = formatNamespacePrimaryLine(ns);
       logLine(
         `       ${style.dim('·')} ${primary.name.padEnd(18)} ${primary.sizeLabel.padStart(8)}  ${primary.moduleLabel} ${style.dim('·')} ${primary.targetSubpath}`,
@@ -66,28 +71,35 @@ export function printGraphReport(input: {
     namespaces.hiddenCount,
   );
 
-  logLine('');
-  logLine(boldDim('       Re-export targets (governance map)'));
-  logLine(style.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
-  if (targetGroups.items.length === 0) {
-    logSectionEmpty('No re-export target subpaths.');
-  } else {
-    for (const group of targetGroups.items) {
-      logLine(
-        `       ${group.targetSubpath.padEnd(22)} ${String(group.flat).padStart(6)} ${String(group.namespace).padStart(4)}`,
-      );
+  if (!namesOnly) {
+    logLine('');
+    logLine(boldDim('       Re-export targets (governance map)'));
+    logLine(style.dim(`       ${'subpath'.padEnd(22)} ${'flat'.padStart(6)} ${'ns'.padStart(4)}`));
+    if (targetGroups.items.length === 0) {
+      logSectionEmpty('No re-export target subpaths.');
+    } else {
+      for (const group of targetGroups.items) {
+        logLine(
+          `       ${group.targetSubpath.padEnd(22)} ${String(group.flat).padStart(6)} ${String(group.namespace).padStart(4)}`,
+        );
+      }
+      logListTruncation(targetGroups.hiddenCount);
     }
-    logListTruncation(targetGroups.hiddenCount);
-  }
 
-  printPublishedSubpathRollups(input.snapshot.summary.subpaths, 'Published npm subpaths');
+    const published = limitList(input.snapshot.summary.subpaths, listLimit);
+    printPublishedSubpathRollups(published.items, 'Published npm subpaths', published.hiddenCount);
+  }
 
   logLine('');
   logListSection(
-    'Top source modules (edge count)',
+    namesOnly ? 'Source modules' : 'Top source modules (edge count)',
     topModules.items,
     'No source modules in the re-export graph.',
     (mod) => {
+      if (namesOnly) {
+        logLine(`       ${style.dim('·')} ${mod.module}`);
+        return;
+      }
       logLine(
         `       ${style.dim('·')} ${mod.edges.toString().padStart(4)}  ${mod.module} ${style.dim(`(${mod.edgeProvenance})`)}`,
       );
@@ -98,8 +110,8 @@ export function printGraphReport(input: {
     topModules.hiddenCount,
   );
 
-  printGraphSummaryBlock(input.analytics);
+  if (!namesOnly) printGraphSummaryBlock(input.analytics);
 
   const insights = input.insights ?? computeGraphInsights(input.snapshot);
-  if (insights) printInsightsBlock(insights.lines);
+  if (insights && !namesOnly) printInsightsBlock(insights.lines);
 }

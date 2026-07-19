@@ -13,8 +13,10 @@ export type DiffJsonSymbolDetail = {
 export type DiffJsonListDetail = {
   /** Same cap as human verbose lists (`Infinity` / `-F` → `null` after JSON.stringify). */
   top: number;
-  addedDetail: DiffJsonSymbolDetail[];
-  removedDetail: DiffJsonSymbolDetail[];
+  /** Present when `--names-only` — detail arrays are bare name strings. */
+  namesOnly?: true;
+  addedDetail: DiffJsonSymbolDetail[] | string[];
+  removedDetail: DiffJsonSymbolDetail[] | string[];
   addedDetailHidden: number;
   removedDetailHidden: number;
   listGuidance: JsonListGuidance;

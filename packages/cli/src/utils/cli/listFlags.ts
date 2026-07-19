@@ -17,7 +17,8 @@ export function addFilterFlags(cmd: Command): Command {
     .option('--category <category>', 'filter by category (repeatable)', collectString, [])
     .option('--namespace <name>', 'filter by root namespace name (repeatable)', collectString, [])
     .option('--module <path>', 'filter by module path substring (repeatable)', collectString, [])
-    .option('--subpath <subpath>', 'filter by target subpath (repeatable)', collectString, []);
+    .option('--subpath <subpath>', 'filter by target subpath (repeatable)', collectString, [])
+    .option('--names-only', 'list bare names (implies detail; skips tier/module columns)');
 }
 
 export function addCacheFlags(cmd: Command): Command {

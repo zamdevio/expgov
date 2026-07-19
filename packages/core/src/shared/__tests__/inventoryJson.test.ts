@@ -22,10 +22,11 @@ function flatSym(partial: Partial<InventorySymbol> & Pick<InventorySymbol, 'name
 }
 
 describe('inventoryJson detail helpers', () => {
-  it('includes detail for -v or -F only', () => {
+  it('includes detail for -v, -F, or --names-only', () => {
     expect(shouldIncludeInventoryJsonDetail({})).toBe(false);
     expect(shouldIncludeInventoryJsonDetail({ verbose: true })).toBe(true);
     expect(shouldIncludeInventoryJsonDetail({ full: true })).toBe(true);
+    expect(shouldIncludeInventoryJsonDetail({ namesOnly: true })).toBe(true);
     expect(shouldIncludeInventoryJsonDetail({ verbose: true, full: true })).toBe(true);
   });
 
@@ -111,7 +112,7 @@ describe('inventoryJson detail helpers', () => {
     expect(truncated.namespaces).toHaveLength(5);
     expect(truncated.symbolsHidden).toBe(10);
     expect(truncated.namespacesHidden).toBe(7);
-    expect(truncated.symbols[0]?.name).toBe('sym00');
+    expect((truncated.symbols[0] as { name: string }).name).toBe('sym00');
     expect(truncated.listGuidance.truncated).toBe(true);
     expect(truncated.listGuidance.note).toContain('-F/--full');
 
@@ -151,14 +152,35 @@ describe('inventoryJson detail helpers', () => {
       { symbols, namespaces },
       { full: true, tier: ['stable'] },
     );
-    expect(byTier.symbols.map((s) => s.name)).toEqual(['a', 'c']);
-    expect(byTier.namespaces.map((n) => n.name)).toEqual(['NsRun']);
+    expect(byTier.symbols.map((s) => (typeof s === 'string' ? s : s.name))).toEqual(['a', 'c']);
+    expect(byTier.namespaces.map((n) => (typeof n === 'string' ? n : n.name))).toEqual(['NsRun']);
 
     const byBoth = buildInventoryJsonListDetail(
       { symbols, namespaces },
       { full: true, tier: ['stable'], category: ['config'] },
     );
-    expect(byBoth.symbols.map((s) => s.name)).toEqual(['c']);
+    expect(byBoth.symbols.map((s) => (typeof s === 'string' ? s : s.name))).toEqual(['c']);
     expect(byBoth.namespaces).toEqual([]);
+  });
+
+  it('emits bare name strings with --names-only', () => {
+    const symbols = [
+      flatSym({ name: 'zeta' }),
+      flatSym({ name: 'alpha', tier: 'internal' }),
+    ];
+    const namespaces: InventoryNamespace[] = [
+      {
+        name: 'Beta',
+        tier: 'stable',
+        category: 'other',
+        targetSubpath: './beta',
+        sourceModule: 'src/beta.ts',
+      },
+    ];
+
+    const detail = buildInventoryJsonListDetail({ symbols, namespaces }, { namesOnly: true, full: true });
+    expect(detail.namesOnly).toBe(true);
+    expect(detail.symbols).toEqual(['alpha', 'zeta']);
+    expect(detail.namespaces).toEqual(['Beta']);
   });
 });

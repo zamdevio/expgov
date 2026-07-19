@@ -97,10 +97,11 @@ export function printDiffVerbose(input: {
   right: InventorySnapshot;
   listView?: ListViewOptions;
 }): void {
-  if (!canEmitVerboseReport()) return;
+  if (!canEmitVerboseReport() && !input.listView?.namesOnly) return;
   const { diff, left, right } = input;
   const filters = toFilterOptions(input.listView);
   const listLimit = resolveListLimit(input.listView);
+  const namesOnly = Boolean(input.listView?.namesOnly);
 
   const detailNames = (names: string[], side: InventorySnapshot): string[] => {
     const matched = names
@@ -114,6 +115,10 @@ export function printDiffVerbose(input: {
     logLine('');
     logLine(boldDim('       Added detail'));
     for (const name of added.items) {
+      if (namesOnly) {
+        logLine(`       ${style.dim('·')} ${name}`);
+        continue;
+      }
       const sym = right.symbols.find((s) => s.name === name);
       if (sym) {
         logLine(
@@ -128,6 +133,10 @@ export function printDiffVerbose(input: {
     logLine('');
     logLine(boldDim('       Removed detail'));
     for (const name of removed.items) {
+      if (namesOnly) {
+        logLine(`       ${style.dim('·')} ${name}`);
+        continue;
+      }
       const sym = left.symbols.find((s) => s.name === name);
       if (sym) {
         logLine(

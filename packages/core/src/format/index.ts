@@ -9,6 +9,7 @@ export {
   buildGraphJsonListDetail,
   shouldIncludeGraphJsonDetail,
   toGraphJsonEdges,
+  toGraphJsonEdgeNames,
 } from './graphJson.js';
 export {
   buildInventoryJsonListDetail,

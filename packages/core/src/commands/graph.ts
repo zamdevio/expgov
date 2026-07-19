@@ -101,6 +101,7 @@ export function runGraph(options: GraphCliOptions = {}): void {
       data.edges = detail.edges;
       data.edgesHidden = detail.edgesHidden;
       data.listGuidance = detail.listGuidance;
+      if (detail.namesOnly) data.namesOnly = true;
     }
     finishCommand({
       command: 'graph',

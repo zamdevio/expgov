@@ -21,8 +21,10 @@ export type InventoryJsonNamespace = {
 export type InventoryJsonListDetail = {
   /** Same cap as human lists (`Infinity` / `-F` → `null` after JSON.stringify). */
   top: number;
-  symbols: InventoryJsonSymbol[];
-  namespaces: InventoryJsonNamespace[];
+  /** Present when `--names-only` — `symbols` / `namespaces` are bare name strings. */
+  namesOnly?: true;
+  symbols: InventoryJsonSymbol[] | string[];
+  namespaces: InventoryJsonNamespace[] | string[];
   symbolsHidden: number;
   namespacesHidden: number;
   listGuidance: JsonListGuidance;

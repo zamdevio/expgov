@@ -42,10 +42,13 @@ export function runDiff(options: DiffCliOptions): number {
     };
     if (filters) data.filters = filters;
     if (shouldIncludeDiffJsonDetail(options)) {
-      Object.assign(
-        data,
-        buildDiffJsonListDetail(diff, leftResult.snapshot, rightResult.snapshot, options),
+      const detail = buildDiffJsonListDetail(
+        diff,
+        leftResult.snapshot,
+        rightResult.snapshot,
+        options,
       );
+      Object.assign(data, detail);
     }
     finishCommand({
       command: 'diff',
@@ -64,9 +67,9 @@ export function runDiff(options: DiffCliOptions): number {
 
   printDiffReport({ rangeLabel, left: leftResult, right: rightResult, diff, listView: options });
 
-  if (options.verbose) {
+  if (options.verbose || options.namesOnly) {
     printDiffVerbose({ diff, left: leftResult.snapshot, right: rightResult.snapshot, listView: options });
-    printDiffCacheDetail({ left: leftResult, right: rightResult });
+    if (options.verbose) printDiffCacheDetail({ left: leftResult, right: rightResult });
   }
 
   finishCommand({

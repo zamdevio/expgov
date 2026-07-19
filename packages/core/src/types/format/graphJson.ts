@@ -13,7 +13,9 @@ export type GraphJsonEdge = {
 export type GraphJsonListDetail = {
   /** Same cap as human lists (`Infinity` / `-F` → `null` after JSON.stringify). */
   top: number;
-  edges: GraphJsonEdge[];
+  /** Present when `--names-only` — `edges` are unique sorted symbol names. */
+  namesOnly?: true;
+  edges: GraphJsonEdge[] | string[];
   edgesHidden: number;
   listGuidance: JsonListGuidance;
 };
