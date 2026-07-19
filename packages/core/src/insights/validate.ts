@@ -23,7 +23,7 @@ export function computeValidateInsights(
     internalFlatCount?: number;
     advancedFlatCount?: number;
   },
-): ValidateInsights | null {
+): ValidateInsights {
   const lines: InsightLine[] = [];
   const unclassifiedFlats = snapshot.symbols.filter(
     (sym) => sym.exportKind === 'flat' && sym.tier === 'unclassified',
@@ -71,8 +71,6 @@ export function computeValidateInsights(
       });
     }
   }
-
-  if (!lines.length) return null;
 
   return trimInsightLines({
     lines,

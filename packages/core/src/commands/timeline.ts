@@ -86,15 +86,17 @@ export function runTimeline(options: TimelineCliOptions = {}): void {
   const warmStats = warmer.finish();
 
   for (let i = 0; i < rows.length; i++) {
-    if (i === 0) {
+    // Newest-first: delta/step on this row = change from the older commit below.
+    // Oldest row has no older baseline in the window.
+    if (i === rows.length - 1) {
       rows[i]!.delta = null;
       rows[i]!.step = null;
       continue;
     }
-    const newer = built[i - 1]!.snapshot;
-    const older = built[i]!.snapshot;
-    rows[i]!.delta = rows[i]!.rollup.rootFlat - rows[i - 1]!.rollup.rootFlat;
-    rows[i]!.step = computeTimelineStepMeta(newer, older);
+    const newer = built[i]!.snapshot;
+    const older = built[i + 1]!.snapshot;
+    rows[i]!.delta = rows[i]!.rollup.rootFlat - rows[i + 1]!.rollup.rootFlat;
+    rows[i]!.step = computeTimelineStepMeta(older, newer);
   }
 
   const insights = computeTimelineInsights(rows);

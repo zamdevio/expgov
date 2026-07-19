@@ -23,6 +23,7 @@ Breaking and additive work on `main` since **v1.0.1**.
 - `validate --since <ref>` (removals ∪ existing validate checks).
 - Inventory / graph / diff JSON detail under `-v` / `-F` (`symbols`, `namespaces`, `edges`, `addedDetail` / `removedDetail`) with shared `listGuidance`.
 - Shared `--tier` / `--category` filters on `inventory`, `diff` (detail), and `graph` (view before analytics); apply before `-T`/`-F`.
+- Insights always `{ lines, …typedFields }` (never `null`); timeline/trend/diff Δ positive = growth toward newer/right/later.
 - JSON error envelopes for thrown domain errors and Commander parser errors under `-j`.
 - Release automation: `pnpm versions:up|sync|verify`, tag-triggered `.github/workflows/release.yml` (OIDC Trusted Publishing for both packages).
 

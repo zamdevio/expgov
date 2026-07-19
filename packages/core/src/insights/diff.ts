@@ -1,11 +1,7 @@
 import type { DiffResult } from '../types/format/diff.js';
 import type { InventorySnapshot } from '../types/inventory/snapshot.js';
 import type { DiffInsights, InsightLine } from '../types/insights/index.js';
-import { trimInsightLines } from './common.js';
-
-function signedDelta(value: number): string {
-  return value > 0 ? `+${value}` : String(value);
-}
+import { formatSignedDelta, trimInsightLines } from './common.js';
 
 function edgeCountByModule(snapshot: InventorySnapshot): Map<string, number> {
   const counts = new Map<string, number>();
@@ -47,11 +43,11 @@ function tierMovementLines(diff: DiffResult): InsightLine[] {
 
   const parts = movements
     .filter(([, delta]) => delta !== 0)
-    .map(([tier, delta]) => `${tier} ${signedDelta(delta)}`);
+    .map(([tier, delta]) => `${tier} ${formatSignedDelta(delta)}`);
 
   for (const name of new Set([...Object.keys(left.custom ?? {}), ...Object.keys(right.custom ?? {})])) {
     const delta = (right.custom[name] ?? 0) - (left.custom[name] ?? 0);
-    if (delta !== 0) parts.push(`${name} ${signedDelta(delta)}`);
+    if (delta !== 0) parts.push(`${name} ${formatSignedDelta(delta)}`);
   }
 
   if (!parts.length) return [];
@@ -69,7 +65,7 @@ export function computeDiffInsights(
   if (moduleDelta) {
     lines.push({
       key: 'largest-module-delta',
-      text: `largest module delta: ${signedDelta(moduleDelta.delta)} edges in ${moduleDelta.path}`,
+      text: `largest module delta: ${formatSignedDelta(moduleDelta.delta)} edges in ${moduleDelta.path}`,
     });
   }
 
@@ -79,7 +75,7 @@ export function computeDiffInsights(
   if (namespaceDelta !== 0) {
     lines.push({
       key: 'namespace-delta',
-      text: `namespace exports on root: ${signedDelta(namespaceDelta)}`,
+      text: `namespace exports on root: ${formatSignedDelta(namespaceDelta)}`,
     });
   }
 

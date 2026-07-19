@@ -65,6 +65,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W29 | **AG1** — inventory JSON detail | `symbols[]` / `namespaces[]` under `-v`/`-F` + `--json`; `format/inventoryJson.ts` |
 | 2026-W29 | **AG2** — graph JSON edges | `edges[]` under `-v`/`-F` + `--json`; `format/graphJson.ts` + shared `listGuidance` |
 | 2026-W29 | **AG5** — shared filters | Repeatable `--tier` / `--category` on inventory, diff detail, and graph; filter before list limits |
+| 2026-W29 | **AG6** — insights normalization | Shared `{ lines, …typedFields }`; chronological timeline/trend/diff Δ signs |
 
 ---
 
@@ -99,6 +100,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 - [x] Diff verbose JSON detail ([`phases/agentic.md`](../phases/agentic.md) AG3)
 - [x] JSON envelopes for thrown/parser errors ([`phases/agentic.md`](../phases/agentic.md) AG8)
 - [x] Filter flags `--tier` / `--category` ([`phases/agentic.md`](../phases/agentic.md) AG5)
+- [x] Insights normalization ([`phases/agentic.md`](../phases/agentic.md) AG6)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

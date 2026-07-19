@@ -52,6 +52,27 @@ When a list is truncated, JSON includes a stable **`data.listGuidance`** block c
 
 Agents should check `listGuidance.truncated` before assuming a list is complete; `listGuidance.note` explains how to expand it. Uncapped runs still emit `listGuidance: { "truncated": false }` (no `note`) whenever list sections are present.
 
+## Insights
+
+Commands that emit insights always include `data.insights` as:
+
+```ts
+{
+  lines: Array<{ key: string; text: string }>; // max 5; may be []
+  // plus optional command-specific typed fields
+}
+```
+
+Empty insights are `{ "lines": [] }` (never `null`). Human mode hides the Insights block when `lines` is empty.
+
+**Delta sign convention** (typed fields and `+/−` text):
+
+| Command | Positive means |
+|---------|----------------|
+| `diff` | Growth on the **right** side (right − left) |
+| `trend` | Growth on the **later** tag (tags oldest → newest) |
+| `timeline` | Growth on the **newer** commit (rows newest-first; `delta` = this row − older row below; oldest row `delta` is `null`) |
+
 ## Exit codes
 
 | Code | Meaning |

@@ -46,10 +46,11 @@ const emptyStep = (): TimelineStepMeta => ({
 describe('computeTimelineSummary', () => {
   it('aggregates API growth, step peaks, active window, and release jump', () => {
     const rows: TimelineRow[] = [
-      row({ date: '2026-06-14', sha: 'd60df9e1111', rollup: { rootFlat: 14, stable: 12, namespace: 2, advanced: 1, internal: 1, byCategory: { command: 8 } }, delta: null, tags: ['v1.1.0'] }),
-      row({ date: '2026-06-12', sha: 'abc12345678', rollup: { rootFlat: 12, stable: 10, namespace: 2, advanced: 1, internal: 1, byCategory: { command: 7 } }, delta: 2 }),
-      row({ date: '2026-06-10', sha: 'def98765432', rollup: { rootFlat: 8, stable: 7, namespace: 1, advanced: 0, internal: 1, byCategory: { util: 5 } }, delta: -4 }),
-      row({ date: '2026-06-08', sha: 'fedcba98765', rollup: { rootFlat: 10, stable: 8, namespace: 1, advanced: 0, internal: 2, byCategory: { util: 6 } }, delta: 2, tags: ['v1.0.0'] }),
+      // Newest-first; delta = this flat − older row below.
+      row({ date: '2026-06-14', sha: 'd60df9e1111', rollup: { rootFlat: 14, stable: 12, namespace: 2, advanced: 1, internal: 1, byCategory: { command: 8 } }, delta: 2, tags: ['v1.1.0'] }),
+      row({ date: '2026-06-12', sha: 'abc12345678', rollup: { rootFlat: 12, stable: 10, namespace: 2, advanced: 1, internal: 1, byCategory: { command: 7 } }, delta: 4 }),
+      row({ date: '2026-06-10', sha: 'def98765432', rollup: { rootFlat: 8, stable: 7, namespace: 1, advanced: 0, internal: 1, byCategory: { util: 5 } }, delta: -2 }),
+      row({ date: '2026-06-08', sha: 'fedcba98765', rollup: { rootFlat: 10, stable: 8, namespace: 1, advanced: 0, internal: 2, byCategory: { util: 6 } }, delta: null, tags: ['v1.0.0'] }),
     ];
 
     const summary = computeTimelineSummary(rows, refRange);
@@ -59,12 +60,12 @@ describe('computeTimelineSummary', () => {
       toLabel: 'HEAD',
     });
     expect(summary?.largestExpansion).toEqual({
-      delta: 2,
+      delta: 4,
       sha: 'abc12345678',
       date: '2026-06-12',
     });
     expect(summary?.largestReduction).toEqual({
-      delta: -4,
+      delta: -2,
       sha: 'def98765432',
       date: '2026-06-10',
     });
@@ -85,41 +86,31 @@ describe('computeTimelineSummary', () => {
         date: '2026-06-14',
         sha: '111',
         rollup: { rootFlat: 5, stable: 4, namespace: 2, advanced: 0, internal: 0, byCategory: {} },
-        delta: null,
+        delta: 2,
         step: { ...emptyStep(), added: 2, removed: 1, namespaceDelta: 1, tierDelta: { stable: 2 } },
       }),
       row({
         date: '2026-06-01',
         sha: '222',
         rollup: { rootFlat: 3, stable: 2, namespace: 1, advanced: 0, internal: 0, byCategory: {} },
-        delta: 2,
+        delta: null,
         cache: 'refresh',
-        step: {
-          ...emptyStep(),
-          added: 1,
-          removed: 0,
-          largestModuleChange: { module: './runtime', delta: 3 },
-        },
+        step: null,
       }),
     ];
 
     const summary = computeTimelineSummary(rows, timeRange);
-    expect(summary?.exportChurn).toEqual({ added: 3, removed: 1, total: 4 });
+    expect(summary?.exportChurn).toEqual({ added: 2, removed: 1, total: 3 });
     expect(summary?.namespaceNet).toBe(1);
     expect(summary?.tierMovement).toEqual({ stable: 2 });
-    expect(summary?.largestModuleShift).toEqual({
-      module: './runtime',
-      delta: 3,
-      sha: '222',
-      date: '2026-06-01',
-    });
+    expect(summary?.largestModuleShift).toBeUndefined();
     expect(summary?.cacheCoverage).toEqual({ hits: 1, refreshed: 1, misses: 0, total: 2 });
   });
 
   it('uses range endpoints for time windows', () => {
     const rows: TimelineRow[] = [
-      row({ date: '2026-06-14', sha: '111', rollup: { rootFlat: 5, stable: 4, namespace: 0, advanced: 0, internal: 0, byCategory: {} }, delta: null }),
-      row({ date: '2026-06-01', sha: '222', rollup: { rootFlat: 3, stable: 2, namespace: 0, advanced: 0, internal: 0, byCategory: {} }, delta: 2 }),
+      row({ date: '2026-06-14', sha: '111', rollup: { rootFlat: 5, stable: 4, namespace: 0, advanced: 0, internal: 0, byCategory: {} }, delta: 2 }),
+      row({ date: '2026-06-01', sha: '222', rollup: { rootFlat: 3, stable: 2, namespace: 0, advanced: 0, internal: 0, byCategory: {} }, delta: null }),
     ];
 
     const summary = computeTimelineSummary(rows, timeRange);

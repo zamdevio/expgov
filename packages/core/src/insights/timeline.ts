@@ -3,11 +3,7 @@ import type {
   TimelineInsightRow,
   TimelineInsights,
 } from '../types/insights/index.js';
-import { trimInsightLines } from './common.js';
-
-function signed(value: number): string {
-  return value > 0 ? `+${value}` : String(value);
-}
+import { formatSignedDelta, trimInsightLines } from './common.js';
 
 function isoWeekKey(isoDate: string): string {
   const date = new Date(`${isoDate}T12:00:00Z`);
@@ -31,14 +27,15 @@ function busiestWeek(rows: TimelineInsightRow[]): { week: string; commits: numbe
   return best;
 }
 
-export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineInsights | null {
-  if (rows.length < 2) return null;
+export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineInsights {
+  if (rows.length < 2) return { lines: [] };
 
   const lines: InsightLine[] = [];
   let added = 0;
   let removed = 0;
   let largestStep: { delta: number; date: string } | undefined;
 
+  // Rows are newest-first; delta is chronological (this row − older row below).
   for (const row of rows) {
     if (row.delta === null || row.delta === 0) continue;
     if (row.delta > 0) added += row.delta;
@@ -51,7 +48,7 @@ export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineIns
   if (added > 0 || removed > 0) {
     lines.push({
       key: 'flat-churn',
-      text: `flat churn: ${signed(added)} added · −${removed} removed over ${rows.length} commits`,
+      text: `flat churn: ${formatSignedDelta(added)} added · −${removed} removed over ${rows.length} commits`,
     });
   }
 
@@ -61,14 +58,14 @@ export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineIns
   if (netFlat !== 0) {
     lines.push({
       key: 'window-net',
-      text: `net flat: ${signed(netFlat)} (${oldest.date}→${newest.date})`,
+      text: `net flat: ${formatSignedDelta(netFlat)} (${oldest.date}→${newest.date})`,
     });
   }
 
   if (largestStep) {
     lines.push({
       key: 'largest-step',
-      text: `largest step: ${signed(largestStep.delta)} flat on ${largestStep.date}`,
+      text: `largest step: ${formatSignedDelta(largestStep.delta)} flat on ${largestStep.date}`,
     });
   }
 
@@ -79,8 +76,6 @@ export function computeTimelineInsights(rows: TimelineInsightRow[]): TimelineIns
       text: `busiest week: ${busy.week} (${busy.commits} commits)`,
     });
   }
-
-  if (!lines.length) return null;
 
   return trimInsightLines({
     lines,

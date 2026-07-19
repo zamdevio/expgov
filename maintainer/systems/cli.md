@@ -88,9 +88,11 @@ API archaeology        timeline @3m → diff <sha>..HEAD
 Dependency map         graph → inventory -v
 ```
 
-## Insights (Phase E — shipped)
+## Insights
 
 Module: `packages/core/src/insights/`. Renderer: `logger/reports/insights.ts` (`◇` prefix, before footer).
+
+Shared JSON shape: `{ lines: InsightLine[], …typedFields }`. Always present (empty `lines: []` when nothing to say — never `null`). Max 5 lines per command.
 
 | Command | Shipped insights |
 |---------|------------------|
@@ -98,10 +100,10 @@ Module: `packages/core/src/insights/`. Renderer: `logger/reports/insights.ts` (`
 | `validate` | Hot spot / worst subpath on failure; internal/advanced counts on `-v` |
 | `diff` | Module edge delta, tier movement, new advanced, truncated add/remove samples |
 | `trend` | Largest tag-pair jump/drop, stable % shift |
-| `graph` | Densest module, fan-out, category mix; Summary: edge density, hottest module (C2) |
-| `timeline` | Flat churn, busiest week (insights); Summary: API growth, symbol churn, cache coverage (B4–B5) |
+| `graph` | Densest module, fan-out, category mix; Summary: edge density, hottest module |
+| `timeline` | Flat churn, busiest week (insights); Summary: API growth, symbol churn, cache coverage |
 
-JSON: additive `data.insights`. Shown under `--quiet`; suppressed under `--silent`. Max 5 lines per command.
+**Δ sign convention:** positive = growth toward newer / right / later (`diff` right−left; `trend` later−earlier; `timeline` newer−older with newest-first rows).
 
 ## Timeline warm log (shipped P20)
 

@@ -1,5 +1,10 @@
-import type { ModuleRef } from '../types/insights/index.js';
+import type { InsightLine, InsightsBase, ModuleRef } from '../types/insights/index.js';
 import { MAX_INSIGHT_LINES } from '../shared/constants/insights.js';
+
+/** Format a signed delta for human insight lines (`+N` / `-N` / `0`). */
+export function formatSignedDelta(value: number): string {
+  return value > 0 ? `+${value}` : String(value);
+}
 
 export function medianOf(values: number[]): number | undefined {
   if (values.length < 3) return undefined;
@@ -28,8 +33,10 @@ export function topModule(counts: Map<string, number>): ModuleRef | undefined {
   return best;
 }
 
-export function trimInsightLines<T extends { lines: { key: string; text: string }[] }>(
-  insights: T,
-): T {
+export function trimInsightLines<T extends InsightsBase>(insights: T): T {
   return { ...insights, lines: insights.lines.slice(0, MAX_INSIGHT_LINES) };
+}
+
+export function emptyInsights(lines: InsightLine[] = []): InsightsBase {
+  return { lines };
 }

@@ -47,8 +47,8 @@ function formatCategoryMix(
   return parts.length ? parts.join(' · ') : undefined;
 }
 
-export function computeGraphInsights(snapshot: InventorySnapshot): GraphInsights | null {
-  if (snapshot.edges.length === 0) return null;
+export function computeGraphInsights(snapshot: InventorySnapshot): GraphInsights {
+  if (snapshot.edges.length === 0) return { lines: [] };
 
   const lines: InsightLine[] = [];
   const densest = topModule(edgeCountByModule(snapshot));
@@ -92,8 +92,6 @@ export function computeGraphInsights(snapshot: InventorySnapshot): GraphInsights
       text: `${subpathCount} governance target subpath(s) in graph`,
     });
   }
-
-  if (!lines.length) return null;
 
   return trimInsightLines({
     lines,

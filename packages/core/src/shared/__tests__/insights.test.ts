@@ -84,18 +84,18 @@ describe('computeValidateInsights', () => {
       ],
     });
     const insights = computeValidateInsights(snapshot, { passed: false });
-    expect(insights?.hottestUnclassifiedModule?.path).toBe('src/hot.ts');
-    expect(insights?.lines.some((l) => l.key === 'unclassified-samples')).toBe(true);
+    expect(insights.hottestUnclassifiedModule?.path).toBe('src/hot.ts');
+    expect(insights.lines.some((l) => l.key === 'unclassified-samples')).toBe(true);
   });
 
-  it('returns null on clean pass without verbose', () => {
+  it('returns empty insights on clean pass without verbose', () => {
     const snapshot = minimalSnapshot({
       summary: {
         root: { flat: 1, namespace: 0, stable: 1, advanced: 0, internal: 0, unclassified: 0, custom: {}, byTsKind: { value: 1, type: 0 }, bySymbolKind: {}, byCategory: {} },
         subpaths: [],
       },
     });
-    expect(computeValidateInsights(snapshot, { passed: true })).toBeNull();
+    expect(computeValidateInsights(snapshot, { passed: true })).toEqual({ lines: [] });
   });
 
   it('reports internal flats on pass with verbose', () => {
@@ -155,14 +155,16 @@ describe('computeTrendInsights', () => {
       { tag: 'v0.3.0', rollup: { rootFlat: 22, stable: 20, advanced: 1, internal: 1 } },
     ];
     const insights = computeTrendInsights(rows);
-    expect(insights?.largestJump?.from).toBe('v0.1.0');
-    expect(insights?.largestJump?.delta).toBe(14);
-    expect(insights?.largestDrop?.delta).toBe(-2);
-    expect(insights?.lines.some((l) => l.key === 'stable-ratio')).toBe(true);
+    expect(insights.largestJump?.from).toBe('v0.1.0');
+    expect(insights.largestJump?.delta).toBe(14);
+    expect(insights.largestDrop?.delta).toBe(-2);
+    expect(insights.lines.some((l) => l.key === 'stable-ratio')).toBe(true);
   });
 
-  it('returns null with fewer than two tags', () => {
-    expect(computeTrendInsights([{ tag: 'v0.1.0', rollup: { rootFlat: 1, stable: 1, advanced: 0, internal: 0 } }])).toBeNull();
+  it('returns empty insights with fewer than two tags', () => {
+    expect(computeTrendInsights([{ tag: 'v0.1.0', rollup: { rootFlat: 1, stable: 1, advanced: 0, internal: 0 } }])).toEqual({
+      lines: [],
+    });
   });
 });
 
@@ -193,36 +195,37 @@ describe('computeGraphInsights', () => {
     });
 
     const insights = computeGraphInsights(snapshot);
-    expect(insights?.densestModule?.path).toBe('src/hub.ts');
-    expect(insights?.lines.some((l) => l.key === 'densest-module')).toBe(true);
-    expect(insights?.lines.some((l) => l.key === 'fan-out')).toBe(true);
-    expect(insights?.lines.some((l) => l.key === 'category-mix')).toBe(true);
+    expect(insights.densestModule?.path).toBe('src/hub.ts');
+    expect(insights.lines.some((l) => l.key === 'densest-module')).toBe(true);
+    expect(insights.lines.some((l) => l.key === 'fan-out')).toBe(true);
+    expect(insights.lines.some((l) => l.key === 'category-mix')).toBe(true);
   });
 
-  it('returns null without edges', () => {
-    expect(computeGraphInsights(minimalSnapshot())).toBeNull();
+  it('returns empty insights without edges', () => {
+    expect(computeGraphInsights(minimalSnapshot())).toEqual({ lines: [] });
   });
 });
 
 describe('computeTimelineInsights', () => {
-  it('reports churn, net flat, and busiest week', () => {
+  it('reports churn, net flat, and busiest week with chronological deltas', () => {
+    // Newest-first rows; delta = this flat − older row below.
     const rows = [
-      { date: '2026-06-14', rollup: { rootFlat: 12, stable: 10 }, delta: null },
-      { date: '2026-06-13', rollup: { rootFlat: 10, stable: 8 }, delta: -2 },
-      { date: '2026-06-07', rollup: { rootFlat: 14, stable: 11 }, delta: 4 },
-      { date: '2026-06-06', rollup: { rootFlat: 11, stable: 9 }, delta: -3 },
+      { date: '2026-06-14', rollup: { rootFlat: 12, stable: 10 }, delta: 2 },
+      { date: '2026-06-13', rollup: { rootFlat: 10, stable: 8 }, delta: -4 },
+      { date: '2026-06-07', rollup: { rootFlat: 14, stable: 11 }, delta: 3 },
+      { date: '2026-06-06', rollup: { rootFlat: 11, stable: 9 }, delta: null },
     ];
     const insights = computeTimelineInsights(rows);
-    expect(insights?.addedTotal).toBe(4);
-    expect(insights?.removedTotal).toBe(5);
-    expect(insights?.netFlat).toBe(1);
-    expect(insights?.lines.some((l) => l.key === 'flat-churn')).toBe(true);
-    expect(insights?.lines.some((l) => l.key === 'largest-step')).toBe(true);
+    expect(insights.addedTotal).toBe(5);
+    expect(insights.removedTotal).toBe(4);
+    expect(insights.netFlat).toBe(1);
+    expect(insights.lines.some((l) => l.key === 'flat-churn')).toBe(true);
+    expect(insights.lines.some((l) => l.key === 'largest-step')).toBe(true);
   });
 
-  it('returns null with fewer than two commits', () => {
+  it('returns empty insights with fewer than two commits', () => {
     expect(
       computeTimelineInsights([{ date: '2026-06-01', rollup: { rootFlat: 1, stable: 1 }, delta: null }]),
-    ).toBeNull();
+    ).toEqual({ lines: [] });
   });
 });

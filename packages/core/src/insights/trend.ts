@@ -4,7 +4,7 @@ import type {
   TrendInsights,
   TrendRollupRow,
 } from '../types/insights/index.js';
-import { trimInsightLines } from './common.js';
+import { formatSignedDelta, trimInsightLines } from './common.js';
 
 function stableRatio(rollup: TrendRollupRow['rollup']): number | undefined {
   if (rollup.rootFlat <= 0) return undefined;
@@ -21,6 +21,7 @@ function scanConsecutiveDeltas(rows: TrendRollupRow[]): {
   for (let i = 1; i < rows.length; i += 1) {
     const prev = rows[i - 1]!;
     const curr = rows[i]!;
+    // Tags are oldest → newest; positive delta = growth on the later tag.
     const delta = curr.rollup.rootFlat - prev.rollup.rootFlat;
     if (delta > 0 && (!largestJump || delta > largestJump.delta)) {
       largestJump = { from: prev.tag, to: curr.tag, delta };
@@ -33,8 +34,8 @@ function scanConsecutiveDeltas(rows: TrendRollupRow[]): {
   return { largestJump, largestDrop };
 }
 
-export function computeTrendInsights(rows: TrendRollupRow[]): TrendInsights | null {
-  if (rows.length < 2) return null;
+export function computeTrendInsights(rows: TrendRollupRow[]): TrendInsights {
+  if (rows.length < 2) return { lines: [] };
 
   const lines: InsightLine[] = [];
   const { largestJump, largestDrop } = scanConsecutiveDeltas(rows);
@@ -42,14 +43,14 @@ export function computeTrendInsights(rows: TrendRollupRow[]): TrendInsights | nu
   if (largestJump) {
     lines.push({
       key: 'largest-jump',
-      text: `largest jump: ${largestJump.from}→${largestJump.to} (+${largestJump.delta} flat)`,
+      text: `largest jump: ${largestJump.from}→${largestJump.to} (${formatSignedDelta(largestJump.delta)} flat)`,
     });
   }
 
   if (largestDrop) {
     lines.push({
       key: 'largest-drop',
-      text: `largest drop: ${largestDrop.from}→${largestDrop.to} (${largestDrop.delta} flat)`,
+      text: `largest drop: ${largestDrop.from}→${largestDrop.to} (${formatSignedDelta(largestDrop.delta)} flat)`,
     });
   }
 
@@ -65,14 +66,12 @@ export function computeTrendInsights(rows: TrendRollupRow[]): TrendInsights | nu
   }
 
   const netFlat = last.rollup.rootFlat - first.rollup.rootFlat;
-  if (netFlat !== 0 && rows.length >= 2) {
+  if (netFlat !== 0) {
     lines.push({
       key: 'window-net',
-      text: `net flat over window: ${netFlat > 0 ? `+${netFlat}` : netFlat} (${first.tag}→${last.tag})`,
+      text: `net flat over window: ${formatSignedDelta(netFlat)} (${first.tag}→${last.tag})`,
     });
   }
-
-  if (!lines.length) return null;
 
   return trimInsightLines({
     lines,

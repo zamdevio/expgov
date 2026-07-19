@@ -37,38 +37,38 @@ function lightSnapshot(sha: string, source: string) {
 }
 
 describe('computeTimelineStepMeta', () => {
-  it('diffs flat export names between newer and older commits', () => {
+  it('diffs flat export names chronologically (older → newer)', () => {
     initFixture();
-    const newer = lightSnapshot(
-      'a'.repeat(40),
-      "export { keep, drop } from './x.js';\n",
-    );
     const older = lightSnapshot(
       'b'.repeat(40),
+      "export { keep, drop } from './x.js';\n",
+    );
+    const newer = lightSnapshot(
+      'a'.repeat(40),
       "export { keep, added } from './x.js';\n",
     );
 
-    const step = computeTimelineStepMeta(newer, older);
+    const step = computeTimelineStepMeta(older, newer);
     expect(step.added).toBe(1);
     expect(step.removed).toBe(1);
     expect(step.added + step.removed).toBeGreaterThan(0);
   });
 
-  it('tracks namespace and tier count deltas', () => {
+  it('tracks namespace and tier count deltas toward the newer commit', () => {
     initFixture();
-    const newer = lightSnapshot(
-      'c'.repeat(40),
-      "export { foo } from './x.js';\nexport * as ns from './ns.js';\n",
-    );
     const older = lightSnapshot(
       'd'.repeat(40),
       "export { foo, bar } from './x.js';\n",
     );
+    const newer = lightSnapshot(
+      'c'.repeat(40),
+      "export { foo } from './x.js';\nexport * as ns from './ns.js';\n",
+    );
 
-    const step = computeTimelineStepMeta(newer, older);
-    expect(step.namespaceDelta).toBe(-1);
-    expect(step.removed).toBe(0);
-    expect(step.added).toBe(1);
+    const step = computeTimelineStepMeta(older, newer);
+    expect(step.namespaceDelta).toBe(1);
+    expect(step.removed).toBe(1);
+    expect(step.added).toBe(0);
   });
 });
 

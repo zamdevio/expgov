@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — AG6 next · **Companion:** [`diff.md`](./diff.md)
+**Status:** Active — AG6 shipped; leftovers with C3 · **Companion:** [`diff.md`](./diff.md)
 
 ---
 
@@ -13,6 +13,7 @@
 | **AG3** | `diff -v/-F -j` → `addedDetail` / `removedDetail` | [`../shipped/git-commands.md`](../shipped/git-commands.md) |
 | **AG4 / D2** | `validate --since <ref>` | [`../shipped/git-commands.md`](../shipped/git-commands.md) · [`diff.md`](./diff.md) |
 | **AG5** | Shared `--tier` / `--category` on inventory / diff detail / graph | this slice |
+| **AG6** | Insights `{ lines, …typedFields }` everywhere; chronological Δ signs | this slice |
 | **AG7** | CI recipes in workflows / validate / diff / json docs | with D2 |
 | **AG8** | Thrown/parser errors → `ok:false` JSON envelopes | [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) |
 
@@ -29,10 +30,6 @@ List policy (`-T`/`-F`) is shared for human + JSON. Prefer `-j` alone for agents
 | `--names-only` | Optional compact listing — deferred |
 | `--namespace` / `--module` / `--subpath` | Graph C3; same filter helper |
 
-### AG6 — Insights normalization
-
-Unify `insights` to `{ lines, …typedFields }` across commands; document Δ sign conventions for timeline/trend.
-
 ### Optional later
 
 - `--no-insights`, `--include-cache-meta`
@@ -46,3 +43,4 @@ Unify `insights` to `{ lines, …typedFields }` across commands; document Δ sig
 2. `-v` expands JSON `data`, not only human reports.
 3. Fail modes stay opt-in; stable `issues[].code`.
 4. Grow `data` additively; bump `meta.apiVersion` only on shape breaks.
+5. Insights always use `{ lines, …typedFields }` (empty `lines: []`, never `null`); Δ positive = growth toward newer/right/later.

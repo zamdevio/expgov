@@ -69,7 +69,9 @@ You usually do **not** need `-f/--force` for schema drift — it is handled on t
 
 ## Insights
 
-Several commands append an **Insights** block before the footer — largest module, diff deltas, trend jumps, validate hot spots, etc. Available as `data.insights` in `--json`. Suppressed under `--silent`.
+Several commands append an **Insights** block before the footer — largest module, diff deltas, trend jumps, validate hot spots, etc. Available as `data.insights` in `--json` with a shared shape `{ lines, …typedFields }` (`lines` may be empty; never `null`). Suppressed under `--silent`.
+
+**Δ signs:** positive = growth toward the newer / right / later side. Details: [JSON insights](./json.md#insights).
 
 Commands with insights: `inventory`, `validate` (failure or `-v`), `diff`, `trend`, `graph`, `timeline`.
 

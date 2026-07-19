@@ -36,7 +36,9 @@ Only commits that **touched the root barrel file** in the chosen window — barr
 
 Human order: meta → warm section → commit table → **summary** (API growth, churn, drift, cache coverage) → insights.
 
-JSON: `data.rows[].step`, `data.summary`, `data.warmStats`. Use `-v` for inline shorthand on table rows.
+JSON: `data.rows[].step`, `data.summary`, `data.warmStats`, `data.insights`. Use `-v` for inline shorthand on table rows.
+
+**Δ column:** rows are newest-first. Each row’s `delta` is `this.flat − olderRowBelow.flat` (chronological growth toward that commit). The oldest row is `—` / `null`. Positive = growth; negative = shrink.
 
 ## Related
 

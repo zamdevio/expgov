@@ -41,11 +41,11 @@ Near / Mid lists and the hold on `versions:up` live in [`active-phase.md`](./act
 
 | Doc | Status | Band |
 |-----|--------|------|
-| [`agentic.md`](./agentic.md) | **Focus** — AG6 next; AG1–5/7–8 shipped | Near |
+| [`agentic.md`](./agentic.md) | AG1–8 shipped; leftovers with C3 | Near |
 | [`diff.md`](./diff.md) | D1–D2 shipped; optional D3 | Near |
 | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | ID1/ID2 planned | Near |
 | [`help.md`](./help.md) | HELP1 | Near |
-| [`graph-2.md`](./graph-2.md) | C3 with AG5; C1–C2 shipped | Near |
+| [`graph-2.md`](./graph-2.md) | **Focus** — C3 next; C1–C2 shipped | Near |
 | [`../api-chain.md`](../api-chain.md) | D — API chain | Mid |
 | [`cli-output-audit.md`](./cli-output-audit.md) | F — UX audit leftovers | Mid |
 | [`severity.md`](./severity.md) | After Near / v1.1.0 | Mid |

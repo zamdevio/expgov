@@ -74,7 +74,7 @@ export function printTimelineReport(input: {
   }
   logLine(
     style.dim(
-      '       Δ = flat change vs row above (newest first); — = first row; +N/−N flat exports vs newer barrel edit',
+      '       Δ = flat change vs older row below (newest first); — = oldest row; +N growth / −N shrink',
     ),
   );
 
