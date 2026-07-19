@@ -113,4 +113,3 @@ Real packages usually point `exports` at built `dist/` output. expgov inventorie
 - [Configuration](../../docs/config.md)
 - [Commands](../../docs/commands/README.md)
 - [SDK overview](../../docs/sdk/README.md)
-- [Shipped receipt (Phase I)](../../maintainer/shipped/examples-sdk.md)

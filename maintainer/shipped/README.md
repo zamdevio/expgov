@@ -64,6 +64,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W29 | **REL1–3** — release automation | `versions:*` + `release.yml` OIDC dual publish |
 | 2026-W29 | **AG1** — inventory JSON detail | `symbols[]` / `namespaces[]` under `-v`/`-F` + `--json`; `format/inventoryJson.ts` |
 | 2026-W29 | **AG2** — graph JSON edges | `edges[]` under `-v`/`-F` + `--json`; `format/graphJson.ts` + shared `listGuidance` |
+| 2026-W29 | **AG5** — shared filters | Repeatable `--tier` / `--category` on inventory, diff detail, and graph; filter before list limits |
 
 ---
 
@@ -73,7 +74,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 |-------|--------|-----|
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
 | Inventory & cache | P0a, P0b, P4, P16, P24, AG1 | [`inventory-cache.md`](./inventory-cache.md) |
-| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C2, P25, D1, D2, AG2, AG3 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
+| Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C2, P25, D1, D2, AG2, AG3, AG5 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22, AG8 | [`runtime-cli.md`](./runtime-cli.md) |
 | Tooling & docs | P2 hub, P3, P3a, P12, P19, I1, I3, R1–R4, R4a | [`tooling-docs.md`](./tooling-docs.md) · [`examples-sdk.md`](./examples-sdk.md) · [`release.md`](./release.md) |
@@ -97,7 +98,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 - [ ] `compatBaseline` config ([`phases/diff.md`](../phases/diff.md) D3)
 - [x] Diff verbose JSON detail ([`phases/agentic.md`](../phases/agentic.md) AG3)
 - [x] JSON envelopes for thrown/parser errors ([`phases/agentic.md`](../phases/agentic.md) AG8)
-- [ ] Filter flags `--tier` / `--category` ([`phases/agentic.md`](../phases/agentic.md) AG5)
+- [x] Filter flags `--tier` / `--category` ([`phases/agentic.md`](../phases/agentic.md) AG5)
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

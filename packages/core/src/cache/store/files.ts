@@ -6,7 +6,7 @@ import type { CacheProfile } from '../../types/cache/store.js';
 import { readJsonFile } from './io.js';
 import { isTimelineSnapshot, isValidSnapshot, snapshotMatchesSha } from './validation.js';
 
-/** Pre-B3 timeline caches omitted flat symbol names — rebuild for step diffs. */
+/** Rebuild timeline snapshots that report flats but omit their symbol rows. */
 function timelineSnapshotNeedsRebuild(snapshot: InventorySnapshot): boolean {
   return (
     isTimelineSnapshot(snapshot) &&

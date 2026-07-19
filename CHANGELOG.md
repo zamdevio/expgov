@@ -2,7 +2,7 @@
 
 All notable changes to **@expgov/cli** and **@expgov/core** are documented here.
 
-Format based on [Keep a Changelog](https://keepachangelog.com/). Semver labels follow published tags. The next planned ship is **1.1.0** (breaking SDK surface — see Unreleased).
+Format based on [Keep a Changelog](https://keepachangelog.com/). Semver labels follow published tags.
 
 GitHub releases: https://github.com/zamdevio/expgov/releases
 
@@ -10,7 +10,7 @@ GitHub releases: https://github.com/zamdevio/expgov/releases
 
 ## [Unreleased]
 
-Breaking and additive work on `main` since **v1.0.1**, intended for **v1.1.0**.
+Breaking and additive work on `main` since **v1.0.1**.
 
 ### Breaking
 
@@ -22,6 +22,7 @@ Breaking and additive work on `main` since **v1.0.1**, intended for **v1.1.0**.
 - `diff --fail-on-removed` / `--fail-on-tier-violations` (CI fail gate).
 - `validate --since <ref>` (removals ∪ existing validate checks).
 - Inventory / graph / diff JSON detail under `-v` / `-F` (`symbols`, `namespaces`, `edges`, `addedDetail` / `removedDetail`) with shared `listGuidance`.
+- Shared `--tier` / `--category` filters on `inventory`, `diff` (detail), and `graph` (view before analytics); apply before `-T`/`-F`.
 - JSON error envelopes for thrown domain errors and Commander parser errors under `-j`.
 - Release automation: `pnpm versions:up|sync|verify`, tag-triggered `.github/workflows/release.yml` (OIDC Trusted Publishing for both packages).
 
@@ -71,8 +72,6 @@ First **stable** release of export-governance for TypeScript SDK barrels.
 
 - **Stable:** CLI argv, `--json` envelope shape, exit codes.
 - **Additive minors OK** for new commands/flags/exports; **major** for breaking CLI/SDK contracts.
-
-> Note: v1.1.0 intentionally ships selected SDK import-path and rename breakers as a minor for early post-1.0 adopters — called out in Unreleased / release notes.
 
 ---
 

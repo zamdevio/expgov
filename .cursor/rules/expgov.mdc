@@ -28,6 +28,7 @@ alwaysApply: true
 - Named constants → `packages/core/src/shared/constants/` or `packages/cli/src/constants/`.
 - File-private `type` aliases (no export) are OK.
 - Public SDK re-exports only from `packages/core/src/index.ts`.
+- Source/test comments must be durable: behavior and rationale only, never phase IDs, sprint names, planned-task references, or temporary phase-plan links.
 - Details: `maintainer/agents/architecture.md` (Module organization).
 
 ## Export governance

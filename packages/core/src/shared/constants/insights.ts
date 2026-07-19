@@ -1,2 +1,2 @@
-/** Max insight lines per command (Phase E). */
+/** Maximum insight lines emitted per command. */
 export const MAX_INSIGHT_LINES = 5;

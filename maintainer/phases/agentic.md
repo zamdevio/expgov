@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — AG5 filters next · **Companion:** [`diff.md`](./diff.md)
+**Status:** Active — AG6 next · **Companion:** [`diff.md`](./diff.md)
 
 ---
 
@@ -12,6 +12,7 @@
 | **AG2** | `graph -v/-F -j` → `edges` + `listGuidance` | [`../shipped/graph.md`](../shipped/graph.md) |
 | **AG3** | `diff -v/-F -j` → `addedDetail` / `removedDetail` | [`../shipped/git-commands.md`](../shipped/git-commands.md) |
 | **AG4 / D2** | `validate --since <ref>` | [`../shipped/git-commands.md`](../shipped/git-commands.md) · [`diff.md`](./diff.md) |
+| **AG5** | Shared `--tier` / `--category` on inventory / diff detail / graph | this slice |
 | **AG7** | CI recipes in workflows / validate / diff / json docs | with D2 |
 | **AG8** | Thrown/parser errors → `ok:false` JSON envelopes | [`../shipped/runtime-cli.md`](../shipped/runtime-cli.md) |
 
@@ -21,14 +22,12 @@ List policy (`-T`/`-F`) is shared for human + JSON. Prefer `-j` alone for agents
 
 ## Remaining
 
-### AG5 — Shared filter flags (**next**)
+### AG5 leftovers (with C3)
 
-| Flag | Commands | Notes |
-|------|----------|-------|
-| `--tier <…>` | inventory / diff detail / graph | Repeatable; align with Graph C3 |
-| `--category <…>` | same | Shared vocab with [`graph-2.md`](./graph-2.md) C3 |
-| `--names-only` | optional compact listing | Agent-friendly |
-| `--namespace` / `--module` / `--subpath` | primarily graph | Design once with C3 |
+| Flag | Notes |
+|------|-------|
+| `--names-only` | Optional compact listing — deferred |
+| `--namespace` / `--module` / `--subpath` | Graph C3; same filter helper |
 
 ### AG6 — Insights normalization
 

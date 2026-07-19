@@ -2,7 +2,7 @@
 
 **Audience:** Maintainers bumping versions or publishing `@expgov/cli` + `@expgov/core`.
 
-**Shipped receipt:** [`../shipped/release.md`](../shipped/release.md) · **Phase plan:** [`../phases/releases.md`](../phases/releases.md)
+**Shipped receipt:** [`../shipped/release.md`](../shipped/release.md)
 
 ---
 
@@ -23,8 +23,8 @@ Source of truth for `versions:sync`: **root** `version`.
 ```bash
 pnpm versions:verify              # fail if root / core / cli workspace differ
 pnpm versions:sync                # copy root → core + cli workspace
-pnpm versions:up -- 1.1.0         # set all three to 1.1.0
-pnpm versions:up -- 1.1.0 --force # allow downgrade / far jumps
+pnpm versions:up -- 1.2.3         # set all three to 1.2.3
+pnpm versions:up -- 1.2.3 --force # allow downgrade / far jumps
 ```
 
 Implementation: `scripts/release/sync.ts`.
@@ -45,20 +45,19 @@ No `NPM_TOKEN`. Trusted Publisher on npm for both packages → GitHub `zamdevio/
 
 ---
 
-## Local recipe (next ship = 1.1.0)
+## Local release recipe
 
 ```bash
 pnpm versions:verify
-pnpm versions:up -- 1.1.0
-# finish breaking work (surface split, command entrypoint rename, …)
+pnpm versions:up -- X.Y.Z
 pnpm build && pnpm test && node dist/cli.js validate
 git add package.json packages/core/package.json packages/cli/package.json
-git commit -m "chore(release): bump to 1.1.0"
-git tag -a v1.1.0 -m "v1.1.0"
+git commit -m "chore(release): bump to X.Y.Z"
+git tag -a vX.Y.Z -m "vX.Y.Z"
 git push origin main
-git push origin v1.1.0
+git push origin vX.Y.Z
 ```
 
-Watch the Release workflow; confirm both packages on npm.
+Watch the Release workflow and confirm both packages on npm.
 
-User-facing history: root [`CHANGELOG.md`](../../CHANGELOG.md) (no releases portal — keep that file updated on each ship).
+User-facing history: root [`CHANGELOG.md`](../../CHANGELOG.md).

@@ -12,6 +12,7 @@ import { printGraphReport } from '../logger/index.js';
 import { computeGraphInsights } from '../insights/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { filterSnapshotView, toFilterOptions } from '../shared/filters.js';
 import type { GraphCliOptions } from '../types/commands/cli.js';
 import type {
   GraphModuleGroup,
@@ -72,16 +73,18 @@ export function runGraph(options: GraphCliOptions = {}): void {
     ref,
     resolveCacheOptions({ noCache: options.noCache, force: options.force, profile: 'full' }),
   );
+  // Filter the view before computing analytics or limiting lists.
+  const view = filterSnapshotView(snapshot, toFilterOptions(options));
 
-  const targetGroups = groupByTargetSubpath(snapshot);
-  const top = topModules(snapshot.edges);
-  const analytics = computeGraphAnalytics(snapshot);
-  const insights = computeGraphInsights(snapshot);
+  const targetGroups = groupByTargetSubpath(view);
+  const top = topModules(view.edges);
+  const analytics = computeGraphAnalytics(view);
+  const insights = computeGraphInsights(view);
 
   if (getRunOptions().json) {
     const data: Record<string, unknown> = {
       ref: ref.label,
-      edgeCount: snapshot.edges.length,
+      edgeCount: view.edges.length,
       targetGroups: targetGroups.map((g) => ({
         targetSubpath: g.targetSubpath,
         flat: g.flat,
@@ -91,7 +94,7 @@ export function runGraph(options: GraphCliOptions = {}): void {
       insights,
     };
     if (shouldIncludeGraphJsonDetail(options)) {
-      const detail = buildGraphJsonListDetail(snapshot.edges, options);
+      const detail = buildGraphJsonListDetail(view.edges, options);
       data.top = detail.top;
       data.edges = detail.edges;
       data.edgesHidden = detail.edgesHidden;
@@ -112,7 +115,7 @@ export function runGraph(options: GraphCliOptions = {}): void {
 
   printGraphReport({
     ref,
-    snapshot,
+    snapshot: view,
     cache,
     targetGroups,
     topModules: top,
@@ -128,9 +131,9 @@ export function runGraph(options: GraphCliOptions = {}): void {
     status: 'ok',
     footer: {
       counts: {
-        edges: snapshot.edges.length,
-        symbols: snapshot.symbols.length,
-        namespaces: snapshot.namespaces.length,
+        edges: view.edges.length,
+        symbols: view.symbols.length,
+        namespaces: view.namespaces.length,
       },
     },
   });

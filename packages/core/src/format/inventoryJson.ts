@@ -1,3 +1,4 @@
+import { filterByTierCategory, toFilterOptions } from '../shared/filters.js';
 import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
 import type { ListViewOptions } from '../types/cli/list.js';
 import type {
@@ -59,6 +60,7 @@ export function toInventoryJsonNamespaces(
 
 /**
  * Inventory JSON detail lists use the same `-T` / `-F` policy as human verbose lists.
+ * `--tier` / `--category` filter before truncation.
  */
 export function buildInventoryJsonListDetail(
   snapshot: {
@@ -67,9 +69,17 @@ export function buildInventoryJsonListDetail(
   },
   listView?: ListViewOptions,
 ): InventoryJsonListDetail {
+  const filters = toFilterOptions(listView);
   const top = resolveListLimit(listView);
-  const symbols = limitList(toInventoryJsonSymbols(snapshot.symbols), top);
-  const namespaces = limitList(toInventoryJsonNamespaces(snapshot.namespaces), top);
+  // Filter inventory rows before JSON map (namespace JSON omits category).
+  const symbols = limitList(
+    toInventoryJsonSymbols(filterByTierCategory(snapshot.symbols, filters)),
+    top,
+  );
+  const namespaces = limitList(
+    toInventoryJsonNamespaces(filterByTierCategory(snapshot.namespaces, filters)),
+    top,
+  );
   const listGuidance = buildJsonListGuidance([
     { name: 'symbols', shown: symbols.items.length, hidden: symbols.hiddenCount },
     { name: 'namespaces', shown: namespaces.items.length, hidden: namespaces.hiddenCount },

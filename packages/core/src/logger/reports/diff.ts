@@ -3,6 +3,7 @@ import { boldDim, style } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../types/cache/index.js';
 import type { InventorySnapshot } from '../../types/inventory/index.js';
 import type { DiffResult } from '../../types/format/diff.js';
+import { matchesTierCategory, toFilterOptions } from '../../shared/filters.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import type { TierCounts } from '../../types/inventory/snapshot.js';
@@ -97,9 +98,17 @@ export function printDiffVerbose(input: {
 }): void {
   if (!canEmitVerboseReport()) return;
   const { diff, left, right } = input;
+  const filters = toFilterOptions(input.listView);
   const listLimit = resolveListLimit(input.listView);
+
+  const detailNames = (names: string[], side: InventorySnapshot): string[] =>
+    names.filter((name) => {
+      const sym = side.symbols.find((s) => s.name === name && s.exportKind === 'flat');
+      return sym ? matchesTierCategory(sym, filters) : false;
+    });
+
   if (diff.added.length) {
-    const added = limitList(diff.added, listLimit);
+    const added = limitList(detailNames(diff.added, right), listLimit);
     logLine('');
     logLine(boldDim('       Added detail'));
     for (const name of added.items) {
@@ -113,7 +122,7 @@ export function printDiffVerbose(input: {
     logListTruncation(added.hiddenCount);
   }
   if (diff.removed.length) {
-    const removed = limitList(diff.removed, listLimit);
+    const removed = limitList(detailNames(diff.removed, left), listLimit);
     logLine('');
     logLine(boldDim('       Removed detail'));
     for (const name of removed.items) {

@@ -1,3 +1,4 @@
+import { filterByTierCategory, toFilterOptions } from '../shared/filters.js';
 import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
 import type { ListViewOptions } from '../types/cli/list.js';
 import type { DiffJsonListDetail, DiffJsonSymbolDetail } from '../types/format/diffJson.js';
@@ -39,6 +40,7 @@ function detailForNames(
 /**
  * Diff JSON detail rows use the same `-T` / `-F` policy as human verbose detail.
  * Name arrays `added` / `removed` stay complete for CI gates.
+ * `--tier` / `--category` filter detail rows only (before truncation).
  */
 export function buildDiffJsonListDetail(
   diff: Pick<DiffResult, 'added' | 'removed'>,
@@ -46,9 +48,16 @@ export function buildDiffJsonListDetail(
   right: InventorySnapshot,
   listView?: ListViewOptions,
 ): DiffJsonListDetail {
+  const filters = toFilterOptions(listView);
   const top = resolveListLimit(listView);
-  const added = limitList(detailForNames(diff.added, right), top);
-  const removed = limitList(detailForNames(diff.removed, left), top);
+  const added = limitList(
+    filterByTierCategory(detailForNames(diff.added, right), filters),
+    top,
+  );
+  const removed = limitList(
+    filterByTierCategory(detailForNames(diff.removed, left), filters),
+    top,
+  );
   const listGuidance = buildJsonListGuidance([
     { name: 'addedDetail', shown: added.items.length, hidden: added.hiddenCount },
     { name: 'removedDetail', shown: removed.items.length, hidden: removed.hiddenCount },

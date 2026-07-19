@@ -41,7 +41,7 @@ import type {
   VersionCommandOpts,
 } from '../src/types/cli/index.js';
 import { maybePrintCommandBanner } from '../src/utils/cli/banner.js';
-import { addCacheFlags, addListFlags } from '../src/utils/cli/listFlags.js';
+import { addCacheFlags, addFilterFlags, addListFlags } from '../src/utils/cli/listFlags.js';
 import { resolveNoColor } from '../src/utils/cli/noColor.js';
 import { configureCliHelp } from '../src/utils/help/configureCliHelp.js';
 import { printCliHelp } from '../src/utils/help/printCliHelp.js';
@@ -205,53 +205,61 @@ function buildProgram(): Command {
       }
     });
 
-  addListFlags(
-    addCacheFlags(
-      program
-        .command('inventory')
-        .description('summarize root barrel exports')
-        .argument('[ref]', 'git ref (default: working tree)')
-        .option('-v, --verbose', 'verbose output')
-        .action((ref: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as CacheListVerboseOpts;
-          withContext(cmd, local.verbose, program, () => {
-            runInventory({
-              ref,
-              verbose: local.verbose,
-              noCache: local.cache === false,
-              force: local.force,
-              top: local.top,
-              full: local.full,
+  addFilterFlags(
+    addListFlags(
+      addCacheFlags(
+        program
+          .command('inventory')
+          .description('summarize root barrel exports')
+          .argument('[ref]', 'git ref (default: working tree)')
+          .option('-v, --verbose', 'verbose output')
+          .action((ref: string | undefined, _opts, cmd) => {
+            const local = cmd.opts() as CacheListVerboseOpts;
+            withContext(cmd, local.verbose, program, () => {
+              runInventory({
+                ref,
+                verbose: local.verbose,
+                noCache: local.cache === false,
+                force: local.force,
+                top: local.top,
+                full: local.full,
+                tier: local.tier,
+                category: local.category,
+              });
             });
-          });
-        }),
+          }),
+      ),
     ),
   );
 
-  addListFlags(
-    addCacheFlags(
-      program
-        .command('diff')
-        .description('compare export surfaces between refs')
-        .argument('[range]', 'ref or A..B range')
-        .option('-v, --verbose', 'verbose output')
-        .option('--fail-on-removed', 'exit 1 when flat exports were removed')
-        .option('--fail-on-tier-violations', 'exit 1 when right-side tier violations exist')
-        .action((range: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as DiffCommandOpts;
-          withContext(cmd, local.verbose, program, () =>
-            runDiff({
-              range,
-              noCache: local.cache === false,
-              force: local.force,
-              verbose: local.verbose,
-              top: local.top,
-              full: local.full,
-              failOnRemoved: local.failOnRemoved,
-              failOnTierViolations: local.failOnTierViolations,
-            }),
-          );
-        }),
+  addFilterFlags(
+    addListFlags(
+      addCacheFlags(
+        program
+          .command('diff')
+          .description('compare export surfaces between refs')
+          .argument('[range]', 'ref or A..B range')
+          .option('-v, --verbose', 'verbose output')
+          .option('--fail-on-removed', 'exit 1 when flat exports were removed')
+          .option('--fail-on-tier-violations', 'exit 1 when right-side tier violations exist')
+          .action((range: string | undefined, _opts, cmd) => {
+            const local = cmd.opts() as DiffCommandOpts;
+            withContext(cmd, local.verbose, program, () =>
+              runDiff({
+                range,
+                noCache: local.cache === false,
+                force: local.force,
+                verbose: local.verbose,
+                top: local.top,
+                full: local.full,
+                tier: local.tier,
+                category: local.category,
+                failOnRemoved: local.failOnRemoved,
+                failOnTierViolations: local.failOnTierViolations,
+              }),
+            );
+          }),
+      ),
     ),
   );
 
@@ -346,26 +354,30 @@ function buildProgram(): Command {
     ),
   );
 
-  addListFlags(
-    addCacheFlags(
-      program
-        .command('graph')
-        .description('re-export map')
-        .argument('[ref]', 'git ref')
-        .option('-v, --verbose', 'verbose output')
-        .action((ref: string | undefined, _opts, cmd) => {
-          const local = cmd.opts() as CacheListVerboseOpts;
-          withContext(cmd, local.verbose, program, () => {
-            runGraph({
-              ref,
-              noCache: local.cache === false,
-              force: local.force,
-              verbose: local.verbose,
-              top: local.top,
-              full: local.full,
+  addFilterFlags(
+    addListFlags(
+      addCacheFlags(
+        program
+          .command('graph')
+          .description('re-export map')
+          .argument('[ref]', 'git ref')
+          .option('-v, --verbose', 'verbose output')
+          .action((ref: string | undefined, _opts, cmd) => {
+            const local = cmd.opts() as CacheListVerboseOpts;
+            withContext(cmd, local.verbose, program, () => {
+              runGraph({
+                ref,
+                noCache: local.cache === false,
+                force: local.force,
+                verbose: local.verbose,
+                top: local.top,
+                full: local.full,
+                tier: local.tier,
+                category: local.category,
+              });
             });
-          });
-        }),
+          }),
+      ),
     ),
   );
 

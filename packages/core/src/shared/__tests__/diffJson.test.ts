@@ -39,13 +39,13 @@ function withMiniContext(): void {
   initProjectContextFromConfig(miniConfig, fixture.root);
 }
 
-function flatSymbol(name: string, tier = 'stable'): InventorySymbol {
+function flatSymbol(name: string, tier = 'stable', category: InventorySymbol['category'] = 'other'): InventorySymbol {
   return {
     name,
     tsKind: 'value',
     exportKind: 'flat',
     tier,
-    category: 'other',
+    category,
     targetSubpath: '.',
     symbolKind: 'function',
     sourceModule: `src/${name}.ts`,
@@ -139,5 +139,30 @@ describe('diffJson detail helpers', () => {
     expect(full.addedDetail).toHaveLength(12);
     expect(full.removedDetail).toHaveLength(8);
     expect(full.listGuidance).toEqual({ truncated: false });
+  });
+
+  it('filters detail rows by --tier without shrinking added/removed name arrays', () => {
+    withMiniContext();
+    const left = snapshotWithFlats(['keep', 'drop']);
+    left.symbols = [
+      flatSymbol('keep', 'stable', 'run'),
+      flatSymbol('drop', 'internal', 'config'),
+    ];
+    const right = snapshotWithFlats(['addedStable', 'addedInternal']);
+    right.symbols = [
+      flatSymbol('addedStable', 'stable', 'run'),
+      flatSymbol('addedInternal', 'internal', 'config'),
+    ];
+    const added = ['addedStable', 'addedInternal'];
+    const removed = ['keep', 'drop'];
+    const detail = buildDiffJsonListDetail(
+      { added, removed },
+      left,
+      right,
+      { full: true, tier: ['stable'] },
+    );
+
+    expect(detail.addedDetail.map((r) => r.name)).toEqual(['addedStable']);
+    expect(detail.removedDetail.map((r) => r.name)).toEqual(['keep']);
   });
 });

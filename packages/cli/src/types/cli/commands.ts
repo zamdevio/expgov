@@ -1,4 +1,4 @@
-/** Per-command flags merged by `addListFlags` / `addCacheFlags`. */
+/** Per-command flags merged by `addListFlags` / `addCacheFlags` / `addFilterFlags`. */
 export interface VerboseOpts {
   verbose?: boolean;
 }
@@ -8,12 +8,17 @@ export interface ListFlagOpts {
   full?: boolean;
 }
 
+export interface FilterFlagOpts {
+  tier?: string[];
+  category?: string[];
+}
+
 export interface CacheFlagOpts {
   force?: boolean;
   cache?: boolean;
 }
 
-export type CacheListVerboseOpts = VerboseOpts & ListFlagOpts & CacheFlagOpts;
+export type CacheListVerboseOpts = VerboseOpts & ListFlagOpts & CacheFlagOpts & FilterFlagOpts;
 
 export interface InitCommandOpts {
   yes?: boolean;

@@ -22,6 +22,7 @@ Keep logic modules thin — full rules in [`architecture.md`](./architecture.md#
 3. **Logic imports, does not re-export** — feature modules must not `export type { … }` or re-export consts for call-sites; import from the type/const barrel instead.
 4. **Local aliases OK** — file-private `type X = …` with no export is fine.
 5. **Public root exception** — only `packages/core/src/index.ts` is the intentional published re-export surface.
+6. **Durable comments** — source and test comments describe behavior or rationale; never embed phase IDs, sprint names, planned-task references, or links to temporary phase plans.
 
 ## Output contract
 

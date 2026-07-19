@@ -31,7 +31,16 @@ Applies to `inventory`, `diff`, `graph`, `trend`, `timeline`, `validate`, `sugge
 | `-T, --top <n>` | Cap list rows (default 10, min 1) |
 | `-F, --full` | No truncation |
 
-## Cache (working tree)
+## Filter flags
+
+Applies to `inventory`, `diff` (detail lists), and `graph` (view before analytics). Repeatable; dimensions combine with AND, values within a flag with OR:
+
+| Flag | Role |
+|------|------|
+| `--tier <tier>` | Keep rows matching any listed tier (e.g. `stable`, `advanced`, `internal`) |
+| `--category <category>` | Keep rows matching any listed category (e.g. `run`, `config`, `type`) |
+
+Filters run **before** `-T` / `-F`. Inventory filters apply to its root-barrel detail lists, not published-subpath rollups. For `diff`, name arrays `added` / `removed` stay complete for CI gates — only verbose/JSON detail rows are filtered.
 
 Snapshots for uncommitted state live under `.expgov/cache/__worktree__/`. expgov tracks barrels, re-export chains, config, and scanned modules in `files.json`.
 

@@ -123,4 +123,42 @@ describe('inventoryJson detail helpers', () => {
     expect(full.namespacesHidden).toBe(0);
     expect(full.listGuidance).toEqual({ truncated: false });
   });
+
+  it('filters symbols and namespaces by --tier / --category before -T', () => {
+    const symbols = [
+      flatSym({ name: 'a', tier: 'stable', category: 'run' }),
+      flatSym({ name: 'b', tier: 'internal', category: 'config' }),
+      flatSym({ name: 'c', tier: 'stable', category: 'config' }),
+    ];
+    const namespaces: InventoryNamespace[] = [
+      {
+        name: 'NsRun',
+        tier: 'stable',
+        category: 'run',
+        targetSubpath: './a',
+        sourceModule: 'src/a.ts',
+      },
+      {
+        name: 'NsCfg',
+        tier: 'internal',
+        category: 'config',
+        targetSubpath: './b',
+        sourceModule: 'src/b.ts',
+      },
+    ];
+
+    const byTier = buildInventoryJsonListDetail(
+      { symbols, namespaces },
+      { full: true, tier: ['stable'] },
+    );
+    expect(byTier.symbols.map((s) => s.name)).toEqual(['a', 'c']);
+    expect(byTier.namespaces.map((n) => n.name)).toEqual(['NsRun']);
+
+    const byBoth = buildInventoryJsonListDetail(
+      { symbols, namespaces },
+      { full: true, tier: ['stable'], category: ['config'] },
+    );
+    expect(byBoth.symbols.map((s) => s.name)).toEqual(['c']);
+    expect(byBoth.namespaces).toEqual([]);
+  });
 });

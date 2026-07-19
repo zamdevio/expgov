@@ -18,7 +18,7 @@ export function classifyExportCategory(name: string, tsKind: 'value' | 'type', e
   return 'other';
 }
 
-/** Intended npm subpath after EX-1…EX-3 (governance map). */
+/** Map each export category to its intended npm subpath. */
 export function targetSubpathFor(category: ExportCategory, name: string): string {
   switch (category) {
     case 'issues':

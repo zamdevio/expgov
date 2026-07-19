@@ -5,6 +5,11 @@ import type { SnapshotResult } from '../../types/cache/index.js';
 import type { SourceRef } from '../../types/git/index.js';
 import type { InventorySnapshot, SubpathRollup } from '../../types/inventory/index.js';
 import { sumSdkTierCounts } from '../../inventory/index.js';
+import {
+  filterByTierCategory,
+  hasActiveFilters,
+  toFilterOptions,
+} from '../../shared/filters.js';
 import { limitList, resolveListLimit } from '../../shared/listing.js';
 import type { ListViewOptions } from '../../types/cli/list.js';
 import {
@@ -100,16 +105,24 @@ export function printInventoryReport(input: {
 
 export function printVerboseInventory(snapshot: InventorySnapshot, listView?: ListViewOptions): void {
   if (!canEmitVerboseReport()) return;
+  const filters = toFilterOptions(listView);
   const listLimit = resolveListLimit(listView);
   const flat = limitList(
-    [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name)),
+    filterByTierCategory(
+      [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name)),
+      filters,
+    ),
     listLimit,
   );
 
   logLine('');
   logLine(boldDim('       Symbols (root flat)'));
   if (flat.items.length === 0) {
-    logSectionEmpty('No root flat exports.');
+    logSectionEmpty(
+      hasActiveFilters(filters)
+        ? 'No matching root flat exports. Published subpaths are summarized above.'
+        : 'No root flat exports.',
+    );
   } else {
     logLine(style.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
     for (const sym of flat.items) {
@@ -129,13 +142,18 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
 
   logLine('');
   const namespaces = limitList(
-    [...snapshot.namespaces].sort((a, b) => a.name.localeCompare(b.name)),
+    filterByTierCategory(
+      [...snapshot.namespaces].sort((a, b) => a.name.localeCompare(b.name)),
+      filters,
+    ),
     listLimit,
   );
   logListSection(
     'Namespaces (root)',
     namespaces.items,
-    'No root namespace exports.',
+    hasActiveFilters(filters)
+      ? 'No matching root namespace exports. Published subpaths are summarized above.'
+      : 'No root namespace exports.',
     (ns) => {
       const src = style.dim(formatNamespaceSourceLabel(ns.sourceModule));
       logLine(
