@@ -98,6 +98,16 @@ Engineering map: [`systems/cli.md`](../systems/cli.md#insights-phase-e--shipped)
 
 ---
 
+## AG8 — JSON error envelopes (shipped) · 2026-W29
+
+- [x] `emitJsonError` emits the standard `{ ok, kind, data, issues, meta }` envelope
+- [x] Domain errors (`unknown_ref`, `invalid_range`, `barrel_missing`) preserve code/message/details
+- [x] Unexpected exceptions use `unexpected_error`; Commander parser failures use `usage`
+- [x] `-j` alone suppresses all human output; docs no longer recommend redundant `-j -s`
+- [x] Tests: `shared/__tests__/jsonError.test.ts`; dogfood: invalid diff ref and parser errors
+
+---
+
 ## P18 — help path polish (shipped) · `5492383`, `42ed91d`
 
 - [x] Bare `expgov` (no subcommand) prints root help and exits **0**

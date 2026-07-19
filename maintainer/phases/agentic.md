@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — **AG1–AG4 + AG7 shipped**; AG5 filters next.
+**Status:** Active — **AG1–AG4 + AG7–AG8 shipped**; AG5 filters next.
 
 **Companion:** [`diff.md`](./diff.md) · [`severity.md`](./severity.md) · [`cli-output-audit.md`](./cli-output-audit.md) · [`docs/cli/json.md`](../../docs/cli/json.md) · [`docs/guides/workflows.md`](../../docs/guides/workflows.md)
 
@@ -27,6 +27,7 @@ Dogfood target: nodehunter (and any SDK that freezes a 1.x surface) can automate
 | Default `-T 10` | Truncation in human lists | Fine for TTY; wrong default for agents if they scrape text |
 | `diff` detail | Fail gate shipped; verbose JSON lacks added/removed metadata | Agents can gate removals, but cannot inspect rich symbol changes |
 | `validate --since` | **Shipped AG4** — baseline ∪ current validate | One-command “PR shippable?” |
+| Thrown errors under `-j` | **Shipped AG8** — failed envelope with `data.error` | No more empty stdout on `unknown_ref` / invalid ranges |
 | Insights shape | `{ lines }` vs richer objects, per command | Fragile agent parsers |
 | Full data | Lives in `inventory.full.json` cache | Unofficial; agents shouldn’t dig cache |
 
@@ -36,12 +37,12 @@ Cache already has `symbols[]` + `edges[]` in `inventory.full.json`. **JSON mode 
 
 ## Principles
 
-1. **List policy is shared** — `-T` / `-F` truncate or uncap JSON arrays the same as human lists; include `top` + `*Hidden` (or equivalent) so agents know truncation. Prefer `-F -j -s` when agents need the full surface.
+1. **List policy is shared** — `-T` / `-F` truncate or uncap JSON arrays the same as human lists; include `top` + `*Hidden` (or equivalent) so agents know truncation. Prefer `-F -j` when agents need the full surface.
 2. **`-v` affects JSON too** — verbose = more fields / list sections in `data`, not only more stderr.
 3. **Fail modes are opt-in** — default interactive commands stay quiet/exit 0 unless flags request enforcement.
 4. **Stable issue codes** — every fail path emits `issues[].code` agents can switch on.
 5. **No breaking envelope** — keep `{ ok, kind, data, issues, meta }`; grow `data` additively; bump `meta.apiVersion` only if shape breaks.
-6. **Human banners stay** — agents use `-j -s`; humans keep the current report UX.
+6. **Human banners stay** — agents use `-j` (which already suppresses human output); humans keep the current report UX.
 
 ---
 
@@ -109,10 +110,10 @@ Update `docs/cli/json.md` with per-`kind` full schemas and a rule:
 
 ```bash
 # Agent / CI — one shot
-expgov validate --since v1.0.0 -j -s
+expgov validate --since v1.0.0 -j
 
 # Explicit surface check
-expgov diff v1.0.0..HEAD --fail-on-removed -j -s
+expgov diff v1.0.0..HEAD --fail-on-removed -j
 ```
 
 ### B2 — Listing control (all list-heavy commands)
@@ -133,7 +134,7 @@ Align with paused Graph C3 filters (`--namespace`, `--module`, `--subpath`) — 
 |------|----------|
 | `-j / --json` | Envelope (exists) |
 | `-s / --silent` | No human chrome (exists) |
-| `-q / --quiet` | Exists — document agent recipe: prefer `-j -s` |
+| `-q / --quiet` | Exists — document agent recipe: prefer `-j`; `-s` is redundant in JSON mode |
 | `--no-insights` | Omit insights block (smaller payloads) |
 | `--include-cache-meta` | Emit cache hit/miss + path (debug for agents) |
 
@@ -182,7 +183,8 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 | **AG4** | `validate --since` | AG3 compare core | **Shipped** — one-command PR gate |
 | **AG5** | Filter flags (`--tier`, `--category`, …) | AG1–2 | Flexible queries |
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
-| **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | **Shipped with AG4** — workflows CI section |
+| **AG7** | Docs + workflow recipes (`-j`, CI) | AG1–4 | **Shipped with AG4** — workflows CI section |
+| **AG8** | JSON error envelopes | — | **Shipped** — thrown/domain/parser failures emit `ok:false` JSON |
 
 **AG7 (shipped with D2):** public CI recipes in [`docs/guides/workflows.md`](../../docs/guides/workflows.md) covering `validate`, `diff --fail-on-removed`, and `validate --since`.
 
@@ -192,13 +194,14 @@ Suggested remaining order: **AG5 → AG6**.
 
 ## Acceptance criteria
 
-- [x] `expgov inventory -v -j -s` includes symbol/namespace lists under the same `-T`/`-F` policy as human verbose (use `-F` for every flat)
-- [x] `expgov graph -F -j -s` includes edge list matching `edgeCount` under shared listGuidance
+- [x] `expgov inventory -v -j` includes symbol/namespace lists under the same `-T`/`-F` policy as human verbose (use `-F` for every flat)
+- [x] `expgov graph -F -j` includes edge list matching `edgeCount` under shared listGuidance
 - [x] `expgov diff A..B --fail-on-removed` exits 1 iff removals exist; default diff still exits 0
 - [x] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
 - [ ] Filter flags compose with JSON without requiring human output parsing
 - [x] `docs/cli/json.md` documents inventory + graph + diff detail shapes
 - [x] Public CI recommended-usage section in `docs/guides/workflows.md` covering validate / diff fail flags / `validate --since`
+- [x] Thrown domain, unexpected, and CLI parser errors emit failed JSON envelopes under `-j`
 - [ ] No regression: human mode banners/truncation remain usable; envelope `apiVersion` unchanged unless breaking
 
 ---
@@ -217,19 +220,19 @@ Suggested remaining order: **AG5 → AG6**.
 
 ```bash
 # Health
-expgov doctor -j -s --fail-on-warning
+expgov doctor -j --fail-on-warning
 
 # Current surface (full)
-expgov inventory -v -j -s > inventory.json
+expgov inventory -v -j > inventory.json
 
 # PR / release gate
-expgov validate --since v1.0.0 -j -s > validate.json
+expgov validate --since v1.0.0 -j > validate.json
 test "$(jq -r .ok validate.json)" = "true"
 
 # Explicit archaeology
-expgov diff v1.0.0..HEAD -v -j -s
-expgov timeline @4w -j -s
-expgov trend -j -s
+expgov diff v1.0.0..HEAD -v -j
+expgov timeline @4w -j
+expgov trend -j
 ```
 
 ---

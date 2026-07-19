@@ -45,7 +45,8 @@ Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style 
 - Shared helper: `packages/core/src/shared/listing.ts` — `resolveListLimit`, `limitList`, `formatListTruncationHint`.
 - Default cap: 10 rows; `-F` removes cap; truncation hint: `…and N more (use -F/--full or -T/--top <n>)`.
 - Applied in report layer (`logger/reports/*`), including diff tier violations, custom tier deltas, inventory custom tier rollup rows, suggest names, and doctor check lines.
-- **JSON lists use the same policy** as human lists (`timeline.data.top` / rows; inventory `data.top` + `symbols` / `symbolsHidden`; graph `data.edges` / `edgesHidden`; diff `addedDetail` / `removedDetail` under `-v`/`-F`). Truncated payloads carry a single `data.listGuidance` block (`truncated` + `note`) — no duplicate `notes` mirror. Diff name arrays `added` / `removed` stay complete for CI. Agents that need uncapped detail pass `-F -j -s`.
+- **JSON lists use the same policy** as human lists (`timeline.data.top` / rows; inventory `data.top` + `symbols` / `symbolsHidden`; graph `data.edges` / `edgesHidden`; diff `addedDetail` / `removedDetail` under `-v`/`-F`). Truncated payloads carry a single `data.listGuidance` block (`truncated` + `note`) — no duplicate `notes` mirror. Diff name arrays `added` / `removed` stay complete for CI. Agents that need uncapped detail pass `-F -j`.
+- **JSON is self-silencing:** `-j` suppresses all human output; `-s` is redundant. Normal command failures and thrown domain/parser/unexpected errors all emit `{ ok: false, kind, data.error?, issues, meta }` rather than leaving stdout empty.
 
 ## Output flow
 

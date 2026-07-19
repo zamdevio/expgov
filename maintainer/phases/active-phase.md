@@ -12,7 +12,7 @@
 
 **Doc:** [`agentic.md`](./agentic.md) · **Diff companion:** [`diff.md`](./diff.md)
 
-D1–D2 and AG1–AG4/AG7 are shipped (AG3 diff JSON detail included). Next: **AG5** filter flags, then AG6 insights normalization. Optional D3 `compatBaseline`.
+D1–D2 and AG1–AG4/AG7–AG8 are shipped (AG3 diff detail + AG8 JSON errors included). Next: **AG5** filter flags, then AG6 insights normalization. Optional D3 `compatBaseline`.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
@@ -22,6 +22,7 @@ D1–D2 and AG1–AG4/AG7 are shipped (AG3 diff JSON detail included). Next: **A
 | 4 | **D2 / AG4** — `validate --since` | **Shipped** | Baseline vs worktree; fail on removals + existing validate rules |
 | 4b | **AG7 / D2-docs** — CI recommended usage | **Shipped** (with D2) | Workflows CI recipes + validate/diff/json pages |
 | 5 | **AG3** — diff JSON detail | **Shipped** | `addedDetail` / `removedDetail` under `-v`/`-F` |
+| 5b | **AG8** — JSON error envelopes | **Shipped** | Domain, unexpected, and parser errors emit `ok:false` JSON |
 | 6 | **AG5** — filter flags | **Next** | `--tier`, `--category`, … shared vocab with Graph C3 |
 
 **Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic slices share Diff compare core — do not implement twice. Optional D3 `compatBaseline` waits until `--since` is dogfooded.

@@ -72,7 +72,7 @@ Recommended combo: **D1 then D2** (shared comparison core; validate composes it)
 
 **Public docs (required with D2):** ship recommended CI usage — not only command-flag notes. Prefer one of:
 
-1. Expand [`docs/guides/workflows.md`](../../docs/guides/workflows.md) CI sections into a clear recipe (validate vs `diff --fail-on-removed` vs `validate --since`, when to use each, JSON/`-j -s` artifacts, GHA snippet), **or**
+1. Expand [`docs/guides/workflows.md`](../../docs/guides/workflows.md) CI sections into a clear recipe (validate vs `diff --fail-on-removed` vs `validate --since`, when to use each, JSON/`-j` artifacts, GHA snippet), **or**
 2. Add a dedicated guide (e.g. `docs/guides/ci.md`) and link it from workflows + command pages.
 
 Also update [`docs/commands/validate.md`](../../docs/commands/validate.md) once `--since` is real, and keep [`docs/commands/diff.md`](../../docs/commands/diff.md) fail-flag guidance in sync. Wire any new page into the VitePress sidebar.
