@@ -184,7 +184,9 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
 | **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | Public contract |
 
-Suggested remaining order: **AG3 detail → AG4 → AG5 → AG6 → AG7**.
+**AG7 includes CI recommended usage** (same deliverable as Diff D2 docs): a public guide/section covering when to run `validate`, `diff --fail-on-removed`, and `validate --since` in CI; JSON artifact patterns; copy-paste GitHub Actions. Expand [`docs/guides/workflows.md`](../../docs/guides/workflows.md) **or** add `docs/guides/ci.md` — do not leave CI advice only in maintainer phases.
+
+Suggested remaining order: **AG3 detail → AG4 → AG5 → AG6 → AG7** (AG7 docs may land in the same PR as AG4).
 
 ---
 
@@ -196,6 +198,7 @@ Suggested remaining order: **AG3 detail → AG4 → AG5 → AG6 → AG7**.
 - [ ] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
 - [ ] Filter flags compose with JSON without requiring human output parsing
 - [x] `docs/cli/json.md` documents inventory + graph detail shapes (diff detail still growing)
+- [ ] Public CI recommended-usage section/page (workflows **or** `guides/ci.md`) covering validate / diff fail flags / `validate --since`
 - [ ] No regression: human mode banners/truncation remain usable; envelope `apiVersion` unchanged unless breaking
 
 ---

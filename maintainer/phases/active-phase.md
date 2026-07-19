@@ -20,8 +20,9 @@ D1 (`diff` fail flags) and AG1–AG2 (inventory/graph JSON detail) are shipped. 
 | 2 | **AG1** — inventory JSON symbols | **Shipped** | `symbols[]` / `namespaces[]` under `-v`/`-F` |
 | 3 | **AG2** — graph JSON edges | **Shipped** | `edges[]` under `-v`/`-F` + shared listGuidance |
 | 4 | **D2 / AG4** — `validate --since` | **Next** | Baseline vs worktree; fail on removals + existing validate rules |
+| 4b | **AG7 / D2-docs** — CI recommended usage | **With D2** | Public docs section/page: when to use `validate`, `diff --fail-on-removed`, `validate --since` in CI |
 
-**Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic AG3/AG4 are the same work (JSON/detail integration) — do not implement twice. Optional D3 `compatBaseline` waits until flags are dogfooded.
+**Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic AG3/AG4 are the same work (JSON/detail integration) — do not implement twice. Optional D3 `compatBaseline` waits until flags are dogfooded. **CI docs ship with D2/AG4** (expand `docs/guides/workflows.md` or add `docs/guides/ci.md`) — not maintainer-only.
 
 **After AG4:** bump expgov in nodehunter CI; prefer `validate --since v1.0.0`.
 
