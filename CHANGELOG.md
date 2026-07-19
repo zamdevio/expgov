@@ -25,6 +25,7 @@ Breaking and additive work on `main` since **v1.0.1**.
 - Shared list filters on `inventory` / `diff` (detail) / `graph`: `--tier`, `--category`, `--namespace`, `--module`, `--subpath` (graph filters view before analytics).
 - Active filters appear in human meta and JSON `data.filters` (omit empty keys).
 - Inventory `-v` shows short tier provenance beside the tier column (`(exact)` / `(prefix)` / `(tag)` / `(default-prefix)`).
+- Help Usage/Examples token hierarchy: bold blue `expgov`, bold cyan command path, dim flags/values/placeholders.
 - Insights always `{ lines, …typedFields }` (never `null`); timeline/trend/diff Δ positive = growth toward newer/right/later.
 - JSON error envelopes for thrown domain errors and Commander parser errors under `-j`.
 - Release automation: `pnpm versions:up|sync|verify`, tag-triggered `.github/workflows/release.yml` (OIDC Trusted Publishing for both packages).

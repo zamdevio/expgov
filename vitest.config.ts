@@ -7,6 +7,8 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   resolve: {
     alias: {
+      '@expgov/core/internal': path.join(root, 'packages/core/src/internal/index.ts'),
+      '@expgov/core/advanced': path.join(root, 'packages/core/src/advanced/index.ts'),
       '@expgov/core': path.join(root, 'packages/core/src/index.ts'),
     },
   },

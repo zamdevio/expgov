@@ -6,6 +6,7 @@ import { formatBoxHeader, style } from '@expgov/core/internal';
 import type { HelpOutputOpts } from '../../types/cli/index.js';
 import type { HelpColorizeSection } from '../../types/help/index.js';
 import { formatCommandHelpExtras } from './commandHelp.js';
+import { styleExampleLine, styleInvocation } from './exampleLine.js';
 import { styleCommandHelpTerm } from './term.js';
 import { formatWorkflowAppendix } from './workflowAppendix.js';
 
@@ -14,7 +15,7 @@ const HELP_ROW = /^(\s{2})(.+?)(\s{2,})(.*)$/;
 
 function styleUsageLine(line: string): string {
   const rest = line.slice('Usage:'.length).trimStart();
-  return `${style.bold(style.magenta('Usage:'))} ${style.bold(style.accent(rest))}`;
+  return `${style.bold(style.magenta('Usage:'))} ${styleInvocation(rest)}`;
 }
 
 function styleSectionHeader(line: string): string {
@@ -59,7 +60,7 @@ export function colorizeHelpText(text: string): string {
       continue;
     }
     if (section === 'examples' && /^\s{2}\S/.test(line)) {
-      out.push(`  ${style.bold(style.accent(line.trim()))}`);
+      out.push(styleExampleLine(line.trim()));
       continue;
     }
     if (section === 'range-formats' && /^\s{2}\S/.test(line)) {
