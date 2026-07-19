@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import path from 'node:path';
-import { Command } from 'commander';
+import { Command, CommanderError } from 'commander';
 import {
   bootstrapRuntime,
   configureStyle,
+  emitJsonError,
+  getRunOptions,
   initProjectContext,
   isExportError,
   printExportError,
@@ -58,7 +60,64 @@ function initFromCommand(cmd: Command, verbose?: boolean): void {
   });
 }
 
-function handleError(err: unknown, program: Command): never {
+function argvCommandName(): string {
+  const known = new Set([
+    'init',
+    'inventory',
+    'diff',
+    'validate',
+    'doctor',
+    'suggest',
+    'trend',
+    'timeline',
+    'graph',
+    'version',
+    'help',
+  ]);
+  return process.argv.slice(2).find((token) => known.has(token)) ?? 'cli';
+}
+
+function handleError(err: unknown, program: Command, command?: Command): never {
+  const commandName =
+    command?.name() ||
+    (isExportError(err) && typeof err.details.command === 'string'
+      ? err.details.command
+      : argvCommandName());
+
+  if (getRunOptions().json) {
+    if (err instanceof CommanderError) {
+      emitJsonError({
+        command: commandName,
+        code: 'usage',
+        message: err.message,
+        details: { commanderCode: err.code },
+        cwd: process.cwd(),
+      });
+      process.exit(err.exitCode);
+    }
+    if (isExportError(err)) {
+      emitJsonError({
+        command: commandName,
+        code: err.code,
+        message: err.message,
+        details: err.details,
+        cwd: process.cwd(),
+      });
+      process.exit(err.exitCode);
+    }
+    emitJsonError({
+      command: commandName,
+      code: 'unexpected_error',
+      message: err instanceof Error ? err.message : String(err),
+      cwd: process.cwd(),
+    });
+    process.exit(1);
+  }
+
+  if (err instanceof CommanderError) {
+    process.exit(err.exitCode);
+  }
+
   if (isExportError(err)) {
     if (err.code === 'usage') {
       if (err.exitCode !== 0) printExportError(err);
@@ -81,7 +140,7 @@ function withContext(cmd: Command, verbose: boolean | undefined, program: Comman
     const code = fn();
     if (typeof code === 'number') process.exit(code);
   } catch (err) {
-    handleError(err, program);
+    handleError(err, program, cmd);
   }
 }
 
@@ -348,6 +407,20 @@ function buildProgram(): Command {
 
 bootstrapRuntime();
 const program = buildProgram();
+program.allowExcessArguments(false);
+program.configureOutput({
+  writeErr: (text) => {
+    if (!getRunOptions().json) process.stderr.write(text);
+  },
+});
+for (const command of [program, ...program.commands]) {
+  command.exitOverride();
+}
+
+// Parser errors happen before `preAction`; prime JSON mode from raw argv for that path.
+if (process.argv.includes('-j') || process.argv.includes('--json')) {
+  setRunOptions({ json: true, jsonPretty: true });
+}
 program
   .parseAsync(preprocessArgv(process.argv))
   .catch((err: unknown) => {
