@@ -12,7 +12,7 @@ expgov validate -v
 expgov validate -T 5
 expgov validate -F
 expgov validate --since v1.0.0
-expgov validate --since v1.0.0 -j -s
+expgov validate --since v1.0.0 -j
 ```
 
 Checks include:
@@ -35,7 +35,7 @@ Additions are allowed. Prefer an immutable released tag:
 expgov validate --since v1.0.0
 
 # Machine-readable
-expgov validate --since v1.0.0 -j -s
+expgov validate --since v1.0.0 -j
 ```
 
 JSON includes `data.since`, `data.sinceLabel`, `data.added`, `data.removed`, and removal issues use code `expgov.diff.exports_removed` (alongside `expgov.validate.violation` for other failures). See [JSON output](../cli/json.md) and [workflows](../guides/workflows.md).

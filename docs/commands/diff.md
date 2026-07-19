@@ -15,8 +15,8 @@ expgov diff v0.1.3..v0.1.4
 expgov diff HEAD~30..HEAD~1
 expgov diff v1.0.0..HEAD --fail-on-removed
 expgov diff v1.0.0..HEAD --fail-on-removed --fail-on-tier-violations
-expgov diff v1.0.0..HEAD -v -j -s
-expgov diff v1.0.0..HEAD -F -j -s
+expgov diff v1.0.0..HEAD -v -j
+expgov diff v1.0.0..HEAD -F -j
 ```
 
 ## Ref ranges

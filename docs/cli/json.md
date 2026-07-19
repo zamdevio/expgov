@@ -35,6 +35,8 @@ type Issue = {
 
 `apiVersion` is `RESULT_API_VERSION` from `@expgov/cli/core` or `@expgov/core` — bump when the envelope shape changes.
 
+`--json` already suppresses all human output; `--silent` is redundant when JSON mode is active.
+
 **Detail flags:** With `--json`, `-v` / `--verbose` and `-F` / `--full` expand `data` with the same list payloads humans see. **List policy is shared:** `-T` / `--top` and `-F` / `--full` truncate or uncap JSON arrays the same way as human lists.
 
 When a list is truncated, JSON includes a stable **`data.listGuidance`** block carrying both the flag and the guidance in one place:
@@ -57,6 +59,41 @@ Agents should check `listGuidance.truncated` before assuming a list is complete;
 | `0` | Command succeeded (`ok: true`) |
 | `1` | Validation or governance failure (`validate` with violations) |
 | other | Unexpected errors |
+
+### Thrown and usage errors
+
+Errors raised before a command can finish also emit the standard envelope. The command stays in `kind` / `meta.command`; structured error details live at `data.error`:
+
+```bash
+expgov diff missing-tag..HEAD -j
+```
+
+```json
+{
+  "ok": false,
+  "kind": "diff",
+  "data": {
+    "error": {
+      "code": "unknown_ref",
+      "message": "Unknown git ref \"missing-tag\"",
+      "details": {
+        "ref": "missing-tag",
+        "suggestion": "Known version tags: v1.0.0, v1.0.1"
+      }
+    }
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "code": "unknown_ref",
+      "message": "Unknown git ref \"missing-tag\""
+    }
+  ],
+  "meta": { "apiVersion": "1", "command": "diff", "durationMs": 0 }
+}
+```
+
+This applies to domain errors (`unknown_ref`, `invalid_range`, `barrel_missing`), unexpected execution errors (`unexpected_error`), and CLI parser errors (`usage`). Stdout remains parseable JSON and the process still exits non-zero.
 
 ## Examples
 
@@ -115,7 +152,7 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
 Baseline vs working tree. Removals use the same issue code as `diff --fail-on-removed`:
 
 ```bash
-expgov validate --since v1.0.0 -j -s
+expgov validate --since v1.0.0 -j
 ```
 
 ```json
@@ -147,9 +184,9 @@ expgov validate --since v1.0.0 -j -s
 Default JSON is summary-only. Pass `-v` or `-F` to include root flat symbols and namespaces. Lists honor the same `-T` / `-F` policy as human verbose mode (default top `10`; `-F` = uncapped, `top` serializes as `null`):
 
 ```bash
-expgov inventory -v -j -s          # top 10 symbols + namespacesHidden
-expgov inventory -v -T 5 -j -s     # top 5
-expgov inventory -F -j -s          # all symbols (same as -v -F)
+expgov inventory -v -j          # top 10 symbols + namespacesHidden
+expgov inventory -v -T 5 -j     # top 5
+expgov inventory -F -j          # all symbols (same as -v -F)
 ```
 
 ```json
@@ -196,8 +233,8 @@ Use `summary.root.flat` for the true total; `symbols.length + symbolsHidden` mat
 Default JSON is analytics + target groups. Pass `-v` or `-F` to include re-export `edges[]` under the same `-T`/`-F` list policy + `listGuidance`:
 
 ```bash
-expgov graph -v -j -s
-expgov graph -F -j -s
+expgov graph -v -j
+expgov graph -F -j
 ```
 
 ```json
@@ -238,8 +275,8 @@ expgov graph -F -j -s
 Default JSON always includes complete `added` / `removed` name arrays (and `tierViolations`) — do not truncate those for CI. Pass `-v` or `-F` for rich symbol detail under the shared `-T`/`-F` list policy:
 
 ```bash
-expgov diff v1.0.0..HEAD -v -j -s
-expgov diff v1.0.0..HEAD -F -j -s
+expgov diff v1.0.0..HEAD -v -j
+expgov diff v1.0.0..HEAD -F -j
 ```
 
 ```json
@@ -300,7 +337,7 @@ Use `added` / `removed` for complete name sets; use `*Detail` when agents need t
 
 ```bash
 pnpm build
-expgov validate --since v1.0.0 --json --silent > validate.json
+expgov validate --since v1.0.0 --json > validate.json
 test "$(jq -r .ok validate.json)" = "true"
 ```
 
@@ -309,7 +346,7 @@ When `--since` is set, `data` also includes `since`, `sinceLabel`, `added`, and 
 Surface-only regression gate (opt-in on `diff`):
 
 ```bash
-expgov diff v1.0.0..HEAD --fail-on-removed --json --silent > diff.json
+expgov diff v1.0.0..HEAD --fail-on-removed --json > diff.json
 test "$(jq -r .ok diff.json)" = "true"
 ```
 

@@ -8,9 +8,9 @@ All governance commands accept these flags. Per-command flags (`-v`, `-f`, `-nch
 
 | Flag | Role |
 |------|------|
-| `-j, --json` | Machine-readable JSON envelope on stdout |
+| `-j, --json` | Machine-readable JSON envelope on stdout; suppresses all human output |
 | `-q, --quiet` | Suppress info logs and tips; keep primary report |
-| `-s, --silent` | Suppress human output except errors and `--json` |
+| `-s, --silent` | Suppress human output except errors; redundant with `--json` |
 | `-C, --cwd` | Project root |
 | `-c, --config` | Path to `expgov.config.ts` |
 | `-pn, --package-name` | Override package name |
@@ -19,6 +19,8 @@ All governance commands accept these flags. Per-command flags (`-v`, `-f`, `-nch
 | `-nlg, --no-log-prefix` | Omit `[expgov]` log prefix |
 | `-nlc, --no-log-channel` | Omit info/warn/tip channel tags |
 | `-y, --yes` | Non-interactive `init` |
+
+Use `-j` alone for agents and CI. Adding `-s` does not make JSON cleaner because JSON mode already disables banners, reports, tips, and human errors.
 
 ## List flags
 

@@ -93,12 +93,12 @@ Optional on `diff` only: also fail on right-side tier notes with `--fail-on-tier
 | Current-tree tiers + parity | `expgov validate` |
 | No removals since baseline | `expgov diff <tag>..HEAD --fail-on-removed` |
 | Both (recommended CI) | `expgov validate --since <tag>` |
-| JSON artifact for agents | add `-j -s` |
+| JSON artifact for agents | add `-j` (`-s` is redundant) |
 
 ## CI gate (JSON artifact)
 
 ```bash
-expgov validate --since v1.0.0 --json --silent > validate.json
+expgov validate --since v1.0.0 --json > validate.json
 test "$(jq -r .ok validate.json)" = "true"
 ```
 
@@ -116,7 +116,7 @@ Or with a JSON artifact:
 ```yaml
 - name: Export governance (JSON)
   run: |
-    pnpm exec expgov validate --since v1.0.0 -j -s > validate.json
+    pnpm exec expgov validate --since v1.0.0 -j > validate.json
     test "$(jq -r .ok validate.json)" = "true"
 - uses: actions/upload-artifact@v4
   if: always()
