@@ -37,21 +37,18 @@ type Issue = {
 
 **Detail flags:** With `--json`, `-v` / `--verbose` and `-F` / `--full` expand `data` with the same list payloads humans see. **List policy is shared:** `-T` / `--top` and `-F` / `--full` truncate or uncap JSON arrays the same way as human lists.
 
-When a list is truncated, JSON includes a stable **`data.listGuidance`** block (and mirrors the text in **`data.notes`**):
+When a list is truncated, JSON includes a stable **`data.listGuidance`** block carrying both the flag and the guidance in one place:
 
 ```json
 {
   "listGuidance": {
     "truncated": true,
     "note": "symbols: 91 more hidden (showing 10 of 101). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
-  },
-  "notes": [
-    "symbols: 91 more hidden (showing 10 of 101). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
-  ]
+  }
 }
 ```
 
-Agents should check `listGuidance.truncated` (or scan `notes`) before assuming a list is complete. Uncapped runs still emit `listGuidance: { "truncated": false }` whenever list sections are present.
+Agents should check `listGuidance.truncated` before assuming a list is complete; `listGuidance.note` explains how to expand it. Uncapped runs still emit `listGuidance: { "truncated": false }` (no `note`) whenever list sections are present.
 
 ## Exit codes
 
@@ -153,10 +150,7 @@ expgov inventory -F -j -s          # all symbols (same as -v -F)
     "listGuidance": {
       "truncated": true,
       "note": "symbols: 70 more hidden (showing 10 of 80). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
-    },
-    "notes": [
-      "symbols: 70 more hidden (showing 10 of 80). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
-    ]
+    }
   },
   "issues": [],
   "meta": { "apiVersion": "1", "command": "inventory", "durationMs": 12 }
@@ -198,10 +192,7 @@ expgov graph -F -j -s
     "listGuidance": {
       "truncated": true,
       "note": "edges: 110 more hidden (showing 10 of 120). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
-    },
-    "notes": [
-      "edges: 110 more hidden (showing 10 of 120). Use -F/--full for all rows, or -T/--top <n> to raise the cap."
-    ]
+    }
   },
   "issues": [],
   "meta": { "apiVersion": "1", "command": "graph", "durationMs": 18 }

@@ -69,7 +69,7 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 - [x] `inventory --json` with `-v` or `-F` emits `data.symbols[]` and `data.namespaces[]`
 - [x] Lean rows: name, tier, category, symbolKind, targetSubpath, module (optional on symbols)
 - [x] Shared list policy: same `-T`/`-F` as human verbose; `top` + `symbolsHidden` / `namespacesHidden`
-- [x] Truncation guidance: `data.listGuidance` + `data.notes` pointing at `-F` / `-T`
+- [x] Truncation guidance: single `data.listGuidance` block (`truncated` + `note`) pointing at `-F` / `-T`
 - [x] Helpers: `format/inventoryJson.ts`, `shared/listing.ts` (`buildJsonListGuidance`); tests included
 - [x] Docs: `docs/cli/json.md`, `docs/commands/inventory.md`
 

@@ -70,7 +70,7 @@ Under `-v` or `-F`, include (same `-T`/`-F` list policy + `listGuidance`):
 ```ts
 data: {
   ref, edgeCount, targetGroups, analytics, insights,
-  top, edges, edgesHidden, listGuidance, notes,
+  top, edges, edgesHidden, listGuidance,
 }
 ```
 
