@@ -12,9 +12,9 @@ expgov inventory HEAD
 expgov inventory v0.1.4
 ```
 
-`-v` prints root-barrel symbols and namespaces (tier, category, target subpath). With `--json`, `-v` or `-F` also adds the same root-scoped `data.symbols` / `data.namespaces` under the shared `-T`/`-F` list policy (see [JSON output](../cli/json.md)).
+`-v` prints root-barrel symbols and namespaces (tier with short provenance like `(exact)` / `(prefix)`, category, target subpath). With `--json`, `-v` or `-F` also adds the same root-scoped `data.symbols` / `data.namespaces` under the shared `-T`/`-F` list policy (see [JSON output](../cli/json.md)). Source module paths are on JSON rows as `module` (not a human table column).
 
-`--tier` and `--category` filter those root-detail lists. They do not expand the listing to published subpath barrels. A package that keeps advanced/internal exports off its stable root can therefore return an empty detail list for `--tier advanced` or `--tier internal`; SDK-wide counts and published-subpath rollups remain in the summary.
+Shared filters (`--tier`, `--category`, `--namespace`, `--module`, `--subpath`) narrow those root-detail lists. They do not expand the listing to published subpath barrels. A package that keeps advanced/internal exports off its stable root can therefore return an empty detail list for `--tier advanced` or `--tier internal`; SDK-wide counts and published-subpath rollups remain in the summary. Active filters appear in meta / `data.filters` (see [Flags](../cli/flags.md#filter-flags)).
 
 ## Related
 

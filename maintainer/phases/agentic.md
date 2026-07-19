@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — AG6 shipped; leftovers with C3 · **Companion:** [`diff.md`](./diff.md)
+**Status:** Active — leftovers only (`--names-only`) · **Companion:** [`diff.md`](./diff.md)
 
 ---
 
@@ -23,12 +23,11 @@ List policy (`-T`/`-F`) is shared for human + JSON. Prefer `-j` alone for agents
 
 ## Remaining
 
-### AG5 leftovers (with C3)
+### AG5 leftovers
 
 | Flag | Notes |
 |------|-------|
 | `--names-only` | Optional compact listing — deferred |
-| `--namespace` / `--module` / `--subpath` | Graph C3; same filter helper |
 
 ### Optional later
 

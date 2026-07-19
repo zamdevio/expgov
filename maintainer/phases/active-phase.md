@@ -12,7 +12,7 @@
 
 | Ship | When | Contents |
 |------|------|----------|
-| **v1.1.0** | After **all Near** slices below are done | Breaking Unreleased work already on `main` (surface split, `run*`, AG5–AG6) **plus** remaining Near: HELP1, ID1/ID2, Graph C3, optional D3 |
+| **v1.1.0** | After **all Near** slices below are done | Breaking Unreleased work already on `main` (surface split, `run*`, AG5–AG6, C3 filters) **plus** remaining Near: HELP1, ID1/ID2, optional D3 |
 | **v1.1.1+** | After v1.1.0 | **Mid** backlog (severity → suggest → fix → issues, …) as additive patches/minors |
 
 **Do not** run `versions:up` / tag a release until the Near list is complete. Automation is ready ([`../systems/release.md`](../systems/release.md)); the hold is intentional.
@@ -21,9 +21,8 @@
 
 | Slice | Doc | Notes |
 |-------|-----|-------|
-| **AG6** — insights normalization | [`agentic.md`](./agentic.md) | **Shipped** — `{ lines, …typedFields }`; chronological Δ |
-| **C3** — graph filters | [`graph-2.md`](./graph-2.md) | **Next** — `--namespace` / `--module` / `--subpath` on AG5 helper |
-| **HELP1** — help colors | [`help.md`](./help.md) | Small; parallel OK |
+| **C3** — graph filters | [`graph-2.md`](./graph-2.md) | **Shipped** — `--namespace` / `--module` / `--subpath` |
+| **HELP1** — help colors | [`help.md`](./help.md) | **Next** — small; parallel OK |
 | **ID1 / ID2** — inventory diagnostics | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | + ID-DOC after code |
 | **D3** — `compatBaseline` | [`diff.md`](./diff.md) | Optional; after `--since` dogfood |
 
@@ -33,11 +32,11 @@ Severity → Suggest → Fix → Issues; then Config / Multibarrel / Source prof
 
 ---
 
-## Focus now — Graph filters (C3)
+## Focus now — HELP1 / inventory diagnostics
 
-**Doc:** [`graph-2.md`](./graph-2.md) · **Agentic companion:** [`agentic.md`](./agentic.md)
+**Docs:** [`help.md`](./help.md) · [`inventory-diagnostics.md`](./inventory-diagnostics.md)
 
-D1–D2 and AG1–AG8 are shipped. Next: **C3** graph `--namespace` / `--module` / `--subpath` (extends AG5 filter helper).
+Near remaining after AG/C3: **HELP1** (small), **ID1/ID2**, optional **D3**.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
@@ -78,14 +77,14 @@ D1–D2 and AG1–AG8 are shipped. Next: **C3** graph `--namespace` / `--module`
 
 ## Paused — Phase C (Graph 2.0)
 
-**Doc:** [`graph-2.md`](./graph-2.md) · **Shipped (C1–C2):** [`../shipped/graph.md`](../shipped/graph.md)
+**Doc:** [`graph-2.md`](./graph-2.md) · **Shipped (C1–C3):** [`../shipped/graph.md`](../shipped/graph.md)
 
-Resume **C3** with AG5 (shared filter vocabulary). **C3 is Near** (blocks v1.1.0).
+C1–C3 done. **C4** graph modes remain brainstorm-only.
 
 | # | Slice | Status |
 |---|-------|--------|
 | C1–C2 | Namespace-first + analytics | **Shipped** |
-| C3 | `--namespace`, `--module`, `--category`, `--subpath` | Near — align with AG5 |
+| C3 | `--namespace`, `--module`, `--subpath` (+ tier/category) | **Shipped** |
 | C4 | Graph modes | Later / brainstorm |
 
 ---
@@ -95,10 +94,9 @@ Resume **C3** with AG5 (shared filter vocabulary). **C3 is Near** (blocks v1.1.0
 | # | Slice | Goal | Doc | Band |
 |---|-------|------|-----|------|
 | 1 | **Diff fail gate** | D1–D2 shipped; optional D3 | [`diff.md`](./diff.md) | Near (D3) |
-| 2 | **Agentic** | AG1–8 shipped; leftovers with C3 | [`agentic.md`](./agentic.md) | Near |
+| 4 | Phase **C3** — Graph filters | **Shipped** — shared vocab with AG5 | [`graph-2.md`](./graph-2.md) | Near |
+| P | **HELP1** | Help color hierarchy — **next** | [`help.md`](./help.md) | Near |
 | 3 | **Inventory diagnostics** | ID1/ID2 + ID-DOC | [`inventory-diagnostics.md`](./inventory-diagnostics.md) | Near |
-| P | **HELP1** | Help color hierarchy | [`help.md`](./help.md) | Near |
-| 4 | Phase **C3** — Graph filters | **Next** — shared vocab with AG5 | [`graph-2.md`](./graph-2.md) | Near |
 | — | **v1.1.0 release** | After Near complete | [`../systems/release.md`](../systems/release.md) | Gate |
 | 5 | Phase **D** — API chain | Execution introspection | [`../api-chain.md`](../api-chain.md) | Mid (1.1.1+) |
 | 6 | Phase **F** — CLI output audit | Close remaining UX gaps | [`cli-output-audit.md`](./cli-output-audit.md) | Mid |

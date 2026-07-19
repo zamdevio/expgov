@@ -39,8 +39,15 @@ Applies to `inventory`, `diff` (detail lists), and `graph` (view before analytic
 |------|------|
 | `--tier <tier>` | Keep rows matching any listed tier (e.g. `stable`, `advanced`, `internal`) |
 | `--category <category>` | Keep rows matching any listed category (e.g. `run`, `config`, `type`) |
+| `--namespace <name>` | Keep root namespaces (and linked symbols/edges) matching any listed name |
+| `--module <path>` | Substring match on source module / edge `toModule` |
+| `--subpath <subpath>` | Match target subpath (`./types`, `types`, …) |
 
-Filters run **before** `-T` / `-F`. Inventory filters apply to its root-barrel detail lists, not published-subpath rollups. For `diff`, name arrays `added` / `removed` stay complete for CI gates — only verbose/JSON detail rows are filtered.
+Filters run **before** `-T` / `-F`. Inventory filters apply to its root-barrel detail lists, not published-subpath rollups. For `diff`, name arrays `added` / `removed` stay complete for CI gates — only verbose/JSON detail rows are filtered. Graph applies filters to the snapshot view before analytics.
+
+When any filter is active, human meta includes a `filters` line (`tier=stable · module=…`) and `--json` adds `data.filters` with only the non-empty keys.
+
+## Cache (working tree)
 
 Snapshots for uncommitted state live under `.expgov/cache/__worktree__/`. expgov tracks barrels, re-export chains, config, and scanned modules in `files.json`.
 

@@ -204,6 +204,8 @@ expgov validate --since v1.0.0 -j
 
 Default JSON is summary-only. Pass `-v` or `-F` to include root flat symbols and namespaces. Lists honor the same `-T` / `-F` policy as human verbose mode (default top `10`; `-F` = uncapped, `top` serializes as `null`):
 
+When `--tier` / `--category` / `--namespace` / `--module` / `--subpath` are set, JSON includes `data.filters` with only the active keys (omitted entirely when none apply).
+
 ```bash
 expgov inventory -v -j          # top 10 symbols + namespacesHidden
 expgov inventory -v -T 5 -j     # top 5
