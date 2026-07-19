@@ -51,6 +51,7 @@ export default defineConfig({
         'InventoryCliOptions',
         'Issue',
         'IssueSeverity',
+        'JsonErrorData',
         'LogEvent',
         'LogLevel',
         'LogSink',

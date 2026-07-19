@@ -2,8 +2,6 @@ import type { CacheStatus } from '../types/cache/index.js';
 import type { TimelineWarmEntry, TimelineWarmStats } from '../types/timeline/warm.js';
 import { shortSha } from '../git/index.js';
 
-export type { TimelineWarmEntry, TimelineWarmStats } from '../types/timeline/warm.js';
-
 /** Collects per-commit cache warm timings for report-layer rendering. */
 export class TimelineWarmer {
   private entries: TimelineWarmEntry[] = [];

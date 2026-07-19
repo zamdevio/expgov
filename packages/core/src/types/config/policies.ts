@@ -1,3 +1,11 @@
+/** Built-in policy names shipped with default `rootFlat` rules. */
+export type BuiltinTierPolicyName =
+  | 'public'
+  | 'maintainer'
+  | 'experimental'
+  | 'preview'
+  | 'deprecated';
+
 /** Whether flat exports on the root barrel are allowed for a tier policy. */
 export type TierRootFlatRule = 'allow' | 'deny';
 

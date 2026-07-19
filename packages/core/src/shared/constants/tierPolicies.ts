@@ -1,4 +1,5 @@
 import type { ResolvedTierPolicyRules } from '../../types/config/policies.js';
+import type { BuiltinTierPolicyName } from '../../types/config/policies.js';
 
 export const BUILTIN_POLICY_NAMES = [
   'public',
@@ -6,9 +7,7 @@ export const BUILTIN_POLICY_NAMES = [
   'experimental',
   'preview',
   'deprecated',
-] as const;
-
-export type BuiltinTierPolicyName = (typeof BUILTIN_POLICY_NAMES)[number];
+] as const satisfies readonly BuiltinTierPolicyName[];
 
 export const BUILTIN_POLICY_DEFAULTS: Record<BuiltinTierPolicyName, ResolvedTierPolicyRules> = {
   public: { rootFlat: 'allow' },

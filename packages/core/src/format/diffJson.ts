@@ -1,28 +1,8 @@
 import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
-import type { JsonListGuidance } from '../shared/listing.js';
 import type { ListViewOptions } from '../types/cli/list.js';
+import type { DiffJsonListDetail, DiffJsonSymbolDetail } from '../types/format/diffJson.js';
 import type { DiffResult } from '../types/format/diff.js';
 import type { InventorySnapshot, InventorySymbol } from '../types/inventory/index.js';
-
-/** Lean symbol row for `diff --json` detail (`-v` / `-F`). */
-export type DiffJsonSymbolDetail = {
-  name: string;
-  tier: string;
-  category: string;
-  symbolKind: string;
-  targetSubpath: string;
-  module?: string;
-};
-
-export type DiffJsonListDetail = {
-  /** Same cap as human verbose lists (`Infinity` / `-F` → `null` after JSON.stringify). */
-  top: number;
-  addedDetail: DiffJsonSymbolDetail[];
-  removedDetail: DiffJsonSymbolDetail[];
-  addedDetailHidden: number;
-  removedDetailHidden: number;
-  listGuidance: JsonListGuidance;
-};
 
 export function shouldIncludeDiffJsonDetail(options: {
   verbose?: boolean;

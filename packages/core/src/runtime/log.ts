@@ -2,7 +2,8 @@ import { getRunOptions } from './runOptions.js';
 import { canPrintInfo, canPrintTip, canPrintWarn, canPrintPrimary } from './policy.js';
 import { emitLog } from './emitter.js';
 import type { LogLevel } from '../types/runtime/index.js';
-import { CLI_NAME, style } from './style.js';
+import { CLI_NAME } from '../shared/constants/cli.js';
+import { style } from './style.js';
 
 function canEmitHuman(): boolean {
   return canPrintPrimary(getRunOptions());

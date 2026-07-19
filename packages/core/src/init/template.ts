@@ -1,6 +1,6 @@
 import type { InitDetection } from '../types/init/detection.js';
 import { detectionToConfig } from './detect.js';
-import { RICH_INIT_CACHE_HINT, RICH_INIT_POLICIES_HINT, RICH_INIT_TIER_HINTS } from './richHints.js';
+import { RICH_INIT_CACHE_HINT, RICH_INIT_POLICIES_HINT, RICH_INIT_TIER_HINTS } from '../shared/constants/initHints.js';
 import {
   DEFAULT_INIT_CONFIG_IMPORT,
   INIT_CONFIG_FILE_NAME,

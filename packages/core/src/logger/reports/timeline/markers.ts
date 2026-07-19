@@ -1,7 +1,5 @@
 import { style } from '../../../runtime/style.js';
-
-/** Content width after the standard timeline row indent (`       `). */
-export const TIMELINE_MARKER_WIDTH = 80;
+import { TIMELINE_MARKER_WIDTH } from '../../../shared/constants/timeline.js';
 
 /** Default shows the highest version tag; verbose shows every tag on the commit. */
 export function resolveDisplayTags(tags: readonly string[], verbose?: boolean): string[] {

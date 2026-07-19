@@ -1,5 +1,7 @@
 import chalk from 'chalk';
 
+import { CLI_NAME } from '../shared/constants/cli.js';
+
 const identity = (s: string) => s;
 
 const chalkStyle = {
@@ -32,7 +34,7 @@ const plainStyle = {
   white: identity,
 };
 
-export type StyleTokens = typeof chalkStyle;
+type StyleTokens = typeof chalkStyle;
 
 export const style: StyleTokens = { ...chalkStyle };
 
@@ -41,8 +43,6 @@ export function configureStyle(noColor: boolean): void {
   Object.assign(style, next);
 }
 
-export const CLI_NAME = 'expgov';
-export const CLI_MARK = '⚡';
 export const BRAND = () => style.bold(style.accent(CLI_NAME));
 
 export function boldDim(text: string): string {

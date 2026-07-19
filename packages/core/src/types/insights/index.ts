@@ -64,3 +64,19 @@ export interface TimelineInsights {
   stableRatioFirst?: number;
   stableRatioLast?: number;
 }
+
+export interface TimelineInsightRow {
+  date: string;
+  rollup: { rootFlat: number; stable: number };
+  delta: number | null;
+}
+
+export interface TrendRollupRow {
+  tag: string;
+  rollup: {
+    rootFlat: number;
+    stable: number;
+    advanced: number;
+    internal: number;
+  };
+}

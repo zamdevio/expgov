@@ -1,7 +1,5 @@
 import type { ModuleRef } from '../types/insights/index.js';
-
-/** Max insight lines per command (Phase E). */
-export const MAX_INSIGHT_LINES = 5;
+import { MAX_INSIGHT_LINES } from '../shared/constants/insights.js';
 
 export function medianOf(values: number[]): number | undefined {
   if (values.length < 3) return undefined;

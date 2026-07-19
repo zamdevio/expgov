@@ -1,13 +1,7 @@
 import { diffSnapshots } from './diff.js';
 import { evaluateDiffFailMode } from './diffFail.js';
-import type { DiffFailEvaluation } from './diffFail.js';
-import type { DiffResult } from '../types/format/diff.js';
+import type { ValidateSinceEvaluation } from '../types/format/validateSince.js';
 import type { InventorySnapshot } from '../types/inventory/index.js';
-
-export type ValidateSinceEvaluation = {
-  diff: DiffResult;
-  removal: DiffFailEvaluation;
-};
 
 /**
  * Baseline → current surface compare for `validate --since`.

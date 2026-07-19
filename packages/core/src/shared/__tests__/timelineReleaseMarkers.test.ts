@@ -6,8 +6,8 @@ import { indexVersionTagsByCommit, versionTagsForCommit } from '../../git/versio
 import {
   formatReleaseMarker,
   resolveDisplayTags,
-  TIMELINE_MARKER_WIDTH,
 } from '../../logger/reports/timeline/markers.js';
+import { TIMELINE_MARKER_WIDTH } from '../../shared/constants/timeline.js';
 import type { ExpgovConfig } from '../../types/config/index.js';
 import { ExpgovTmpFixture } from './helpers/tmpFixture.js';
 

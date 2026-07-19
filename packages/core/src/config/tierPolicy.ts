@@ -4,8 +4,8 @@ import {
   BUILTIN_POLICY_NAMES,
   CUSTOM_BUCKET_DEFAULT_POLICY,
   CUSTOM_POLICY_DEFAULTS,
-  type BuiltinTierPolicyName,
 } from '../shared/constants/tierPolicies.js';
+import type { BuiltinTierPolicyName } from '../types/config/policies.js';
 import type {
   ResolvedTierPolicy,
   ResolvedTierPolicyRules,
@@ -13,8 +13,6 @@ import type {
   TierPolicyRules,
 } from '../types/config/policies.js';
 import type { TierRulesConfig } from '../types/config/tiers.js';
-
-export type { BuiltinTierPolicyName };
 
 export function isBuiltinPolicyName(name: string): name is BuiltinTierPolicyName {
   return (BUILTIN_POLICY_NAMES as readonly string[]).includes(name);

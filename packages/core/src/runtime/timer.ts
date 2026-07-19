@@ -4,6 +4,7 @@ import type { CommandStatus } from '../types/runtime/status.js';
 import { getRunOptions } from './runOptions.js';
 import { buildCliJsonEnvelope, stringifyEnvelope } from '../shared/result/cliJson.js';
 import type { Issue } from '../types/json/envelope.js';
+import type { JsonErrorData } from '../types/json/error.js';
 
 export function startCommandTimer(_command: string): CommandTimer {
   const t0 = performance.now();
@@ -38,14 +39,6 @@ export function emitJsonResult<K extends string, D>(input: {
     emitLog({ type: 'raw', message: stringifyEnvelope(envelope), stream: 'stdout' });
   }
 }
-
-export type JsonErrorData = {
-  error: {
-    code: string;
-    message: string;
-    details?: Record<string, string | number | string[] | undefined>;
-  };
-};
 
 /** Emit a failed JSON envelope for errors thrown before a command can finish normally. */
 export function emitJsonError(input: {

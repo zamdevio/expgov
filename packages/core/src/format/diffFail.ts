@@ -2,18 +2,9 @@ import {
   ISSUE_DIFF_EXPORTS_REMOVED,
   ISSUE_DIFF_TIER_VIOLATION,
 } from '../shared/constants/diff.js';
+import type { DiffFailEvaluation, DiffFailOptions } from '../types/format/diffFail.js';
 import type { DiffResult } from '../types/format/diff.js';
 import type { Issue } from '../types/json/envelope.js';
-
-export type DiffFailOptions = {
-  failOnRemoved?: boolean;
-  failOnTierViolations?: boolean;
-};
-
-export type DiffFailEvaluation = {
-  passed: boolean;
-  issues: Issue[];
-};
 
 /**
  * Opt-in CI fail modes for `diff`. Default (no flags) never fails —

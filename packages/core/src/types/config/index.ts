@@ -17,8 +17,12 @@ export type {
   TierRulesConfig,
   TierTagConfig,
 } from './tiers.js';
-export type { ResolvedTierPolicy, ResolvedTierPolicyRules } from './policies.js';
-export type { ExpgovCacheConfig, ExpgovCacheInput } from './cache.js';
+export type {
+  BuiltinTierPolicyName,
+  ResolvedTierPolicy,
+  ResolvedTierPolicyRules,
+} from './policies.js';
+export type { ExpgovCacheConfig, ExpgovCacheInput, ResolvedCacheSettings } from './cache.js';
 export type { ExpgovConfig, ExpgovConfigOverrides, ExpgovCoreConfig, ExpgovGitConfig } from './expgov.js';
 export type { PackageExports } from './package.js';
 export type { ProjectContext } from './context.js';

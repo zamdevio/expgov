@@ -1,7 +1,5 @@
 import { getProjectContext } from '../context/index.js';
-import type { CacheOptions } from '../types/cache/store.js';
-
-export type CliCacheFlags = Pick<CacheOptions, 'noCache' | 'force' | 'profile' | 'depth' | 'git'>;
+import type { CacheOptions, CliCacheFlags } from '../types/cache/store.js';
 
 /** Merge CLI cache flags with resolved config (`cache.enabled`). */
 export function resolveCacheOptions(flags: CliCacheFlags = {}): CacheOptions {

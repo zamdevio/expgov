@@ -71,8 +71,6 @@ export {
   bootstrapRuntime,
   configureStyle,
   style,
-  CLI_NAME,
-  CLI_MARK,
   BRAND,
   getRunOptions,
   setRunOptions,
@@ -95,8 +93,9 @@ export {
   stringifyEnvelope,
   stringifyCliCommandJson,
   buildCliJsonEnvelope,
-  RESULT_API_VERSION,
 } from './runtime/index.js';
+export { RESULT_API_VERSION } from './shared/constants/result.js';
+export { CLI_NAME, CLI_MARK } from './shared/constants/cli.js';
 export type {
   RunOptions,
   LogEvent,
@@ -106,5 +105,5 @@ export type {
   CommandStatus,
 } from './types/runtime/index.js';
 export type { CliJsonEnvelope, Issue, IssueSeverity, ResultMeta } from './types/json/envelope.js';
-export type { JsonErrorData } from './runtime/index.js';
+export type { JsonErrorData } from './types/json/error.js';
 export { SDK_PACKAGE_NAME, SDK_VERSION } from './shared/constants/sdk.js';

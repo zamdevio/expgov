@@ -2,8 +2,8 @@ import {
   DEFAULT_ADVANCED_PREFIXES,
   DEFAULT_INTERNAL_PREFIXES,
   DEFAULT_STABLE_PREFIXES,
-} from '../shared/constants/tiers.js';
-import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
+} from './tiers.js';
+import { DEFAULT_CACHE_DIR } from './cache.js';
 
 /** Commented tier examples for `expgov init --rich`. */
 export const RICH_INIT_TIER_HINTS = {

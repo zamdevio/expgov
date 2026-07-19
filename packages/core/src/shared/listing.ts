@@ -1,5 +1,9 @@
 import { DEFAULT_LIST_TOP, MIN_LIST_TOP } from './constants/list.js';
 import type { ListViewOptions } from '../types/cli/list.js';
+import type {
+  JsonListGuidance,
+  JsonListGuidanceSection,
+} from '../types/json/listGuidance.js';
 
 function parseTopValue(top: number | string | undefined): number | undefined {
   if (top === undefined) return undefined;
@@ -30,20 +34,6 @@ export function formatListTruncationHint(hiddenCount: number): string {
   if (hiddenCount <= 0) return '';
   return `…and ${hiddenCount} more (use -F/--full or -T/--top <n>)`;
 }
-
-/** Stable JSON block so agents/users see list truncation + how to expand. */
-export type JsonListGuidance = {
-  truncated: boolean;
-  /** Present when any listed section still has hidden rows. */
-  note?: string;
-};
-
-export type JsonListGuidanceSection = {
-  /** Field name in `data` (e.g. `symbols`, `rows`). */
-  name: string;
-  shown: number;
-  hidden: number;
-};
 
 /**
  * Build `data.listGuidance` for JSON envelopes that share human `-T`/`-F` list policy.

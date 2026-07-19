@@ -1,15 +1,10 @@
-import type { InsightLine, TagPairDelta, TrendInsights } from '../types/insights/index.js';
+import type {
+  InsightLine,
+  TagPairDelta,
+  TrendInsights,
+  TrendRollupRow,
+} from '../types/insights/index.js';
 import { trimInsightLines } from './common.js';
-
-export interface TrendRollupRow {
-  tag: string;
-  rollup: {
-    rootFlat: number;
-    stable: number;
-    advanced: number;
-    internal: number;
-  };
-}
 
 function stableRatio(rollup: TrendRollupRow['rollup']): number | undefined {
   if (rollup.rootFlat <= 0) return undefined;

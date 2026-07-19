@@ -1,11 +1,7 @@
 import type { ExpgovCacheConfig } from '../types/config/cache.js';
 import type { ExpgovConfig } from '../types/config/expgov.js';
+import type { ResolvedCacheSettings } from '../types/config/cache.js';
 import { DEFAULT_CACHE_DIR } from '../shared/constants/cache.js';
-
-export interface ResolvedCacheSettings {
-  enabled: boolean;
-  dir: string;
-}
 
 function resolveDir(cache: ExpgovCacheConfig | undefined): string {
   return cache?.dir ?? DEFAULT_CACHE_DIR;

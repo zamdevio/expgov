@@ -30,6 +30,9 @@ export interface CacheOptions {
   git?: InventorySnapshot['git'];
 }
 
+/** CLI cache flags merged with resolved config (`cache.enabled`). */
+export type CliCacheFlags = Pick<CacheOptions, 'noCache' | 'force' | 'profile' | 'depth' | 'git'>;
+
 export type CacheStatus = 'hit' | 'miss' | 'refresh' | 'bypass' | 'disabled' | 'n/a';
 
 export interface SnapshotResult {

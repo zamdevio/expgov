@@ -1,24 +1,7 @@
 import { buildJsonListGuidance, limitList, resolveListLimit } from '../shared/listing.js';
-import type { JsonListGuidance } from '../shared/listing.js';
 import type { ListViewOptions } from '../types/cli/list.js';
+import type { GraphJsonEdge, GraphJsonListDetail } from '../types/format/graphJson.js';
 import type { GraphEdge } from '../types/inventory/index.js';
-
-/** Lean edge row for `graph --json` detail (`-v` / `-F`). */
-export type GraphJsonEdge = {
-  kind: GraphEdge['kind'];
-  from: string;
-  symbol: string;
-  toModule: string;
-  targetSubpath: string;
-};
-
-export type GraphJsonListDetail = {
-  /** Same cap as human lists (`Infinity` / `-F` → `null` after JSON.stringify). */
-  top: number;
-  edges: GraphJsonEdge[];
-  edgesHidden: number;
-  listGuidance: JsonListGuidance;
-};
 
 export function shouldIncludeGraphJsonDetail(options: {
   verbose?: boolean;

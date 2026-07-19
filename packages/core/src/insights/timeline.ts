@@ -1,11 +1,9 @@
-import type { InsightLine, TimelineInsights } from '../types/insights/index.js';
+import type {
+  InsightLine,
+  TimelineInsightRow,
+  TimelineInsights,
+} from '../types/insights/index.js';
 import { trimInsightLines } from './common.js';
-
-export interface TimelineInsightRow {
-  date: string;
-  rollup: { rootFlat: number; stable: number };
-  delta: number | null;
-}
 
 function signed(value: number): string {
   return value > 0 ? `+${value}` : String(value);

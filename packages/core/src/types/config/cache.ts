@@ -11,3 +11,9 @@ export interface ExpgovCacheConfig {
 
 /** `cache` field: shorthand boolean or expanded block. */
 export type ExpgovCacheInput = boolean | ExpgovCacheConfig;
+
+/** Runtime cache policy resolved from `ExpgovConfig.cache`. */
+export interface ResolvedCacheSettings {
+  enabled: boolean;
+  dir: string;
+}
