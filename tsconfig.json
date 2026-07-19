@@ -17,6 +17,8 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@expgov/core": ["./packages/core/src/index.ts"],
+      "@expgov/core/advanced": ["./packages/core/src/advanced/index.ts"],
+      "@expgov/core/internal": ["./packages/core/src/internal/index.ts"],
       "@expgov/cli/core": ["./dist/core.d.ts", "./packages/core/src/index.ts"]
     }
   },

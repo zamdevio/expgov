@@ -1,4 +1,4 @@
-import { coreLogRaw, style } from '@expgov/core';
+import { coreLogRaw, style } from '@expgov/core/internal';
 
 import { CLI_PACKAGE_NAME } from '../../constants/cli.js';
 

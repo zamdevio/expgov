@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { formatBoxHeader, getRunOptions } from '@expgov/core';
+import { formatBoxHeader, getRunOptions } from '@expgov/core/internal';
 import { CLI_NAME, CLI_ROOT_TAGLINE } from '../../constants/cli.js';
 import { COMMAND_SUBTITLES } from '../../constants/commandSubtitles.js';
 

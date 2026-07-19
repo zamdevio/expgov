@@ -1,4 +1,4 @@
-import { style } from '@expgov/core';
+import { style } from '@expgov/core/internal';
 
 const WORKFLOW_LINES = [
   'New export surface     init → inventory → validate',

@@ -2,7 +2,8 @@ import { writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-import { coreLog, coreLogTip, runInit } from '@expgov/core';
+import { runInit } from '@expgov/core/advanced';
+import { coreLog, coreLogTip } from '@expgov/core/internal';
 
 import { CONFIG_FILE_NAME } from '../../constants/cli.js';
 import { getCliYesFlag } from '../../shared/context/globals.js';

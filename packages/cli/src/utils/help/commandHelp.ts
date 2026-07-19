@@ -1,4 +1,4 @@
-import { formatGitCommitRangeHelp, formatTimelineRangeHelp } from '@expgov/core';
+import { formatGitCommitRangeHelp, formatTimelineRangeHelp } from '@expgov/core/advanced';
 import type { CommandHelpExtra } from '../../types/help/index.js';
 
 const COMMAND_HELP_EXTRAS: Record<string, CommandHelpExtra> = {

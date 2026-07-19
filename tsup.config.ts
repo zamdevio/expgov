@@ -43,7 +43,9 @@ export default defineConfig({
       __EXPGOV_SDK_VERSION__: JSON.stringify(corePackageVersion),
     };
     options.alias = {
-      '@expgov/core': coreSrc,
+      '@expgov/core/advanced': path.join(coreSrc, 'advanced/index.ts'),
+      '@expgov/core/internal': path.join(coreSrc, 'internal/index.ts'),
+      '@expgov/core': path.join(coreSrc, 'index.ts'),
     };
   },
 });

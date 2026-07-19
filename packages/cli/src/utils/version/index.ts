@@ -1,4 +1,5 @@
-import { coreLogRaw, SDK_PACKAGE_NAME, SDK_VERSION, style } from '@expgov/core';
+import { SDK_PACKAGE_NAME, SDK_VERSION } from '@expgov/core';
+import { coreLogRaw, style } from '@expgov/core/internal';
 
 import { CLI_VERSION } from '../../constants/cli.js';
 import { ENV_EXPGOV_NO_UPDATE_CHECK } from '../../constants/env.js';

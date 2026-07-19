@@ -2,16 +2,7 @@
 import path from 'node:path';
 import { Command, CommanderError } from 'commander';
 import {
-  bootstrapRuntime,
-  configureStyle,
-  emitJsonError,
-  getRunOptions,
-  initProjectContext,
   isExportError,
-  printExportError,
-  printHelpHint,
-  printUnexpected,
-  resetRunOptions,
   runExportsDiff,
   runExportsGraph,
   runExportsInventory,
@@ -20,8 +11,19 @@ import {
   runExportsValidate,
   runExportsDoctor,
   runExportsSuggest,
-  setRunOptions,
 } from '@expgov/core';
+import {
+  bootstrapRuntime,
+  configureStyle,
+  emitJsonError,
+  getRunOptions,
+  initProjectContext,
+  printExportError,
+  printHelpHint,
+  printUnexpected,
+  resetRunOptions,
+  setRunOptions,
+} from '@expgov/core/internal';
 
 import { ensureConfig } from '../src/commands/init/index.js';
 import { preprocessArgv } from '../src/argv/index.js';

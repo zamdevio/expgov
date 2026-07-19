@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 
-import { getRunOptions } from '@expgov/core';
+import { getRunOptions } from '@expgov/core/internal';
 
 /** Delegate to Commander outputHelp (root Workflows appendix lives in configureCliHelp.formatHelp). */
 export function printCliHelp(program: Command, topic?: string): void {
