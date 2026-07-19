@@ -107,5 +107,3 @@ export function formatConfigDiscoveryHint(cwd: string): string {
   if (found) return `Found ${path.relative(cwd, found)}`;
   return `Looked in ${repoRoot} for ${INIT_CONFIG_FILE_NAME}`;
 }
-
-export { defineConfig } from './define.js';

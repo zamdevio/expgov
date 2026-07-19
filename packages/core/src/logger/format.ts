@@ -3,19 +3,14 @@ import { getCoreSrcPrefix } from '../context/paths.js';
 import {
   INVENTORY_CATEGORY_WIDTH,
   INVENTORY_NAME_WIDTH,
-  INVENTORY_PROVENANCE_WIDTH,
   INVENTORY_SYMBOL_KIND_WIDTH,
-  INVENTORY_TIER_WIDTH,
+  INVENTORY_TIER_CELL_WIDTH,
 } from '../shared/constants/inventory.js';
 import type { TierProvenance, TierProvenanceKind } from '../types/inventory/tiers.js';
 
 export function formatInventoryName(name: string): string {
   if (name.length <= 30) return name.padEnd(INVENTORY_NAME_WIDTH);
   return `${name.slice(0, 30)}...`.padEnd(INVENTORY_NAME_WIDTH);
-}
-
-export function formatInventoryTier(tier: string): string {
-  return tier.padEnd(INVENTORY_TIER_WIDTH);
 }
 
 export function formatInventoryCategory(category: string): string {
@@ -42,15 +37,9 @@ export function formatTierProvenanceKind(kind: TierProvenanceKind | undefined): 
   }
 }
 
-/** Padded `(exact)` cell aligned under the provenance gap in the header. */
-export function formatTierProvenanceParen(provenance: TierProvenance | undefined): string {
-  return `(${formatTierProvenanceKind(provenance?.kind)})`.padEnd(INVENTORY_PROVENANCE_WIDTH);
-}
-
 /** Header row for verbose inventory (aligns with `·` data rows). */
 export function formatVerboseInventoryHeader(): string {
-  const provenanceGap = ' '.repeat(INVENTORY_PROVENANCE_WIDTH);
-  return `${formatInventoryName('name')} ${formatInventoryTier('tier')} ${provenanceGap} ${formatInventoryCategory('category')} ${formatInventorySymbolKind('symbolKind')} targetSubpath`;
+  return `${formatInventoryName('name')} ${'tier'.padEnd(INVENTORY_TIER_CELL_WIDTH)} ${formatInventoryCategory('category')} ${formatInventorySymbolKind('symbolKind')} targetSubpath`;
 }
 
 export function formatSubject(subject: string, maxLen: number, verbose?: boolean): string {

@@ -5,6 +5,8 @@ export type Issue = {
   code: string;
   message: string;
   path?: string;
+  /** Optional name samples (e.g. inventory diagnostics); human shows first few. */
+  samples?: string[];
 };
 
 export type ResultMeta = {

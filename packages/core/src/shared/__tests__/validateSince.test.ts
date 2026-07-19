@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { evaluateValidateSince } from '../../format/validateSince.js';
 import { clearProjectContext, initProjectContextFromConfig } from '../../context/index.js';
-import { ISSUE_DIFF_EXPORTS_REMOVED } from '../constants/diff.js';
+import { ISSUE_DIFF_EXPORTS_REMOVED } from '../constants/issues.js';
 import { SNAPSHOT_VERSION, TOOL_VERSION } from '../constants/cache.js';
 import { emptyTierCounts } from '../../inventory/tierCounts.js';
 import type { ExpgovConfig } from '../../types/config/index.js';

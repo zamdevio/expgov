@@ -5,9 +5,15 @@ import {
   shouldIncludeInventoryJsonDetail,
 } from '../format/index.js';
 import { formatGitRunStats, resetGitRunStats, resolveSourceRef } from '../git/index.js';
+import { computeInventoryDiagnostics } from '../inventory/diagnostics.js';
 import { tierCountsFooterFields } from '../inventory/index.js';
+import { createGitReader, createWorktreeReader } from '../inventory/source.js';
 import { computeInventoryInsights } from '../insights/index.js';
-import { printInventoryReport, printVerboseInventory } from '../logger/index.js';
+import {
+  printDiagnosticsBlock,
+  printInventoryReport,
+  printVerboseInventory,
+} from '../logger/index.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
 import { toFilterOptions } from '../shared/filters.js';
@@ -21,6 +27,9 @@ export function runInventory(options: InventoryCliOptions): void {
   const root = result.snapshot.summary.root;
   const insights = computeInventoryInsights(result.snapshot);
   const filters = toFilterOptions(options);
+  const reader =
+    ref.kind === 'worktree' ? createWorktreeReader() : createGitReader(ref.sha);
+  const diagnostics = computeInventoryDiagnostics(result.snapshot, reader);
 
   if (getRunOptions().json) {
     const data: Record<string, unknown> = {
@@ -39,6 +48,7 @@ export function runInventory(options: InventoryCliOptions): void {
       data.symbolsHidden = detail.symbolsHidden;
       data.namespacesHidden = detail.namespacesHidden;
       data.listGuidance = detail.listGuidance;
+      if (detail.namesOnly) data.namesOnly = true;
     }
     finishCommand({
       command: 'inventory',
@@ -47,6 +57,7 @@ export function runInventory(options: InventoryCliOptions): void {
       json: {
         kind: 'inventory',
         ok: true,
+        issues: diagnostics,
         data,
       },
     });
@@ -59,14 +70,18 @@ export function runInventory(options: InventoryCliOptions): void {
     gitStats: options.verbose ? formatGitRunStats() : undefined,
     listView: options,
   });
-  if (options.verbose) printVerboseInventory(result.snapshot, options);
+  if (options.verbose || options.namesOnly) printVerboseInventory(result.snapshot, options);
+  printDiagnosticsBlock(diagnostics, options);
 
   finishCommand({
     command: 'inventory',
     timer,
     status: 'ok',
     footer: {
-      counts: tierCountsFooterFields(root, { flat: root.flat }),
+      counts: {
+        ...tierCountsFooterFields(root, { flat: root.flat }),
+        ...(diagnostics.length ? { diagnostics: diagnostics.length } : {}),
+      },
     },
   });
 }

@@ -4,7 +4,7 @@ import { evaluateDiffFailMode } from '../../format/diffFail.js';
 import {
   ISSUE_DIFF_EXPORTS_REMOVED,
   ISSUE_DIFF_TIER_VIOLATION,
-} from '../constants/diff.js';
+} from '../constants/issues.js';
 
 describe('evaluateDiffFailMode', () => {
   const dirty = {

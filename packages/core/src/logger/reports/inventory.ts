@@ -1,5 +1,5 @@
 import { computeInventoryInsights } from '../../insights/index.js';
-import { VERBOSE_INVENTORY_ROW_PREFIX } from '../../shared/constants/inventory.js';
+import { VERBOSE_INVENTORY_ROW_PREFIX, INVENTORY_TIER_CELL_WIDTH } from '../../shared/constants/inventory.js';
 import { boldDim, style, tierStyle } from '../../runtime/style.js';
 import type { SnapshotResult } from '../../types/cache/index.js';
 import type { SourceRef } from '../../types/git/index.js';
@@ -18,9 +18,8 @@ import {
   formatInventoryCategory,
   formatInventoryName,
   formatInventorySymbolKind,
-  formatInventoryTier,
   formatNamespaceSourceLabel,
-  formatTierProvenanceParen,
+  formatTierProvenanceKind,
   formatVerboseInventoryHeader,
 } from '../format.js';
 import {
@@ -51,11 +50,16 @@ function formatSubpathRollupLine(sp: SubpathRollup): string {
   return `       ${style.dim('·')} ${sp.npmSubpath.padEnd(32)} flat ${String(sp.flat).padStart(4)}  ns ${String(sp.namespace).padStart(3)}${tiers}`;
 }
 
-export function printPublishedSubpathRollups(subpaths: SubpathRollup[], title = 'Published subpaths (rollup)'): void {
+export function printPublishedSubpathRollups(
+  subpaths: SubpathRollup[],
+  title = 'Published subpaths (rollup)',
+  hiddenCount = 0,
+): void {
   if (!subpaths.length) return;
   logLine('');
   logLine(boldDim(`       ${title}`));
   for (const sp of subpaths) logLine(formatSubpathRollupLine(sp));
+  logListTruncation(hiddenCount);
 }
 
 export function printInventoryReport(input: {
@@ -88,7 +92,8 @@ export function printInventoryReport(input: {
   printTierRollupLines(r, listLimit);
 
   printSdkWideTiers(sumSdkTierCounts(snapshot), listLimit);
-  printPublishedSubpathRollups(snapshot.summary.subpaths);
+  const published = limitList(snapshot.summary.subpaths, listLimit);
+  printPublishedSubpathRollups(published.items, 'Published subpaths (rollup)', published.hiddenCount);
 
   const topCategories = limitList(
     Object.entries(r.byCategory ?? {}).sort((a, b) => b[1] - a[1]),
@@ -107,9 +112,10 @@ export function printInventoryReport(input: {
 }
 
 export function printVerboseInventory(snapshot: InventorySnapshot, listView?: ListViewOptions): void {
-  if (!canEmitVerboseReport()) return;
+  if (!canEmitVerboseReport() && !listView?.namesOnly) return;
   const filters = toFilterOptions(listView);
   const listLimit = resolveListLimit(listView);
+  const namesOnly = Boolean(listView?.namesOnly);
   const flat = limitList(
     filterSymbols(
       [...snapshot.symbols].sort((a, b) => a.name.localeCompare(b.name)),
@@ -127,20 +133,24 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
         ? 'No matching root flat exports. Published subpaths are summarized above.'
         : 'No root flat exports.',
     );
+  } else if (namesOnly) {
+    for (const sym of flat.items) {
+      logLine(`       ${style.dim('·')} ${sym.name}`);
+    }
+    logListTruncation(flat.hiddenCount);
   } else {
     logLine(style.dim(`${VERBOSE_INVENTORY_ROW_PREFIX}${formatVerboseInventoryHeader()}`));
     for (const sym of flat.items) {
-      const tierPlain = formatInventoryTier(sym.tier);
-      const tier = tierStyle(sym.tier)(tierPlain);
+      const kind = formatTierProvenanceKind(sym.tierProvenance?.kind);
+      const plain = `${sym.tier}(${kind})`;
+      const pad = ' '.repeat(Math.max(0, INVENTORY_TIER_CELL_WIDTH - plain.length));
+      const provStyled =
+        sym.tierProvenance?.kind === 'tag' ? style.accent(`(${kind})`) : style.dim(`(${kind})`);
+      const tier = `${tierStyle(sym.tier)(sym.tier)}${provStyled}${pad}`;
       const category = style.accent(formatInventoryCategory(sym.category));
       const symbolKind = style.white(formatInventorySymbolKind(sym.symbolKind));
-      const provenancePlain = formatTierProvenanceParen(sym.tierProvenance);
-      const provenance =
-        sym.tierProvenance?.kind === 'tag'
-          ? style.accent(provenancePlain)
-          : style.dim(provenancePlain);
       logLine(
-        `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${provenance} ${category} ${symbolKind} ${style.dim(sym.targetSubpath)}`,
+        `${VERBOSE_INVENTORY_ROW_PREFIX}${formatInventoryName(sym.name)} ${tier} ${category} ${symbolKind} ${style.dim(sym.targetSubpath)}`,
       );
     }
     logListTruncation(flat.hiddenCount);
@@ -161,6 +171,10 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
       ? 'No matching root namespace exports. Published subpaths are summarized above.'
       : 'No root namespace exports.',
     (ns) => {
+      if (namesOnly) {
+        logLine(`       ${style.dim('·')} ${ns.name}`);
+        return;
+      }
       const src = style.dim(formatNamespaceSourceLabel(ns.sourceModule));
       logLine(
         `       ${style.dim('·')} ${ns.name.padEnd(20)} ${src} ${style.dim('·')} ${style.dim(ns.targetSubpath)}`,
@@ -168,10 +182,4 @@ export function printVerboseInventory(snapshot: InventorySnapshot, listView?: Li
     },
     namespaces.hiddenCount,
   );
-
-  if (snapshot.summary.subpaths.length) {
-    const subpaths = limitList(snapshot.summary.subpaths, listLimit);
-    printPublishedSubpathRollups(subpaths.items);
-    logListTruncation(subpaths.hiddenCount);
-  }
 }

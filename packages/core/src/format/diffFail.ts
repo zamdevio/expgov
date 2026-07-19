@@ -1,7 +1,7 @@
 import {
   ISSUE_DIFF_EXPORTS_REMOVED,
   ISSUE_DIFF_TIER_VIOLATION,
-} from '../shared/constants/diff.js';
+} from '../shared/constants/issues.js';
 import type { DiffFailEvaluation, DiffFailOptions } from '../types/format/diffFail.js';
 import type { DiffResult } from '../types/format/diff.js';
 import type { Issue } from '../types/json/envelope.js';

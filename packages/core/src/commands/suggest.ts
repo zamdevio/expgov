@@ -5,6 +5,7 @@ import { printSuggestReport } from '../logger/index.js';
 import { refLine } from '../logger/report.js';
 import { beginCommand, finishCommand } from '../runtime/command.js';
 import { getRunOptions } from '../runtime/runOptions.js';
+import { ISSUE_SUGGEST_UNCLASSIFIED } from '../shared/constants/issues.js';
 import type { Issue } from '../types/json/envelope.js';
 import type { SuggestCliOptions, TierExactSuggestion } from '../types/commands/cli.js';
 
@@ -56,7 +57,7 @@ export function runSuggest(options: SuggestCliOptions = {}): number {
   const issues: Issue[] = hasSuggestions
     ? suggestion.names.map((name) => ({
         severity: 'info',
-        code: 'expgov.suggest.unclassified',
+        code: ISSUE_SUGGEST_UNCLASSIFIED,
         message: `unclassified flat export "${name}" — add to tiers.stable.exact or ${formatTierTagHint()}`,
       }))
     : [];

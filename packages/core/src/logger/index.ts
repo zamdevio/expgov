@@ -1,5 +1,6 @@
 export { printHeader, printMeta } from './report.js';
 export { printInsightsBlock } from './reports/insights.js';
+export { printDiagnosticsBlock } from './reports/diagnostics.js';
 export { printInventoryReport, printVerboseInventory } from './reports/inventory.js';
 export { printDiffReport, printDiffVerbose, printDiffCacheDetail } from './reports/diff.js';
 export { printValidateReport } from './reports/validate.js';

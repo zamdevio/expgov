@@ -15,6 +15,7 @@ import { getRunOptions } from '../runtime/runOptions.js';
 import {
   DEFAULT_CACHE_DIR,
 } from '../shared/constants/cache.js';
+import { ISSUE_DOCTOR_WARNING } from '../shared/constants/issues.js';
 import type { DoctorCliOptions } from '../types/commands/cli.js';
 import type { PackageExports } from '../types/config/package.js';
 import type { Issue } from '../types/json/envelope.js';
@@ -145,7 +146,7 @@ export function runDoctor(options: DoctorCliOptions = {}): number {
   const healthy = warnings.length === 0;
   const issues: Issue[] = warnings.map((message) => ({
     severity: 'warning',
-    code: 'expgov.doctor.warning',
+    code: ISSUE_DOCTOR_WARNING,
     message,
   }));
   const exitCode = healthy ? 0 : 1;

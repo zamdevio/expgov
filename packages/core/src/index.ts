@@ -29,7 +29,7 @@ export type {
 export { ExportError, isExportError } from './errors/index.js';
 export type { ExportErrorCode } from './types/errors/index.js';
 
-export { defineConfig } from './config/load.js';
+export { defineConfig } from './config/define.js';
 export type {
   ExpgovConfig,
   ExpgovConfigOverrides,

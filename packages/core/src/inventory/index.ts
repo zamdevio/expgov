@@ -3,6 +3,13 @@ export {
   buildSnapshot,
 } from './build.js';
 export {
+  computeInventoryDiagnostics,
+  diagnoseDirectBarrelExports,
+  diagnoseUnreachableModuleExports,
+  listDirectExportDeclarationNames,
+  listModuleExportNames,
+} from './diagnostics.js';
+export {
   emptyTierCounts,
   formatTierCountsNote,
   sumSdkTierCounts,
