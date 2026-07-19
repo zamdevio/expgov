@@ -42,8 +42,11 @@ Applies to `inventory`, `diff` (detail lists), and `graph` (view before analytic
 | `--namespace <name>` | Keep root namespaces (and linked symbols/edges) matching any listed name |
 | `--module <path>` | Substring match on source module / edge `toModule` |
 | `--subpath <subpath>` | Match target subpath (`./types`, `types`, …) |
+| `--names-only` | Compact listing: bare names (implies detail; skips tier/module columns) |
 
 Filters run **before** `-T` / `-F`. Inventory filters apply to its root-barrel detail lists, not published-subpath rollups. For `diff`, name arrays `added` / `removed` stay complete for CI gates — only verbose/JSON detail rows are filtered. Graph applies filters to the snapshot view before analytics.
+
+`--names-only` on `inventory` / `diff` / `graph` turns detail rows into bare names (human + JSON). It implies detail the same way `-v` / `-F` do for JSON list fields. JSON sets `data.namesOnly: true` and detail arrays become `string[]` (graph: unique sorted edge symbol names).
 
 When any filter is active, human meta includes a `filters` line (`tier=stable · module=…`) and `--json` adds `data.filters` with only the non-empty keys.
 

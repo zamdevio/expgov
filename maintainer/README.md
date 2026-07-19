@@ -27,7 +27,6 @@ Contributor-only planning and systems maps. **`docs/`** is user-facing; **`maint
 |-----|------|
 | [`phases/active-phase.md`](phases/active-phase.md) | **Current sprint** |
 | [`shipped/README.md`](shipped/README.md) | Shipped receipts (ISO week timeline) |
-| [`phases/commands.md`](phases/commands.md) | Command roadmap + deferred verbs |
+| [`systems/cli.md`](systems/cli.md) | Logger, style, flags, help, command map |
 | [`systems/tiers.md`](systems/tiers.md) | Tier schema, `@sdkTier`, classifier priority |
-| [`systems/cli.md`](systems/cli.md) | Logger, style, flags, help |
 | [`systems/exports.md`](systems/exports.md) | Barrel governance, cache, validate |

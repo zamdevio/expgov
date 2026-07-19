@@ -64,6 +64,7 @@ Run `expgov init` to generate a working scaffold for your layout.
 | `cache` | Snapshot cache — `true` / `false` or `{ enabled?, dir? }` (default enabled, dir `.expgov/cache`) |
 | `git.tagPattern` | Version tag glob for `trend` (default `v*`) |
 | `git.timelineBarrelPath` | Barrel path for `timeline` git log scope |
+| `git.compatBaseline` | Default `validate` removal baseline when `--since` is omitted — a ref (e.g. `v1.0.0`) or `'latest-tag'` |
 | `tiers` | Export classification buckets — see below |
 | `tiers.tag` | Optional JSDoc tag name and tag-vs-config precedence |
 

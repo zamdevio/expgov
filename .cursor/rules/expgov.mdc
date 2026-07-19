@@ -5,7 +5,7 @@ alwaysApply: true
 
 ## Source of truth
 - **Local-only WIP:** `maintainer/temp/` — temporary plans and scratch (**gitignored**).
-- **Sprint / sequencing:** `maintainer/phases/active-phase.md`, `maintainer/phases/commands.md`.
+- **Sprint / sequencing:** `maintainer/phases/active-phase.md`.
 - **Shipped receipts:** `maintainer/shipped/README.md` (check before re-implementing).
 - **Engineering maps:** `maintainer/systems/README.md` (tiers, exports, config, cli, cache, principles).
 - **Agent guides:** `maintainer/agents/README.md` · **Architecture:** `maintainer/agents/architecture.md` · **Rules:** `maintainer/agents/rules.md` · **Onboarding:** `maintainer/agents/onboarding.md`.

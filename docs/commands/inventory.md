@@ -16,7 +16,10 @@ expgov inventory v0.1.4
 
 Shared filters (`--tier`, `--category`, `--namespace`, `--module`, `--subpath`) narrow those root-detail lists. They do not expand the listing to published subpath barrels. A package that keeps advanced/internal exports off its stable root can therefore return an empty detail list for `--tier advanced` or `--tier internal`; SDK-wide counts and published-subpath rollups remain in the summary. Active filters appear in meta / `data.filters` (see [Flags](../cli/flags.md#filter-flags)).
 
+**Diagnostics** (warn-first): direct barrel decls and unreachable exports inside tracked modules. Shown as a Diagnostics block; JSON `issues[]` with `expgov.inventory.*` codes. Does not fail the command — see [Governance](../governance.md).
+
 ## Related
 
 - [validate](./validate.md)
 - [graph](./graph.md)
+- [Governance model](../governance.md)

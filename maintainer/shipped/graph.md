@@ -1,7 +1,5 @@
 # Graph 2.0 (C1–C3 shipped)
 
-**C4** graph modes remain brainstorm-only. Active note: [`phases/graph-2.md`](../phases/graph-2.md).
-
 **Command:** `packages/core/src/commands/graph.ts` · **Analytics:** `packages/core/src/graph/analytics.ts`
 
 ---
@@ -64,9 +62,16 @@ Meta → **Root namespaces** (edge count, module, composition) → re-export tar
 
 ---
 
-## Next (not shipped)
+## Next — C4 (brainstorm, not shipped)
 
-**C4** — `--view` modes, JSON node-link export, Mermaid (brainstorm only).
+Prefer one `--view <mode>` when modes share filters:
+
+| Mode | Question |
+|------|----------|
+| Tier graph | Which modules contribute advanced vs stable? |
+| Diff graph | What changed in the re-export map? |
+| JSON graph export | Node-link JSON for visualization |
+| Mermaid emit | Paste into docs |
 
 ---
 

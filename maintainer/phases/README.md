@@ -10,9 +10,8 @@
 |-----|------|
 | [`active-phase.md`](./active-phase.md) | **Current sprint + Near/Mid release gate** |
 | [`../shipped/README.md`](../shipped/README.md) | **Closed work** — ISO week timeline + receipts |
-| [`../systems/`](../systems/README.md) | Durable engineering maps (incl. [`release.md`](../systems/release.md)) |
-| [`commands.md`](./commands.md) | Command roadmap — wired verbs + deferred future commands |
-| Root [`CHANGELOG.md`](../../CHANGELOG.md) | User-facing release history (no releases portal) |
+| [`../systems/`](../systems/README.md) | Durable engineering maps (incl. [`release.md`](../systems/release.md), [`cli.md`](../systems/cli.md)) |
+| Root [`CHANGELOG.md`](../../CHANGELOG.md) | User-facing release history |
 
 Scratch / spikes: **`maintainer/temp/`** (gitignored).
 
@@ -41,11 +40,7 @@ Near / Mid lists and the hold on `versions:up` live in [`active-phase.md`](./act
 
 | Doc | Status | Band |
 |-----|--------|------|
-| [`diff.md`](./diff.md) | D1–D2 shipped; optional D3 | Near |
-| [`inventory-diagnostics.md`](./inventory-diagnostics.md) | **Focus** — ID1/ID2 | Near |
-| [`graph-2.md`](./graph-2.md) | C1–C3 shipped; C4 deferred | Near |
 | [`../api-chain.md`](../api-chain.md) | D — API chain | Mid |
-| [`cli-output-audit.md`](./cli-output-audit.md) | F — UX audit leftovers | Mid |
 | [`severity.md`](./severity.md) | After Near / v1.1.0 | Mid |
 | [`suggest.md`](./suggest.md) | Suggest engine / filters | Mid |
 | [`fix.md`](./fix.md) | Fix subcommands | Mid |
@@ -53,6 +48,5 @@ Near / Mid lists and the hold on `versions:up` live in [`active-phase.md`](./act
 | [`multibarrel.md`](./multibarrel.md) | Multi-entry surface | Mid |
 | [`issues.md`](./issues.md) | Issue code registry | Mid |
 | [`sourceProfiles.md`](./sourceProfiles.md) | H — source profiles | Mid |
-| [`test-expansion.md`](./test-expansion.md) | Test coverage waves | Mid / anytime |
 
-**Deleted after full ship:** Release R1–R4 → [`shipped/release.md`](../shipped/release.md). **REL1–3** automation → [`systems/release.md`](../systems/release.md) (phase `releases.md` removed). Phase E → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md). Phase I → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Phase B → [`shipped/timeline.md`](../shipped/timeline.md). Graph C1–C2 → [`shipped/graph.md`](../shipped/graph.md).
+**Deleted after full ship / fold:** Diff D1–D3 → [`shipped/git-commands.md`](../shipped/git-commands.md). Graph C1–C3 + C4 note → [`shipped/graph.md`](../shipped/graph.md). Commands map / CLI audit leftovers / test waves → [`systems/cli.md`](../systems/cli.md). Release R1–R4 → [`shipped/release.md`](../shipped/release.md). REL1–3 → [`systems/release.md`](../systems/release.md). Phase E → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md). Phase I → [`shipped/examples-sdk.md`](../shipped/examples-sdk.md). Phase B → [`shipped/timeline.md`](../shipped/timeline.md). HELP1 / agentic → [`shipped/runtime-cli.md`](../shipped/runtime-cli.md) / [`git-commands.md`](../shipped/git-commands.md).

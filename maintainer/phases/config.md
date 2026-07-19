@@ -2,7 +2,7 @@
 
 **Status:** Deferred — after Severity / Suggest / Fix backlog (or parallel with Phase H-src if a repo needs JSON config).
 
-**Companion:** [`../systems/config.md`](../systems/config.md) · [`../systems/principles.md`](../systems/principles.md) · [`sourceProfiles.md`](./sourceProfiles.md) (barrel `core.sourceProfile` only) · [`commands.md`](./commands.md)
+**Companion:** [`../systems/config.md`](../systems/config.md) · [`../systems/principles.md`](../systems/principles.md) · [`sourceProfiles.md`](./sourceProfiles.md) (barrel `core.sourceProfile` only) · [`../systems/cli.md`](../systems/cli.md#command--core-map)
 
 ---
 

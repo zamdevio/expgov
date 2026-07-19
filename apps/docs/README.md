@@ -12,7 +12,7 @@ Extensions live in `.vitepress/theme/` (`custom.css` + `index.ts`). Palette: sla
 
 - Frosted nav bars, desktop sidebar edge, thin scrollbars
 - Fixed ambient background (grid + dual glow + noise) on all pages via `layout-top`
-- Logo: `.vitepress/public/expgov.svg` (barrel + export arrow motif, same family as nodehunter)
+- Logo / favicon: `.vitepress/public/expgov.svg`
 
 ## Scripts
 

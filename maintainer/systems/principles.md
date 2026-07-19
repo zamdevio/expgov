@@ -43,7 +43,14 @@ expgov’s engine answers: **what is intentionally public from configured packag
 
 This keeps diagnostics focused, matches graph-based cache invalidation (same closure), and avoids turning expgov into a second static-analysis suite.
 
-**Planned honesty gaps** (silent today; do not claim fixed in user docs until shipped): direct declarations inside tracked barrels, and tracked closure modules that declare symbols but contribute no reachable SDK export — [`phases/inventory-diagnostics.md`](../phases/inventory-diagnostics.md) (ID1 / ID2). After those land, expand [`exports.md`](./exports.md) and [`../../docs/governance.md`](../../docs/governance.md) with the live diagnostic codes and UX.
+**Honesty diagnostics** (warn-first on `inventory`; do not fail by default):
+
+| Code | Meaning |
+|------|---------|
+| `expgov.inventory.direct_barrel_export` | Direct `export const` / `function` / … inside a tracked barrel (not inventoriable — re-export from a module instead) |
+| `expgov.inventory.unreachable_module_exports` | Names exported from a tracked module that never appear on the inventoriable root surface from that module |
+
+Implementation: `inventory/diagnostics.ts`. Public copy: [`../../docs/governance.md`](../../docs/governance.md).
 
 ---
 

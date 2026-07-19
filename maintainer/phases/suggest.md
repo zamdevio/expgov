@@ -2,7 +2,7 @@
 
 **Status:** Planned — immediately after [`severity.md`](./severity.md) V1–V7 (shared findings + policy severity).
 
-**Companion:** [`severity.md`](./severity.md) · [`fix.md`](./fix.md) (apply — deferred) · [`../systems/tiers.md`](../systems/tiers.md) · [`docs/commands/README.md`](./commands.md)
+**Companion:** [`severity.md`](./severity.md) · [`fix.md`](./fix.md) (apply — deferred) · [`../systems/tiers.md`](../systems/tiers.md) · [`../../docs/commands/README.md`](../../docs/commands/README.md)
 
 ---
 

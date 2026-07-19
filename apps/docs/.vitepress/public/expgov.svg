@@ -1,7 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="hsl(222 28% 12%)" />
-  <rect x="7.5" y="7.5" width="14" height="17" rx="3" stroke="hsl(187 92% 42%)" stroke-width="1.6" opacity="0.9" />
-  <path d="M11 12h8M11 16h6M11 20h4" stroke="hsl(33 100% 50%)" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
-  <path d="M22.5 16h3.5M25.5 16l-1.6-1.6M25.5 16l-1.6 1.6" stroke="hsl(187 92% 42%)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="11" cy="12" r="0.9" fill="hsl(33 100% 50%)" />
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">expgov logo</title>
+  <desc id="desc">A governed TypeScript export surface represented by a structured E, graph nodes, and an outward arrow.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#151C2B"/>
+      <stop offset="1" stop-color="#0B101A"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="17" y1="15" x2="49" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#31E6F3"/>
+      <stop offset="1" stop-color="#08AFC2"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="22" y1="26" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFB12B"/>
+      <stop offset="1" stop-color="#FF8500"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- App tile -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bg)"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="14.25" fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1.5"/>
+
+  <!-- Subtle export-surface grid -->
+  <path d="M13 20H51M13 32H51M13 44H51M20 13V51M32 13V51M44 13V51" stroke="#7FEAF2" stroke-opacity="0.045" stroke-width="1"/>
+
+  <!-- Governed barrel / E monogram -->
+  <path d="M19 17.5H36.5M19 17.5V46.5M19 32H34M19 46.5H36.5" fill="none" stroke="url(#cyan)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Tier markers -->
+  <circle cx="19" cy="17.5" r="3.1" fill="#101827" stroke="#3BE7F1" stroke-width="2"/>
+  <circle cx="19" cy="32" r="3.1" fill="#101827" stroke="#20C9D8" stroke-width="2"/>
+  <circle cx="19" cy="46.5" r="3.1" fill="#101827" stroke="#08AFC2" stroke-width="2"/>
+
+  <!-- Validated export path -->
+  <path d="M34 32H48" fill="none" stroke="url(#amber)" stroke-width="4" stroke-linecap="round" filter="url(#softGlow)"/>
+  <path d="M43.5 26.5L49 32L43.5 37.5" fill="none" stroke="url(#amber)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Governance boundary -->
+  <path d="M40.5 17.5H47.5C49.7 17.5 51.5 19.3 51.5 21.5V42.5C51.5 44.7 49.7 46.5 47.5 46.5H40.5" fill="none" stroke="#35DCE8" stroke-opacity="0.42" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.5 4"/>
 </svg>

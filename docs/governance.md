@@ -23,7 +23,16 @@ Governance commands never edit your barrel, `package.json`, or tier tags. You ap
 4. **Parity checks** — `validate` compares tsconfig `paths` to npm `exports`.
 5. **Drift visibility** — `diff`, `timeline`, and `trend` show how the surface changed over time.
 
-Prefer `export { … } from './module'` (or `export * as`) from barrels so symbols enter the inventoriable graph. Declarations written directly in a barrel may not appear in inventory until engine diagnostics/support for that pattern land.
+Prefer `export { … } from './module'` (or `export * as`) from barrels so symbols enter the inventoriable graph.
+
+**Diagnostics** (`inventory`, warn-first — exit stays 0 / `ok: true`):
+
+| Code | When |
+|------|------|
+| `expgov.inventory.direct_barrel_export` | Direct `export const` / `function` / … inside a tracked barrel (not inventoriable yet) |
+| `expgov.inventory.unreachable_module_exports` | A tracked module exports names that never appear on the inventoriable root surface from that module |
+
+Human output shows a **Diagnostics** block; JSON puts the same rows in `issues[]`.
 
 ## Tier sources (first match wins)
 

@@ -79,6 +79,20 @@ pnpm build
 expgov validate --since v1.0.0
 ```
 
+Or pin the baseline in config and omit the flag in CI:
+
+```ts
+// expgov.config.ts
+git: { tagPattern: 'v*', compatBaseline: 'v1.0.0' },
+```
+
+```bash
+pnpm build
+expgov validate
+```
+
+CLI `--since` still overrides `git.compatBaseline`. Use `'latest-tag'` when you want the newest tag matching `git.tagPattern`.
+
 Equivalent two-step form (still useful when you want separate jobs or only the surface check):
 
 ```bash
@@ -90,9 +104,9 @@ Optional on `diff` only: also fail on right-side tier notes with `--fail-on-tier
 
 | Goal | Command |
 |------|---------|
-| Current-tree tiers + parity | `expgov validate` |
+| Current-tree tiers + parity | `expgov validate` (no baseline configured) |
 | No removals since baseline | `expgov diff <tag>..HEAD --fail-on-removed` |
-| Both (recommended CI) | `expgov validate --since <tag>` |
+| Both (recommended CI) | `expgov validate --since <tag>` or config `compatBaseline` |
 | JSON artifact for agents | add `-j` (`-s` is redundant) |
 
 ## CI gate (JSON artifact)

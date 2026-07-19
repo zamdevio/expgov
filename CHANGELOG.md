@@ -10,7 +10,7 @@ GitHub releases: https://github.com/zamdevio/expgov/releases
 
 ## [Unreleased]
 
-Breaking and additive work on `main` since **v1.0.1**.
+Breaking and additive work on `main` since **v1.0.1**. Becomes **v1.1.0** when tagged.
 
 ### Breaking
 
@@ -19,20 +19,30 @@ Breaking and additive work on `main` since **v1.0.1**.
 
 ### Added
 
-- `diff --fail-on-removed` / `--fail-on-tier-violations` (CI fail gate).
-- `validate --since <ref>` (removals ∪ existing validate checks).
-- Inventory / graph / diff JSON detail under `-v` / `-F` (`symbols`, `namespaces`, `edges`, `addedDetail` / `removedDetail`) with shared `listGuidance`.
-- Shared list filters on `inventory` / `diff` (detail) / `graph`: `--tier`, `--category`, `--namespace`, `--module`, `--subpath` (graph filters view before analytics).
-- Active filters appear in human meta and JSON `data.filters` (omit empty keys).
-- Inventory `-v` shows short tier provenance beside the tier column (`(exact)` / `(prefix)` / `(tag)` / `(default-prefix)`).
-- Help Usage/Examples token hierarchy: bold blue `expgov`, bold cyan command path, dim flags/values/placeholders.
+- `diff --fail-on-removed` / `--fail-on-tier-violations` (opt-in CI fail gate; default `diff` stays exit `0`).
+- `validate --since <ref>` — one-command gate: current-tree validate ∪ fail on flat export removals vs baseline.
+- `git.compatBaseline` — default validate removal baseline when `--since` is omitted (`'latest-tag'` or a ref; CLI `--since` wins).
+- Inventory / graph / diff / timeline JSON detail under `-v` / `-F` (`symbols`, `namespaces`, `edges`, `addedDetail` / `removedDetail`, timeline rows) with shared `-T`/`-F` policy.
+- `data.listGuidance` — single truncation block (`truncated` + `note`) for capped JSON lists.
+- Shared list filters on `inventory` / `diff` (detail) / `graph`: `--tier`, `--category`, `--namespace`, `--module`, `--subpath` (graph filters view before analytics); active filters in human meta + JSON `data.filters`.
+- `--names-only` on `inventory` / `diff` / `graph` — bare-name detail lists (human + JSON `string[]` with `data.namesOnly`; implies detail).
+- Inventory `-v` short tier provenance beside the tier column (`(exact)` / `(prefix)` / `(tag)` / `(default-prefix)`).
+- Inventory diagnostics (warn-first, non-failing): `expgov.inventory.direct_barrel_export`, `expgov.inventory.unreachable_module_exports` in human Diagnostics + JSON `issues[]` (`Issue.samples`).
 - Insights always `{ lines, …typedFields }` (never `null`); timeline/trend/diff Δ positive = growth toward newer/right/later.
-- JSON error envelopes for thrown domain errors and Commander parser errors under `-j`.
+- JSON error envelopes for thrown domain errors and Commander parser errors under `-j` (`ok: false`).
+- Help Usage/Examples token hierarchy: bold blue `expgov`, bold cyan command path, dim flags/values/placeholders.
 - Release automation: `pnpm versions:up|sync|verify`, tag-triggered `.github/workflows/release.yml` (OIDC Trusted Publishing for both packages).
+- Public docs for advanced/internal surfaces, CI recipes (`validate --since` / `compatBaseline`), and JSON list contracts.
 
 ### Changed
 
 - Layout hygiene: types under `types/`, constants under `shared/constants/` (or CLI `constants/`); logic modules import, do not re-export types.
+- CLI host imports runtime/logger from `@expgov/core/internal` (stable root stays thin).
+- Unified issue code registry (`shared/constants/issues.ts`) for validate / diff / doctor / suggest / inventory diagnostics.
+
+### Fixed
+
+- Keep list truncation guidance in a single `listGuidance` block (no duplicate `notes` mirror).
 
 ---
 

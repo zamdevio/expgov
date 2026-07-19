@@ -2,7 +2,7 @@
 
 **Status:** Planned — after Phase **C** (graph 2.0) or in parallel with **MB1** dogfood on vercel/ai `packages/ai`.
 
-**Companion:** [`../systems/config.md`](../systems/config.md) · [`sourceProfiles.md`](./sourceProfiles.md) · [`graph-2.md`](./graph-2.md) · [`severity.md`](./severity.md) · [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) (I2 monorepo)
+**Companion:** [`../systems/config.md`](../systems/config.md) · [`sourceProfiles.md`](./sourceProfiles.md) · [`../shipped/graph.md`](../shipped/graph.md) · [`severity.md`](./severity.md) · [`../shipped/examples-sdk.md`](../shipped/examples-sdk.md) (I2 monorepo)
 
 ---
 

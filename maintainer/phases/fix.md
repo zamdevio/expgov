@@ -2,7 +2,7 @@
 
 **Status:** Deferred — after [`severity.md`](./severity.md) + [`suggest.md`](./suggest.md) ship stable findings, engine, and JSON.
 
-**Companion:** [`suggest.md`](./suggest.md) · [`severity.md`](./severity.md) · [`commands.md`](./commands.md) · [`../systems/tiers.md`](../systems/tiers.md)
+**Companion:** [`suggest.md`](./suggest.md) · [`severity.md`](./severity.md) · [`../systems/cli.md`](../systems/cli.md#command--core-map) · [`../systems/tiers.md`](../systems/tiers.md)
 
 ---
 

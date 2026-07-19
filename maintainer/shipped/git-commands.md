@@ -36,7 +36,7 @@ Ref resolution, wired governance verbs, and auxiliary commands.
 
 - [x] Per-command `-v/--verbose` where applicable
 
-Command contracts: [`phases/commands.md`](../phases/commands.md).
+Command map: [`systems/cli.md`](../systems/cli.md#command--core-map).
 
 ---
 
@@ -91,7 +91,14 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 - [x] Tests: `shared/__tests__/validateSince.test.ts`
 - [x] Docs: `docs/commands/validate.md`, `diff.md`, `guides/workflows.md` CI recipes, `docs/cli/json.md`
 
-Still open: D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).
+## D3 — git.compatBaseline (shipped) · 2026-W29
+
+- [x] `ExpgovGitConfig.compatBaseline` — ref or `'latest-tag'`
+- [x] `resolveCompatBaseline` / `resolveValidateSinceRef` — CLI `--since` wins over config
+- [x] `runValidate` uses effective baseline when either source is set
+- [x] Tests: `shared/__tests__/compatBaseline.test.ts`
+- [x] Docs: `docs/config.md`, `docs/commands/validate.md`, `docs/guides/workflows.md`
+- [x] Root config: field documented; enable after v1.1.0 tag (v1.0.0 baseline conflicts with Unreleased thin-root)
 
 ## AG3 — diff JSON detail (shipped) · 2026-W29
 
@@ -108,4 +115,12 @@ Still open: D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).
 - [x] Helpers: `shared/filters.ts`; tests: `shared/__tests__/filters.test.ts`
 - [x] Docs: `docs/cli/flags.md`
 
-Deferred (not blocking): `--names-only` compact listing — see [`phases/active-phase.md`](../phases/active-phase.md) Deferred.
+Deferred (not blocking): none for AG5 — `--names-only` shipped (see below).
+
+## AG5b — `--names-only` compact listing (shipped) · 2026-W29
+
+- [x] `--names-only` on inventory / diff / graph (with filter flags)
+- [x] Implies detail inclusion (same as `-v`/`-F` for JSON list fields)
+- [x] Human: bare name rows; graph skips rollup/summary/insights
+- [x] JSON: `data.namesOnly: true`; detail arrays become `string[]` (graph: unique sorted edge symbols)
+- [x] Docs: `docs/cli/flags.md`, `docs/cli/json.md`, `systems/cli.md`

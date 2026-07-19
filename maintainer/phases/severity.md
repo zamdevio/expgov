@@ -2,7 +2,7 @@
 
 **Status:** Planned — after Diff/Agentic and Phase **G** (per [`active-phase.md`](./active-phase.md) backlog order).
 
-**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) · [`fix.md`](./fix.md) · [`issues.md`](./issues.md) · [`docs/commands/README.md`](./commands.md)
+**Companion:** [`../systems/tiers.md`](../systems/tiers.md) · [`suggest.md`](./suggest.md) · [`fix.md`](./fix.md) · [`issues.md`](./issues.md) · [`../../docs/commands/README.md`](../../docs/commands/README.md)
 
 ---
 

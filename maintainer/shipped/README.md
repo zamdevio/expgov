@@ -68,6 +68,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | 2026-W29 | **AG6** — insights normalization | Shared `{ lines, …typedFields }`; chronological timeline/trend/diff Δ signs |
 | 2026-W29 | **C3** — graph filters | `--namespace` / `--module` / `--subpath` on shared filter helper; view before analytics |
 | 2026-W29 | **HELP1** — help color hierarchy | Blue `expgov` · cyan command path · dim flags on Usage/Examples |
+| 2026-W29 | **ID1 / ID2** — inventory diagnostics | Direct barrel decls + unreachable exports on tracked modules (warn-first) |
 
 ---
 
@@ -76,7 +77,7 @@ Closed slices only — check here before re-implementing. Durable engineering de
 | Group | Slices | Doc |
 |-------|--------|-----|
 | Foundation | P0, P7 | [`foundation.md`](./foundation.md) |
-| Inventory & cache | P0a, P0b, P4, P16, P24, AG1 | [`inventory-cache.md`](./inventory-cache.md) |
+| Inventory & cache | P0a, P0b, P4, P16, P24, AG1, ID1/ID2 | [`inventory-cache.md`](./inventory-cache.md) |
 | Git & commands | P0c, P0d, P4a, P5, P8, B1–B5, C1–C3, P25, D1, D2, AG2, AG3, AG5 | [`git-commands.md`](./git-commands.md) · [`timeline.md`](./timeline.md) · [`graph.md`](./graph.md) |
 | Tiers & config | P2 tiers, P9–P11, P13, P23 | [`tiers-config.md`](./tiers-config.md) |
 | Runtime & CLI output | P1, P1a, P2a, P6, P14, P15, P17, P18, P20, P21, P22, AG8, HELP1 | [`runtime-cli.md`](./runtime-cli.md) |
@@ -97,14 +98,16 @@ Closed slices only — check here before re-implementing. Durable engineering de
 
 ## Explicitly not shipped
 
-- [x] `validate --since` ([`phases/diff.md`](../phases/diff.md) D2 / Agentic AG4)
-- [ ] `compatBaseline` config ([`phases/diff.md`](../phases/diff.md) D3)
+- [x] `validate --since` ([`git-commands.md`](./git-commands.md) D2 / Agentic AG4)
+- [x] `compatBaseline` config ([`git-commands.md`](./git-commands.md) D3)
+- [x] `--names-only` compact listing ([`git-commands.md`](./git-commands.md) AG5b)
 - [x] Diff verbose JSON detail ([`git-commands.md`](./git-commands.md) AG3)
 - [x] JSON envelopes for thrown/parser errors ([`runtime-cli.md`](./runtime-cli.md) AG8)
 - [x] Filter flags `--tier` / `--category` ([`git-commands.md`](./git-commands.md) AG5)
 - [x] Insights normalization ([`runtime-cli.md`](./runtime-cli.md) AG6)
 - [x] Graph filters `--namespace` / `--module` / `--subpath` ([`graph.md`](./graph.md) C3)
 - [x] Help color hierarchy ([`runtime-cli.md`](./runtime-cli.md) HELP1)
+- [x] Inventory diagnostics ID1/ID2 ([`inventory-cache.md`](./inventory-cache.md))
 - [ ] Automated tier allowlist PR bot
 - [ ] JSON config / `expgov.config.json`
 - [ ] Remote or shared cache

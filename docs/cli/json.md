@@ -170,7 +170,7 @@ When checks fail, `ok` is `false`, `issues` lists structured violations, and the
 
 ### `validate --since`
 
-Baseline vs working tree. Removals use the same issue code as `diff --fail-on-removed`:
+Baseline vs working tree (CLI `--since`, or `git.compatBaseline` when the flag is omitted; CLI wins). Removals use the same issue code as `diff --fail-on-removed`. `data.since` is the effective resolved ref (`'latest-tag'` becomes the newest matching tag):
 
 ```bash
 expgov validate --since v1.0.0 -j
@@ -205,6 +205,8 @@ expgov validate --since v1.0.0 -j
 Default JSON is summary-only. Pass `-v` or `-F` to include root flat symbols and namespaces. Lists honor the same `-T` / `-F` policy as human verbose mode (default top `10`; `-F` = uncapped, `top` serializes as `null`):
 
 When `--tier` / `--category` / `--namespace` / `--module` / `--subpath` are set, JSON includes `data.filters` with only the active keys (omitted entirely when none apply).
+
+Warn diagnostics (direct barrel decls, unreachable module exports) appear in top-level `issues[]` with `ok: true` — they do not fail the command. Codes: `expgov.inventory.direct_barrel_export`, `expgov.inventory.unreachable_module_exports`. Optional `samples[]` lists export names; human Diagnostics shows path + message, then up to 3 samples on the next line (and respects `-T`/`-F` for how many diagnostic rows print).
 
 ```bash
 expgov inventory -v -j          # top 10 symbols + namespacesHidden
@@ -249,11 +251,21 @@ expgov inventory -F -j          # all symbols (same as -v -F)
 }
 ```
 
-Use `summary.root.flat` for the true total; `symbols.length + symbolsHidden` matches that total when detail is present. Omit `-v`/`-F` and those list fields are absent.
+Use `summary.root.flat` for the true total; `symbols.length + symbolsHidden` matches that total when detail is present. Omit `-v`/`-F`/`--names-only` and those list fields are absent.
+
+With `--names-only` (alone or with `-v`/`-F`), detail arrays are bare name strings and `data.namesOnly` is `true`:
+
+```json
+{
+  "namesOnly": true,
+  "symbols": ["runValidate", "runInventory"],
+  "namespaces": ["Cli"]
+}
+```
 
 ### `graph`
 
-Default JSON is analytics + target groups. Pass `-v` or `-F` to include re-export `edges[]` under the same `-T`/`-F` list policy + `listGuidance`:
+Default JSON is analytics + target groups. Pass `-v`, `-F`, or `--names-only` to include re-export `edges[]` under the same `-T`/`-F` list policy + `listGuidance`. With `--names-only`, `edges` is unique sorted symbol names and `data.namesOnly` is `true`.
 
 ```bash
 expgov graph -v -j

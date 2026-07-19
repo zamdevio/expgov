@@ -36,6 +36,10 @@ Per-command list flags (`inventory`, `diff`, `graph`, `trend`, `timeline`, `vali
 
 **`validate --since <ref>` (shipped D2 / AG4):** one-command CI gate — current-tree validate ∪ fail on flat removals vs baseline (same removal code as `diff --fail-on-removed`). JSON adds `data.since` / `sinceLabel` / `added` / `removed`.
 
+**`git.compatBaseline` (shipped D3):** config default for that gate when `--since` is omitted — a ref or `'latest-tag'`. CLI `--since` always wins.
+
+**`--names-only` (inventory / diff / graph):** compact detail listing — bare names in human + JSON (`data.namesOnly: true`; arrays become `string[]`). Implies detail like `-v`/`-F` for JSON list fields.
+
 Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode never applies ANSI.
 
 Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style default action).
@@ -126,3 +130,48 @@ Shared JSON shape: `{ lines: InsightLine[], …typedFields }`. Always present (e
 ## Short aliases (shipped P6)
 
 Canonical long forms in help/JSON; short flags secondary. Cache: `-f` force, `-nch` no-cache. List: `-T` top, `-F` full.
+
+## Command → core map
+
+| CLI | Core entry | Notes |
+|-----|------------|-------|
+| `init` | `runInit` + ensureConfig (CLI) | Writes `expgov.config.ts` |
+| `inventory [ref]` | `runInventory` | |
+| `diff [range]` | `runDiff` | |
+| `validate` | `runValidate` | Exit 1 on fail |
+| `doctor` | `runDoctor` | |
+| `suggest` | `runSuggest` | Read-only |
+| `trend` | `runTrend` | |
+| `timeline [range]` | `runTimeline` | |
+| `graph [ref]` | `runGraph` | |
+| `help [topic]` | `printCliHelp` | Commander + extras |
+| `fix …` | `runFix` (planned) | [`phases/fix.md`](../phases/fix.md) |
+| `config …` | `runConfig*` (planned) | [`phases/config.md`](../phases/config.md) |
+
+Handlers: `packages/cli/bin/cli.ts` (except `init` → `commands/init/`). Governance verbs are read-only except `init`.
+
+## Open UX leftovers (from CLI output audit)
+
+Not blocking v1.1.0 — polish when touching a command:
+
+- Document `REPORT_INDENT` / standardize `padLabel` widths
+- Timeline: move Δ legend into help; SHA column vs header width; optional `--no-delta`
+- Graph: truncate verbose module symbol lists with `+N`; subtitle rename
+- Trend: cache `(hit)` suffix only under `-v`
+- Inventory meta: add `symbols` count for parity with graph
+- Error hints: topic from `details.command`; shared invalid_range suggestion formatter
+- Glossary for user docs (`root flat`, provenance, SDK-wide, …)
+- Golden ANSI-stripped output snapshots (future)
+
+## Testing (wave plan)
+
+**Runner:** vitest (`pnpm test`). **CI:** typecheck + test + build + validate (blocking); knip/madge advisory.
+
+| Wave | Focus |
+|------|-------|
+| **1** | Pure units — prefix compiler, categories, tierCounts, re-export chain, timeline ranges, diff engine |
+| **2** | Barrel parse / inventory build fixtures (inline strings first) |
+| **3** | CLI argv / help / listFlags smoke (prefer import over subprocess) |
+| **4** | Optional git/cache integration (`@git` / skip without git) |
+
+Layout: `**/__tests__/**/*.test.ts` next to source. Prefer return values / `ExportError` over `console.*` in core.

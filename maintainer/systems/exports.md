@@ -20,13 +20,13 @@ Core scope rule: **reachable SDK surface** — [`principles.md`](./principles.md
 
 Inventory builds from configured entry barrels / subpaths, then follows re-export edges (`export { … } from`, `export * as`). The resulting symbol set, graph edges, and cache invalidation closure are the same graph.
 
-| Included today | Not included today |
-|----------------|--------------------|
-| Named / namespace re-exports from tracked barrels | Direct `export const` / `function` / … **inside** the barrel (silent miss — [`phases/inventory-diagnostics.md`](../phases/inventory-diagnostics.md) ID1) |
-| Modules on those re-export chains | Repo files never reached from an entry |
-| Tier / policy on inventoriable flats | “Module in closure declares stuff but exports nothing reachable” (silent — ID2) |
+| Included | Diagnostics (warn, non-failing) |
+|----------|----------------------------------|
+| Named / namespace re-exports from tracked barrels | ID1: direct decls inside barrels → `expgov.inventory.direct_barrel_export` |
+| Modules on those re-export chains | ID2: extra local exports on tracked modules not on the inventoriable surface → `expgov.inventory.unreachable_module_exports` |
+| Tier / policy on inventoriable flats | Repo files never reached from an entry stay out of scope (use Knip/Madge) |
 
-When ID1/ID2 ship, document issue codes and command UX here and in public `docs/governance.md` (phase **ID-DOC**). Until then: do not advertise those diagnostics as live.
+`inventory` prints a **Diagnostics** block and JSON `issues[]` (severity `warning`, `ok: true`). Engine: `packages/core/src/inventory/diagnostics.ts`.
 
 ---
 

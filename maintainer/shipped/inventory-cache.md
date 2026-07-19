@@ -84,3 +84,14 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 5. Insights always `{ lines, …typedFields }` (empty `lines: []`, never `null`); Δ positive = growth toward newer/right/later.
 
 Map: [`systems/cli.md`](../systems/cli.md).
+
+---
+
+## ID1 / ID2 — inventory diagnostics (shipped) · 2026-W29
+
+- [x] `inventory/diagnostics.ts` — command-time warn issues (no snapshot field / cache bump)
+- [x] ID1 `expgov.inventory.direct_barrel_export` — direct decls in tracked barrels
+- [x] ID2 `expgov.inventory.unreachable_module_exports` — local exports on tracked modules not on inventoriable surface
+- [x] Human **Diagnostics** block; JSON `issues[]` with `ok: true` (non-failing)
+- [x] Tests: `shared/__tests__/inventoryDiagnostics.test.ts`
+- [x] Docs: `systems/principles.md`, `systems/exports.md`, `docs/governance.md`, `docs/commands/inventory.md`
