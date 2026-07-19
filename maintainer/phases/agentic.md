@@ -1,6 +1,6 @@
 # Phase — Agentic JSON & flexible flags
 
-**Status:** Active — **AG1–AG2 shipped**; D2/AG4 (`validate --since`) next. D1 completed the fail-mode half of AG3. **AG3/AG4** share Diff D1/D2 work (do not duplicate).
+**Status:** Active — **AG1–AG2 + AG4 shipped**; AG3 detail / AG5 filters next. D1–D2 completed the fail-mode half of AG3/AG4.
 
 **Companion:** [`diff.md`](./diff.md) · [`severity.md`](./severity.md) · [`cli-output-audit.md`](./cli-output-audit.md) · [`docs/cli/json.md`](../../docs/cli/json.md) · [`docs/guides/workflows.md`](../../docs/guides/workflows.md)
 
@@ -26,7 +26,7 @@ Dogfood target: nodehunter (and any SDK that freezes a 1.x surface) can automate
 | `graph -v/-F -j` | Analytics rollup only; edges not in JSON | **Shipped AG2** — `data.edges` + `listGuidance` |
 | Default `-T 10` | Truncation in human lists | Fine for TTY; wrong default for agents if they scrape text |
 | `diff` detail | Fail gate shipped; verbose JSON lacks added/removed metadata | Agents can gate removals, but cannot inspect rich symbol changes |
-| `validate --since` | Reserved, unimplemented | One-command “PR shippable?” missing |
+| `validate --since` | **Shipped AG4** — baseline ∪ current validate | One-command “PR shippable?” |
 | Insights shape | `{ lines }` vs richer objects, per command | Fragile agent parsers |
 | Full data | Lives in `inventory.full.json` cache | Unofficial; agents shouldn’t dig cache |
 
@@ -104,7 +104,7 @@ Update `docs/cli/json.md` with per-`kind` full schemas and a rule:
 |------|---------|------|
 | `--fail-on-removed` | `diff` | Exit 1 if any flat removed |
 | `--fail-on-tier-violations` | `diff` | Exit 1 if right snapshot has tier violations |
-| `--since <ref>` | `validate` | **Implement** reserved flag — baseline → tree; fail on removals + existing validate rules |
+| `--since <ref>` | `validate` | **Shipped** — baseline → tree; fail on removals + existing validate rules |
 | `--compat-baseline` / config `git.compatBaseline` | validate/diff | Default baseline when flag omitted |
 
 ```bash
@@ -179,14 +179,14 @@ One engine; two UX entry points (matches [`diff.md`](./diff.md) D1→D2).
 | **AG1** | JSON inventory symbols/namespaces (`-v`/`-F`) | — | **Shipped** — agents can list all exports |
 | **AG2** | JSON graph edges (`-v`/`-F`) | — | **Shipped** — agents can map re-exports |
 | **AG3** | Diff detail + fail flags | [`diff.md`](./diff.md) D1 | **Partial** — fail flags shipped in D1; `-v` detail JSON still open |
-| **AG4** | `validate --since` | AG3 compare core | One-command PR gate |
+| **AG4** | `validate --since` | AG3 compare core | **Shipped** — one-command PR gate |
 | **AG5** | Filter flags (`--tier`, `--category`, …) | AG1–2 | Flexible queries |
 | **AG6** | Insights schema normalization | — | Stable agent parsing |
-| **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | Public contract |
+| **AG7** | Docs + workflow recipes (`-j -s`, CI) | AG1–4 | **Shipped with AG4** — workflows CI section |
 
-**AG7 includes CI recommended usage** (same deliverable as Diff D2 docs): a public guide/section covering when to run `validate`, `diff --fail-on-removed`, and `validate --since` in CI; JSON artifact patterns; copy-paste GitHub Actions. Expand [`docs/guides/workflows.md`](../../docs/guides/workflows.md) **or** add `docs/guides/ci.md` — do not leave CI advice only in maintainer phases.
+**AG7 (shipped with D2):** public CI recipes in [`docs/guides/workflows.md`](../../docs/guides/workflows.md) covering `validate`, `diff --fail-on-removed`, and `validate --since`.
 
-Suggested remaining order: **AG3 detail → AG4 → AG5 → AG6 → AG7** (AG7 docs may land in the same PR as AG4).
+Suggested remaining order: **AG3 detail → AG5 → AG6**.
 
 ---
 
@@ -195,10 +195,10 @@ Suggested remaining order: **AG3 detail → AG4 → AG5 → AG6 → AG7** (AG7 d
 - [x] `expgov inventory -v -j -s` includes symbol/namespace lists under the same `-T`/`-F` policy as human verbose (use `-F` for every flat)
 - [x] `expgov graph -F -j -s` includes edge list matching `edgeCount` under shared listGuidance
 - [x] `expgov diff A..B --fail-on-removed` exits 1 iff removals exist; default diff still exits 0
-- [ ] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
+- [x] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
 - [ ] Filter flags compose with JSON without requiring human output parsing
 - [x] `docs/cli/json.md` documents inventory + graph detail shapes (diff detail still growing)
-- [ ] Public CI recommended-usage section/page (workflows **or** `guides/ci.md`) covering validate / diff fail flags / `validate --since`
+- [x] Public CI recommended-usage section in `docs/guides/workflows.md` covering validate / diff fail flags / `validate --since`
 - [ ] No regression: human mode banners/truncation remain usable; envelope `apiVersion` unchanged unless breaking
 
 ---
@@ -245,6 +245,6 @@ expgov trend -j -s
 
 ---
 
-## After AG3/AG4 — nodehunter
+## After AG4 — nodehunter
 
-Same follow-up as [`diff.md`](./diff.md): bump expgov in `~/Tools/nodehunter`, add CI gate on `v1.0.0`, document in maintainer exports map. Prefer `validate --since v1.0.0` once AG4 lands.
+Same follow-up as [`diff.md`](./diff.md): bump expgov in `~/Tools/nodehunter`, switch CI to `validate --since v1.0.0`, document in maintainer exports map.

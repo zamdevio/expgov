@@ -34,6 +34,8 @@ Per-command list flags (`inventory`, `diff`, `graph`, `trend`, `timeline`, `vali
 
 **`diff` fail flags (shipped D1):** `--fail-on-removed`, `--fail-on-tier-violations` — opt-in exit `1` / `ok: false` / `issues[]`. Default remains exit `0`.
 
+**`validate --since <ref>` (shipped D2 / AG4):** one-command CI gate — current-tree validate ∪ fail on flat removals vs baseline (same removal code as `diff --fail-on-removed`). JSON adds `data.since` / `sinceLabel` / `added` / `removed`.
+
 Color is on for TTY stdout; disable with `--no-color` or `NO_COLOR`. JSON mode never applies ANSI.
 
 Bare `expgov` (no subcommand) prints root help and exits **0** (i18nprune-style default action).

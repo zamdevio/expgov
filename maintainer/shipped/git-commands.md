@@ -82,4 +82,13 @@ Release context: [`release.md`](./release.md) (v1.0.1).
 - [x] Tests: `shared/__tests__/diffFail.test.ts`
 - [x] Docs: `docs/commands/diff.md`, workflows CI snippet, `docs/cli/json.md`
 
-Still open: D2 `validate --since`, D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).
+## D2 — validate --since (shipped) · 2026-W29
+
+- [x] `evaluateValidateSince` — `format/validateSince.ts` (compose `diffSnapshots` + `evaluateDiffFailMode({ failOnRemoved: true })`)
+- [x] `runExportsValidate({ since })` — baseline commit → worktree; merge removal issues with current-tree validate
+- [x] JSON: `data.since` / `sinceLabel` / `added` / `removed`; issue code `expgov.diff.exports_removed`
+- [x] CLI/help un-reserved: `--since <ref>` fail if flats removed since ref
+- [x] Tests: `shared/__tests__/validateSince.test.ts`
+- [x] Docs: `docs/commands/validate.md`, `diff.md`, `guides/workflows.md` CI recipes, `docs/cli/json.md`
+
+Still open: D3 `compatBaseline` — [`phases/diff.md`](../phases/diff.md).

@@ -1,6 +1,6 @@
 # Phase — Diff fail gate (export surface regressions)
 
-**Status:** Active — **D1 shipped**; next D2 / Agentic AG1–AG2. Triggered by [nodehunter](https://github.com/zamdevio/nodehunter) `v1.0.0` frozen surface.
+**Status:** Active — **D1–D2 shipped**; optional D3 `compatBaseline`. Triggered by [nodehunter](https://github.com/zamdevio/nodehunter) `v1.0.0` frozen surface.
 
 **Companion:** [`agentic.md`](./agentic.md) · [`commands.md`](./commands.md) · [`severity.md`](./severity.md) · [`docs/commands/diff.md`](../../docs/commands/diff.md)
 
@@ -14,15 +14,15 @@ Make `expgov diff` (and/or `validate --since`) usable as a **CI fail gate** when
 
 ## Problem
 
-Consumers that treat the root barrel as a **frozen stable contract** (e.g. `@nodehunter/core` after `v1.0.0`) need CI to fail when exports are **removed** relative to a baseline tag. D1 now provides the direct `diff` gate; D2 will compose that comparison into `validate`.
+Consumers that treat the root barrel as a **frozen stable contract** (e.g. `@nodehunter/core` after `v1.0.0`) need CI to fail when exports are **removed** relative to a baseline tag. D1 provides the direct `diff` gate; D2 composes that comparison into `validate --since`.
 
 | Command | What it does | Exit on removals? |
 |---------|--------------|-------------------|
 | `expgov validate` | Tier / tsconfig ↔ npm parity / unclassified | **No** — current-tree only |
 | `expgov diff A..B` | Reports `added` / `removed` / tier notes | **Opt-in** — `--fail-on-removed` exits `1`; default remains informational |
-| `validate --since <ref>` | Documented as reserved | **Not implemented** |
+| `validate --since <ref>` | Current validate ∪ removals vs baseline | **Yes** — removals or validate failures → exit `1` |
 
-Bare `expgov diff v1.0.0..HEAD` intentionally stays green for compatibility. Consumer CI must opt into `--fail-on-removed`.
+Bare `expgov diff v1.0.0..HEAD` intentionally stays green for compatibility. Prefer `validate --since` for one-command CI.
 
 ---
 
@@ -98,26 +98,27 @@ CI can run `expgov validate --since` / `expgov diff --fail-on-removed` without h
 - [x] `--json` sets `ok: false` + structured `issues` when failing
 - [x] Docs: `docs/commands/diff.md`, `docs/commands/validate.md`, CI snippet in `docs/guides/workflows.md`
 - [x] Core tests for fail / no-fail paths (`shared/__tests__/diffFail.test.ts`)
+- [x] `expgov validate --since <ref>` exits 1 on removals or existing validate failures
+- [x] Recommended CI usage in `docs/guides/workflows.md` (validate / diff / `--since` table + GHA sketch)
+- [x] `validate --since` documented on `docs/commands/validate.md` (un-reserved)
+- [x] Workflows + JSON guide point at the one-command PR gate
 
-**D1 shipped** — `evaluateDiffFailMode` + CLI flags. **D2** (`validate --since`) and **D3** (`compatBaseline`) still open.
-
-**D2 docs checklist (open):**
-
-- [ ] Recommended CI usage page/section (workflows expansion **or** `docs/guides/ci.md`)
-- [ ] `validate --since` documented on `docs/commands/validate.md` (un-reserve)
-- [ ] Workflows + JSON guide point at the one-command PR gate
-- [ ] Sidebar entry if a new guide page is added
+**D1–D2 shipped.** **D3** (`compatBaseline`) still open.
 
 ---
 
-## CI use after D1
+## CI use (shipped)
 
 ```bash
+# Recommended one-command gate
+expgov validate --since v1.0.0
+
+# Or two-step
 expgov validate
 expgov diff v1.0.0..HEAD --fail-on-removed
 ```
 
-Use an immutable released tag or commit as the baseline. This protects removals and renames while allowing additive API growth. Keep `validate` alongside it for current-tree tier and policy checks until D2 ships. Snippets already exist in `docs/guides/workflows.md`; treat them as the seed for the fuller CI guide above.
+Use an immutable released tag or commit as the baseline. This protects removals and renames while allowing additive API growth.
 
 ---
 
@@ -126,14 +127,7 @@ Use an immutable released tag or commit as the baseline. This protects removals 
 Repo: **https://github.com/zamdevio/nodehunter** (local: `~/Tools/nodehunter`).
 
 1. Bump `@expgov/cli` / `@expgov/core` (or the `file:../expgov` / workspace pin).
-2. Add a verify CI step after `expgov validate`:
-
-   ```yaml
-   - name: export surface (no removals since v1.0.0)
-     run: pnpm exec expgov diff v1.0.0..HEAD --fail-on-removed
-   ```
-
-   or:
+2. Add a verify CI step:
 
    ```yaml
    - name: export surface (compat since v1.0.0)
@@ -141,9 +135,7 @@ Repo: **https://github.com/zamdevio/nodehunter** (local: `~/Tools/nodehunter`).
    ```
 
 3. Document in nodehunter `maintainer/systems/exports.md` and note baseline `v1.0.0`.
-4. **Do not** fail on additions — post-v1 work will keep adding stable exports; only **removals** (and optional tier violations) fail.
-
-Until then: leave nodehunter CI as `expgov validate` only.
+4. **Do not** fail on additions — post-v1 work will keep adding stable exports; only **removals** (and optional tier violations on `diff`) fail.
 
 ---
 

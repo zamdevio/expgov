@@ -8,23 +8,23 @@
 
 ---
 
-## Focus now — Agentic JSON (post-D1)
+## Focus now — Agentic filters / remaining (post-D2)
 
 **Doc:** [`agentic.md`](./agentic.md) · **Diff companion:** [`diff.md`](./diff.md)
 
-D1 (`diff` fail flags) and AG1–AG2 (inventory/graph JSON detail) are shipped. Next: compose `validate --since`.
+D1–D2 and AG1–AG2/AG4 are shipped. Next: AG5 filters (or AG3 diff JSON detail), then optional D3 `compatBaseline`.
 
 | # | Slice | Status | Goal |
 |---|-------|--------|------|
 | 1 | **D1** — `diff` fail flags | **Shipped** | `--fail-on-removed`, `--fail-on-tier-violations`; `ok: false` + `issues[]` when failing |
 | 2 | **AG1** — inventory JSON symbols | **Shipped** | `symbols[]` / `namespaces[]` under `-v`/`-F` |
 | 3 | **AG2** — graph JSON edges | **Shipped** | `edges[]` under `-v`/`-F` + shared listGuidance |
-| 4 | **D2 / AG4** — `validate --since` | **Next** | Baseline vs worktree; fail on removals + existing validate rules |
-| 4b | **AG7 / D2-docs** — CI recommended usage | **With D2** | Public docs section/page: when to use `validate`, `diff --fail-on-removed`, `validate --since` in CI |
+| 4 | **D2 / AG4** — `validate --since` | **Shipped** | Baseline vs worktree; fail on removals + existing validate rules |
+| 4b | **AG7 / D2-docs** — CI recommended usage | **Shipped** (with D2) | Workflows CI recipes + validate/diff/json pages |
 
-**Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic AG3/AG4 are the same work (JSON/detail integration) — do not implement twice. Optional D3 `compatBaseline` waits until flags are dogfooded. **CI docs ship with D2/AG4** (expand `docs/guides/workflows.md` or add `docs/guides/ci.md`) — not maintainer-only.
+**Ownership:** D1/D2 live in [`diff.md`](./diff.md). Agentic AG3/AG4 share Diff work — do not implement twice. Optional D3 `compatBaseline` waits until `--since` is dogfooded.
 
-**After AG4:** bump expgov in nodehunter CI; prefer `validate --since v1.0.0`.
+**After D2:** bump expgov in nodehunter CI; prefer `validate --since v1.0.0`.
 
 ### Parallel / follow-on engine phase
 
@@ -64,8 +64,8 @@ Resume **C3** after Diff D1–D2 and Agentic AG1–AG2 (share filter vocabulary 
 
 | # | Slice | Goal | Doc |
 |---|-------|------|-----|
-| 1 | **Diff fail gate** | D1 shipped; implement `validate --since` (D2) | [`diff.md`](./diff.md) |
-| 2 | **Agentic** | JSON completeness + flexible flags (inventory/graph/diff) | [`agentic.md`](./agentic.md) |
+| 1 | **Diff fail gate** | D1–D2 shipped; optional D3 `compatBaseline` | [`diff.md`](./diff.md) |
+| 2 | **Agentic** | AG1–2/AG4/AG7 shipped; AG3 detail + AG5 filters next | [`agentic.md`](./agentic.md) |
 | 3 | **Inventory diagnostics** | Reachable-surface honesty (ID1/ID2) + ID-DOC | [`inventory-diagnostics.md`](./inventory-diagnostics.md) |
 | P | **HELP1** — Help color hierarchy | Independent small slice; may accompany another CLI task | [`help.md`](./help.md) |
 | P | **Releases** — versions + `release.yml` | i18nprune-style dual npm auto-publish | [`releases.md`](./releases.md) |
